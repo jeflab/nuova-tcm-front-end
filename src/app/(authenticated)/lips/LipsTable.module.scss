@@ -1,0 +1,12 @@
+.narrowColumn {
+  width: 1px;
+}
+
+.sortableColumn {
+  cursor: pointer;
+  user-select: none;
+}
+
+.actions {
+  white-space: nowrap;
+}
