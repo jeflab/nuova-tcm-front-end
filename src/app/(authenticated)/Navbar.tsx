@@ -1,6 +1,7 @@
 import styles from "@/app/(authenticated)/layout.module.scss";
-import {ThemeButton} from "@/app/(authenticated)/ThemeButton";
+import {ThemeButton} from "@/ui/ThemeButton/ThemeButton";
 import logo from "@/images/logo.png";
+import {ThemeButtonIcon} from "@/ui/ThemeButton/ThemeButtonIcon";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -44,7 +45,9 @@ export function Navbar() {
             <NavLink as={Link} href="#logout">
               Esci
             </NavLink>
-            <ThemeButton />
+            <ThemeButton>
+              <ThemeButtonIcon />
+            </ThemeButton>
           </Nav>
         </NavbarCollapse>
       </Container>

@@ -1,9 +1,10 @@
+import {getTheme} from "@/ui/ThemeButton/actions";
 import {config} from "@fortawesome/fontawesome-svg-core";
 import type {Metadata} from "next";
 import {ReactNode} from "react";
 import "./globals.scss";
-import {Providers} from "./Providers";
 
+// Fix icone giganti: non importiamo qui ma importiamo manualmente i css in globals.scss
 config.autoAddCss = false;
 
 export const metadata: Metadata = {
@@ -16,11 +17,11 @@ interface RootLayoutProps {
 }
 
 export default function RootLayout({children}: RootLayoutProps) {
+  const theme = getTheme();
+
   return (
-    <html lang="it">
-      <body>
-        <Providers>{children}</Providers>
-      </body>
+    <html lang="it" data-bs-theme={theme}>
+      <body>{children}</body>
     </html>
   );
 }
