@@ -18,7 +18,7 @@ export function Navbar() {
   return (
     <BSNavbar expand="md" className="bg-body-tertiary" fixed="top">
       <Container>
-        <NavbarBrand href="#home">
+        <NavbarBrand href="/">
           <Image
             src={logo}
             height={30}

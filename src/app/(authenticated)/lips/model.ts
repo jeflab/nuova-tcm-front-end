@@ -10,7 +10,7 @@ export const lipSchema = z.object({
   id: z.number(),
   surname: z.string(),
   name: z.string(),
-  date: z.string(),
+  date: z.coerce.date(),
   state: z.enum(LIP_STATES),
 });
 

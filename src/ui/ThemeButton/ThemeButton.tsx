@@ -16,6 +16,7 @@ const setThemeClientSide = (theme: string) => {
 
 export function ThemeButton({children}: WithChildren) {
   const theme = getThemeClientSide();
+
   return (
     <NavLink
       as={Button}
@@ -24,6 +25,7 @@ export function ThemeButton({children}: WithChildren) {
         setThemeClientSide(theme === "light" ? "dark" : "light");
         setTheme(theme === "light" ? "dark" : "light");
       }}
+      title={`Passa al tema ${theme === "dark" ? "chiaro" : "scuro"}`}
     >
       {children}
     </NavLink>
