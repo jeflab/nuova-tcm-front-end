@@ -1,6 +1,7 @@
 "use client";
-import {cns} from "@/app/helpers";
+import {cns} from "@/app/helpers/cns";
 import {ButtonLink} from "@/ui/ButtonLink";
+import {Filter} from "@/ui/table/Filter";
 import {
   faArrowDownShortWide,
   faArrowUpWideShort,
@@ -15,7 +16,6 @@ import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
-  getSortedRowModel,
   RowData,
   SortDirection,
   useReactTable,
@@ -25,6 +25,8 @@ import {ReactNode} from "react";
 import {FormControl, FormLabel, FormSelect, Table} from "react-bootstrap";
 import styles from "./DataTable.module.scss";
 import {
+  columnFiltersObjectToString,
+  columnFiltersStringToObject,
   DataTableParams,
   dataTableParamsSchema,
   defaultDataTableParams,
@@ -59,14 +61,12 @@ export function DataTable<Row>({
     columns,
     manualSorting: true,
     manualPagination: true,
+    manualFiltering: true,
     getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
     onSortingChange: (updaterFn) => {
       const oldSorting = table.getState().sorting;
       const newSorting =
         typeof updaterFn === "function" ? updaterFn(oldSorting) : updaterFn;
-
-      console.log(oldSorting, newSorting);
 
       const newPath = createPageURL({
         page: 1,
@@ -80,11 +80,23 @@ export function DataTable<Row>({
       const newPagination =
         typeof updaterFn === "function" ? updaterFn(oldPagination) : updaterFn;
 
-      console.log(oldPagination, newPagination);
-
       const newPath = createPageURL({
         page: newPagination.pageIndex + 1,
         perPage: newPagination.pageSize,
+      });
+
+      router.push(newPath, {scroll: false});
+    },
+    onColumnFiltersChange: (updaterFn) => {
+      const oldColumnFilters = table.getState().columnFilters;
+      const newColumnFilters =
+        typeof updaterFn === "function"
+          ? updaterFn(oldColumnFilters)
+          : updaterFn;
+
+      const newPath = createPageURL({
+        page: 1,
+        columnFilters: columnFiltersObjectToString(newColumnFilters),
       });
 
       router.push(newPath, {scroll: false});
@@ -96,8 +108,11 @@ export function DataTable<Row>({
         pageSize: searchParams.perPage,
       },
       sorting: sortingStringToObject(searchParams.sorting),
+      columnFilters: columnFiltersStringToObject(searchParams.columnFilters),
     },
     debugTable: true,
+    debugHeaders: true,
+    debugColumns: true,
   });
 
   const createPageURL = (newParams: Partial<DataTableParams>) => {
@@ -134,17 +149,32 @@ export function DataTable<Row>({
                   <th
                     key={header.id}
                     scope="col"
-                    onClick={header.column.getToggleSortingHandler()}
                     className={cns(
                       header.id === "actions" && styles.narrowColumn,
-                      header.column.getCanSort() && styles.sortableColumn,
                     )}
                   >
-                    {flexRender(
-                      header.column.columnDef.header,
-                      header.getContext(),
-                    )}{" "}
-                    {header.column.getCanSort() && sortIcon[sortDirection]}
+                    <div
+                      onClick={header.column.getToggleSortingHandler()}
+                      className={cns(
+                        header.column.getCanSort() && styles.sortableColumn,
+                      )}
+                      title={
+                        header.column.getCanSort()
+                          ? `Ordina per ${header.column.columnDef.header}`
+                          : undefined
+                      }
+                    >
+                      {flexRender(
+                        header.column.columnDef.header,
+                        header.getContext(),
+                      )}{" "}
+                      {header.column.getCanSort() && sortIcon[sortDirection]}
+                    </div>
+                    {header.column.getCanFilter() ? (
+                      <div className="mt-2">
+                        <Filter column={header.column} />
+                      </div>
+                    ) : null}
                   </th>
                 );
               })}

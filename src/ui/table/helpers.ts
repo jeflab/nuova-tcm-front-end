@@ -6,6 +6,7 @@ export const dataTableParamsSchema = z.object({
   page: z.coerce.number().int().positive().catch(1),
   perPage: z.coerce.number().int().positive().catch(25),
   sorting: z.string().optional().default("-date"),
+  columnFilters: z.string().optional().default(""),
 });
 export const defaultDataTableParams = dataTableParamsSchema.parse({});
 export type DataTableParams = z.infer<typeof dataTableParamsSchema>;
@@ -19,7 +20,7 @@ export function sortingObjectToString(sorting: SortingState): string {
     .join(",");
 }
 
-export function sortingStringToObject<Type extends {[Key: string]: unknown}>(
+export function sortingStringToObject<Type extends Record<string, unknown>>(
   sorting: string,
 ) {
   return sorting.split(",").map((sort) => {
@@ -29,19 +30,25 @@ export function sortingStringToObject<Type extends {[Key: string]: unknown}>(
   });
 }
 
-export function filtersObjectToString(filters: ColumnFiltersState) {
-  return Object.entries(filters)
-    .map(([key, value]) => {
-      return `${key}:${value}`;
+export function columnFiltersObjectToString(columnFilters: ColumnFiltersState) {
+  return columnFilters
+    .map(({id, value}) => {
+      return `${id}:${value}`;
     })
     .join(",");
 }
 
-export function filtersStringToObject(filters: string) {
-  return Object.fromEntries(
-    filters.split(",").map((filter) => {
-      const [key, value] = filter.split(":");
-      return [key, value];
-    }),
-  );
+export function columnFiltersStringToObject<
+  Type extends Record<string, unknown>,
+>(columnFilters: string) {
+  return columnFilters
+    .split(",")
+    .filter((columnFilter) => Boolean(columnFilter))
+    .map((columnFilter) => {
+      const [id, value] = columnFilter.split(":") as [
+        Extract<keyof Type, string>,
+        string,
+      ];
+      return {id, value};
+    });
 }

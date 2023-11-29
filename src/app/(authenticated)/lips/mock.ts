@@ -1,4 +1,4 @@
-import {LIP_STATES} from "@/app/(authenticated)/lips/model";
+import {lipStates} from "@/app/(authenticated)/lips/model";
 import {faker} from "@faker-js/faker/locale/it";
 
 export const standard = (/* vars, { ctx, req } */) => {
@@ -9,7 +9,7 @@ export const standard = (/* vars, { ctx, req } */) => {
       surname: faker.person.lastName(),
       name: faker.person.firstName(),
       date: faker.date.recent().toISOString().split("T")[0],
-      state: faker.helpers.arrayElement(LIP_STATES),
+      state: faker.helpers.arrayElement(lipStates),
     })),
   };
 };

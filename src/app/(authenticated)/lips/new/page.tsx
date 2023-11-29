@@ -1,7 +1,10 @@
+import {AppContainer} from "@/ui/AppContainer";
+import {PageTitle} from "@/ui/PageTitle";
+
 export default async function NewLipPage() {
   return (
-    <div>
-      <h2>Nuova polizza</h2>
-    </div>
+    <AppContainer className="vstack gap-3">
+      <PageTitle>Nuova polizza</PageTitle>
+    </AppContainer>
   );
 }

@@ -1,26 +1,21 @@
 "use client";
 
-import {Lip} from "@/app/(authenticated)/lips/model";
+import {
+  Lip,
+  lipStates,
+  LipStatesIcons,
+  lipStatesLabels,
+} from "@/app/(authenticated)/lips/model";
+import {dateString, dbDateString} from "@/app/helpers/date";
 import styles from "@/ui/table/DataTable.module.scss";
 import {
-  faCheckCircle,
-  faCircleHalf,
-  faDollarCircle,
   faEye,
+  faFilterCircleXmark,
   faTrash,
 } from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {ColumnDef, createColumnHelper} from "@tanstack/react-table";
-import {ReactNode} from "react";
-import {Button} from "react-bootstrap";
-
-const stateIcon: Record<Lip["state"], ReactNode> = {
-  Aperta: <FontAwesomeIcon icon={faCircleHalf} className="text-warning" />,
-  "In attesa di pagamento": (
-    <FontAwesomeIcon icon={faDollarCircle} className="text-warning" />
-  ),
-  Completata: <FontAwesomeIcon icon={faCheckCircle} className="text-success" />,
-};
+import {Button, FormControl, FormSelect} from "react-bootstrap";
 
 const columnHelper = createColumnHelper<Lip>();
 export const columns = [
@@ -30,18 +25,79 @@ export const columns = [
   columnHelper.accessor("name", {header: "Nome"}),
   columnHelper.accessor("date", {
     header: "Data",
-    cell: (props) => props.getValue().toLocaleDateString(),
+    cell: (props) => dateString(props.getValue()),
+    meta: {
+      filterComponent: ({disabled, filterValue, setFilterValueDebounced}) => {
+        const [from, to] = filterValue?.split(">") ?? [undefined, undefined];
+        return (
+          <div className="hstack gap-2">
+            <FormControl
+              type="date"
+              size="sm"
+              defaultValue={from && dbDateString(new Date(from))}
+              onChange={(event) => {
+                setFilterValueDebounced(
+                  [event.target.value, to].sort().join(">"),
+                );
+              }}
+              disabled={disabled}
+            />
+            <FormControl
+              type="date"
+              size="sm"
+              defaultValue={to && dbDateString(new Date(to))}
+              onChange={(event) => {
+                setFilterValueDebounced(
+                  [from, event.target.value].sort().join(">"),
+                );
+              }}
+              disabled={disabled}
+            />
+          </div>
+        );
+      },
+    },
   }),
   columnHelper.accessor("state", {
     header: "Stato",
     cell: (props) => (
       <>
-        {stateIcon[props.getValue()]} {props.getValue()}
+        {LipStatesIcons[props.getValue()]} {lipStatesLabels[props.getValue()]}
       </>
     ),
+    meta: {
+      filterComponent: ({filterValue, setFilterValue}) => {
+        return (
+          <FormSelect
+            defaultValue={filterValue}
+            onChange={(e) => setFilterValue(e.target.value as Lip["state"])}
+            size="sm"
+          >
+            <option key="all" value="all">
+              Tutti
+            </option>
+            {lipStates.map((state) => (
+              <option key={state} value={state}>
+                {lipStatesLabels[state]}
+              </option>
+            ))}
+          </FormSelect>
+        );
+      },
+    },
   }),
   columnHelper.display({
     id: "actions",
+    header: ({table}) => (
+      <Button
+        size="sm"
+        className="w-100"
+        onClick={() => table.resetColumnFilters()}
+      >
+        <FontAwesomeIcon icon={faFilterCircleXmark} />
+        Reset filtri
+      </Button>
+    ),
     cell: () => (
       <span className={styles.actions}>
         <Button variant="primary" size="sm" className="text-nowrap">
@@ -54,6 +110,8 @@ export const columns = [
     ),
   }),
 ] as ColumnDef<Lip>[];
+
+// TODO: Facciamo in modo che in skeletonColumns ci siano solo le proprietà che cambiano da columns
 
 export const skeletonColumns = [
   columnHelper.accessor("surname", {
@@ -76,7 +134,33 @@ export const skeletonColumns = [
   }),
   columnHelper.accessor("date", {
     header: "Data",
-    cell: () => <span className="placeholder" style={{width: "80px"}} />,
+    cell: () => (
+      <span
+        className="placeholder"
+        style={{width: `${100 + Math.random() * 30}px`}}
+      />
+    ),
+    meta: {
+      filterComponent: ({disabled, filterValue}) => {
+        const [from, to] = filterValue?.split(">") ?? [undefined, undefined];
+        return (
+          <div className="hstack gap-2">
+            <FormControl
+              type="date"
+              size="sm"
+              defaultValue={from && dbDateString(new Date(from))}
+              disabled={disabled}
+            />
+            <FormControl
+              type="date"
+              size="sm"
+              defaultValue={to && dbDateString(new Date(to))}
+              disabled={disabled}
+            />
+          </div>
+        );
+      },
+    },
   }),
   columnHelper.accessor("state", {
     header: "Stato",
@@ -89,9 +173,36 @@ export const skeletonColumns = [
         />
       </>
     ),
+    meta: {
+      filterComponent: ({disabled, filterValue, setFilterValue}) => {
+        return (
+          <FormSelect
+            defaultValue={filterValue}
+            disabled={disabled}
+            onChange={(e) => setFilterValue(e.target.value as Lip["state"])}
+            size="sm"
+          >
+            <option key="all" value="all">
+              Tutti
+            </option>
+            {lipStates.map((state) => (
+              <option key={state} value={state}>
+                {lipStatesLabels[state]}
+              </option>
+            ))}
+          </FormSelect>
+        );
+      },
+    },
   }),
   columnHelper.display({
     id: "actions",
+    header: () => (
+      <Button size="sm" className="w-100 disabled placeholder">
+        <FontAwesomeIcon icon={faFilterCircleXmark} />
+        Reset filtri
+      </Button>
+    ),
     cell: () => (
       <span className={styles.actions}>
         <Button

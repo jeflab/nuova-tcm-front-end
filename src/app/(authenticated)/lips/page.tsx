@@ -1,12 +1,12 @@
 import {skeletonColumns} from "@/app/(authenticated)/lips/columns";
 import {ButtonLink} from "@/ui/ButtonLink";
+import {AppContainer} from "@/ui/AppContainer";
 import {PageTitle} from "@/ui/PageTitle";
 import {DataTableSkeleton} from "@/ui/table/DataTableSkeleton";
 import {DataTableParams} from "@/ui/table/helpers";
 import {faPlus} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Suspense} from "react";
-import {Container} from "react-bootstrap";
 import {LipsTable} from "./LipsTable";
 
 interface LipsPageProps {
@@ -15,7 +15,7 @@ interface LipsPageProps {
 
 export default async function LipsPage({searchParams}: LipsPageProps) {
   return (
-    <Container fluid="lg" className="vstack gap-3">
+    <AppContainer className="vstack gap-3">
       <PageTitle>
         Lista polizze
         <ButtonLink href="lips/new">
@@ -33,6 +33,6 @@ export default async function LipsPage({searchParams}: LipsPageProps) {
       >
         <LipsTable searchParams={searchParams} />
       </Suspense>
-    </Container>
+    </AppContainer>
   );
 }

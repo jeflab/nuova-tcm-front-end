@@ -1,8 +1,10 @@
 "use client";
-import {cns} from "@/app/helpers";
+import {cns} from "@/app/helpers/cns";
 import {sortIcon} from "@/ui/table/DataTable";
 import styles from "@/ui/table/DataTable.module.scss";
+import {Filter} from "@/ui/table/Filter";
 import {
+  columnFiltersStringToObject,
   DataTableParams,
   dataTableParamsSchema,
   sortingStringToObject,
@@ -36,11 +38,15 @@ export function DataTableSkeleton({
   columns,
   searchParams,
 }: DataTableSkeletonProps) {
-  const {page, perPage, sorting} = dataTableParamsSchema.parse(searchParams);
+  const {page, perPage, sorting, columnFilters} =
+    dataTableParamsSchema.parse(searchParams);
   const table = useReactTable({
     columns,
     data: Array.from({length: perPage}, () => ({})),
-    state: {sorting: sortingStringToObject(sorting)},
+    state: {
+      sorting: sortingStringToObject(sorting),
+      columnFilters: columnFiltersStringToObject(columnFilters),
+    },
     getCoreRowModel: getCoreRowModel(),
   });
 
@@ -56,17 +62,22 @@ export function DataTableSkeleton({
                   <th
                     key={header.id}
                     scope="col"
-                    onClick={header.column.getToggleSortingHandler()}
                     className={cns(
                       header.id === "actions" && styles.narrowColumn,
-                      header.column.getCanSort() && styles.sortableColumn,
                     )}
                   >
-                    {flexRender(
-                      header.column.columnDef.header,
-                      header.getContext(),
-                    )}{" "}
-                    {header.column.getCanSort() && sortIcon[sortDirection]}
+                    <div>
+                      {flexRender(
+                        header.column.columnDef.header,
+                        header.getContext(),
+                      )}{" "}
+                      {header.column.getCanSort() && sortIcon[sortDirection]}
+                    </div>
+                    {header.column.getCanFilter() ? (
+                      <div className="mt-2">
+                        <Filter column={header.column} disabled />
+                      </div>
+                    ) : null}
                   </th>
                 );
               })}
