@@ -7,12 +7,15 @@ import {
   columnFiltersStringToObject,
   DataTableParams,
   dataTableParamsSchema,
+  sortingObjectToString,
   sortingStringToObject,
 } from "@/ui/table/helpers";
 import {
+  faAngleDown,
   faBackward,
   faCaretLeft,
   faCaretRight,
+  faFilterCircleXmark,
   faForward,
 } from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
@@ -22,13 +25,18 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import {Fragment} from "react";
 import {
   Button,
+  Card,
+  CardHeader,
   FormControl,
   FormLabel,
   FormSelect,
+  Placeholder,
   Table,
 } from "react-bootstrap";
+import responsiveStyles from "./ResponsiveTable.module.scss";
 
 interface DataTableSkeletonProps {
   columns: ColumnDef<any>[];
@@ -44,15 +52,51 @@ export function DataTableSkeleton({
     columns,
     data: Array.from({length: perPage}, () => ({})),
     state: {
+      pagination: {
+        pageIndex: page - 1,
+        pageSize: perPage,
+      },
       sorting: sortingStringToObject(sorting),
       columnFilters: columnFiltersStringToObject(columnFilters),
     },
     getCoreRowModel: getCoreRowModel(),
   });
 
+  const getActiveFilterCount = () => {
+    const count = table.getState().columnFilters.length;
+    const defaultSorting = dataTableParamsSchema.shape.sorting.parse(undefined);
+    const sorting = sortingObjectToString(table.getState().sorting);
+
+    return count + (sorting !== defaultSorting ? 1 : 0);
+  };
+
   return (
     <>
-      <Table hover striped bordered responsive className="mb-0">
+      <Card className={responsiveStyles.filterPanel}>
+        <CardHeader className="d-flex justify-content-between align-items-center">
+          <span>
+            Filtri {getActiveFilterCount() > 0 && `(${getActiveFilterCount()})`}{" "}
+            <FontAwesomeIcon icon={faAngleDown} />
+          </span>{" "}
+          <Placeholder as="span" animation="glow">
+            <Button
+              size="sm"
+              className="disabled placeholder"
+              hidden={getActiveFilterCount() === 0}
+            >
+              <FontAwesomeIcon icon={faFilterCircleXmark} />
+              Reset filtri
+            </Button>
+          </Placeholder>
+        </CardHeader>
+      </Card>
+      <Table
+        hover
+        striped
+        bordered
+        responsive
+        className={cns(responsiveStyles.responsiveTableWrapper, "mb-0")}
+      >
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
@@ -88,7 +132,14 @@ export function DataTableSkeleton({
           {table.getRowModel().rows.map((row) => (
             <tr key={row.id}>
               {row.getVisibleCells().map((cell) => (
-                <td key={cell.id}>
+                <td
+                  key={cell.id}
+                  data-label={
+                    typeof cell.column.columnDef.header === "string"
+                      ? `${cell.column.columnDef.header}:`
+                      : undefined
+                  }
+                >
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </td>
               ))}
@@ -105,22 +156,28 @@ export function DataTableSkeleton({
             <FontAwesomeIcon icon={faCaretLeft} />
           </Button>
         </div>
-        <div className="hstack gap-2 align-baseline">
+        <div className={styles.paginationControls}>
           <FormControl
             type="number"
-            defaultValue={page}
+            min={1}
+            max={100}
+            defaultValue={table.getState().pagination.pageIndex + 1}
             className={styles.paginationInput}
-          />{" "}
-          di #
+          />
+          <span>di #</span>
           <div className="vr" />
-          <FormSelect className="w-auto" id="test" defaultValue={perPage}>
+          <FormSelect
+            className={styles.paginationSelect}
+            id="chose-page"
+            defaultValue={table.getState().pagination.pageSize}
+          >
             {[10, 25, 50].map((pageSize) => (
               <option key={pageSize} value={pageSize}>
                 {pageSize}
               </option>
             ))}
           </FormSelect>{" "}
-          <FormLabel htmlFor="test">polizze per pagina</FormLabel>
+          <FormLabel htmlFor="chose-page">polizze per pagina</FormLabel>
         </div>
         <div className="hstack gap-2 align-baseline">
           <Button disabled>

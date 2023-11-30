@@ -3,11 +3,13 @@ import {cns} from "@/app/helpers/cns";
 import {ButtonLink} from "@/ui/ButtonLink";
 import {Filter} from "@/ui/table/Filter";
 import {
+  faAngleDown,
   faArrowDownShortWide,
   faArrowUpWideShort,
   faBackward,
   faCaretLeft,
   faCaretRight,
+  faFilterCircleXmark,
   faForward,
   faSortAlt,
 } from "@fortawesome/pro-duotone-svg-icons";
@@ -21,8 +23,19 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import {usePathname, useRouter} from "next/navigation";
-import {ReactNode} from "react";
-import {FormControl, FormLabel, FormSelect, Table} from "react-bootstrap";
+import {Fragment, ReactNode, useState} from "react";
+import {
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  Collapse,
+  FormControl,
+  FormGroup,
+  FormLabel,
+  FormSelect,
+  Table,
+} from "react-bootstrap";
 import styles from "./DataTable.module.scss";
 import {
   columnFiltersObjectToString,
@@ -33,6 +46,7 @@ import {
   sortingObjectToString,
   sortingStringToObject,
 } from "./helpers";
+import responsiveStyles from "./ResponsiveTable.module.scss";
 
 interface DataTableProps<Row extends RowData> {
   columns: ColumnDef<Row>[];
@@ -55,6 +69,17 @@ export function DataTable<Row>({
 }: DataTableProps<Row>) {
   const pathname = usePathname();
   const router = useRouter();
+
+  const [mobileFilterIn, setMobileFilterIn] = useState(false);
+  const mobileReset = () => {
+    const newPath = createPageURL({
+      page: undefined,
+      sorting: undefined,
+      columnFilters: undefined,
+    });
+
+    router.push(newPath, {scroll: false});
+  };
 
   const table = useReactTable({
     data,
@@ -135,11 +160,117 @@ export function DataTable<Row>({
     }`;
   };
 
-  // TODO: rendere la tabella responsive con https://codepen.io/AllThingsSmitty/pen/MyqmdM
+  const getActiveFilterCount = () => {
+    const count = table.getState().columnFilters.length;
+    const defaultSorting = dataTableParamsSchema.shape.sorting.parse(undefined);
+    const sorting = sortingObjectToString(table.getState().sorting);
+
+    return count + (sorting !== defaultSorting ? 1 : 0);
+  };
 
   return (
     <>
-      <Table hover striped bordered responsive className="mb-0">
+      <Card className={responsiveStyles.filterPanel}>
+        <CardHeader
+          onClick={() => {
+            setMobileFilterIn((filterIn) => !filterIn);
+          }}
+          className="d-flex justify-content-between align-items-center"
+        >
+          <span>
+            Filtri {getActiveFilterCount() > 0 && `(${getActiveFilterCount()})`}{" "}
+            <FontAwesomeIcon
+              icon={faAngleDown}
+              flip={mobileFilterIn ? "vertical" : undefined}
+            />
+          </span>{" "}
+          <Button
+            size="sm"
+            onClick={(event) => {
+              event.stopPropagation();
+              mobileReset();
+            }}
+            hidden={getActiveFilterCount() === 0}
+          >
+            <FontAwesomeIcon icon={faFilterCircleXmark} />
+            Reset filtri
+          </Button>
+        </CardHeader>
+        <Collapse in={mobileFilterIn}>
+          <div>
+            <CardBody>
+              <FormGroup className="mb-3" controlId="mobile-order-by">
+                <FormLabel>Ordina per</FormLabel>
+                <FormSelect
+                  size="sm"
+                  onChange={(event) => {
+                    table.setSorting(sortingStringToObject(event.target.value));
+                  }}
+                  defaultValue={sortingObjectToString(table.getState().sorting)}
+                >
+                  {table.getFlatHeaders().map((header) => {
+                    return header.column.getCanSort() ? (
+                      <Fragment key={header.id}>
+                        <option value={header.id}>
+                          {flexRender(
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}{" "}
+                          crescente
+                        </option>
+                        <option value={"-" + header.id}>
+                          {flexRender(
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}{" "}
+                          decrescente
+                        </option>
+                      </Fragment>
+                    ) : null;
+                  })}
+                </FormSelect>
+              </FormGroup>
+              <FormLabel>Filtra per</FormLabel>
+              {table.getFlatHeaders().map((header) => {
+                return header.column.getCanFilter() ? (
+                  <FormGroup
+                    key={header.id}
+                    className="mb-3"
+                    controlId={`mobile-filter-${header.id}`}
+                  >
+                    <FormLabel>
+                      {flexRender(
+                        header.column.columnDef.header,
+                        header.getContext(),
+                      )}
+                    </FormLabel>
+                    <div className="mt-2">
+                      <Filter column={header.column} />
+                    </div>
+                  </FormGroup>
+                ) : null;
+              })}
+              <Button
+                size="sm"
+                className="w-100"
+                onClick={() => {
+                  mobileReset();
+                }}
+              >
+                <FontAwesomeIcon icon={faFilterCircleXmark} />
+                Reset filtri
+              </Button>
+            </CardBody>
+          </div>
+        </Collapse>
+      </Card>
+      <Table
+        hover
+        striped
+        bordered
+        responsive
+        className={cns(responsiveStyles.responsiveTableWrapper, "mb-0")}
+      >
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
@@ -185,7 +316,14 @@ export function DataTable<Row>({
           {table.getRowModel().rows.map((row) => (
             <tr key={row.id}>
               {row.getVisibleCells().map((cell) => (
-                <td key={cell.id}>
+                <td
+                  key={cell.id}
+                  data-label={
+                    typeof cell.column.columnDef.header === "string"
+                      ? `${cell.column.columnDef.header}:`
+                      : undefined
+                  }
+                >
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </td>
               ))}
@@ -214,7 +352,7 @@ export function DataTable<Row>({
             <FontAwesomeIcon icon={faCaretLeft} />
           </ButtonLink>
         </div>
-        <div className="hstack gap-2 align-baseline">
+        <div className={styles.paginationControls}>
           <FormControl
             type="number"
             min={1}
@@ -225,12 +363,12 @@ export function DataTable<Row>({
             }}
             defaultValue={table.getState().pagination.pageIndex + 1}
             className={styles.paginationInput}
-          />{" "}
-          di {table.getPageCount()}
+          />
+          <span>di {table.getPageCount()}</span>
           <div className="vr" />
           <FormSelect
-            className="w-auto"
-            id="test"
+            className={styles.paginationSelect}
+            id="chose-page"
             onChange={(e) => {
               table.setPageSize(Number(e.target.value));
             }}
@@ -242,7 +380,7 @@ export function DataTable<Row>({
               </option>
             ))}
           </FormSelect>{" "}
-          <FormLabel htmlFor="test">polizze per pagina</FormLabel>
+          <FormLabel htmlFor="chose-page">polizze per pagina</FormLabel>
         </div>
         <div className="hstack gap-2 align-baseline">
           <ButtonLink

@@ -15,7 +15,7 @@ import {
 } from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {ColumnDef, createColumnHelper} from "@tanstack/react-table";
-import {Button, FormControl, FormSelect} from "react-bootstrap";
+import {Button, FormControl, FormSelect, Placeholder} from "react-bootstrap";
 
 const columnHelper = createColumnHelper<Lip>();
 export const columns = [
@@ -117,28 +117,34 @@ export const skeletonColumns = [
   columnHelper.accessor("surname", {
     header: "Cognome",
     cell: () => (
-      <span
-        className="placeholder"
-        style={{width: `${40 + Math.random() * 35}px`}}
-      />
+      <Placeholder as="span" animation="glow">
+        <Placeholder
+          as="span"
+          style={{width: `${40 + Math.random() * 35}px`}}
+        />
+      </Placeholder>
     ),
   }),
   columnHelper.accessor("name", {
     header: "Nome",
     cell: () => (
-      <span
-        className="placeholder"
-        style={{width: `${40 + Math.random() * 35}px`}}
-      />
+      <Placeholder as="span" animation="glow">
+        <Placeholder
+          as="span"
+          style={{width: `${40 + Math.random() * 35}px`}}
+        />
+      </Placeholder>
     ),
   }),
   columnHelper.accessor("date", {
     header: "Data",
     cell: () => (
-      <span
-        className="placeholder"
-        style={{width: `${100 + Math.random() * 30}px`}}
-      />
+      <Placeholder as="span" animation="glow">
+        <Placeholder
+          as="span"
+          style={{width: `${100 + Math.random() * 30}px`}}
+        />
+      </Placeholder>
     ),
     meta: {
       filterComponent: ({disabled, filterValue}) => {
@@ -166,11 +172,17 @@ export const skeletonColumns = [
     header: "Stato",
     cell: () => (
       <>
-        <span className="placeholder rounded-circle" style={{width: "1em"}} />{" "}
-        <span
-          className="placeholder"
-          style={{width: `${45 + Math.random() * 115}px`}}
-        />
+        <Placeholder as="span" animation="glow">
+          <Placeholder
+            as="span"
+            className="rounded-circle"
+            style={{width: "1em"}}
+          />{" "}
+          <Placeholder
+            as="span"
+            style={{width: `${45 + Math.random() * 115}px`}}
+          />
+        </Placeholder>
       </>
     ),
     meta: {
@@ -198,13 +210,15 @@ export const skeletonColumns = [
   columnHelper.display({
     id: "actions",
     header: () => (
-      <Button size="sm" className="w-100 disabled placeholder">
-        <FontAwesomeIcon icon={faFilterCircleXmark} />
-        Reset filtri
-      </Button>
+      <Placeholder as="div" animation="glow">
+        <Button size="sm" className="w-100 disabled placeholder">
+          <FontAwesomeIcon icon={faFilterCircleXmark} />
+          Reset filtri
+        </Button>
+      </Placeholder>
     ),
     cell: () => (
-      <span className={styles.actions}>
+      <Placeholder as="span" animation="glow" className={styles.actions}>
         <Button
           variant="primary"
           size="sm"
@@ -220,7 +234,7 @@ export const skeletonColumns = [
         >
           <FontAwesomeIcon icon={faTrash} />
         </Button>
-      </span>
+      </Placeholder>
     ),
   }),
 ] as ColumnDef<Lip>[];
