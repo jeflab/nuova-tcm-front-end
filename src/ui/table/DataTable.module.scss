@@ -1,0 +1,53 @@
+@use "sass:map";
+@import "bootstrap/scss/functions";
+@import "bootstrap/scss/mixins";
+@import "bootstrap/scss/variables";
+
+.narrowColumn {
+  width: 1px;
+}
+
+.sortableColumn {
+  cursor: pointer;
+  user-select: none;
+}
+
+.actions {
+  white-space: nowrap;
+}
+
+.paginationControls {
+  display: flex;
+  flex-direction: column;
+  gap: map.get($spacers, 2);
+  align-items: center;
+
+  @include media-breakpoint-up(sm) {
+    flex-direction: row;
+    gap: map.get($spacers, 2);
+    align-items: baseline;
+  }
+
+  .paginationInput {
+    width: 100%;
+    @include media-breakpoint-up(sm) {
+      width: 60px;
+    }
+  }
+  .paginationSelect {
+    width: 100%;
+    @include media-breakpoint-up(sm) {
+      width: auto;
+    }
+  }
+
+  :global(.vr) {
+    width: 100%;
+    min-height: var(--bs-border-width);
+
+    @include media-breakpoint-up(sm) {
+      width: var(--bs-border-width);
+      min-height: 1em;
+    }
+  }
+}
