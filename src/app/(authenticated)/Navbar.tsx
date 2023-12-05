@@ -26,7 +26,7 @@ export function Navbar() {
             alt="logo"
             className="d-inline-block align-top"
           />{" "}
-          <span className={styles.navbarBrandText}>Nuova TCM</span>
+          <span className={styles.navbarBrandText}>Piattaforma TCM</span>
         </NavbarBrand>
         <NavbarToggle aria-controls="basic-navbar-nav" />
         <NavbarCollapse id="basic-navbar-nav">

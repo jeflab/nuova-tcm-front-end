@@ -8,7 +8,7 @@ import "./globals.scss";
 config.autoAddCss = false;
 
 export const metadata: Metadata = {
-  title: "Nuova TCM",
+  title: "Piattaforma TCM",
   description: "Web app per la gestione delle polizze TCM",
 };
 

@@ -9,7 +9,7 @@ export function Footer() {
       <p className="hstack gap-3">
         <span>
           <FontAwesomeIcon icon={faCopyright} className="text-primary" /> 2021
-          Nuova TCM
+          Piattaforma TCM
         </span>
         <span className="ms-auto text-muted small">
           Versione {appInfo.version}
