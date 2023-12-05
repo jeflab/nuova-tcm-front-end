@@ -1,8 +1,8 @@
 "use client";
 import {login} from "@/app/(public)/login/actions";
-import {FieldError} from "@/ui/Form/FieldError";
-import Form from "@/ui/Form/Form";
-import {InputField} from "@/ui/Form/InputField";
+import {FieldError} from "@/ui/form/FieldError";
+import Form from "@/ui/form/Form";
+import {InputField} from "@/ui/form/InputField";
 import {faSignInAlt} from "@fortawesome/pro-duotone-svg-icons/faSignInAlt";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {

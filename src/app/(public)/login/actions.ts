@@ -1,6 +1,6 @@
 "use server";
 
-import {objToFormData} from "@/ui/Form/helpers";
+import {objToFormData} from "@/ui/form/helpers";
 import {cookies} from "next/headers";
 
 const thirtyDaysInSeconds = 2592000;
