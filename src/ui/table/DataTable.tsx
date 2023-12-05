@@ -135,9 +135,6 @@ export function DataTable<Row>({
       sorting: sortingStringToObject(searchParams.sorting),
       columnFilters: columnFiltersStringToObject(searchParams.columnFilters),
     },
-    debugTable: true,
-    debugHeaders: true,
-    debugColumns: true,
   });
 
   const createPageURL = (newParams: Partial<DataTableParams>) => {
@@ -245,7 +242,7 @@ export function DataTable<Row>({
                       )}
                     </FormLabel>
                     <div className="mt-2">
-                      <Filter column={header.column} />
+                      <Filter column={header.column} idPrefix="mobile" />
                     </div>
                   </FormGroup>
                 ) : null;
@@ -363,6 +360,7 @@ export function DataTable<Row>({
             }}
             defaultValue={table.getState().pagination.pageIndex + 1}
             className={styles.paginationInput}
+            aria-label="Vai alla pagina"
           />
           <span>di {table.getPageCount()}</span>
           <div className="vr" />

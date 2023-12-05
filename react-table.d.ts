@@ -3,6 +3,7 @@ import "@tanstack/react-table";
 interface FilterComponentProps {
   disabled?: boolean;
   filterValue: string;
+  idPrefix?: string;
   setFilterValue: (value: string) => void;
   setFilterValueDebounced: (value: string) => void;
 }

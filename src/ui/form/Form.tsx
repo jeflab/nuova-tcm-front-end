@@ -10,7 +10,7 @@ import {type BaseSyntheticEvent} from "react";
 
 interface FormProps<TFieldValues extends FieldValues> extends WithChildren {
   config?: UseFormProps<TFieldValues>;
-  onSubmit: (value: TFieldValues, event?: BaseSyntheticEvent) => void;
+  onSubmit: (values: TFieldValues, event?: BaseSyntheticEvent) => void;
   className?: string;
 }
 export default function Form<TFieldValues extends FieldValues>({

@@ -27,7 +27,12 @@ export const columns = [
     header: "Data",
     cell: (props) => dateString(props.getValue()),
     meta: {
-      filterComponent: ({disabled, filterValue, setFilterValueDebounced}) => {
+      filterComponent: ({
+        disabled,
+        filterValue,
+        idPrefix,
+        setFilterValueDebounced,
+      }) => {
         const [from, to] = filterValue?.split(">") ?? [undefined, undefined];
         return (
           <div className="hstack gap-2">
@@ -41,6 +46,7 @@ export const columns = [
                 );
               }}
               disabled={disabled}
+              aria-label="Filtra per data di inizio"
             />
             <FormControl
               type="date"
@@ -52,6 +58,8 @@ export const columns = [
                 );
               }}
               disabled={disabled}
+              aria-label="Filtra per data di fine"
+              id={`${idPrefix ? `${idPrefix}-` : ""}filter-date-end`}
             />
           </div>
         );
@@ -72,6 +80,7 @@ export const columns = [
             defaultValue={filterValue}
             onChange={(e) => setFilterValue(e.target.value as Lip["state"])}
             size="sm"
+            aria-label="Filtra per stato"
           >
             <option key="all" value="all">
               Tutti
@@ -156,12 +165,14 @@ export const skeletonColumns = [
               size="sm"
               defaultValue={from && dbDateString(new Date(from))}
               disabled={disabled}
+              aria-label="Filtra per data di inizio"
             />
             <FormControl
               type="date"
               size="sm"
               defaultValue={to && dbDateString(new Date(to))}
               disabled={disabled}
+              aria-label="Filtra per data di fine"
             />
           </div>
         );
@@ -193,6 +204,7 @@ export const skeletonColumns = [
             disabled={disabled}
             onChange={(e) => setFilterValue(e.target.value as Lip["state"])}
             size="sm"
+            aria-label="Filtra per stato"
           >
             <option key="all" value="all">
               Tutti

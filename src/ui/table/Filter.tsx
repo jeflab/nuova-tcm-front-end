@@ -3,12 +3,14 @@ import {FormControl} from "react-bootstrap";
 import useDebouncedCallback from "beautiful-react-hooks/useDebouncedCallback";
 
 interface DefaultFilterComponentProps {
+  ariaLabel: string;
   disabled?: boolean;
   filterValue: string;
   setFilterValueDebounced: (value: string) => void;
 }
 
 function DefaultFilterComponent({
+  ariaLabel,
   disabled,
   filterValue,
   setFilterValueDebounced,
@@ -20,6 +22,7 @@ function DefaultFilterComponent({
       defaultValue={filterValue}
       onChange={(event) => setFilterValueDebounced(event.target.value)}
       disabled={disabled}
+      aria-label={ariaLabel}
     />
   );
 }
@@ -27,9 +30,10 @@ function DefaultFilterComponent({
 interface FilterProps<Row> {
   column: Column<Row>;
   disabled?: boolean;
+  idPrefix?: string;
 }
 
-export function Filter<Row>({column, disabled}: FilterProps<Row>) {
+export function Filter<Row>({column, disabled, idPrefix}: FilterProps<Row>) {
   const filterValue = column.getFilterValue() as string;
 
   const setFilterValueDebounced = useDebouncedCallback(
@@ -47,6 +51,7 @@ export function Filter<Row>({column, disabled}: FilterProps<Row>) {
     return column.columnDef.meta.filterComponent({
       disabled,
       filterValue,
+      idPrefix,
       setFilterValue,
       setFilterValueDebounced,
     });
@@ -54,6 +59,7 @@ export function Filter<Row>({column, disabled}: FilterProps<Row>) {
 
   return (
     <DefaultFilterComponent
+      ariaLabel={`Filtra per ${column.columnDef.header}`}
       disabled={disabled}
       filterValue={filterValue}
       setFilterValueDebounced={setFilterValueDebounced}
