@@ -6,8 +6,9 @@ import {
   LipStatesIcons,
   lipStatesLabels,
 } from "@/app/(authenticated)/lips/model";
+import {cns} from "@/app/helpers/cns";
 import {dateString, dbDateString} from "@/app/helpers/date";
-import styles from "@/ui/table/DataTable.module.scss";
+import dataTableStyles from "@/ui/table/DataTable.module.scss";
 import {
   faEye,
   faFilterCircleXmark,
@@ -107,12 +108,27 @@ export const columns = [
         Reset filtri
       </Button>
     ),
-    cell: () => (
-      <span className={styles.actions}>
-        <Button variant="primary" size="sm" className="text-nowrap">
+    cell: ({row}) => (
+      <span className={dataTableStyles.actions}>
+        <Button
+          variant="primary"
+          size="sm"
+          className={cns("text-nowrap", dataTableStyles.rowDefaultLink)}
+          onClick={() => {
+            alert("Vedi " + row.original.name + " " + row.original.surname);
+          }}
+        >
           <FontAwesomeIcon icon={faEye} /> Visualizza
         </Button>{" "}
-        <Button variant="danger" size="sm" title="Elimina polizza">
+        <Button
+          variant="danger"
+          size="sm"
+          title="Elimina polizza"
+          className={dataTableStyles.rowOtherLink}
+          onClick={() => {
+            alert("Elimina " + row.original.name + " " + row.original.surname);
+          }}
+        >
           <FontAwesomeIcon icon={faTrash} />
         </Button>
       </span>
@@ -230,7 +246,11 @@ export const skeletonColumns = [
       </Placeholder>
     ),
     cell: () => (
-      <Placeholder as="span" animation="glow" className={styles.actions}>
+      <Placeholder
+        as="span"
+        animation="glow"
+        className={dataTableStyles.actions}
+      >
         <Button
           variant="primary"
           size="sm"

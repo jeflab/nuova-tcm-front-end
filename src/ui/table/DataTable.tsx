@@ -311,7 +311,7 @@ export function DataTable<Row>({
         </thead>
         <tbody>
           {table.getRowModel().rows.map((row) => (
-            <tr key={row.id}>
+            <tr key={row.id} className="position-relative">
               {row.getVisibleCells().map((cell) => (
                 <td
                   key={cell.id}
