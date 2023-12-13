@@ -1,0 +1,18 @@
+@import "bootstrap/scss/functions";
+
+// Include any default variable overrides here
+$cancel: #6c757d;
+$primary: #404483;
+$secondary: #c42f57;
+
+@import "bootstrap/scss/variables";
+@import "bootstrap/scss/variables-dark";
+
+// Include any default map overrides here
+
+$custom-colors: (
+  "cancel": $cancel,
+);
+
+// Merge the maps
+$theme-colors: map-merge($theme-colors, $custom-colors);
