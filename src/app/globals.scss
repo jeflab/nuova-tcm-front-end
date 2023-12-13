@@ -1,0 +1,14 @@
+@import "./bootstrap";
+@import "@fortawesome/fontawesome-svg-core/styles.css";
+
+html,
+body {
+  height: 100%;
+}
+.navbar-nav .nav-link:last-child {
+  padding-inline-end: 0;
+}
+
+.btn.placeholder {
+  color: transparent;
+}

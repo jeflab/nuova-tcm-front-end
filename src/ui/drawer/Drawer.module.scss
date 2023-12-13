@@ -1,0 +1,21 @@
+@import "../../app/variables";
+
+:not(.isComplete) {
+  :global(.card-header) {
+    border-bottom: none;
+  }
+}
+
+.isActive {
+  :global(.card-header) {
+    background-color: rgba(var(--bs-primary-rgb), 0.15);
+  }
+}
+.isComplete {
+  :global(.card-header) {
+    background-color: rgba(var(--bs-success-rgb), 0.15);
+  }
+}
+
+.modal {
+}
