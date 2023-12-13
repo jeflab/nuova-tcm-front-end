@@ -1,4 +1,5 @@
-import {getTheme} from "@/ui/ThemeButton/actions";
+import {Providers} from "@/ui/Providers";
+import {getTheme} from "@/ui/Theme/actions";
 import {config} from "@fortawesome/fontawesome-svg-core";
 import type {Metadata} from "next";
 import {ReactNode} from "react";
@@ -21,7 +22,9 @@ export default function RootLayout({children}: RootLayoutProps) {
 
   return (
     <html lang="it" data-bs-theme={theme}>
-      <body>{children}</body>
+      <body>
+        <Providers>{children}</Providers>
+      </body>
     </html>
   );
 }

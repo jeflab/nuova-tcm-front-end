@@ -1,8 +1,8 @@
 import styles from "@/app/(authenticated)/layout.module.scss";
 import logo from "@/images/logo.png";
 import {AppContainer} from "@/ui/AppContainer";
-import {ThemeButton} from "@/ui/ThemeButton/ThemeButton";
-import {ThemeButtonIcon} from "@/ui/ThemeButton/ThemeButtonIcon";
+import {getTheme} from "@/ui/Theme/actions";
+import {ThemeButton} from "@/ui/Theme/ThemeButton";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -15,6 +15,8 @@ import {
 } from "react-bootstrap";
 
 export function Navbar() {
+  const serverTheme = getTheme();
+
   return (
     <BSNavbar expand="md" className="bg-body-tertiary" fixed="top">
       <AppContainer>
@@ -45,9 +47,7 @@ export function Navbar() {
             <NavLink as={Link} href="#logout">
               Esci
             </NavLink>
-            <ThemeButton>
-              <ThemeButtonIcon />
-            </ThemeButton>
+            <ThemeButton defaultTheme={serverTheme} />
           </Nav>
         </NavbarCollapse>
       </AppContainer>

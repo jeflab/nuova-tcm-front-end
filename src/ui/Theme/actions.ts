@@ -1,9 +1,10 @@
 "use server";
-import {THEME_COOKIE_NAME, themeSchema} from "@/ui/ThemeButton/consts";
+import {THEME_COOKIE_NAME, themeSchema} from "@/ui/Theme/consts";
 import {cookies} from "next/headers";
 
 export const getTheme = () => {
-  const theme = cookies().get(THEME_COOKIE_NAME)?.value;
+  const theme = themeSchema.parse(cookies().get(THEME_COOKIE_NAME)?.value);
+  console.log("theme server " + theme);
   return themeSchema.parse(theme);
 };
 
