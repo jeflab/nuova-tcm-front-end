@@ -1,6 +1,9 @@
 "use client";
 import {setTheme} from "@/ui/ThemeButton/actions";
+import {THEME_COOKIE_NAME} from "@/ui/ThemeButton/consts";
 import {WithChildren} from "@/ui/types";
+import {cookies} from "next/headers";
+import {Suspense} from "react";
 import {Button, NavLink} from "react-bootstrap";
 
 const getThemeClientSide = () => {

@@ -1,11 +1,10 @@
 import styles from "@/app/(authenticated)/layout.module.scss";
+import logo from "@/images/logo.png";
 import {AppContainer} from "@/ui/AppContainer";
 import {ThemeButton} from "@/ui/ThemeButton/ThemeButton";
-import logo from "@/images/logo.png";
 import {ThemeButtonIcon} from "@/ui/ThemeButton/ThemeButtonIcon";
 import Image from "next/image";
 import Link from "next/link";
-import {Suspense} from "react";
 import {
   Nav,
   Navbar as BSNavbar,
@@ -46,11 +45,9 @@ export function Navbar() {
             <NavLink as={Link} href="#logout">
               Esci
             </NavLink>
-            <Suspense fallback={<span>*</span>}>
-              <ThemeButton>
-                <ThemeButtonIcon />
-              </ThemeButton>
-            </Suspense>
+            <ThemeButton>
+              <ThemeButtonIcon />
+            </ThemeButton>
           </Nav>
         </NavbarCollapse>
       </AppContainer>
