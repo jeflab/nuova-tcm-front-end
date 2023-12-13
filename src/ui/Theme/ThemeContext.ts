@@ -11,7 +11,7 @@ interface UnsafeTheme {
   isThemeSafe: false;
 }
 
-type ThemeContext = {
+export type ThemeContext = {
   setTheme: (theme: Theme) => void;
 } & (SafeTheme | UnsafeTheme);
 

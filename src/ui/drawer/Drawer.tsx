@@ -1,5 +1,5 @@
 "use client";
-import {cns} from "@/app/helpers/cns";
+import {cns} from "@/helpers/cns";
 import {DrawerIcon} from "@/ui/drawer/DrawerIcon";
 import {faPenToSquare} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";

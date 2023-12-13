@@ -1,10 +1,9 @@
-import {cns} from "@/app/helpers/cns";
+import {cns} from "@/helpers/cns";
 import {
   faCheckCircle,
   faCircle,
   faCirclePause,
   faCirclePlay,
-  faSpinner,
 } from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {CSSProperties} from "react";

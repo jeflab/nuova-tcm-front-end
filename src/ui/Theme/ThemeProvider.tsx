@@ -3,7 +3,7 @@ import {THEME_COOKIE_NAME, themeSchema} from "@/ui/Theme/consts";
 import {getThemeClientSide} from "@/ui/Theme/helpers";
 import {WithChildren} from "@/ui/types";
 import Cookies from "js-cookie";
-import {useCallback, useContext, useEffect, useMemo, useState} from "react";
+import {useCallback, useEffect, useMemo, useState} from "react";
 import {ThemeContext} from "./ThemeContext";
 
 export function ThemeProvider({children}: WithChildren) {
@@ -22,7 +22,7 @@ export function ThemeProvider({children}: WithChildren) {
   }, []);
 
   const providerValue = useMemo(
-    () => ({theme, isThemeSafe, setTheme}),
+    () => ({theme, isThemeSafe, setTheme}) as ThemeContext,
     [theme, isThemeSafe, setTheme],
   );
 

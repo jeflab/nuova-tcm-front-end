@@ -1,5 +1,5 @@
 "use client";
-import {cns} from "@/app/helpers/cns";
+import {cns} from "@/helpers/cns";
 import {ButtonLink} from "@/ui/ButtonLink";
 import {Filter} from "@/ui/table/Filter";
 import {

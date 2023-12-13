@@ -1,10 +1,10 @@
 import {ContractorForm} from "@/app/(authenticated)/lips/[id]/ContractorForm";
 import {Lip} from "@/app/(authenticated)/lips/model";
-import {cns} from "@/app/helpers/cns";
+import {cns} from "@/helpers/cns";
 import {AppContainer} from "@/ui/AppContainer";
 import {Drawer} from "@/ui/drawer/Drawer";
 import {PageTitle} from "@/ui/PageTitle";
-import {Button, Col, Nav, NavLink, Row} from "react-bootstrap";
+import {Col, Nav, NavLink, Row} from "react-bootstrap";
 import styles from "./page.module.scss";
 import {DrawerIcon} from "@/ui/drawer/DrawerIcon";
 

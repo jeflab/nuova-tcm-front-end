@@ -1,5 +1,5 @@
 "use client";
-import {cns} from "@/app/helpers/cns";
+import {cns} from "@/helpers/cns";
 import {sortIcon} from "@/ui/table/DataTable";
 import styles from "@/ui/table/DataTable.module.scss";
 import {Filter} from "@/ui/table/Filter";
