@@ -1,4 +1,4 @@
-import {Form as RBForm} from "react-bootstrap";
+import {Form as RBForm, type FormProps as RBFormProps} from "react-bootstrap";
 import {
   type FieldValues,
   useForm,
@@ -8,23 +8,23 @@ import {
 import {WithChildren} from "../types";
 import {type BaseSyntheticEvent} from "react";
 
-interface FormProps<TFieldValues extends FieldValues> extends WithChildren {
-  config?: UseFormProps<TFieldValues>;
+interface FormProps<TFieldValues extends FieldValues>
+  extends WithChildren,
+    Omit<RBFormProps, "onSubmit"> {
   onSubmit: (values: TFieldValues, event?: BaseSyntheticEvent) => void;
-  className?: string;
 }
 export default function Form<TFieldValues extends FieldValues>({
   children,
-  className,
   onSubmit,
+  ...rbFormProps
 }: FormProps<TFieldValues>) {
-  const formMethods = useForm<TFieldValues>();
+  const formMethods = useForm<TFieldValues>({mode: "onChange"});
   return (
     <RBForm
       onSubmit={formMethods.handleSubmit(
         (data, event) => onSubmit?.(data, event),
       )}
-      className={className}
+      {...rbFormProps}
     >
       <FormProvider {...formMethods}>{children}</FormProvider>
     </RBForm>

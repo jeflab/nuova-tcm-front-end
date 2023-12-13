@@ -51,8 +51,8 @@ export async function getLipsList({
   const response = getLipsSchema.parse({lips, pageCount});
 
   return new Promise<z.infer<typeof getLipsSchema>>((resolve) => {
-    setTimeout(() => {
-      resolve(response);
-    }, 3000);
+    // setTimeout(() => {
+    resolve(response);
+    // }, 3000);
   });
 }

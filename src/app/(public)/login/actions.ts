@@ -1,6 +1,4 @@
 "use server";
-
-import {objToFormData} from "@/ui/form/helpers";
 import {cookies} from "next/headers";
 
 const thirtyDaysInSeconds = 2592000;
@@ -10,44 +8,64 @@ function extractCookieValue(cookieString: string, cookieName: string) {
   return cookieString.match(regex)?.[1];
 }
 
-export async function login(data: {cf: string; password: string}) {
-  const formData = objToFormData(data);
-
+export async function login(data: {fiscalCode: string; password: string}) {
   const nextCookie = cookies();
 
-  const loginResponse = await fetch(
-    "http://localhost/jefhttpdocs/akomi/prevision-family/master/back-end/public/login",
-    {
-      method: "POST",
-      body: formData,
-      credentials: "include",
-      cache: "no-store",
+  const body = JSON.stringify({
+    fiscal_code: data.fiscalCode,
+    password: data.password,
+  });
+
+  await new Promise((resolve) => setTimeout(resolve, 3000));
+
+  const loginResponse = await fetch("http://127.0.0.1:8000/api/login", {
+    headers: {
+      "Content-Type": "application/json",
     },
-  );
+    method: "POST",
+    body,
+    credentials: "include",
+  });
 
   const backendCookie = loginResponse.headers.getSetCookie();
-  const phpCookie = extractCookieValue(
-    backendCookie[backendCookie.length - 1],
-    "PHPSESSID",
-  );
 
-  if (phpCookie) {
-    nextCookie.set({
-      name: "PHPSESSID",
-      value: phpCookie,
-      httpOnly: true,
-      sameSite: "strict",
-      secure: true,
-      path: "/",
-      maxAge: thirtyDaysInSeconds,
-      expires: new Date(Date.now() + thirtyDaysInSeconds * 1000),
-    });
+  console.log("status: " + loginResponse.status);
+  console.log(loginResponse);
+  console.log("backendCookie: ", backendCookie);
+
+  let serverResponse: object | string;
+  try {
+    serverResponse = await loginResponse.clone().json();
+  } catch (e) {
+    serverResponse = await loginResponse.clone().text();
   }
 
-  const loginJson = await loginResponse.json();
-  delete loginJson.user;
+  console.log("serverResponse: ", serverResponse);
 
-  return loginJson;
+  return "status: " + loginResponse.status;
+
+  // const phpCookie = extractCookieValue(
+  //   backendCookie[backendCookie.length - 1],
+  //   "PHPSESSID",
+  // );
+  //
+  // if (phpCookie) {
+  //   nextCookie.set({
+  //     name: "PHPSESSID",
+  //     value: phpCookie,
+  //     httpOnly: true,
+  //     sameSite: "strict",
+  //     secure: true,
+  //     path: "/",
+  //     maxAge: thirtyDaysInSeconds,
+  //     expires: new Date(Date.now() + thirtyDaysInSeconds * 1000),
+  //   });
+  // }
+  //
+  // const loginJson = await loginResponse.json();
+  // delete loginJson.user;
+  //
+  // return loginJson;
 }
 
 export async function listCaps() {
