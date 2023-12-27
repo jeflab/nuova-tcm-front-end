@@ -1,4 +1,5 @@
 import styles from "@/app/(authenticated)/layout.module.scss";
+import {LogoutButton} from "@/app/(authenticated)/LogoutButton";
 import logo from "@/images/logo.png";
 import {AppContainer} from "@/ui/AppContainer";
 import {getTheme} from "@/ui/Theme/actions";
@@ -41,12 +42,10 @@ export function Navbar() {
             <NavLink as={Link} href="#home">
               Le tue polizze
             </NavLink>
-            <NavLink as={Link} href="#profile">
+            <NavLink as={Link} href="/profile">
               Il tuo profilo
             </NavLink>
-            <NavLink as={Link} href="#logout">
-              Esci
-            </NavLink>
+            <LogoutButton />
             <ThemeButton defaultTheme={serverTheme} />
           </Nav>
         </NavbarCollapse>

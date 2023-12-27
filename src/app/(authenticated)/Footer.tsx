@@ -8,7 +8,7 @@ export function Footer() {
     <AppContainer>
       <p className="hstack gap-3">
         <span>
-          <FontAwesomeIcon icon={faCopyright} className="text-primary" /> 2021
+          <FontAwesomeIcon icon={faCopyright} className="text-primary" /> 2024
           Piattaforma TCM
         </span>
         <span className="ms-auto text-muted small">
