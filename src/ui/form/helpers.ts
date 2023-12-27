@@ -1,11 +1,16 @@
-import {FieldValues} from "react-hook-form";
+import {FieldValues, UseFormReturn} from "react-hook-form";
+import {z} from "zod";
 
-export function objToFormData(obj: FieldValues) {
-  const formData = new FormData();
-  Object.entries(obj).forEach(([key, value]) => {
-    if (value) {
-      formData.append(key, value);
-    }
-  });
-  return formData;
-}
+export const isSubmitErrors = <TFieldValues extends FieldValues>(
+  data: TFieldValues,
+) => {
+  const keys = ["root", ...Object.keys(data)] as [string, ...string[]];
+
+  const SubmitErrorsSchema = z.record(
+    z.enum(keys),
+    z.object({type: z.string(), message: z.string()}),
+  );
+
+  return (error: unknown): error is z.infer<typeof SubmitErrorsSchema> =>
+    SubmitErrorsSchema.safeParse(error).success;
+};

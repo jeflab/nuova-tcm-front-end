@@ -1,11 +1,17 @@
-import {useContext} from "react";
+import {ComponentPropsWithRef, ElementType, useContext} from "react";
 import Feedback from "react-bootstrap/esm/Feedback";
 import FormContext from "react-bootstrap/FormContext";
-import {get, useFormContext} from "react-hook-form";
+import {
+  type FieldValues,
+  get,
+  useFormContext,
+  UseFormReturn,
+} from "react-hook-form";
 import invariant from "tiny-invariant";
 
-interface FieldErrorProps {
+interface FieldErrorProps<T extends ElementType> {
   name?: string;
+  as?: T;
 }
 
 const DEFAULT_MESSAGES = {
@@ -18,7 +24,11 @@ const DEFAULT_MESSAGES = {
   validate: "non è valido",
 };
 
-export function FieldError({name}: FieldErrorProps) {
+export function FieldError<T extends ElementType = typeof Feedback>({
+  as: Component = Feedback,
+  name,
+  ...props
+}: FieldErrorProps<T> & ComponentPropsWithRef<T>) {
   const {
     formState: {errors},
   } = useFormContext();
@@ -35,6 +45,8 @@ export function FieldError({name}: FieldErrorProps) {
       }`);
 
   return validationError ? (
-    <Feedback type="invalid">{errorMessage}</Feedback>
+    <Component type="invalid" {...props}>
+      {errorMessage}
+    </Component>
   ) : null;
 }

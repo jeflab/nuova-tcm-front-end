@@ -4,7 +4,6 @@ import {cookies} from "next/headers";
 
 export const getTheme = () => {
   const theme = themeSchema.parse(cookies().get(THEME_COOKIE_NAME)?.value);
-  console.log("theme server " + theme);
   return themeSchema.parse(theme);
 };
 

@@ -1,9 +1,9 @@
 "use server";
 
 import {standard} from "@/app/(authenticated)/lips/mock";
-import {Lip, lipSchema} from "./model";
-import {z} from "zod";
 import {sortingStringToObject} from "@/ui/table/helpers";
+import {z} from "zod";
+import {Lip, lipSchema} from "./model";
 
 interface GetLipsListOptions {
   query: string;

@@ -12,10 +12,6 @@ import {DrawerIcon} from "@/ui/drawer/DrawerIcon";
 //  Fatto ciò la pagina può tornare server component
 
 export default async function NewLipPage() {
-  await new Promise((resolve) => {
-    setTimeout(resolve, 3000);
-  });
-
   const updateLip = async (data: Partial<Lip>) => {
     console.log("Update LIP", data);
   };
