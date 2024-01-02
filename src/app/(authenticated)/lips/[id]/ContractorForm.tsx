@@ -1,7 +1,7 @@
 "use client";
 
 import {FieldError} from "@/ui/form/FieldError";
-import Form from "@/ui/form/Form";
+import {Form} from "@/ui/form/Form";
 import {InputField} from "@/ui/form/InputField";
 import {
   upperCaseNormalizer,

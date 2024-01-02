@@ -19,7 +19,12 @@ export function Navbar() {
   const serverTheme = getTheme();
 
   return (
-    <BSNavbar expand="md" className="bg-body-tertiary" fixed="top">
+    <BSNavbar
+      expand="md"
+      className="bg-body-tertiary"
+      fixed="top"
+      collapseOnSelect
+    >
       <AppContainer>
         <NavbarBrand href="/">
           <Image
@@ -33,7 +38,7 @@ export function Navbar() {
         <NavbarToggle aria-controls="basic-navbar-nav" />
         <NavbarCollapse id="basic-navbar-nav">
           <Nav className="ms-auto">
-            <NavLink as={Link} href="#estimator">
+            <NavLink as={Link} href="/quoter">
               Preventivatore
             </NavLink>
             <NavLink as={Link} href="/lips">

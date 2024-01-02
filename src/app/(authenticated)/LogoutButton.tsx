@@ -10,6 +10,7 @@ export function LogoutButton() {
         await logout();
       }}
       variant="link"
+      className="text-start"
     >
       Esci
     </NavLink>
