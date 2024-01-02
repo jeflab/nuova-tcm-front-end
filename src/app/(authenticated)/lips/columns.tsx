@@ -7,7 +7,7 @@ import {
   lipStatesLabels,
 } from "@/app/(authenticated)/lips/model";
 import {cns} from "@/helpers/cns";
-import {dateString, dbDateString} from "@/helpers/date";
+import {dateString, dbDateString} from "@/helpers/dates";
 import dataTableStyles from "@/ui/table/DataTable.module.scss";
 import {
   faEye,

@@ -1,6 +1,6 @@
 import {skeletonColumns} from "@/app/(authenticated)/lips/columns";
-import {ButtonLink} from "@/ui/ButtonLink";
 import {AppContainer} from "@/ui/AppContainer";
+import {ButtonLink} from "@/ui/ButtonLink";
 import {PageTitle} from "@/ui/PageTitle";
 import {DataTableSkeleton} from "@/ui/table/DataTableSkeleton";
 import {DataTableParams} from "@/ui/table/helpers";

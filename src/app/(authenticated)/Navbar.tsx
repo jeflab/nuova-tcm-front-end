@@ -1,4 +1,5 @@
 import styles from "@/app/(authenticated)/layout.module.scss";
+import {LogoutButton} from "@/app/(authenticated)/LogoutButton";
 import logo from "@/images/logo.png";
 import {AppContainer} from "@/ui/AppContainer";
 import {getTheme} from "@/ui/Theme/actions";
@@ -18,7 +19,12 @@ export function Navbar() {
   const serverTheme = getTheme();
 
   return (
-    <BSNavbar expand="md" className="bg-body-tertiary" fixed="top">
+    <BSNavbar
+      expand="md"
+      className="bg-body-tertiary"
+      fixed="top"
+      collapseOnSelect
+    >
       <AppContainer>
         <NavbarBrand href="/">
           <Image
@@ -32,7 +38,7 @@ export function Navbar() {
         <NavbarToggle aria-controls="basic-navbar-nav" />
         <NavbarCollapse id="basic-navbar-nav">
           <Nav className="ms-auto">
-            <NavLink as={Link} href="#estimator">
+            <NavLink as={Link} href="/quoter">
               Preventivatore
             </NavLink>
             <NavLink as={Link} href="/lips">
@@ -41,12 +47,10 @@ export function Navbar() {
             <NavLink as={Link} href="#home">
               Le tue polizze
             </NavLink>
-            <NavLink as={Link} href="#profile">
+            <NavLink as={Link} href="/profile">
               Il tuo profilo
             </NavLink>
-            <NavLink as={Link} href="#logout">
-              Esci
-            </NavLink>
+            <LogoutButton />
             <ThemeButton defaultTheme={serverTheme} />
           </Nav>
         </NavbarCollapse>

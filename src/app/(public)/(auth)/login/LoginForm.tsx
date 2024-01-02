@@ -1,17 +1,16 @@
 "use client";
-import {login} from "@/app/(public)/login/actions";
+import {login} from "@/app/(public)/(auth)/actions";
 import {cns} from "@/helpers/cns";
 import {FieldError} from "@/ui/form/FieldError";
-import Form from "@/ui/form/Form";
+import {Form} from "@/ui/form/Form";
 import {InputField} from "@/ui/form/InputField";
 import {upperCaseNormalizer} from "@/ui/form/normalizers";
+import {SubmitButton} from "@/ui/form/SubmitButton";
 import {fiscalCodeValidator} from "@/ui/form/validators";
 import {faSpinner} from "@fortawesome/pro-duotone-svg-icons";
 import {faSignInAlt} from "@fortawesome/pro-duotone-svg-icons/faSignInAlt";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {useState} from "react";
-import {Button, FormGroup, FormLabel} from "react-bootstrap";
-import {SubmitHandler} from "react-hook-form";
+import {Alert, FormGroup, FormLabel} from "react-bootstrap";
 
 interface LoginFormValues {
   fiscalCode: string;
@@ -19,13 +18,11 @@ interface LoginFormValues {
 }
 
 export function LoginForm() {
-  const [isLoggingIn, setIsLoggingIn] = useState(false);
-  const handleSubmit: SubmitHandler<LoginFormValues> = async (data) => {
-    setIsLoggingIn(true);
-    try {
-      const clientResponse = await login(data);
-    } finally {
-      setIsLoggingIn(false);
+  const handleSubmit = async (data: LoginFormValues) => {
+    const clientResponse = await login(data);
+
+    if (clientResponse.status === "failed") {
+      throw {root: {type: "server", message: clientResponse.message}};
     }
   };
 
@@ -54,18 +51,18 @@ export function LoginForm() {
         />
         <FieldError />
       </FormGroup>
-      <Button
-        variant="primary"
-        type="submit"
-        className="w-100"
-        disabled={isLoggingIn}
-      >
-        <FontAwesomeIcon
-          icon={isLoggingIn ? faSpinner : faSignInAlt}
-          className={cns("me-2", isLoggingIn && "fa-spin")}
-        />
-        Login
-      </Button>
+      <FieldError name="root" as={Alert} variant="danger" className="mb-0" />
+      <SubmitButton variant="primary" className="w-100">
+        {(isLoggingIn) => (
+          <>
+            <FontAwesomeIcon
+              icon={isLoggingIn ? faSpinner : faSignInAlt}
+              className={cns("me-2", isLoggingIn && "fa-spin")}
+            />
+            Login
+          </>
+        )}
+      </SubmitButton>
     </Form>
   );
 }

@@ -1,29 +1,48 @@
+import {isSubmitErrors} from "@/ui/form/helpers";
+import {type BaseSyntheticEvent} from "react";
 import {Form as RBForm, type FormProps as RBFormProps} from "react-bootstrap";
 import {
+  DefaultValues,
   type FieldValues,
-  useForm,
-  type UseFormProps,
   FormProvider,
+  Path,
+  useForm,
 } from "react-hook-form";
 import {WithChildren} from "../types";
-import {type BaseSyntheticEvent} from "react";
 
 interface FormProps<TFieldValues extends FieldValues>
   extends WithChildren,
     Omit<RBFormProps, "onSubmit"> {
-  onSubmit: (values: TFieldValues, event?: BaseSyntheticEvent) => void;
+  defaultValues?: DefaultValues<TFieldValues>;
+  onSubmit: (
+    values: TFieldValues,
+    event?: BaseSyntheticEvent,
+  ) => void | Promise<void>;
 }
-export default function Form<TFieldValues extends FieldValues>({
+export function Form<TFieldValues extends FieldValues>({
   children,
+  defaultValues,
   onSubmit,
   ...rbFormProps
 }: FormProps<TFieldValues>) {
-  const formMethods = useForm<TFieldValues>({mode: "onChange"});
+  const formMethods = useForm<TFieldValues>({mode: "onChange", defaultValues});
+
   return (
     <RBForm
-      onSubmit={formMethods.handleSubmit(
-        (data, event) => onSubmit?.(data, event),
-      )}
+      onSubmit={formMethods.handleSubmit(async (data, event) => {
+        try {
+          await onSubmit?.(data, event);
+        } catch (e) {
+          if (isSubmitErrors(data)(e)) {
+            Object.entries(e).forEach(([key, value]) => {
+              formMethods.setError(key as "root" | Path<TFieldValues>, value);
+            });
+          } else {
+            throw e;
+          }
+        }
+      })}
+      noValidate
       {...rbFormProps}
     >
       <FormProvider {...formMethods}>{children}</FormProvider>
