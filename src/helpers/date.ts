@@ -1,4 +1,4 @@
-import format from "date-fns/format";
+import {format} from "date-fns/format";
 import {it} from "date-fns/locale";
 
 const locale = {locale: it};

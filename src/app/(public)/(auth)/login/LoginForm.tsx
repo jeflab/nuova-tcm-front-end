@@ -20,6 +20,7 @@ interface LoginFormValues {
 export function LoginForm() {
   const handleSubmit = async (data: LoginFormValues) => {
     const clientResponse = await login(data);
+
     if (clientResponse.status === "failed") {
       throw {root: {type: "server", message: clientResponse.message}};
     }

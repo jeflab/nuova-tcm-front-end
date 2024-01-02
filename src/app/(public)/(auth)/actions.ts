@@ -1,26 +1,14 @@
 "use server";
 import {AUTH_COOKIE_NAME} from "@/app/(public)/(auth)/const";
+import {isServerError} from "@/services/helpers";
 import {cookies} from "next/headers";
 import {redirect} from "next/navigation";
-import {z, ZodRawShape} from "zod";
+import {z} from "zod";
+import * as api from "@/services/api";
 
-const createApiSchema = <T extends ZodRawShape>(successSchema: T) =>
-  z
-    .object({
-      status: z.literal("failed"),
-      message: z.string(),
-    })
-    .or(
-      z
-        .object({
-          status: z.literal("success"),
-        })
-        .extend(successSchema),
-    );
-
-const LoginResponseSchema = createApiSchema({
+const LoginRawShape = {
   access_token: z.string(),
-});
+};
 
 export async function login(data: {fiscalCode: string; password: string}) {
   try {
@@ -29,27 +17,16 @@ export async function login(data: {fiscalCode: string; password: string}) {
       password: data.password,
     });
 
-    const loginResponse = await fetch("http://127.0.0.1:8000/api/login", {
-      headers: {
-        "Content-Type": "application/json",
-      },
-      method: "POST",
-      body,
-      credentials: "include",
-    });
+    const loginResponse = await api.post("/login", LoginRawShape, body);
+    cookies().set(AUTH_COOKIE_NAME, loginResponse.access_token);
 
-    const serverResponseJson = LoginResponseSchema.parse(
-      await loginResponse.clone().json(),
-    );
-    if (serverResponseJson.status === "success") {
-      cookies().set(AUTH_COOKIE_NAME, serverResponseJson.access_token);
-      return serverResponseJson;
-    } else {
-      return serverResponseJson;
-    }
+    return loginResponse;
   } catch (e) {
     console.error(e);
-    return {status: "failed", message: "Errore imprevisto, riprova più tardi"};
+    if (isServerError(e)) {
+      return e;
+    }
+    throw e;
   }
 }
 
