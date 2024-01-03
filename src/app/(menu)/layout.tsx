@@ -1,16 +1,13 @@
-import {Navbar} from "@/app/(authenticated)/Navbar";
-import {checkAuth} from "@/app/(public)/(auth)/actions";
 import {ReactNode} from "react";
 import {Footer} from "./Footer";
 import styles from "./layout.module.scss";
+import {Navbar} from "./Navbar";
 
-interface RootLayoutProps {
+interface MenuLayoutProps {
   children: ReactNode;
 }
 
-export default async function RootLayout({children}: RootLayoutProps) {
-  await checkAuth();
-
+export default async function MenuLayout({children}: MenuLayoutProps) {
   return (
     <div className={styles.appWrapper}>
       <header className={styles.appHeader}>

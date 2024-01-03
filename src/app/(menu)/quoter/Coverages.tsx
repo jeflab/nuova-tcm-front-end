@@ -18,10 +18,11 @@ export function Coverages() {
               </FormLabel>
               <InputGroup className="flex-grow-0">
                 <InputField
-                  type="number"
+                  aria-describedby="death-help-text"
+                  min={20_000}
                   placeholder="Capitale assicurato"
                   step={1_000}
-                  min={20_000}
+                  type="number"
                   validation={{
                     required: "Inserisci l'importo del capitale assicurato",
                     min: {
@@ -38,7 +39,6 @@ export function Coverages() {
                       }
                     },
                   }}
-                  aria-describedby="death-help-text"
                 />
                 <InputGroup.Text>,00 €</InputGroup.Text>
               </InputGroup>

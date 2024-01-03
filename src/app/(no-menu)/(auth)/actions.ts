@@ -1,7 +1,8 @@
 "use server";
-import {AUTH_COOKIE_NAME} from "@/app/(public)/(auth)/const";
+
+import {AUTH_COOKIE_NAME} from "@/app/(no-menu)/(auth)/const";
 import {isServerError} from "@/services/helpers";
-import {cookies} from "next/headers";
+import {cookies, headers} from "next/headers";
 import {redirect} from "next/navigation";
 import {z} from "zod";
 import * as api from "@/services/api";
@@ -40,9 +41,13 @@ export async function logout() {
 }
 
 export async function checkAuth() {
+  const headersList = headers();
+  const referer = headersList.get("referer");
+  const searchParams = new URLSearchParams({next: referer ?? ""});
+
   const cookie = cookies().get(AUTH_COOKIE_NAME)?.value;
 
   if (!cookie) {
-    redirect("/login");
+    redirect("/login" + (referer ? "?" + searchParams.toString() : ""));
   }
 }

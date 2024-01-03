@@ -1,3 +1,5 @@
+import {toDecimal} from "@/helpers/numbers";
+
 export const naturalNormalizer = (value: string) => {
   return numberNormalizer(value, {decimal: false, negative: false});
 };
@@ -12,6 +14,11 @@ export const floatNormalizer = (value: string) => {
 
 export const positiveFloatNormalizer = (value: string) => {
   return numberNormalizer(value, {decimal: true, negative: false});
+};
+
+export const decimalNormalizer = (value: string) => {
+  const float = parseFloat(floatNormalizer(value));
+  return toDecimal(float);
 };
 
 export const numberNormalizer = (

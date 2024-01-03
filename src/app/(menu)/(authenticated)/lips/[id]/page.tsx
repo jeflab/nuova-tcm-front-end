@@ -1,5 +1,5 @@
-import {ContractorForm} from "@/app/(authenticated)/lips/[id]/ContractorForm";
-import {Lip} from "@/app/(authenticated)/lips/model";
+import {ContractorForm} from "@/app/(menu)/(authenticated)/lips/[id]/ContractorForm";
+import {Lip} from "@/app/(menu)/(authenticated)/lips/model";
 import {cns} from "@/helpers/cns";
 import {AppContainer} from "@/ui/AppContainer";
 import {Drawer} from "@/ui/drawer/Drawer";

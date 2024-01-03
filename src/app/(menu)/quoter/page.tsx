@@ -1,7 +1,7 @@
-import {QuoterForm} from "@/app/(authenticated)/quoter/QuoterForm";
 import {AppContainer} from "@/ui/AppContainer";
 import {PageTitle} from "@/ui/PageTitle";
 import {Alert} from "react-bootstrap";
+import {QuoterForm} from "./QuoterForm";
 
 export default function Quoter() {
   return (

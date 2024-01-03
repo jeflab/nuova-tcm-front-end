@@ -1,5 +1,6 @@
 "use client";
-import {login} from "@/app/(public)/(auth)/actions";
+
+import {login} from "@/app/(no-menu)/(auth)/actions";
 import {cns} from "@/helpers/cns";
 import {FieldError} from "@/ui/form/FieldError";
 import {Form} from "@/ui/form/Form";

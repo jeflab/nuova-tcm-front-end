@@ -1,8 +1,10 @@
 "use client";
-import {logout} from "@/app/(public)/(auth)/actions";
+
+import {logout} from "@/app/(no-menu)/(auth)/actions";
+import {WithChildren} from "@/ui/types";
 import {Button, NavLink} from "react-bootstrap";
 
-export function LogoutButton() {
+export function LogoutButton({children}: WithChildren) {
   return (
     <NavLink
       as={Button}
@@ -12,7 +14,7 @@ export function LogoutButton() {
       variant="link"
       className="text-start"
     >
-      Esci
+      {children}
     </NavLink>
   );
 }

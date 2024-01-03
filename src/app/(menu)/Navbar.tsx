@@ -1,9 +1,10 @@
-import styles from "@/app/(authenticated)/layout.module.scss";
-import {LogoutButton} from "@/app/(authenticated)/LogoutButton";
+import {LoginButton} from "@/app/(menu)/LoginButton";
+import {isLoggedIn} from "@/app/(no-menu)/(auth)/actions";
 import logo from "@/images/logo.png";
 import {AppContainer} from "@/ui/AppContainer";
 import {getTheme} from "@/ui/Theme/actions";
 import {ThemeButton} from "@/ui/Theme/ThemeButton";
+import {headers} from "next/headers";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -14,9 +15,12 @@ import {
   NavbarToggle,
   NavLink,
 } from "react-bootstrap";
+import styles from "./layout.module.scss";
+import {LogoutButton} from "./LogoutButton";
 
-export function Navbar() {
+export async function Navbar() {
   const serverTheme = getTheme();
+  const loggedIn = await isLoggedIn();
 
   return (
     <BSNavbar
@@ -41,16 +45,22 @@ export function Navbar() {
             <NavLink as={Link} href="/quoter">
               Preventivatore
             </NavLink>
-            <NavLink as={Link} href="/lips">
-              Polizze effettuate
-            </NavLink>
-            <NavLink as={Link} href="#home">
-              Le tue polizze
-            </NavLink>
-            <NavLink as={Link} href="/profile">
-              Il tuo profilo
-            </NavLink>
-            <LogoutButton />
+            {loggedIn ? (
+              <>
+                <NavLink as={Link} href="/lips">
+                  Polizze effettuate
+                </NavLink>
+                <NavLink as={Link} href="#home">
+                  Le tue polizze
+                </NavLink>
+                <NavLink as={Link} href="/profile">
+                  Il tuo profilo
+                </NavLink>
+                <LogoutButton>Esci</LogoutButton>
+              </>
+            ) : (
+              <LoginButton>Accedi</LoginButton>
+            )}
             <ThemeButton defaultTheme={serverTheme} />
           </Nav>
         </NavbarCollapse>

@@ -1,16 +1,26 @@
-import {isLoggedIn} from "@/app/(public)/(auth)/actions";
+import {isLoggedIn} from "@/app/(no-menu)/(auth)/actions";
 import logo from "@/images/logo.png";
+import {DataTableParams} from "@/ui/table/helpers";
+import {headers} from "next/headers";
 import Image from "next/image";
 import {redirect} from "next/navigation";
 import {Button, Card, CardBody} from "react-bootstrap";
 import {LoginForm} from "./LoginForm";
 import styles from "./page.module.scss";
 
-export default async function LoginPage() {
+interface LoginPageProps {
+  searchParams: {
+    next?: string;
+  };
+}
+
+export default async function LoginPage({searchParams}: LoginPageProps) {
   if (await isLoggedIn()) {
-    console.log("logged in, redirect to /");
-    redirect("/");
-    return null;
+    if (searchParams.next) {
+      return redirect(searchParams.next);
+    }
+
+    return redirect("/");
   }
 
   return (
