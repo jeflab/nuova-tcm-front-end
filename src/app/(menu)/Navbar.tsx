@@ -1,8 +1,10 @@
+import {LoginButton} from "@/app/(menu)/LoginButton";
 import {isLoggedIn} from "@/app/(no-menu)/(auth)/actions";
 import logo from "@/images/logo.png";
 import {AppContainer} from "@/ui/AppContainer";
 import {getTheme} from "@/ui/Theme/actions";
 import {ThemeButton} from "@/ui/Theme/ThemeButton";
+import {headers} from "next/headers";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -54,12 +56,10 @@ export async function Navbar() {
                 <NavLink as={Link} href="/profile">
                   Il tuo profilo
                 </NavLink>
-                <LogoutButton />
+                <LogoutButton>Esci</LogoutButton>
               </>
             ) : (
-              <NavLink as={Link} href="/login">
-                Accedi
-              </NavLink>
+              <LoginButton>Accedi</LoginButton>
             )}
             <ThemeButton defaultTheme={serverTheme} />
           </Nav>
