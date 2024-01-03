@@ -1,0 +1,15 @@
+@import "../../app/variables";
+
+.base {
+  border-left: 2px solid currentColor;
+  padding-left: map-get($spacers, 3);
+  height: 100%;
+
+  &.isValid {
+    border-color: var(--bs-success);
+  }
+
+  &.isInvalid {
+    border-color: var(--bs-danger);
+  }
+}

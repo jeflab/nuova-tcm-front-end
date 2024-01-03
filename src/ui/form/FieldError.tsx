@@ -1,12 +1,8 @@
+import {cns} from "@/helpers/cns";
 import {ComponentPropsWithRef, ElementType, useContext} from "react";
 import Feedback from "react-bootstrap/esm/Feedback";
 import FormContext from "react-bootstrap/FormContext";
-import {
-  type FieldValues,
-  get,
-  useFormContext,
-  UseFormReturn,
-} from "react-hook-form";
+import {get, useFormContext} from "react-hook-form";
 import invariant from "tiny-invariant";
 
 interface FieldErrorProps<T extends ElementType> {
@@ -26,6 +22,7 @@ const DEFAULT_MESSAGES = {
 
 export function FieldError<T extends ElementType = typeof Feedback>({
   as: Component = Feedback,
+  className,
   name,
   ...props
 }: FieldErrorProps<T> & ComponentPropsWithRef<T>) {
@@ -45,7 +42,12 @@ export function FieldError<T extends ElementType = typeof Feedback>({
       }`);
 
   return validationError ? (
-    <Component type="invalid" {...props}>
+    <Component
+      type="invalid"
+      id={`${controlName}-error`}
+      {...props}
+      className={cns(["d-block", className])}
+    >
       {errorMessage}
     </Component>
   ) : null;

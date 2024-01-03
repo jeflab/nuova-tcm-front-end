@@ -1,23 +1,31 @@
 import {isSubmitErrors} from "@/ui/form/helpers";
 import {type BaseSyntheticEvent} from "react";
 import {Form as RBForm, type FormProps as RBFormProps} from "react-bootstrap";
-import {type FieldValues, FormProvider, Path, useForm} from "react-hook-form";
+import {
+  DefaultValues,
+  type FieldValues,
+  FormProvider,
+  Path,
+  useForm,
+} from "react-hook-form";
 import {WithChildren} from "../types";
 
 interface FormProps<TFieldValues extends FieldValues>
   extends WithChildren,
     Omit<RBFormProps, "onSubmit"> {
+  defaultValues?: DefaultValues<TFieldValues>;
   onSubmit: (
     values: TFieldValues,
     event?: BaseSyntheticEvent,
   ) => void | Promise<void>;
 }
-export default function Form<TFieldValues extends FieldValues>({
+export function Form<TFieldValues extends FieldValues>({
   children,
+  defaultValues,
   onSubmit,
   ...rbFormProps
 }: FormProps<TFieldValues>) {
-  const formMethods = useForm<TFieldValues>({mode: "onChange"});
+  const formMethods = useForm<TFieldValues>({mode: "onChange", defaultValues});
 
   return (
     <RBForm
@@ -34,6 +42,7 @@ export default function Form<TFieldValues extends FieldValues>({
           }
         }
       })}
+      noValidate
       {...rbFormProps}
     >
       <FormProvider {...formMethods}>{children}</FormProvider>

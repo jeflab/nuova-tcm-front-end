@@ -19,6 +19,7 @@ export function ThemeButton({defaultTheme}: {defaultTheme: Theme}) {
         setTheme(theme === "dark" ? "light" : "dark");
       }}
       title={`Passa al tema ${safeTheme === "dark" ? "chiaro" : "scuro"}`}
+      className="text-start"
     >
       {safeTheme === "dark" ? (
         <FontAwesomeIcon icon={faMoonStars} />
