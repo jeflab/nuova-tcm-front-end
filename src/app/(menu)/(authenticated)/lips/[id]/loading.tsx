@@ -1,4 +1,4 @@
-import styles from "@/app/(authenticated)/lips/[id]/page.module.scss";
+import styles from "@/app/(menu)/(authenticated)/lips/[id]/page.module.scss";
 import {cns} from "@/helpers/cns";
 import {AppContainer} from "@/ui/AppContainer";
 import {DrawerSkeleton} from "@/ui/drawer/Drawer";

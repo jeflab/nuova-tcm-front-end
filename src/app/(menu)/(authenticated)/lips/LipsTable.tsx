@@ -1,5 +1,5 @@
-import {getLipsList} from "@/app/(authenticated)/lips/actions";
-import {columns} from "@/app/(authenticated)/lips/columns";
+import {getLipsList} from "@/app/(menu)/(authenticated)/lips/actions";
+import {columns} from "@/app/(menu)/(authenticated)/lips/columns";
 import {DataTable} from "@/ui/table/DataTable";
 import {DataTableParams, dataTableParamsSchema} from "@/ui/table/helpers";
 

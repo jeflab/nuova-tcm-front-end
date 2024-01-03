@@ -1,4 +1,4 @@
-import {toCurrency, toDecimal} from "@/helpers/numbers";
+import {toDecimal} from "@/helpers/numbers";
 
 export const naturalNormalizer = (value: string) => {
   return numberNormalizer(value, {decimal: false, negative: false});

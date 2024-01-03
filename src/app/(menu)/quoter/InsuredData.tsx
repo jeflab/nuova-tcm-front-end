@@ -5,7 +5,7 @@ import {FieldError} from "@/ui/form/FieldError";
 import {HelpText} from "@/ui/form/HelpText";
 import {InputField} from "@/ui/form/InputField";
 import {subYears} from "date-fns/subYears";
-import {Col, FormGroup, FormLabel, FormText, Row} from "react-bootstrap";
+import {Col, FormGroup, FormLabel, Row} from "react-bootstrap";
 
 export function InsuredData() {
   return (

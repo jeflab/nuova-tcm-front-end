@@ -1,6 +1,6 @@
 "use server";
 
-import {standard} from "@/app/(authenticated)/lips/mock";
+import {standard} from "@/app/(menu)/(authenticated)/lips/mock";
 import {sortingStringToObject} from "@/ui/table/helpers";
 import {z} from "zod";
 import {Lip, lipSchema} from "./model";

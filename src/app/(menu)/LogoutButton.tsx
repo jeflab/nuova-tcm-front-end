@@ -1,5 +1,6 @@
 "use client";
-import {logout} from "@/app/(public)/(auth)/actions";
+
+import {logout} from "@/app/(no-menu)/(auth)/actions";
 import {Button, NavLink} from "react-bootstrap";
 
 export function LogoutButton() {

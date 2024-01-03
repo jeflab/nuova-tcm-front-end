@@ -8,12 +8,7 @@ import {Col, FormGroup, FormLabel, Row} from "react-bootstrap";
 import {useFormContext} from "react-hook-form";
 
 export function ComplementaryCoverages() {
-  const {
-    setValue,
-    trigger,
-    watch,
-    formState: {errors},
-  } = useFormContext();
+  const {trigger, watch} = useFormContext();
   const deathValue = watch("death");
 
   return (
@@ -97,7 +92,7 @@ export function ComplementaryCoverages() {
                 type="switch"
                 label="Invalidità permanente da infortunio o malattia"
                 name="pti.enabled"
-                onChange={(e) => {
+                onChange={() => {
                   trigger("pti.coverage", {shouldFocus: true});
                 }}
                 validationStyle={false}
@@ -162,7 +157,7 @@ export function ComplementaryCoverages() {
                 type="switch"
                 label="Cancro"
                 name="cancer.enabled"
-                onChange={(e) => {
+                onChange={() => {
                   trigger("cancer.coverage", {shouldFocus: true});
                 }}
                 validationStyle={false}
@@ -229,7 +224,7 @@ export function ComplementaryCoverages() {
                 type="switch"
                 label="Perdita totale di autosufficienza"
                 name="ptd.enabled"
-                onChange={(e) => {
+                onChange={() => {
                   trigger("ptd.coverage", {shouldFocus: true});
                 }}
                 validationStyle={false}

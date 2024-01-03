@@ -1,5 +1,4 @@
-import styles from "@/app/(authenticated)/layout.module.scss";
-import {LogoutButton} from "@/app/(authenticated)/LogoutButton";
+import {isLoggedIn} from "@/app/(no-menu)/(auth)/actions";
 import logo from "@/images/logo.png";
 import {AppContainer} from "@/ui/AppContainer";
 import {getTheme} from "@/ui/Theme/actions";
@@ -14,9 +13,12 @@ import {
   NavbarToggle,
   NavLink,
 } from "react-bootstrap";
+import styles from "./layout.module.scss";
+import {LogoutButton} from "./LogoutButton";
 
-export function Navbar() {
+export async function Navbar() {
   const serverTheme = getTheme();
+  const loggedIn = await isLoggedIn();
 
   return (
     <BSNavbar
@@ -41,16 +43,24 @@ export function Navbar() {
             <NavLink as={Link} href="/quoter">
               Preventivatore
             </NavLink>
-            <NavLink as={Link} href="/lips">
-              Polizze effettuate
-            </NavLink>
-            <NavLink as={Link} href="#home">
-              Le tue polizze
-            </NavLink>
-            <NavLink as={Link} href="/profile">
-              Il tuo profilo
-            </NavLink>
-            <LogoutButton />
+            {loggedIn ? (
+              <>
+                <NavLink as={Link} href="/lips">
+                  Polizze effettuate
+                </NavLink>
+                <NavLink as={Link} href="#home">
+                  Le tue polizze
+                </NavLink>
+                <NavLink as={Link} href="/profile">
+                  Il tuo profilo
+                </NavLink>
+                <LogoutButton />
+              </>
+            ) : (
+              <NavLink as={Link} href="/login">
+                Accedi
+              </NavLink>
+            )}
             <ThemeButton defaultTheme={serverTheme} />
           </Nav>
         </NavbarCollapse>

@@ -1,4 +1,4 @@
-import {isLoggedIn} from "@/app/(public)/(auth)/actions";
+import {isLoggedIn} from "@/app/(no-menu)/(auth)/actions";
 import logo from "@/images/logo.png";
 import Image from "next/image";
 import {redirect} from "next/navigation";

@@ -1,11 +1,11 @@
 "use client";
 
-import {ComplementaryCoverages} from "@/app/(authenticated)/quoter/ComplementaryCoverages";
 import {cns} from "@/helpers/cns";
 import {Form} from "@/ui/form/Form";
 import {SubmitButton} from "@/ui/form/SubmitButton";
 import {faQuestion, faSpinner} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {ComplementaryCoverages} from "./ComplementaryCoverages";
 import {Coverages} from "./Coverages";
 import {InsuredData} from "./InsuredData";
 

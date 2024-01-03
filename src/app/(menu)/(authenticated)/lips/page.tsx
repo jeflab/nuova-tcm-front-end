@@ -1,4 +1,4 @@
-import {skeletonColumns} from "@/app/(authenticated)/lips/columns";
+import {skeletonColumns} from "@/app/(menu)/(authenticated)/lips/columns";
 import {AppContainer} from "@/ui/AppContainer";
 import {ButtonLink} from "@/ui/ButtonLink";
 import {PageTitle} from "@/ui/PageTitle";

@@ -5,7 +5,7 @@ import {
   lipStates,
   LipStatesIcons,
   lipStatesLabels,
-} from "@/app/(authenticated)/lips/model";
+} from "@/app/(menu)/(authenticated)/lips/model";
 import {cns} from "@/helpers/cns";
 import {dateString, dbDateString} from "@/helpers/dates";
 import dataTableStyles from "@/ui/table/DataTable.module.scss";

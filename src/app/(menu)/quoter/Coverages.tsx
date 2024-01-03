@@ -3,7 +3,6 @@ import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {FieldError} from "@/ui/form/FieldError";
 import {HelpText} from "@/ui/form/HelpText";
 import {InputField} from "@/ui/form/InputField";
-import {decimalNormalizer} from "@/ui/form/normalizers";
 import {Col, FormGroup, FormLabel, InputGroup} from "react-bootstrap";
 
 export function Coverages() {
