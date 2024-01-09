@@ -13,13 +13,13 @@ import {faSignInAlt} from "@fortawesome/pro-duotone-svg-icons/faSignInAlt";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Alert, FormGroup, FormLabel} from "react-bootstrap";
 
-interface LoginFormValues {
-  fiscalCode: string;
-  password: string;
-}
+const defaultValues = {
+  fiscalCode: "",
+  password: "",
+};
 
 export function LoginForm() {
-  const handleSubmit = async (data: LoginFormValues) => {
+  const handleSubmit = async (data: typeof defaultValues) => {
     const clientResponse = await login(data);
 
     if (clientResponse.status === "failed") {
@@ -28,7 +28,11 @@ export function LoginForm() {
   };
 
   return (
-    <Form onSubmit={handleSubmit} className="d-flex flex-column gap-3">
+    <Form
+      onSubmit={handleSubmit}
+      defaultValues={defaultValues}
+      className="d-flex flex-column gap-3"
+    >
       <FormGroup controlId="fiscalCode">
         <FormLabel>Codice Fiscale</FormLabel>
         <InputField

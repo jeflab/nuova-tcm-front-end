@@ -9,7 +9,7 @@ import {Form} from "@/ui/form/Form";
 import {SubmitButton} from "@/ui/form/SubmitButton";
 import {
   faArrowRotateLeft,
-  faQuestion,
+  faCalculator,
   faSpinner,
 } from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
@@ -19,8 +19,9 @@ import {useForm} from "react-hook-form";
 import {ComplementaryCoverages} from "./ComplementaryCoverages";
 import {Coverages} from "./Coverages";
 import {InsuredData} from "./InsuredData";
+import styles from "./QuoterForm.module.scss";
 
-const defaultValues = {
+const quoterFormDefaultValues = {
   birthDate: "",
   smoker: "",
   death: "20000",
@@ -31,28 +32,35 @@ const defaultValues = {
   cancer: {enabled: false, coverage: "20000"},
   tpd: {enabled: false, coverage: "20000"},
 };
+export type QuoterFormValues = typeof quoterFormDefaultValues;
 
 export function QuoterForm() {
   const [premium, setPremium] = useState<number>();
   const formMethods = useForm({
     mode: "onChange",
-    defaultValues,
+    defaultValues: quoterFormDefaultValues,
   });
+
+  const handleSubmit = async (values: QuoterFormValues) => {
+    const clientResponse = await getQuote(values);
+
+    if (clientResponse.status === "failed") {
+      throw {root: {type: "server", message: clientResponse.message}};
+    }
+
+    setPremium(clientResponse.quotazione.premium);
+  };
 
   return (
     <Form
-      onSubmit={async (values) => {
-        console.log("formValues", values);
-        const clientResponse = await getQuote(values);
-
-        if (clientResponse.status === "failed") {
-          throw {root: {type: "server", message: clientResponse.message}};
-        }
-
-        setPremium(clientResponse.quotazione.premium);
-      }}
+      onSubmit={handleSubmit}
       formMethods={formMethods}
       className="vstack gap-3"
+      onChange={() => {
+        if (formMethods.formState.isSubmitted) {
+          setPremium(undefined);
+        }
+      }}
     >
       <Row xs={1} sm={2} className="row-gap-3">
         <InsuredData />
@@ -72,7 +80,7 @@ export function QuoterForm() {
             <SubmitButton>
               <FontAwesomeIcon
                 icon={
-                  formMethods.formState.isSubmitting ? faSpinner : faQuestion
+                  formMethods.formState.isSubmitting ? faSpinner : faCalculator
                 }
                 className={cns(
                   "me-2",
@@ -84,7 +92,11 @@ export function QuoterForm() {
             <Button
               type="button"
               variant="cancel"
-              onClick={() => formMethods.reset()}
+              onClick={() => {
+                formMethods.reset();
+                setPremium(undefined);
+              }}
+              className={styles.rotateOnFocus}
             >
               <FontAwesomeIcon icon={faArrowRotateLeft} className="me-2" />
               Reset

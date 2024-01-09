@@ -18,6 +18,12 @@ import {
   ModalFooter,
 } from "react-bootstrap";
 
+const defaultValues = {
+  fiscalCode: "",
+  name: "",
+  surname: "",
+};
+
 export function ContractorForm() {
   return (
     <>
@@ -27,6 +33,7 @@ export function ContractorForm() {
           onSubmit={(values) => {
             console.log(values);
           }}
+          defaultValues={defaultValues}
           className="vstack gap-3"
         >
           <FormGroup controlId="fiscalCode">
