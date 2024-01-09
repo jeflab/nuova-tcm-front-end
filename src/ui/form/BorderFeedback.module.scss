@@ -1,15 +1,60 @@
 @import "../../app/variables";
 
 .base {
+  padding: map-get($spacers, 3);
   border-left: 2px solid currentColor;
-  padding-left: map-get($spacers, 3);
-  height: 100%;
+  background-color: var(--bs-light-bg-subtle);
+  border-radius: 0.25rem;
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+  row-gap: map-get($spacers, 1);
+  :global(:where(.form-text, .invalid-feedback, .valid-feedback)) {
+    margin-top: 0;
+  }
+
+  > label,
+  :not(:global(.form-check-inline)) label,
+  :global(.input-heading) {
+    font-weight: 500;
+    text-transform: uppercase;
+  }
+
+  &.isDisabled {
+    border-color: var(--bs-cancel);
+    background-color: rgba($cancel, 0.1);
+
+    > label,
+    :not(:global(.form-check-inline)) label,
+    :global(.input-heading) {
+      color: var(--bs-cancel);
+    }
+
+    :global(.text-warning) {
+      color: $yellow-600 !important; // !important is needed to override bootstrap
+    }
+  }
 
   &.isValid {
     border-color: var(--bs-success);
+    background-color: var(--bs-success-bg-subtle);
+
+    > label,
+    :not(:global(.form-check-inline)) label,
+    :global(.input-heading) {
+      color: var(--bs-success);
+    }
   }
 
   &.isInvalid {
     border-color: var(--bs-danger);
+    background-color: var(--bs-danger-bg-subtle);
+
+    > label,
+    :not(:global(.form-check-inline)) label,
+    :global(.input-heading) {
+      color: var(--bs-danger);
+    }
   }
 }

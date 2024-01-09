@@ -43,6 +43,7 @@ export function FieldError<T extends ElementType = typeof Feedback>({
 
   return validationError ? (
     <Component
+      role="alert"
       type="invalid"
       id={`${controlName}-error`}
       {...props}

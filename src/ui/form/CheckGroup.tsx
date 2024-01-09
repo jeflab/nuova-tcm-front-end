@@ -25,15 +25,19 @@ export function CheckGroup<TValue extends string | number>({
   const controlName = name || controlId;
   invariant(controlName, "name or controlId is required");
 
-  return options.map(({label, value}) => (
-    <CheckboxField
-      key={`${controlName}-${value}`}
-      id={`${controlName}-${value}`}
-      inline={inline}
-      label={label}
-      type={type}
-      validation={validation}
-      value={value}
-    />
-  ));
+  return (
+    <div>
+      {options.map(({label, value}) => (
+        <CheckboxField
+          key={`${controlName}-${value}`}
+          id={`${controlName}-${value}`}
+          inline={inline}
+          label={label}
+          type={type}
+          validation={validation}
+          value={value}
+        />
+      ))}
+    </div>
+  );
 }

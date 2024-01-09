@@ -7,7 +7,7 @@ import {redirect} from "next/navigation";
 import {z} from "zod";
 import * as api from "@/services/api";
 
-const LoginRawShape = {
+const LoginResponseRawShape = {
   access_token: z.string(),
 };
 
@@ -18,7 +18,7 @@ export async function login(data: {fiscalCode: string; password: string}) {
       password: data.password,
     });
 
-    const loginResponse = await api.post("/login", LoginRawShape, body);
+    const loginResponse = await api.post("/login", LoginResponseRawShape, body);
     cookies().set(AUTH_COOKIE_NAME, loginResponse.access_token);
 
     return loginResponse;

@@ -30,11 +30,7 @@ export function InputField({
   validationStyle = true,
   ...inputProps
 }: InputFieldProps) {
-  const {
-    setValue,
-    register,
-    formState: {errors, dirtyFields},
-  } = useFormContext();
+  const {setValue, register} = useFormContext();
   const {controlId} = useContext(FormContext);
   const controlName = name || controlId;
   invariant(controlName, "name or controlId is required");
@@ -58,7 +54,7 @@ export function InputField({
   return (
     <FormControl
       type={type}
-      {...register(name || controlId, {
+      {...register(controlName, {
         onChange,
         ...validation,
         ...normalization,

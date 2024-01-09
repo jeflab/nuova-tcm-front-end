@@ -5,5 +5,5 @@ export default async function Page() {
   if (await isLoggedIn()) {
     redirect("/lips");
   }
-  redirect("/login");
+  redirect("/quoter");
 }

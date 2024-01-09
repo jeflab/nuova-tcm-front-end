@@ -1,46 +1,102 @@
 "use client";
 
+import {Advantages} from "@/app/(menu)/quoter/Advantages";
 import {cns} from "@/helpers/cns";
+import {toCurrency} from "@/helpers/numbers";
+import {getQuote} from "@/services/quoter";
+import {FieldError} from "@/ui/form/FieldError";
 import {Form} from "@/ui/form/Form";
 import {SubmitButton} from "@/ui/form/SubmitButton";
-import {faQuestion, faSpinner} from "@fortawesome/pro-duotone-svg-icons";
+import {
+  faArrowRotateLeft,
+  faQuestion,
+  faSpinner,
+} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {useState} from "react";
+import {Alert, Button, Card, CardBody, Row} from "react-bootstrap";
+import {useForm} from "react-hook-form";
 import {ComplementaryCoverages} from "./ComplementaryCoverages";
 import {Coverages} from "./Coverages";
 import {InsuredData} from "./InsuredData";
 
+const defaultValues = {
+  birthDate: "",
+  smoker: "",
+  death: "20000",
+  accidentalDeath: false,
+  trafficAccidentalDeath: false,
+  exemptionFromPaying: false,
+  tpi: {enabled: false, coverage: "20000"},
+  cancer: {enabled: false, coverage: "20000"},
+  tpd: {enabled: false, coverage: "20000"},
+};
+
 export function QuoterForm() {
+  const [premium, setPremium] = useState<number>();
+  const formMethods = useForm({
+    mode: "onChange",
+    defaultValues,
+  });
+
   return (
     <Form
       onSubmit={async (values) => {
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        console.log(values);
+        console.log("formValues", values);
+        const clientResponse = await getQuote(values);
+
+        if (clientResponse.status === "failed") {
+          throw {root: {type: "server", message: clientResponse.message}};
+        }
+
+        setPremium(clientResponse.quotazione.premium);
       }}
-      defaultValues={{
-        death: 20_000,
-        accidentalDeath: false,
-        trafficAccidentalDeath: false,
-        exemptionFromPaying: false,
-        pti: {enabled: false, coverage: 20_000},
-        cancer: {enabled: false, coverage: 20_000},
-        ptd: {enabled: false, coverage: 20_000},
-      }}
-      className="vstack gap-3 align-items-start"
+      formMethods={formMethods}
+      className="vstack gap-3"
     >
-      <InsuredData />
-      <Coverages />
-      <ComplementaryCoverages />
-      <SubmitButton>
-        {(isLoggingIn) => (
-          <>
-            <FontAwesomeIcon
-              icon={isLoggingIn ? faSpinner : faQuestion}
-              className={cns("me-2", isLoggingIn && "fa-spin")}
-            />
-            Calcola preventivo
-          </>
-        )}
-      </SubmitButton>
+      <Row xs={1} sm={2} className="row-gap-3">
+        <InsuredData />
+        <Coverages />
+        <Advantages />
+        <ComplementaryCoverages />
+      </Row>
+      <Card className="position-sticky bottom-0 border-0 rounded-0 bg-primary-subtle">
+        <CardBody className="d-flex align-items-center justify-content-between flex-wrap gap-3">
+          <FieldError
+            name="root"
+            as={Alert}
+            variant="danger"
+            className="mb-0 w-100"
+          />
+          <div className="hstack gap-2">
+            <SubmitButton>
+              <FontAwesomeIcon
+                icon={
+                  formMethods.formState.isSubmitting ? faSpinner : faQuestion
+                }
+                className={cns(
+                  "me-2",
+                  formMethods.formState.isSubmitting && "fa-spin",
+                )}
+              />
+              Calcola preventivo
+            </SubmitButton>
+            <Button
+              type="button"
+              variant="cancel"
+              onClick={() => formMethods.reset()}
+            >
+              <FontAwesomeIcon icon={faArrowRotateLeft} className="me-2" />
+              Reset
+            </Button>
+          </div>
+          <div>
+            {premium
+              ? `Premio mensile: ${toCurrency(premium)}`
+              : "Compila il form e premi per avere il preventivo della polizza."}
+          </div>
+        </CardBody>
+      </Card>
     </Form>
   );
 }
