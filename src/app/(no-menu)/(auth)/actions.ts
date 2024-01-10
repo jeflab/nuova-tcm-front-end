@@ -36,7 +36,17 @@ export async function isLoggedIn() {
 }
 
 export async function logout() {
-  cookies().delete(AUTH_COOKIE_NAME);
+  try {
+    const logoutResponsePromise = api.post("/logout", {});
+    cookies().delete(AUTH_COOKIE_NAME);
+
+    return await logoutResponsePromise;
+  } catch (e) {
+    if (isServerError(e)) {
+      return e;
+    }
+    throw e;
+  }
 }
 
 export async function checkAuth() {

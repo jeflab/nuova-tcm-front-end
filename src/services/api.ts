@@ -1,12 +1,15 @@
 "use server";
 
+import {AUTH_COOKIE_NAME} from "@/app/(no-menu)/(auth)/const";
+import {apiUrl, contentJsonHeader} from "@/services/const";
 import {serverErrorSchema} from "@/services/helpers";
 import chalk from "chalk";
+import {cookies} from "next/headers";
 import {z, ZodRawShape} from "zod";
 
-const apiUrl = "http://127.0.0.1:8000/api";
-const contentJson = {
-  "Content-Type": "application/json",
+export const authorizationHeader = () => {
+  const authCookie = cookies().get(AUTH_COOKIE_NAME)?.value;
+  return authCookie ? {Authorization: `Bearer ${authCookie}`} : undefined;
 };
 
 const createServerSuccessSchema = <T extends ZodRawShape>(successSchema: T) =>
@@ -33,7 +36,8 @@ export async function get<T extends ZodRawShape>(url: string, zodRowShape: T) {
 
   const response = await fetch(apiUrl + url, {
     headers: {
-      ...contentJson,
+      ...contentJsonHeader,
+      ...authorizationHeader(),
     },
     method: "GET",
     credentials: "include",
@@ -62,13 +66,14 @@ export async function get<T extends ZodRawShape>(url: string, zodRowShape: T) {
 export async function post<T extends ZodRawShape>(
   url: string,
   zodRowShape: T,
-  body: string,
+  body?: string,
 ) {
   const serverSuccessSchema = createServerSuccessSchema(zodRowShape);
 
   const response = await fetch(apiUrl + url, {
     headers: {
-      ...contentJson,
+      ...contentJsonHeader,
+      ...authorizationHeader(),
     },
     method: "POST",
     credentials: "include",
