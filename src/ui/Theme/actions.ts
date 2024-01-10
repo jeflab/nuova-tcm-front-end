@@ -1,4 +1,5 @@
 "use server";
+
 import {THEME_COOKIE_NAME, themeSchema} from "@/ui/Theme/consts";
 import {cookies} from "next/headers";
 

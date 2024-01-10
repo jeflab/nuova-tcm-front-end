@@ -1,5 +1,6 @@
 "use server";
-import {AUTH_COOKIE_NAME} from "@/app/(public)/(auth)/const";
+
+import {AUTH_COOKIE_NAME} from "@/app/(no-menu)/(auth)/const";
 import {userSchema} from "@/entities/user";
 import {cookies} from "next/headers";
 import {z} from "zod";

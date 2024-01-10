@@ -1,0 +1,15 @@
+@import "../../../../variables";
+
+.connectedList :global(a) {
+  position: relative;
+
+  + :global(a):before {
+    content: "";
+    position: absolute;
+    top: calc(-8rem / 16);
+    left: calc(1rem + 0.5em - 1px);
+    width: 2px;
+    height: 1rem;
+    background-color: $gray-300;
+  }
+}

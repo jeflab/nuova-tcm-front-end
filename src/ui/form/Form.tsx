@@ -7,25 +7,41 @@ import {
   FormProvider,
   Path,
   useForm,
+  UseFormReturn,
 } from "react-hook-form";
 import {WithChildren} from "../types";
 
-interface FormProps<TFieldValues extends FieldValues>
+interface BaseFormProps<TFieldValues extends FieldValues>
   extends WithChildren,
     Omit<RBFormProps, "onSubmit"> {
-  defaultValues?: DefaultValues<TFieldValues>;
   onSubmit: (
     values: TFieldValues,
     event?: BaseSyntheticEvent,
   ) => void | Promise<void>;
 }
+
+type FormProps<TFieldValues extends FieldValues> =
+  | (BaseFormProps<TFieldValues> & {
+      defaultValues: DefaultValues<TFieldValues>;
+      formMethods?: never;
+    })
+  | (BaseFormProps<TFieldValues> & {
+      defaultValues?: never;
+      formMethods: UseFormReturn<TFieldValues>;
+    });
+
 export function Form<TFieldValues extends FieldValues>({
   children,
   defaultValues,
+  formMethods: propFormMethods,
   onSubmit,
   ...rbFormProps
 }: FormProps<TFieldValues>) {
-  const formMethods = useForm<TFieldValues>({mode: "onChange", defaultValues});
+  const hookFormMethods = useForm<TFieldValues>({
+    mode: "onChange",
+    defaultValues,
+  });
+  const formMethods = propFormMethods || hookFormMethods;
 
   return (
     <RBForm
