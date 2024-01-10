@@ -188,18 +188,14 @@ export function ComplementaryCoverages() {
               validation={{
                 validate: {
                   required: (value, formValues) => {
-                    if (
-                      formValues.tpi?.enabled &&
-                      getCoverageDuration(watch("birthDate"), 10, 65) > 0 &&
-                      !value
-                    ) {
+                    if (formValues.tpi?.enabled && !isMoreThan55 && !value) {
                       return "Inserisci l'importo del capitale assicurato";
                     }
                   },
                   min: (value, formValues) => {
                     if (
                       formValues.tpi?.enabled &&
-                      getCoverageDuration(watch("birthDate"), 10, 65) > 0 &&
+                      !isMoreThan55 &&
                       value < 20_000
                     ) {
                       return `Il capitale assicurato deve essere maggiore o uguale a ${toCurrency(
@@ -207,10 +203,21 @@ export function ComplementaryCoverages() {
                       )}`;
                     }
                   },
+                  max: (value, formValues) => {
+                    if (
+                      formValues.tpi?.enabled &&
+                      !isMoreThan55 &&
+                      value > formValues.death
+                    ) {
+                      return `Il capitale assicurato deve essere minore o uguale a ${toCurrency(
+                        formValues.death,
+                      )}`;
+                    }
+                  },
                   format: (value, formValues) => {
                     if (
                       formValues.tpi?.enabled &&
-                      getCoverageDuration(watch("birthDate"), 10, 65) > 0 &&
+                      !isMoreThan55 &&
                       value % 1_000 !== 0
                     ) {
                       return `Il capitale assicurato deve essere multiplo di ${toCurrency(
@@ -284,18 +291,14 @@ export function ComplementaryCoverages() {
               validation={{
                 validate: {
                   required: (value, formValues) => {
-                    if (
-                      formValues.cancer?.enabled &&
-                      getCoverageDuration(watch("birthDate"), 10) > 0 &&
-                      !value
-                    ) {
+                    if (formValues.cancer?.enabled && !isMoreThan75 && !value) {
                       return "Inserisci l'importo del capitale assicurato";
                     }
                   },
                   min: (value, formValues) => {
                     if (
                       formValues.cancer?.enabled &&
-                      getCoverageDuration(watch("birthDate"), 10) > 0 &&
+                      !isMoreThan75 &&
                       value < 20_000
                     ) {
                       return `Il capitale assicurato deve essere maggiore o uguale a ${toCurrency(
@@ -303,10 +306,21 @@ export function ComplementaryCoverages() {
                       )}`;
                     }
                   },
+                  max: (value, formValues) => {
+                    if (
+                      formValues.cancer?.enabled &&
+                      !isMoreThan75 &&
+                      value > formValues.death
+                    ) {
+                      return `Il capitale assicurato deve essere minore o uguale a ${toCurrency(
+                        formValues.death,
+                      )}`;
+                    }
+                  },
                   format: (value, formValues) => {
                     if (
                       formValues.cancer?.enabled &&
-                      getCoverageDuration(watch("birthDate"), 10) > 0 &&
+                      !isMoreThan75 &&
                       value % 1_000 !== 0
                     ) {
                       return `Il capitale assicurato deve essere multiplo di ${toCurrency(
@@ -391,6 +405,17 @@ export function ComplementaryCoverages() {
                     ) {
                       return `Il capitale assicurato deve essere maggiore o uguale a ${toCurrency(
                         20_000,
+                      )}`;
+                    }
+                  },
+                  max: (value, formValues) => {
+                    if (
+                      formValues.tpd?.enabled &&
+                      !isMoreThan75 &&
+                      value > formValues.death
+                    ) {
+                      return `Il capitale assicurato deve essere minore o uguale a ${toCurrency(
+                        formValues.death,
                       )}`;
                     }
                   },

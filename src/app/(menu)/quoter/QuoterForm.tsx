@@ -104,7 +104,7 @@ export function QuoterForm() {
           </div>
           <div>
             {premium
-              ? `Premio mensile: ${toCurrency(premium)}`
+              ? `Premio mensile: ${toCurrency(premium / 12)}`
               : "Compila il form e premi per avere il preventivo della polizza."}
           </div>
         </CardBody>
