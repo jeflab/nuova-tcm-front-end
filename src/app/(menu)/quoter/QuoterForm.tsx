@@ -62,7 +62,7 @@ export function QuoterForm() {
         }
       }}
     >
-      <Row xs={1} sm={2} className="row-gap-3">
+      <Row xs={1} sm={2} className="row-gap-3 isolate">
         <InsuredData />
         <Coverages />
         <Advantages />

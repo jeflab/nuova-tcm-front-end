@@ -1,9 +1,11 @@
+import {cns} from "@/helpers/cns";
 import {useValidationState} from "@/ui/form/hooks";
 import {ChangeEvent, ComponentPropsWithoutRef, useContext} from "react";
 import {FormCheck} from "react-bootstrap";
 import FormContext from "react-bootstrap/FormContext";
 import {RegisterOptions, useFormContext} from "react-hook-form";
 import invariant from "tiny-invariant";
+import styles from "./CheckboxField.module.scss";
 
 type InputTypes = "checkbox" | "radio" | "switch";
 
@@ -17,6 +19,7 @@ interface CheckboxFieldProps
   type: InputTypes;
   validation?: RegisterOptions;
   validationStyle?: boolean;
+  stretchedLabel?: boolean;
 }
 
 export function CheckboxField({
@@ -25,6 +28,8 @@ export function CheckboxField({
   type,
   validation,
   validationStyle = true,
+  className,
+  stretchedLabel,
   ...checkboxProps
 }: CheckboxFieldProps) {
   const {register} = useFormContext();
@@ -44,6 +49,7 @@ export function CheckboxField({
       isInvalid={validationStyle && isInvalid}
       isValid={validationStyle && isValid}
       aria-invalid={isInvalid}
+      className={cns([className, stretchedLabel && styles.stretchedLabel])}
       {...checkboxProps}
     />
   );

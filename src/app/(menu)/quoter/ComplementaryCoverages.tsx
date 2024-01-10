@@ -28,12 +28,14 @@ export function ComplementaryCoverages() {
           controlId="accidentalDeath"
           as={BorderFeedback}
           disabled={isMoreThan75}
+          className="position-relative"
         >
           <CheckboxField
             disabled={isMoreThan75}
             type="switch"
             label="Morte accidentale"
             validationStyle={watch("accidentalDeath")}
+            stretchedLabel
           />
           <HelpText>
             In caso di morte dell'assicurato dovuta ad un evento accidentale, la
@@ -65,12 +67,14 @@ export function ComplementaryCoverages() {
           controlId="trafficAccidentalDeath"
           as={BorderFeedback}
           disabled={isMoreThan75}
+          className="position-relative"
         >
           <CheckboxField
             disabled={isMoreThan75}
             type="switch"
             label="Morte per incidente stradale"
             validationStyle={watch("trafficAccidentalDeath")}
+            stretchedLabel
           />
           <HelpText>
             In caso di morte dell'assicurato dovuta ad un incidente stradale, la
@@ -102,12 +106,14 @@ export function ComplementaryCoverages() {
           controlId="exemptionFromPaying"
           as={BorderFeedback}
           disabled={isMoreThan55}
+          className="position-relative"
         >
           <CheckboxField
             disabled={isMoreThan55}
             type="switch"
             label="Esonero dal pagamento dei premi"
             validationStyle={watch("exemptionFromPaying")}
+            stretchedLabel
           />
           <HelpText>
             Se entro i primi 10 anni di durata del contratto l'assicurato
@@ -139,6 +145,7 @@ export function ComplementaryCoverages() {
           as={BorderFeedback}
           validationStyle={watch("tpi.enabled")}
           disabled={isMoreThan55}
+          className="position-relative"
         >
           <CheckboxField
             disabled={isMoreThan55}
@@ -149,6 +156,7 @@ export function ComplementaryCoverages() {
               trigger("tpi.coverage", {shouldFocus: true});
             }}
             validationStyle={watch("tpi.enabled")}
+            stretchedLabel
           />
           <HelpText>
             In caso di invalidità permanente dell'assicurato, la compagnia
@@ -238,6 +246,7 @@ export function ComplementaryCoverages() {
           as={BorderFeedback}
           validationStyle={watch("cancer.enabled")}
           disabled={isMoreThan75}
+          className="position-relative"
         >
           <CheckboxField
             disabled={isMoreThan75}
@@ -248,6 +257,7 @@ export function ComplementaryCoverages() {
               trigger("cancer.coverage", {shouldFocus: true});
             }}
             validationStyle={watch("cancer.enabled")}
+            stretchedLabel
           />
           <HelpText>
             In caso di diagnosi di cancro dell'assicurato in forma lieve, la
@@ -341,6 +351,7 @@ export function ComplementaryCoverages() {
           as={BorderFeedback}
           validationStyle={watch("tpd.enabled")}
           disabled={isMoreThan75}
+          className="position-relative"
         >
           <CheckboxField
             disabled={isMoreThan75}
@@ -351,6 +362,7 @@ export function ComplementaryCoverages() {
               trigger("tpd.coverage", {shouldFocus: true});
             }}
             validationStyle={watch("tpd.enabled")}
+            stretchedLabel
           />
           <HelpText>
             In caso di perdita totale di autosufficienza dell'assicurato, la
