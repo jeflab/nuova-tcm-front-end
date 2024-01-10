@@ -1,7 +1,7 @@
 import {AppContainer} from "@/ui/AppContainer";
 import {faCopyright} from "@fortawesome/pro-duotone-svg-icons/faCopyright";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import appInfo from "../../../package.json";
+import appInfo from "@/../package.json";
 
 export function Footer() {
   return (

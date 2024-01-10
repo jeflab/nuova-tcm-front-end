@@ -3,10 +3,10 @@ import {Lip} from "@/app/(menu)/(authenticated)/lips/model";
 import {cns} from "@/helpers/cns";
 import {AppContainer} from "@/ui/AppContainer";
 import {Drawer} from "@/ui/drawer/Drawer";
+import {DrawerIcon} from "@/ui/drawer/DrawerIcon";
 import {PageTitle} from "@/ui/PageTitle";
 import {Col, Nav, NavLink, Row} from "react-bootstrap";
 import styles from "./page.module.scss";
-import {DrawerIcon} from "@/ui/drawer/DrawerIcon";
 
 // TODO: abbassare il fetch dei dati, o in un sotto-componente client o addirittura nel drawer (fetch è cachata)
 //  Fatto ciò la pagina può tornare server component

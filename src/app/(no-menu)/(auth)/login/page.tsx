@@ -1,12 +1,9 @@
 import {isLoggedIn} from "@/app/(no-menu)/(auth)/actions";
-import logo from "@/images/logo.png";
-import {DataTableParams} from "@/ui/table/helpers";
-import {headers} from "next/headers";
-import Image from "next/image";
 import {redirect} from "next/navigation";
 import {Button, Card, CardBody} from "react-bootstrap";
 import {LoginForm} from "./LoginForm";
 import styles from "./page.module.scss";
+import CenterLogoContent from "@/ui/CenterLogoContent";
 
 interface LoginPageProps {
   searchParams: {
@@ -24,8 +21,7 @@ export default async function LoginPage({searchParams}: LoginPageProps) {
   }
 
   return (
-    <>
-      <Image src={logo} height={200} alt="logo" />
+    <CenterLogoContent>
       <Card className={styles.formCard}>
         <CardBody>
           <LoginForm />
@@ -34,6 +30,6 @@ export default async function LoginPage({searchParams}: LoginPageProps) {
           </Button>
         </CardBody>
       </Card>
-    </>
+    </CenterLogoContent>
   );
 }

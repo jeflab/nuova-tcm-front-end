@@ -23,7 +23,6 @@ export async function login(data: {fiscalCode: string; password: string}) {
 
     return loginResponse;
   } catch (e) {
-    console.error(e);
     if (isServerError(e)) {
       return e;
     }
