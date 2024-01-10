@@ -9,9 +9,11 @@ import {
   faHouseChimney,
 } from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import * as Sentry from "@sentry/nextjs";
+import {useEffect} from "react";
 import {Button} from "react-bootstrap";
 
-const containerStyle = {"--content-width": "450px"};
+const containerStyle = {"--content-width": "max-content"};
 
 export default function Error({
   error,
@@ -20,6 +22,10 @@ export default function Error({
   error: Error & {digest?: string};
   reset: () => void;
 }) {
+  useEffect(() => {
+    Sentry.captureException(error);
+  }, [error]);
+
   return (
     <main className={styles.publicMain}>
       <CenterLogoContent style={containerStyle}>
