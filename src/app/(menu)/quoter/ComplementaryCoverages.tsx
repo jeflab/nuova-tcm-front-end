@@ -401,18 +401,14 @@ export function ComplementaryCoverages() {
               validation={{
                 validate: {
                   required: (value, formValues) => {
-                    if (
-                      formValues.tpd?.enabled &&
-                      getCoverageDuration(watch("birthDate")) > 0 &&
-                      !value
-                    ) {
+                    if (formValues.tpd?.enabled && !isMoreThan75 && !value) {
                       return "Inserisci l'importo del capitale assicurato";
                     }
                   },
                   min: (value, formValues) => {
                     if (
                       formValues.tpd?.enabled &&
-                      getCoverageDuration(watch("birthDate")) > 0 &&
+                      !isMoreThan75 &&
                       value < 20_000
                     ) {
                       return `Il capitale assicurato deve essere maggiore o uguale a ${toCurrency(
@@ -434,7 +430,7 @@ export function ComplementaryCoverages() {
                   format: (value, formValues) => {
                     if (
                       formValues.tpd?.enabled &&
-                      getCoverageDuration(watch("birthDate")) > 0 &&
+                      !isMoreThan75 &&
                       value % 1_000 !== 0
                     ) {
                       return `Il capitale assicurato deve essere multiplo di ${toCurrency(

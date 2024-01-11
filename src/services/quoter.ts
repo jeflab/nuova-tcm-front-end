@@ -33,7 +33,7 @@ export async function getQuote(quoterData: GetQuoteParams) {
         ? parseInt(quoterData.tpd.coverage, 10)
         : 0,
       sumInsuredForTotalPermanentInvalidity:
-        quoterData.tpi.enabled && calendarYearAge(quoterData.birthDate) < 55
+        quoterData.tpi.enabled && calendarYearAge(quoterData.birthDate) <= 55
           ? parseInt(quoterData.tpi.coverage, 10)
           : 0,
       sumInsuredForCancer: quoterData.cancer.enabled
@@ -44,9 +44,11 @@ export async function getQuote(quoterData: GetQuoteParams) {
       smoker: quoterData.smoker === "true",
       exemptionForPermanentDisability:
         quoterData.exemptionFromPaying &&
-        calendarYearAge(quoterData.birthDate) < 55,
+        calendarYearAge(quoterData.birthDate) <= 55,
       aggregate: 0,
     });
+
+    console.log(JSON.stringify(JSON.parse(body), null, 2));
 
     return await post("/quoter", getQuoteResponseSchema, body);
   } catch (e) {

@@ -1,4 +1,4 @@
-import {Card, CardBody, Col, Table} from "react-bootstrap";
+import {Card, Col, Table} from "react-bootstrap";
 
 export function Advantages() {
   return (
