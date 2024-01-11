@@ -117,7 +117,7 @@ export function ComplementaryCoverages() {
           />
           <HelpText>
             Se entro i primi 10 anni di durata del contratto l'assicurato
-            subisce un invalidità totale e permanente, la compagnia esonera il
+            subisce un'invalidità totale e permanente, la compagnia esonera il
             contraente/assicurato dall'obbligo di pagamento dei premi per il
             resto della durata del contratto.
           </HelpText>
