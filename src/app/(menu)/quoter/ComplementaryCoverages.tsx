@@ -215,7 +215,7 @@ export function ComplementaryCoverages() {
                     if (
                       formValues.tpi?.enabled &&
                       !isMoreThan55 &&
-                      value > formValues.death
+                      value > parseInt(formValues.death, 10)
                     ) {
                       return `Il capitale assicurato deve essere minore o uguale a ${toCurrency(
                         formValues.death,
@@ -320,7 +320,7 @@ export function ComplementaryCoverages() {
                     if (
                       formValues.cancer?.enabled &&
                       !isMoreThan75 &&
-                      value > formValues.death
+                      value > parseInt(formValues.death, 10)
                     ) {
                       return `Il capitale assicurato deve essere minore o uguale a ${toCurrency(
                         formValues.death,
@@ -424,7 +424,7 @@ export function ComplementaryCoverages() {
                     if (
                       formValues.tpd?.enabled &&
                       !isMoreThan75 &&
-                      value > formValues.death
+                      value > parseInt(formValues.death, 10)
                     ) {
                       return `Il capitale assicurato deve essere minore o uguale a ${toCurrency(
                         formValues.death,
