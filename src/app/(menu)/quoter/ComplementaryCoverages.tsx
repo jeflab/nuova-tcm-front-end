@@ -28,12 +28,14 @@ export function ComplementaryCoverages() {
           controlId="accidentalDeath"
           as={BorderFeedback}
           disabled={isMoreThan75}
+          className="position-relative"
         >
           <CheckboxField
             disabled={isMoreThan75}
             type="switch"
             label="Morte accidentale"
             validationStyle={watch("accidentalDeath")}
+            stretchedLabel
           />
           <HelpText>
             In caso di morte dell'assicurato dovuta ad un evento accidentale, la
@@ -65,12 +67,14 @@ export function ComplementaryCoverages() {
           controlId="trafficAccidentalDeath"
           as={BorderFeedback}
           disabled={isMoreThan75}
+          className="position-relative"
         >
           <CheckboxField
             disabled={isMoreThan75}
             type="switch"
             label="Morte per incidente stradale"
             validationStyle={watch("trafficAccidentalDeath")}
+            stretchedLabel
           />
           <HelpText>
             In caso di morte dell'assicurato dovuta ad un incidente stradale, la
@@ -102,16 +106,18 @@ export function ComplementaryCoverages() {
           controlId="exemptionFromPaying"
           as={BorderFeedback}
           disabled={isMoreThan55}
+          className="position-relative"
         >
           <CheckboxField
             disabled={isMoreThan55}
             type="switch"
             label="Esonero dal pagamento dei premi"
             validationStyle={watch("exemptionFromPaying")}
+            stretchedLabel
           />
           <HelpText>
             Se entro i primi 10 anni di durata del contratto l'assicurato
-            subisce un invalidità totale e permanente, la compagnia esonera il
+            subisce un'invalidità totale e permanente, la compagnia esonera il
             contraente/assicurato dall'obbligo di pagamento dei premi per il
             resto della durata del contratto.
           </HelpText>
@@ -139,6 +145,7 @@ export function ComplementaryCoverages() {
           as={BorderFeedback}
           validationStyle={watch("tpi.enabled")}
           disabled={isMoreThan55}
+          className="position-relative"
         >
           <CheckboxField
             disabled={isMoreThan55}
@@ -149,6 +156,7 @@ export function ComplementaryCoverages() {
               trigger("tpi.coverage", {shouldFocus: true});
             }}
             validationStyle={watch("tpi.enabled")}
+            stretchedLabel
           />
           <HelpText>
             In caso di invalidità permanente dell'assicurato, la compagnia
@@ -188,18 +196,14 @@ export function ComplementaryCoverages() {
               validation={{
                 validate: {
                   required: (value, formValues) => {
-                    if (
-                      formValues.tpi?.enabled &&
-                      getCoverageDuration(watch("birthDate"), 10, 65) > 0 &&
-                      !value
-                    ) {
+                    if (formValues.tpi?.enabled && !isMoreThan55 && !value) {
                       return "Inserisci l'importo del capitale assicurato";
                     }
                   },
                   min: (value, formValues) => {
                     if (
                       formValues.tpi?.enabled &&
-                      getCoverageDuration(watch("birthDate"), 10, 65) > 0 &&
+                      !isMoreThan55 &&
                       value < 20_000
                     ) {
                       return `Il capitale assicurato deve essere maggiore o uguale a ${toCurrency(
@@ -207,10 +211,21 @@ export function ComplementaryCoverages() {
                       )}`;
                     }
                   },
+                  max: (value, formValues) => {
+                    if (
+                      formValues.tpi?.enabled &&
+                      !isMoreThan55 &&
+                      value > parseInt(formValues.death, 10)
+                    ) {
+                      return `Il capitale assicurato deve essere minore o uguale a ${toCurrency(
+                        formValues.death,
+                      )}`;
+                    }
+                  },
                   format: (value, formValues) => {
                     if (
                       formValues.tpi?.enabled &&
-                      getCoverageDuration(watch("birthDate"), 10, 65) > 0 &&
+                      !isMoreThan55 &&
                       value % 1_000 !== 0
                     ) {
                       return `Il capitale assicurato deve essere multiplo di ${toCurrency(
@@ -231,6 +246,7 @@ export function ComplementaryCoverages() {
           as={BorderFeedback}
           validationStyle={watch("cancer.enabled")}
           disabled={isMoreThan75}
+          className="position-relative"
         >
           <CheckboxField
             disabled={isMoreThan75}
@@ -241,6 +257,7 @@ export function ComplementaryCoverages() {
               trigger("cancer.coverage", {shouldFocus: true});
             }}
             validationStyle={watch("cancer.enabled")}
+            stretchedLabel
           />
           <HelpText>
             In caso di diagnosi di cancro dell'assicurato in forma lieve, la
@@ -284,18 +301,14 @@ export function ComplementaryCoverages() {
               validation={{
                 validate: {
                   required: (value, formValues) => {
-                    if (
-                      formValues.cancer?.enabled &&
-                      getCoverageDuration(watch("birthDate"), 10) > 0 &&
-                      !value
-                    ) {
+                    if (formValues.cancer?.enabled && !isMoreThan75 && !value) {
                       return "Inserisci l'importo del capitale assicurato";
                     }
                   },
                   min: (value, formValues) => {
                     if (
                       formValues.cancer?.enabled &&
-                      getCoverageDuration(watch("birthDate"), 10) > 0 &&
+                      !isMoreThan75 &&
                       value < 20_000
                     ) {
                       return `Il capitale assicurato deve essere maggiore o uguale a ${toCurrency(
@@ -303,10 +316,21 @@ export function ComplementaryCoverages() {
                       )}`;
                     }
                   },
+                  max: (value, formValues) => {
+                    if (
+                      formValues.cancer?.enabled &&
+                      !isMoreThan75 &&
+                      value > parseInt(formValues.death, 10)
+                    ) {
+                      return `Il capitale assicurato deve essere minore o uguale a ${toCurrency(
+                        formValues.death,
+                      )}`;
+                    }
+                  },
                   format: (value, formValues) => {
                     if (
                       formValues.cancer?.enabled &&
-                      getCoverageDuration(watch("birthDate"), 10) > 0 &&
+                      !isMoreThan75 &&
                       value % 1_000 !== 0
                     ) {
                       return `Il capitale assicurato deve essere multiplo di ${toCurrency(
@@ -327,6 +351,7 @@ export function ComplementaryCoverages() {
           as={BorderFeedback}
           validationStyle={watch("tpd.enabled")}
           disabled={isMoreThan75}
+          className="position-relative"
         >
           <CheckboxField
             disabled={isMoreThan75}
@@ -337,6 +362,7 @@ export function ComplementaryCoverages() {
               trigger("tpd.coverage", {shouldFocus: true});
             }}
             validationStyle={watch("tpd.enabled")}
+            stretchedLabel
           />
           <HelpText>
             In caso di perdita totale di autosufficienza dell'assicurato, la
@@ -375,18 +401,14 @@ export function ComplementaryCoverages() {
               validation={{
                 validate: {
                   required: (value, formValues) => {
-                    if (
-                      formValues.tpd?.enabled &&
-                      getCoverageDuration(watch("birthDate")) > 0 &&
-                      !value
-                    ) {
+                    if (formValues.tpd?.enabled && !isMoreThan75 && !value) {
                       return "Inserisci l'importo del capitale assicurato";
                     }
                   },
                   min: (value, formValues) => {
                     if (
                       formValues.tpd?.enabled &&
-                      getCoverageDuration(watch("birthDate")) > 0 &&
+                      !isMoreThan75 &&
                       value < 20_000
                     ) {
                       return `Il capitale assicurato deve essere maggiore o uguale a ${toCurrency(
@@ -394,10 +416,21 @@ export function ComplementaryCoverages() {
                       )}`;
                     }
                   },
+                  max: (value, formValues) => {
+                    if (
+                      formValues.tpd?.enabled &&
+                      !isMoreThan75 &&
+                      value > parseInt(formValues.death, 10)
+                    ) {
+                      return `Il capitale assicurato deve essere minore o uguale a ${toCurrency(
+                        formValues.death,
+                      )}`;
+                    }
+                  },
                   format: (value, formValues) => {
                     if (
                       formValues.tpd?.enabled &&
-                      getCoverageDuration(watch("birthDate")) > 0 &&
+                      !isMoreThan75 &&
                       value % 1_000 !== 0
                     ) {
                       return `Il capitale assicurato deve essere multiplo di ${toCurrency(

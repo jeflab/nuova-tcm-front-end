@@ -62,7 +62,7 @@ export function QuoterForm() {
         }
       }}
     >
-      <Row xs={1} sm={2} className="row-gap-3">
+      <Row xs={1} sm={2} className="row-gap-3 isolate">
         <InsuredData />
         <Coverages />
         <Advantages />
@@ -104,8 +104,8 @@ export function QuoterForm() {
           </div>
           <div>
             {premium
-              ? `Premio mensile: ${toCurrency(premium)}`
-              : "Compila il form e premi per avere il preventivo della polizza."}
+              ? `Premio mensile: ${toCurrency(premium / 12)}`
+              : "Compila il form per avere il preventivo della polizza."}
           </div>
         </CardBody>
       </Card>

@@ -3,6 +3,7 @@
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/
 
 import * as Sentry from "@sentry/nextjs";
+import appInfo from "@/../package.json";
 
 Sentry.init({
   dsn: "https://cf295f6b6cf51e267fdfd84c56895dcf@o66710.ingest.sentry.io/4506546631081984",
@@ -18,6 +19,10 @@ Sentry.init({
   // This sets the sample rate to be 10%. You may want this to be 100% while
   // in development and sample at a lower rate in production
   replaysSessionSampleRate: 0.1,
+
+  release: `${appInfo.name}@${appInfo.version}`,
+
+  ignoreErrors: ["NEXT_REDIRECT"],
 
   // You can remove this option if you're not planning to use the Sentry Session Replay feature:
   integrations: [

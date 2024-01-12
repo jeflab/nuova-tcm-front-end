@@ -5,6 +5,11 @@ html,
 body {
   height: 100%;
 }
+
+.isolate {
+  isolation: isolate;
+}
+
 .navbar-nav .nav-link:last-child {
   margin-inline-end: -0.5rem;
 }

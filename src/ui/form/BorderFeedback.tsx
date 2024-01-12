@@ -7,6 +7,7 @@ import invariant from "tiny-invariant";
 import styles from "./BorderFeedback.module.scss";
 
 interface BorderFeedbackProps extends WithChildren {
+  className?: string;
   disabled?: boolean;
   name?: string;
   validationStyle?: boolean;
@@ -14,6 +15,7 @@ interface BorderFeedbackProps extends WithChildren {
 
 export function BorderFeedback({
   children,
+  className,
   disabled,
   name,
   validationStyle = true,
@@ -27,6 +29,7 @@ export function BorderFeedback({
   return (
     <div
       className={cns([
+        className,
         styles.base,
         disabled && styles.isDisabled,
         validationStyle && !disabled && isInvalid && styles.isInvalid,

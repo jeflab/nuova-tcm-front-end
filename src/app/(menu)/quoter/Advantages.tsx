@@ -1,4 +1,4 @@
-import {Card, CardBody, Col, Table} from "react-bootstrap";
+import {Card, Col, Table} from "react-bootstrap";
 
 export function Advantages() {
   return (
@@ -15,19 +15,19 @@ export function Advantages() {
           </thead>
           <tbody>
             <tr>
-              <td>Rimborso dei premi a scadenza</td>
+              <td>Bonus dei premi a scadenza</td>
               <td>100%</td>
             </tr>
             <tr>
-              <td>Rimborso dei premi al 25° anno</td>
+              <td>Bonus dei premi al 25° anno</td>
               <td>90%</td>
             </tr>
             <tr>
-              <td>Rimborso dei premi al 20° anno</td>
+              <td>Bonus dei premi al 20° anno</td>
               <td>75%</td>
             </tr>
             <tr>
-              <td>Rimborso dei premi al 15° anno</td>
+              <td>Bonus dei premi al 15° anno</td>
               <td>50%</td>
             </tr>
             <tr style={{borderBottom: "transparent"}}>
