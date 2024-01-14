@@ -1,7 +1,7 @@
+import {getVersion} from "@/release";
 import {AppContainer} from "@/ui/AppContainer";
 import {faCopyright} from "@fortawesome/pro-duotone-svg-icons/faCopyright";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import appInfo from "@/../package.json";
 
 export function Footer() {
   return (
@@ -12,7 +12,7 @@ export function Footer() {
           Piattaforma TCM
         </span>
         <span className="ms-auto text-muted small">
-          Versione {appInfo.version}
+          Versione {getVersion()}
         </span>
       </p>
     </AppContainer>

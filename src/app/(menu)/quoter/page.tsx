@@ -4,8 +4,6 @@ import {Alert, Stack} from "react-bootstrap";
 import {QuoterForm} from "./QuoterForm";
 
 export default async function Quoter() {
-  console.log(process.env);
-
   return (
     <Stack gap={3}>
       <AppContainer className="vstack gap-3">
