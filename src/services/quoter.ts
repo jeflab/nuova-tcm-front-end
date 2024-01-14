@@ -48,8 +48,6 @@ export async function getQuote(quoterData: GetQuoteParams) {
       aggregate: 0,
     });
 
-    console.log(JSON.stringify(JSON.parse(body), null, 2));
-
     return await post("/quoter", getQuoteResponseSchema, body);
   } catch (e) {
     if (isServerError(e)) {

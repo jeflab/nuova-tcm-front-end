@@ -1,4 +1,4 @@
-import {getVersion} from "@/release";
+import {getVersion} from "@/helpers/release";
 import {AppContainer} from "@/ui/AppContainer";
 import {faCopyright} from "@fortawesome/pro-duotone-svg-icons/faCopyright";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
