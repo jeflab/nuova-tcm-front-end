@@ -42,12 +42,22 @@ export function QuoterForm() {
   });
 
   const handleSubmit = async (values: QuoterFormValues) => {
-    const clientResponse = await getQuote(values);
+    let clientResponse;
+    try {
+      clientResponse = await getQuote(values);
+    } catch (error) {
+      console.error(error);
+      throw {
+        root: {
+          type: "server",
+          message: "Errore imprevisto, riprova più tardi.",
+        },
+      };
+    }
 
     if (clientResponse.status === "failed") {
       throw {root: {type: "server", message: clientResponse.message}};
     }
-
     setPremium(clientResponse.quotazione.premium);
   };
 
