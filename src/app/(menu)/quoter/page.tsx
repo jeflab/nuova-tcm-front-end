@@ -6,7 +6,7 @@ import {QuoterForm} from "./QuoterForm";
 export default function Quoter() {
   return (
     <Stack gap={3}>
-      <AppContainer>
+      <AppContainer className="vstack gap-3">
         <PageTitle>Preventivatore</PageTitle>
         <Alert variant="info" className="mb-0">
           Si prega di compilare il form per il preventivo della polizza vita con
