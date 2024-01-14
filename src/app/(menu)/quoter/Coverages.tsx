@@ -12,7 +12,7 @@ export function Coverages() {
 
   return (
     <>
-      <Col className="vstack column-gap-3">
+      <Col className="vstack gap-3">
         <h3>Coperture assicurative</h3>
         <FormGroup controlId="death" as={BorderFeedback}>
           <p className="mb-2 input-heading">Caso morte</p>

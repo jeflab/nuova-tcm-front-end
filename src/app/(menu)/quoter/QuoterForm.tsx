@@ -20,6 +20,7 @@ import {ComplementaryCoverages} from "./ComplementaryCoverages";
 import {Coverages} from "./Coverages";
 import {InsuredData} from "./InsuredData";
 import styles from "./QuoterForm.module.scss";
+import {AppContainer} from "@/ui/AppContainer";
 
 const quoterFormDefaultValues = {
   birthDate: "",
@@ -42,12 +43,22 @@ export function QuoterForm() {
   });
 
   const handleSubmit = async (values: QuoterFormValues) => {
-    const clientResponse = await getQuote(values);
+    let clientResponse;
+    try {
+      clientResponse = await getQuote(values);
+    } catch (error) {
+      console.error(error);
+      throw {
+        root: {
+          type: "server",
+          message: "Errore imprevisto, riprova più tardi.",
+        },
+      };
+    }
 
     if (clientResponse.status === "failed") {
       throw {root: {type: "server", message: clientResponse.message}};
     }
-
     setPremium(clientResponse.quotazione.premium);
   };
 
@@ -62,14 +73,16 @@ export function QuoterForm() {
         }
       }}
     >
-      <Row xs={1} sm={2} className="row-gap-3 isolate">
-        <InsuredData />
-        <Coverages />
-        <Advantages />
-        <ComplementaryCoverages />
-      </Row>
-      <Card className="position-sticky bottom-0 border-0 rounded-0 bg-primary-subtle">
-        <CardBody className="d-flex align-items-center justify-content-between flex-wrap gap-3">
+      <AppContainer>
+        <Row xs={1} sm={2} className="row-gap-3 isolate">
+          <InsuredData />
+          <Coverages />
+          <Advantages />
+          <ComplementaryCoverages />
+        </Row>
+      </AppContainer>
+      <div className="position-sticky bottom-0 bg-primary-subtle py-3">
+        <AppContainer className="d-flex align-items-center justify-content-between flex-wrap gap-3">
           <FieldError
             name="root"
             as={Alert}
@@ -107,8 +120,8 @@ export function QuoterForm() {
               ? `Premio mensile: ${toCurrency(premium / 12)}`
               : "Compila il form per avere il preventivo della polizza."}
           </div>
-        </CardBody>
-      </Card>
+        </AppContainer>
+      </div>
     </Form>
   );
 }
