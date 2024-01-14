@@ -1,6 +1,7 @@
 "use server";
 
 import {AUTH_COOKIE_NAME} from "@/app/(no-menu)/(auth)/const";
+import {logFetchInfo} from "@/helpers/fetchDebug";
 import {apiUrl, contentJsonHeader} from "@/services/const";
 import {serverErrorSchema} from "@/services/helpers";
 import chalk from "chalk";
@@ -43,6 +44,8 @@ export async function get<T extends ZodRawShape>(url: string, zodRowShape: T) {
     credentials: "include",
   });
 
+  void logFetchInfo(response);
+
   let responseJson;
   try {
     responseJson = await response.clone().json();
@@ -79,6 +82,8 @@ export async function post<T extends ZodRawShape>(
     credentials: "include",
     body,
   });
+
+  void logFetchInfo(response, body);
 
   let responseJson;
   try {

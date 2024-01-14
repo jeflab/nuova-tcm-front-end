@@ -3,9 +3,11 @@
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/
 
 import * as Sentry from "@sentry/nextjs";
+import appInfo from "./package.json";
 
 Sentry.init({
   dsn: "https://cf295f6b6cf51e267fdfd84c56895dcf@o66710.ingest.sentry.io/4506546631081984",
+  release: `${appInfo.name}@${appInfo.version}`,
 
   // Adjust this value in production, or use tracesSampler for greater control
   tracesSampleRate: 1,

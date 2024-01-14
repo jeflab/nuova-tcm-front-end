@@ -7,6 +7,7 @@ import appInfo from "@/../package.json";
 
 Sentry.init({
   dsn: "https://cf295f6b6cf51e267fdfd84c56895dcf@o66710.ingest.sentry.io/4506546631081984",
+  release: `${appInfo.name}@${appInfo.version}`,
 
   // Adjust this value in production, or use tracesSampler for greater control
   tracesSampleRate: 1,
@@ -19,8 +20,6 @@ Sentry.init({
   // This sets the sample rate to be 10%. You may want this to be 100% while
   // in development and sample at a lower rate in production
   replaysSessionSampleRate: 0.1,
-
-  release: `${appInfo.name}@${appInfo.version}`,
 
   ignoreErrors: ["NEXT_REDIRECT"],
 
