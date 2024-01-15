@@ -1,9 +1,9 @@
 "use client";
 
+import {getQuote} from "@/app/(menu)/quoter/actions";
 import {Advantages} from "@/app/(menu)/quoter/Advantages";
 import {cns} from "@/helpers/cns";
 import {toCurrency} from "@/helpers/numbers";
-import {getQuote} from "@/services/quoter";
 import {FieldError} from "@/ui/form/FieldError";
 import {Form} from "@/ui/form/Form";
 import {SubmitButton} from "@/ui/form/SubmitButton";
@@ -43,7 +43,7 @@ export function QuoterForm() {
   });
 
   const handleSubmit = async (values: QuoterFormValues) => {
-    let clientResponse;
+    let clientResponse: Awaited<ReturnType<typeof getQuote>>;
     try {
       clientResponse = await getQuote(values);
     } catch (error) {
@@ -59,6 +59,7 @@ export function QuoterForm() {
     if (clientResponse.status === "failed") {
       throw {root: {type: "server", message: clientResponse.message}};
     }
+
     setPremium(clientResponse.quotazione.premium);
   };
 

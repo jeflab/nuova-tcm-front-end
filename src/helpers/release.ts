@@ -1,4 +1,4 @@
-import * as appInfo from "../../package.json";
+import appInfo from "../../package.json";
 export function getRelease() {
   return `${appInfo.name}@${getVersion()}`;
 }

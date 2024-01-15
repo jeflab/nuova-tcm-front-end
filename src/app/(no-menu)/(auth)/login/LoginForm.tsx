@@ -20,10 +20,22 @@ const defaultValues = {
 
 export function LoginForm() {
   const handleSubmit = async (data: typeof defaultValues) => {
-    const clientResponse = await login(data);
+    let loginResponse: Awaited<ReturnType<typeof login>>;
 
-    if (clientResponse.status === "failed") {
-      throw {root: {type: "server", message: clientResponse.message}};
+    try {
+      loginResponse = await login(data);
+    } catch (error) {
+      console.error(error);
+      throw {
+        root: {
+          type: "server",
+          message: "Errore imprevisto, riprova più tardi.",
+        },
+      };
+    }
+
+    if (loginResponse.status === "failed") {
+      throw {root: {type: "server", message: loginResponse.message}};
     }
   };
 
