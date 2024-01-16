@@ -1,5 +1,5 @@
 import {cns} from "@/helpers/cns";
-import {toCurrency, toDecimal, toPercent} from "@/helpers/numbers";
+import {toCurrency, toPercent} from "@/helpers/numbers";
 import {Card, Col, Table} from "react-bootstrap";
 import styles from "./Advantages.module.scss";
 

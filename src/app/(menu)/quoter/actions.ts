@@ -3,7 +3,6 @@
 import {getCoverageDuration} from "@/app/(menu)/quoter/helpers";
 import {calendarYearAge} from "@/helpers/ages";
 import {post} from "@/services/api";
-import {isServerError} from "@/services/helpers";
 import {z} from "zod";
 
 const getQuoteResponseSchema = {

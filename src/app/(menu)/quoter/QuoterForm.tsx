@@ -15,7 +15,7 @@ import {
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import useDebouncedCallback from "beautiful-react-hooks/useDebouncedCallback";
 import {useState} from "react";
-import {Alert, Button, Card, CardBody, Row} from "react-bootstrap";
+import {Alert, Button, Row} from "react-bootstrap";
 import {useForm} from "react-hook-form";
 import {ComplementaryCoverages} from "./ComplementaryCoverages";
 import {Coverages} from "./Coverages";

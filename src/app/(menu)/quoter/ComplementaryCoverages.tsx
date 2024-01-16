@@ -8,7 +8,7 @@ import {HelpText} from "@/ui/form/HelpText";
 import {InputField} from "@/ui/form/InputField";
 import {faTriangleExclamation} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {Col, FormGroup, FormLabel} from "react-bootstrap";
+import {Col, FormGroup, FormLabel, InputGroup} from "react-bootstrap";
 import {useFormContext} from "react-hook-form";
 
 export function ComplementaryCoverages() {
@@ -184,59 +184,62 @@ export function ComplementaryCoverages() {
             <FormLabel className="text-nowrap mb-sm-0" htmlFor="tpi-coverage">
               Capitale assicurato
             </FormLabel>
-            <InputField
-              disabled={!watch("tpi.enabled") || isMoreThan55}
-              id="tpi-coverage"
-              min={20_000}
-              max={watch("death")}
-              name="tpi.coverage"
-              placeholder="Capitale assicurato"
-              step={1_000}
-              type="number"
-              validation={{
-                validate: {
-                  required: (value, formValues) => {
-                    if (formValues.tpi?.enabled && !isMoreThan55 && !value) {
-                      return "Inserisci l'importo del capitale assicurato";
-                    }
+            <InputGroup>
+              <InputField
+                disabled={!watch("tpi.enabled") || isMoreThan55}
+                id="tpi-coverage"
+                min={20_000}
+                max={watch("death")}
+                name="tpi.coverage"
+                placeholder="Capitale assicurato"
+                step={1_000}
+                type="number"
+                validation={{
+                  validate: {
+                    required: (value, formValues) => {
+                      if (formValues.tpi?.enabled && !isMoreThan55 && !value) {
+                        return "Inserisci l'importo del capitale assicurato";
+                      }
+                    },
+                    min: (value, formValues) => {
+                      if (
+                        formValues.tpi?.enabled &&
+                        !isMoreThan55 &&
+                        value < 20_000
+                      ) {
+                        return `Il capitale assicurato deve essere maggiore o uguale a ${toCurrency(
+                          20_000,
+                        )}`;
+                      }
+                    },
+                    max: (value, formValues) => {
+                      if (
+                        formValues.tpi?.enabled &&
+                        !isMoreThan55 &&
+                        value > parseInt(formValues.death, 10)
+                      ) {
+                        return `Il capitale assicurato deve essere minore o uguale a ${toCurrency(
+                          formValues.death,
+                        )}`;
+                      }
+                    },
+                    format: (value, formValues) => {
+                      if (
+                        formValues.tpi?.enabled &&
+                        !isMoreThan55 &&
+                        value % 1_000 !== 0
+                      ) {
+                        return `Il capitale assicurato deve essere multiplo di ${toCurrency(
+                          1_000,
+                        )}`;
+                      }
+                    },
                   },
-                  min: (value, formValues) => {
-                    if (
-                      formValues.tpi?.enabled &&
-                      !isMoreThan55 &&
-                      value < 20_000
-                    ) {
-                      return `Il capitale assicurato deve essere maggiore o uguale a ${toCurrency(
-                        20_000,
-                      )}`;
-                    }
-                  },
-                  max: (value, formValues) => {
-                    if (
-                      formValues.tpi?.enabled &&
-                      !isMoreThan55 &&
-                      value > parseInt(formValues.death, 10)
-                    ) {
-                      return `Il capitale assicurato deve essere minore o uguale a ${toCurrency(
-                        formValues.death,
-                      )}`;
-                    }
-                  },
-                  format: (value, formValues) => {
-                    if (
-                      formValues.tpi?.enabled &&
-                      !isMoreThan55 &&
-                      value % 1_000 !== 0
-                    ) {
-                      return `Il capitale assicurato deve essere multiplo di ${toCurrency(
-                        1_000,
-                      )}`;
-                    }
-                  },
-                },
-              }}
-              validationStyle={watch("tpi.enabled")}
-            />
+                }}
+                validationStyle={watch("tpi.enabled")}
+              />
+              <InputGroup.Text>,00 €</InputGroup.Text>
+            </InputGroup>
           </div>
         </FormGroup>
       </Col>
@@ -289,59 +292,66 @@ export function ComplementaryCoverages() {
             >
               Capitale assicurato
             </FormLabel>
-            <InputField
-              disabled={!watch("cancer.enabled") || isMoreThan75}
-              id="cancer-coverage"
-              min={20_000}
-              max={watch("death")}
-              name="cancer.coverage"
-              placeholder="Capitale assicurato"
-              step={1_000}
-              type="number"
-              validation={{
-                validate: {
-                  required: (value, formValues) => {
-                    if (formValues.cancer?.enabled && !isMoreThan75 && !value) {
-                      return "Inserisci l'importo del capitale assicurato";
-                    }
+            <InputGroup>
+              <InputField
+                disabled={!watch("cancer.enabled") || isMoreThan75}
+                id="cancer-coverage"
+                min={20_000}
+                max={watch("death")}
+                name="cancer.coverage"
+                placeholder="Capitale assicurato"
+                step={1_000}
+                type="number"
+                validation={{
+                  validate: {
+                    required: (value, formValues) => {
+                      if (
+                        formValues.cancer?.enabled &&
+                        !isMoreThan75 &&
+                        !value
+                      ) {
+                        return "Inserisci l'importo del capitale assicurato";
+                      }
+                    },
+                    min: (value, formValues) => {
+                      if (
+                        formValues.cancer?.enabled &&
+                        !isMoreThan75 &&
+                        value < 20_000
+                      ) {
+                        return `Il capitale assicurato deve essere maggiore o uguale a ${toCurrency(
+                          20_000,
+                        )}`;
+                      }
+                    },
+                    max: (value, formValues) => {
+                      if (
+                        formValues.cancer?.enabled &&
+                        !isMoreThan75 &&
+                        value > parseInt(formValues.death, 10)
+                      ) {
+                        return `Il capitale assicurato deve essere minore o uguale a ${toCurrency(
+                          formValues.death,
+                        )}`;
+                      }
+                    },
+                    format: (value, formValues) => {
+                      if (
+                        formValues.cancer?.enabled &&
+                        !isMoreThan75 &&
+                        value % 1_000 !== 0
+                      ) {
+                        return `Il capitale assicurato deve essere multiplo di ${toCurrency(
+                          1_000,
+                        )}`;
+                      }
+                    },
                   },
-                  min: (value, formValues) => {
-                    if (
-                      formValues.cancer?.enabled &&
-                      !isMoreThan75 &&
-                      value < 20_000
-                    ) {
-                      return `Il capitale assicurato deve essere maggiore o uguale a ${toCurrency(
-                        20_000,
-                      )}`;
-                    }
-                  },
-                  max: (value, formValues) => {
-                    if (
-                      formValues.cancer?.enabled &&
-                      !isMoreThan75 &&
-                      value > parseInt(formValues.death, 10)
-                    ) {
-                      return `Il capitale assicurato deve essere minore o uguale a ${toCurrency(
-                        formValues.death,
-                      )}`;
-                    }
-                  },
-                  format: (value, formValues) => {
-                    if (
-                      formValues.cancer?.enabled &&
-                      !isMoreThan75 &&
-                      value % 1_000 !== 0
-                    ) {
-                      return `Il capitale assicurato deve essere multiplo di ${toCurrency(
-                        1_000,
-                      )}`;
-                    }
-                  },
-                },
-              }}
-              validationStyle={watch("cancer.enabled")}
-            />
+                }}
+                validationStyle={watch("cancer.enabled")}
+              />
+              <InputGroup.Text>,00 €</InputGroup.Text>
+            </InputGroup>
           </div>
         </FormGroup>
       </Col>
@@ -389,59 +399,62 @@ export function ComplementaryCoverages() {
             <FormLabel className="text-nowrap mb-sm-0" htmlFor="tpd-coverage">
               Capitale assicurato
             </FormLabel>
-            <InputField
-              disabled={!watch("tpd.enabled") || isMoreThan75}
-              id="tpd-coverage"
-              min={20_000}
-              max={watch("death")}
-              name="tpd.coverage"
-              placeholder="Capitale assicurato"
-              step={1_000}
-              type="number"
-              validation={{
-                validate: {
-                  required: (value, formValues) => {
-                    if (formValues.tpd?.enabled && !isMoreThan75 && !value) {
-                      return "Inserisci l'importo del capitale assicurato";
-                    }
+            <InputGroup className="flex-grow-0">
+              <InputField
+                disabled={!watch("tpd.enabled") || isMoreThan75}
+                id="tpd-coverage"
+                min={20_000}
+                max={watch("death")}
+                name="tpd.coverage"
+                placeholder="Capitale assicurato"
+                step={1_000}
+                type="number"
+                validation={{
+                  validate: {
+                    required: (value, formValues) => {
+                      if (formValues.tpd?.enabled && !isMoreThan75 && !value) {
+                        return "Inserisci l'importo del capitale assicurato";
+                      }
+                    },
+                    min: (value, formValues) => {
+                      if (
+                        formValues.tpd?.enabled &&
+                        !isMoreThan75 &&
+                        value < 20_000
+                      ) {
+                        return `Il capitale assicurato deve essere maggiore o uguale a ${toCurrency(
+                          20_000,
+                        )}`;
+                      }
+                    },
+                    max: (value, formValues) => {
+                      if (
+                        formValues.tpd?.enabled &&
+                        !isMoreThan75 &&
+                        value > parseInt(formValues.death, 10)
+                      ) {
+                        return `Il capitale assicurato deve essere minore o uguale a ${toCurrency(
+                          formValues.death,
+                        )}`;
+                      }
+                    },
+                    format: (value, formValues) => {
+                      if (
+                        formValues.tpd?.enabled &&
+                        !isMoreThan75 &&
+                        value % 1_000 !== 0
+                      ) {
+                        return `Il capitale assicurato deve essere multiplo di ${toCurrency(
+                          1_000,
+                        )}`;
+                      }
+                    },
                   },
-                  min: (value, formValues) => {
-                    if (
-                      formValues.tpd?.enabled &&
-                      !isMoreThan75 &&
-                      value < 20_000
-                    ) {
-                      return `Il capitale assicurato deve essere maggiore o uguale a ${toCurrency(
-                        20_000,
-                      )}`;
-                    }
-                  },
-                  max: (value, formValues) => {
-                    if (
-                      formValues.tpd?.enabled &&
-                      !isMoreThan75 &&
-                      value > parseInt(formValues.death, 10)
-                    ) {
-                      return `Il capitale assicurato deve essere minore o uguale a ${toCurrency(
-                        formValues.death,
-                      )}`;
-                    }
-                  },
-                  format: (value, formValues) => {
-                    if (
-                      formValues.tpd?.enabled &&
-                      !isMoreThan75 &&
-                      value % 1_000 !== 0
-                    ) {
-                      return `Il capitale assicurato deve essere multiplo di ${toCurrency(
-                        1_000,
-                      )}`;
-                    }
-                  },
-                },
-              }}
-              validationStyle={watch("tpd.enabled")}
-            />
+                }}
+                validationStyle={watch("tpd.enabled")}
+              />
+              <InputGroup.Text>,00 €</InputGroup.Text>
+            </InputGroup>
           </div>
         </FormGroup>
       </Col>
