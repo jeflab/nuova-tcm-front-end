@@ -1,5 +1,7 @@
+import {cns} from "@/helpers/cns";
 import {toCurrency, toDecimal, toPercent} from "@/helpers/numbers";
 import {Card, Col, Table} from "react-bootstrap";
+import styles from "./Advantages.module.scss";
 
 interface AdvantagesProps {
   premium: number;
@@ -9,8 +11,7 @@ export function Advantages({premium}: AdvantagesProps) {
   return (
     <Col>
       <Card className="overflow-hidden">
-        <Table className="mb-0">
-          <colgroup style={{background: "red !important"}}></colgroup>
+        <Table size="small" className={cns(["mb-0", styles.table])}>
           <thead>
             <tr>
               <th colSpan={4}>
@@ -50,9 +51,14 @@ export function Advantages({premium}: AdvantagesProps) {
               <td>{toCurrency(Math.min(101, premium * 0.19))}</td>
             </tr>
             <tr style={{borderBottom: "transparent"}}>
-              <td colSpan={2}></td>
+              <td></td>
+              <td></td>
               <td>Percentuale</td>
-              <td>{toPercent(Math.min(101, premium * 0.19) / premium)}</td>
+              <td>
+                {toPercent(
+                  premium > 0 ? Math.min(101, premium * 0.19) / premium : 0,
+                )}
+              </td>
             </tr>
           </tbody>
         </Table>
