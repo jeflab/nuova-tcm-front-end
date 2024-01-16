@@ -120,10 +120,10 @@ export function QuoterForm() {
             </Button>
           </div>
           <div>
-            {premium
-              ? `Premio mensile: ${toCurrency(premium / 12)}`
-              : formMethods.formState.isSubmitting
-                ? "Calcolo in corso..."
+            {formMethods.formState.isSubmitting
+              ? "Calcolo in corso..."
+              : premium
+                ? `Premio mensile: ${toCurrency(premium / 12)}`
                 : "Compila il form per avere il preventivo della polizza."}
           </div>
         </AppContainer>
