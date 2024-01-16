@@ -13,7 +13,6 @@ import {
   faSpinner,
 } from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import useDebouncedCallback from "beautiful-react-hooks/useDebouncedCallback";
 import {useState} from "react";
 import {Alert, Button, Row} from "react-bootstrap";
 import {useForm} from "react-hook-form";
@@ -64,18 +63,16 @@ export function QuoterForm() {
     setPremium(clientResponse.quotazione.premium);
   };
 
-  const handleFormChange = useDebouncedCallback(() => {
-    if (formMethods.formState.isSubmitted) {
-      formMethods.handleSubmit(handleSubmit)();
-    }
-  }, [formMethods]);
-
   return (
     <Form
       onSubmit={handleSubmit}
       formMethods={formMethods}
       className="vstack gap-3"
-      onChange={handleFormChange}
+      onChange={() => {
+        if (formMethods.formState.isSubmitted) {
+          setPremium(undefined);
+        }
+      }}
     >
       <AppContainer>
         <Row xs={1} sm={2} className="row-gap-3 isolate">
