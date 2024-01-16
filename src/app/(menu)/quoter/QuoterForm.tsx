@@ -13,6 +13,7 @@ import {
   faSpinner,
 } from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import useDebouncedCallback from "beautiful-react-hooks/useDebouncedCallback";
 import {useState} from "react";
 import {Alert, Button, Card, CardBody, Row} from "react-bootstrap";
 import {useForm} from "react-hook-form";
@@ -63,22 +64,24 @@ export function QuoterForm() {
     setPremium(clientResponse.quotazione.premium);
   };
 
+  const handleFormChange = useDebouncedCallback(() => {
+    if (formMethods.formState.isSubmitted) {
+      formMethods.handleSubmit(handleSubmit)();
+    }
+  }, [formMethods]);
+
   return (
     <Form
       onSubmit={handleSubmit}
       formMethods={formMethods}
       className="vstack gap-3"
-      onChange={() => {
-        if (formMethods.formState.isSubmitted) {
-          setPremium(undefined);
-        }
-      }}
+      onChange={handleFormChange}
     >
       <AppContainer>
         <Row xs={1} sm={2} className="row-gap-3 isolate">
           <InsuredData />
           <Coverages />
-          <Advantages />
+          <Advantages premium={premium ?? 0} />
           <ComplementaryCoverages />
         </Row>
       </AppContainer>
@@ -119,7 +122,9 @@ export function QuoterForm() {
           <div>
             {premium
               ? `Premio mensile: ${toCurrency(premium / 12)}`
-              : "Compila il form per avere il preventivo della polizza."}
+              : formMethods.formState.isSubmitting
+                ? "Calcolo in corso..."
+                : "Compila il form per avere il preventivo della polizza."}
           </div>
         </AppContainer>
       </div>
