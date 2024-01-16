@@ -30,13 +30,9 @@ export function CheckboxField({
   validationStyle = true,
   className,
   stretchedLabel,
-  disabled,
   ...checkboxProps
 }: CheckboxFieldProps) {
-  const {
-    register,
-    formState: {isSubmitting},
-  } = useFormContext();
+  const {register} = useFormContext();
   const {controlId} = useContext(FormContext);
   const controlName = name || controlId;
   invariant(controlName, "name or controlId is required");
@@ -54,7 +50,6 @@ export function CheckboxField({
       isValid={validationStyle && isValid}
       aria-invalid={isInvalid}
       className={cns([className, stretchedLabel && styles.stretchedLabel])}
-      disabled={disabled || isSubmitting}
       {...checkboxProps}
     />
   );

@@ -22,7 +22,6 @@ interface InputFieldProps extends ComponentProps<typeof FormControl> {
 }
 
 export function InputField({
-  disabled,
   name,
   normalize,
   onChange,
@@ -31,11 +30,7 @@ export function InputField({
   validationStyle = true,
   ...inputProps
 }: InputFieldProps) {
-  const {
-    setValue,
-    register,
-    formState: {isSubmitting},
-  } = useFormContext();
+  const {setValue, register} = useFormContext();
   const {controlId} = useContext(FormContext);
   const controlName = name || controlId;
   invariant(controlName, "name or controlId is required");
@@ -69,7 +64,6 @@ export function InputField({
       aria-invalid={isInvalid}
       aria-errormessage={isInvalid ? `${controlName}-error` : undefined}
       aria-describedby={`${controlName}-help`}
-      disabled={disabled || isSubmitting}
       {...preventNotNumber}
       {...inputProps}
     />
