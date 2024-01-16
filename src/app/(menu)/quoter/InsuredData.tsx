@@ -56,8 +56,8 @@ export function InsuredData() {
             type="radio"
             inline
             options={[
-              {label: "Sì", value: "true"},
-              {label: "No", value: "false"},
+              {label: "Sì", value: "yes"},
+              {label: "No", value: "no"},
             ]}
             validation={{
               required: "Seleziona un'opzione",

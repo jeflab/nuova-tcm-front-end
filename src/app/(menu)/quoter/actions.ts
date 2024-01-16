@@ -40,7 +40,7 @@ export async function getQuote(quoterData: GetQuoteParams) {
       : 0,
     accidentalDeath: quoterData.accidentalDeath,
     trafficAccidentalDeath: quoterData.trafficAccidentalDeath,
-    smoker: quoterData.smoker === "true",
+    smoker: quoterData.smoker === "yes",
     exemptionForPermanentDisability:
       quoterData.exemptionFromPaying &&
       calendarYearAge(quoterData.birthDate) <= 55,
