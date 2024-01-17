@@ -1,9 +1,12 @@
 "use client";
+
+import {DrawerName} from "@/app/(menu)/(authenticated)/lips/[id]/page";
 import {cns} from "@/helpers/cns";
+import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {DrawerIcon} from "@/ui/drawer/DrawerIcon";
 import {faPenToSquare} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {ReactNode, useState} from "react";
+import {ReactNode} from "react";
 import {
   Button,
   Card,
@@ -15,37 +18,49 @@ import {
 import styles from "./Drawer.module.scss";
 
 interface DrawerProps {
-  title: string;
-  isActive?: boolean;
+  children?: ReactNode;
   isComplete?: boolean;
   isLoading?: boolean;
-  children?: ReactNode;
   modalContent?: ReactNode;
+  name: DrawerName;
+  title: string;
 }
 
 export function Drawer({
   children,
-  isActive,
-  isComplete,
   isLoading,
   modalContent,
+  name,
   title,
 }: DrawerProps) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const modalOpen = useDrawerStore((state) => state.modalOpen);
+  const openModal = useDrawerStore((state) => state.openModal);
+  const closeModal = useDrawerStore((state) => state.closeModal);
+  const drawerStates = useDrawerStore((state) => state.drawerStates);
+
+  const isActive = drawerStates[name] === "active";
+  const isSuccess = drawerStates[name] === "success";
+  const isDanger = drawerStates[name] === "danger";
 
   return (
     <>
       <Card
         className={cns(
-          isComplete && styles.isComplete,
+          styles.drawer,
           isActive && styles.isActive,
+          isSuccess && styles.isSuccess,
+          isDanger && styles.isDanger,
         )}
       >
+        <div id={name} className={styles.anchor}>
+          Test
+        </div>
         <CardHeader className="d-flex align-items-center justify-content-between py-3">
           <h4 className="mb-0">
             <DrawerIcon
               isActive={isActive}
-              isComplete={isComplete}
+              isSuccess={isSuccess}
+              isDanger={isDanger}
               isLoading={isLoading}
               className="me-2"
             />
@@ -53,24 +68,22 @@ export function Drawer({
           </h4>
           <Button
             className={cns(!isActive && "invisible")}
-            onClick={() => setIsModalOpen(true)}
+            onClick={() => openModal(name)}
           >
             <FontAwesomeIcon icon={faPenToSquare} className="me-2" />
-            {isComplete ? "Modifica" : "Compila"}
+            {isSuccess ? "Modifica" : "Compila"}
           </Button>
         </CardHeader>
-        {isComplete && <CardBody>{children}</CardBody>}
+        {isSuccess && <CardBody>{children}</CardBody>}
       </Card>
       <Modal
         backdrop="static"
         className={styles.modal}
         fullscreen="xl-down"
         size="xl"
+        onHide={() => closeModal()}
         keyboard={false}
-        onHide={() => {
-          setIsModalOpen(false);
-        }}
-        show={isModalOpen}
+        show={modalOpen === name}
       >
         <ModalHeader closeButton>
           <Modal.Title>{title}</Modal.Title>

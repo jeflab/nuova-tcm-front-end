@@ -2,6 +2,7 @@ import {cns} from "@/helpers/cns";
 import {
   faCheckCircle,
   faCircle,
+  faCircleExclamation,
   faCirclePause,
   faCirclePlay,
 } from "@fortawesome/pro-duotone-svg-icons";
@@ -11,17 +12,28 @@ import {CSSProperties} from "react";
 interface DrawerIconProps {
   className?: string;
   isActive?: boolean;
-  isComplete?: boolean;
+  isDanger?: boolean;
   isLoading?: boolean;
+  isSuccess?: boolean;
 }
 
 export function DrawerIcon({
   className,
   isActive,
-  isComplete,
+  isDanger,
   isLoading,
+  isSuccess,
 }: DrawerIconProps) {
-  if (isComplete) {
+  if (isDanger) {
+    return (
+      <FontAwesomeIcon
+        icon={faCircleExclamation}
+        className={cns("text-danger", className)}
+      />
+    );
+  }
+
+  if (isSuccess) {
     return (
       <FontAwesomeIcon
         icon={faCheckCircle}

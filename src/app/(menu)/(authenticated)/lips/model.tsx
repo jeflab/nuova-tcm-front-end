@@ -33,3 +33,9 @@ export const LipStatesIcons: Record<LipStatesKeys, ReactNode> = {
   ),
   complete: <FontAwesomeIcon icon={faCheckCircle} className="text-success" />,
 } as const;
+
+// TODO: sistemare interfaccia
+export interface TempLipData {
+  fatca?: boolean;
+  contractor?: string;
+}
