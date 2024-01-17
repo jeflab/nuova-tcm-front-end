@@ -1,5 +1,6 @@
 "use client";
 
+import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {FieldError} from "@/ui/form/FieldError";
 import {Form} from "@/ui/form/Form";
 import {InputField} from "@/ui/form/InputField";
@@ -25,6 +26,8 @@ const defaultValues = {
 };
 
 export function ContractorForm() {
+  const closeModal = useDrawerStore((state) => state.closeModal);
+
   return (
     <>
       <ModalBody>
@@ -73,7 +76,7 @@ export function ContractorForm() {
         </Form>
       </ModalBody>
       <ModalFooter>
-        <Button type="button" variant="cancel">
+        <Button type="button" variant="cancel" onClick={() => closeModal()}>
           <FontAwesomeIcon icon={faXmark} /> Annulla
         </Button>
         <Button type="submit" variant="primary" form="contractor-form">
