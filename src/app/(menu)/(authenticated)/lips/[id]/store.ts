@@ -13,11 +13,14 @@ interface Actions {
   openModal: (id: DrawerName) => void;
   closeModal: () => void;
   updateFatca: (data: TempLipData["fatca"]) => void;
+  updateContractorFiscalCode: (
+    data: TempLipData["contractorFiscalCode"],
+  ) => void;
 }
 
 const updateLipData = (state: State, data: TempLipData) => {
   const newState = state;
-  newState.lipData = data;
+  newState.lipData = {...newState.lipData, ...data};
 
   // fatca
   if (newState.lipData.fatca === undefined) {
@@ -28,14 +31,25 @@ const updateLipData = (state: State, data: TempLipData) => {
     newState.drawerStates.fatca = "danger";
   }
 
-  // contractor
+  // contractor fiscal code
   if (newState.drawerStates.fatca === "success") {
-    if (newState.lipData.contractor === undefined) {
-      newState.drawerStates.contractor = "active";
-    } else if (!newState.lipData.contractor) {
-      newState.drawerStates.contractor = "success";
+    if (newState.lipData.contractorFiscalCode === undefined) {
+      newState.drawerStates.contractorFiscalCode = "active";
+    } else if (!!newState.lipData.contractorFiscalCode) {
+      newState.drawerStates.contractorFiscalCode = "success";
     } else {
-      newState.drawerStates.contractor = "danger";
+      newState.drawerStates.contractorFiscalCode = "danger";
+    }
+  }
+
+  // Attesa creazione aria cliente
+  if (newState.drawerStates.contractorFiscalCode === "success") {
+    if (newState.lipData.contractorPersonalAreaActivation === undefined) {
+      newState.drawerStates.contractorPersonalAreaActivation = "active";
+    } else if (!newState.lipData.contractorPersonalAreaActivation) {
+      newState.drawerStates.contractorPersonalAreaActivation = "success";
+    } else {
+      newState.drawerStates.contractorPersonalAreaActivation = "danger";
     }
   }
 
@@ -54,4 +68,12 @@ export const useDrawerStore = create<State & Actions>((set) => ({
         updateLipData(state, {fatca: data});
       }),
     ),
+  updateContractorFiscalCode: (data: TempLipData["contractorFiscalCode"]) =>
+    set(
+      produce((state) => {
+        updateLipData(state, {contractorFiscalCode: data});
+      }),
+    ),
 }));
+
+useDrawerStore.getState().updateFatca(false);

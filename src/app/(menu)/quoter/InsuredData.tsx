@@ -16,7 +16,7 @@ export function InsuredData() {
     <>
       <h3 className="w-100">Dati dell'assicurato</h3>
       <Col className="vstack column-gap-3">
-        <FormGroup controlId="birthDate" as={BorderFeedback} className="">
+        <FormGroup controlId="birthDate" as={BorderFeedback}>
           <FormLabel>Data di nascita</FormLabel>
           <HelpText>
             L'età dell'assicurato deve essere compresa tra 18 e 75 anni

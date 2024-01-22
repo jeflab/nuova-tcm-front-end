@@ -16,7 +16,8 @@ import styles from "./page.module.scss";
 
 export type DrawerName =
   | "fatca"
-  | "contractor"
+  | "contractorFiscalCode"
+  | "contractorPersonalAreaActivation"
   | "adequacy"
   | "quote"
   | "health"
@@ -38,7 +39,10 @@ export default async function NewLipPage() {
         <Col md="auto">
           <Nav className={cns("flex-column", styles.connectedList)}>
             <NavDrawer name="fatca">Verifica residenza USA</NavDrawer>
-            <NavDrawer name="contractor">Dati contraente</NavDrawer>
+            <NavDrawer name="contractorFiscalCode">Dati contraente</NavDrawer>
+            <NavDrawer name="contractorPersonalAreaActivation">
+              Attivazione area contraente
+            </NavDrawer>
             <NavDrawer name="adequacy">Questionario di adeguatezza</NavDrawer>
             <NavDrawer name="quote">Preventivo</NavDrawer>
             <NavDrawer name="health">
@@ -76,9 +80,13 @@ export default async function NewLipPage() {
             <FatcaRecap />
           </Drawer>
           <Drawer
-            name="contractor"
+            name="contractorFiscalCode"
             title="Dati contraente"
             modalContent={<ContractorForm />}
+          ></Drawer>
+          <Drawer
+            name="contractorPersonalAreaActivation"
+            title="Attivazione area contraente"
           ></Drawer>
           <Drawer name="adequacy" title="Questionario di adeguatezza"></Drawer>
           <Drawer name="quote" title="Preventivo"></Drawer>

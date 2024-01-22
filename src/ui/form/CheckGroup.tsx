@@ -9,7 +9,7 @@ type GroupTypes = "checkbox" | "radio" | "switch";
 interface CheckGroupProps<TValue> {
   inline?: boolean;
   name?: string;
-  options: {label: string; value: TValue}[];
+  options: readonly {label: string; value: TValue}[];
   type: GroupTypes;
   validation?: RegisterOptions;
 }

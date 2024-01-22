@@ -1,7 +1,6 @@
 "use client";
 
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
-import {Debug} from "@/ui/Debug";
 
 export function FatcaRecap() {
   const fatcaData = useDrawerStore((state) => state.lipData.fatca);
