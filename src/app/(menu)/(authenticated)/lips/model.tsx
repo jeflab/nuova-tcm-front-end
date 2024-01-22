@@ -37,5 +37,16 @@ export const LipStatesIcons: Record<LipStatesKeys, ReactNode> = {
 // TODO: sistemare interfaccia
 export interface TempLipData {
   fatca?: boolean;
-  contractor?: string;
+  contractorFiscalCode?: {
+    birthDate: string;
+    birthPlace: {
+      city: string;
+      province: string;
+    };
+    fiscalCode: string;
+    gender: "M" | "F";
+    name: string;
+    surname: string;
+  };
+  contractorPersonalAreaActivation?: string;
 }

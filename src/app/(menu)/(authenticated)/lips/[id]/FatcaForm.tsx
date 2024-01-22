@@ -67,7 +67,7 @@ export function FatcaForm() {
           ) : (
             <FontAwesomeIcon icon={faSave} className="me-2" />
           )}
-          Salva
+          Salva e prosegui
         </Button>
       </ModalFooter>
     </>
