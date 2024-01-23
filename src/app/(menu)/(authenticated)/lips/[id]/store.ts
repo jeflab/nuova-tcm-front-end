@@ -44,6 +44,8 @@ const updateLipData = (state: State, data: TempLipData) => {
     } else {
       newState.drawerStates.contractorFiscalCode = "danger";
     }
+  } else {
+    newState.drawerStates.contractorFiscalCode = undefined;
   }
 
   // Attesa creazione aria cliente
@@ -55,6 +57,8 @@ const updateLipData = (state: State, data: TempLipData) => {
     } else {
       newState.drawerStates.contractorPersonalAreaActivation = "danger";
     }
+  } else {
+    newState.drawerStates.contractorPersonalAreaActivation = undefined;
   }
 
   return newState;
@@ -83,15 +87,15 @@ export const useDrawerStore = create<State & Actions>((set) => ({
 }));
 
 useDrawerStore.getState().updateFatca(false);
-// useDrawerStore.getState().updateContractorFiscalCode({
-//   birthDate: "1984-06-24",
-//   birthPlace: {
-//     city: "Lovere",
-//     province: "BG",
-//   },
-//   fiscalCode: "LZZFBA84H24E704I",
-//   gender: "M",
-//   name: "Fabio",
-//   surname: "Lazzaroni",
-// });
-// useDrawerStore.getState().updateLipData({agentId: 1});
+useDrawerStore.getState().updateContractorFiscalCode({
+  birthDate: "1984-06-24",
+  birthPlace: {
+    city: "Lovere",
+    province: "BG",
+  },
+  fiscalCode: "LZZFBA84H24E704I",
+  gender: "M",
+  name: "Fabio",
+  surname: "Lazzaroni",
+});
+useDrawerStore.getState().updateLipData({agentId: 2});

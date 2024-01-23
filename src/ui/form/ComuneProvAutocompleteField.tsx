@@ -8,7 +8,7 @@ import {
   faSpinner,
 } from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {useContext, useState} from "react";
+import {useCallback, useContext, useEffect, useState} from "react";
 import {AsyncTypeahead, Highlighter} from "react-bootstrap-typeahead";
 import FormContext from "react-bootstrap/FormContext";
 import {useController, useFormContext} from "react-hook-form";
@@ -29,10 +29,12 @@ export function ComuneProvAutocompleteField({
   validationStyle = true,
 }: ComuneProvAutocompleteFiledProps) {
   const [cities, setCities] = useState<City[]>(getCities);
+  const [isLoading, setIsLoading] = useState(false);
   const {
     setValue,
     formState: {errors},
   } = useFormContext();
+  const [query, setQuery] = useState("");
   const {controlId} = useContext(FormContext);
   const controlName = name || controlId;
   invariant(controlName, "name or controlId is required");
@@ -46,14 +48,15 @@ export function ComuneProvAutocompleteField({
   const {isInvalid, isValid} = useValidationState(controlName);
 
   console.log("metodi", {
-    field: {onBlur, onChange, ...altri},
+    field: {onBlur, onChange, value, ...altri},
     fieldState,
     formState,
   });
 
-  const onSearch = (query: string) => {
+  const onSearch = useCallback((query: string) => {
+    console.log("cerco", query);
     setCities(getCities(query));
-  };
+  }, []);
 
   return (
     <div className="hstack gap-3">
@@ -66,7 +69,7 @@ export function ComuneProvAutocompleteField({
         emptyLabel={
           <span className="dropdown-item-text text-center">
             <FontAwesomeIcon icon={faExclamationTriangle} /> Nessun comune
-            trovato per &quot;{value}&quot;
+            trovato per &quot;{query}&quot;
           </span>
         }
         promptText={
@@ -74,24 +77,15 @@ export function ComuneProvAutocompleteField({
             <FontAwesomeIcon icon={faInfoCircle} /> Scrivi per cercare la città
           </span>
         }
+        minLength={2}
         searchText={
           <span className="dropdown-item-text text-center">
             <FontAwesomeIcon icon={faSpinner} className="fa-spin" /> Ricerca
             città in corso...
           </span>
         }
-        isLoading
+        isLoading={isLoading}
         highlightOnlyResult
-        filterBy={(option, props) => {
-          const searchStr = props.text
-            .toLowerCase()
-            .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "")
-            .replace(/[‘’]/g, "'");
-          const cityName = (option as City).city.toLowerCase();
-
-          return cityName.includes(searchStr) || cityName === "estero";
-        }}
         onBlur={onBlur}
         onChange={(selected) => {
           setValue?.(
@@ -105,7 +99,8 @@ export function ComuneProvAutocompleteField({
           onChange(upperCaseWordsNormalizer((selected[0] as City)?.city) ?? "");
           onBlur();
         }}
-        onInputChange={() => {
+        onInputChange={(text) => {
+          setQuery(text);
           setValue?.(`${controlName}.province`, "");
         }}
         inputProps={{
@@ -129,9 +124,8 @@ export function ComuneProvAutocompleteField({
           upperCaseWordsNormalizer((option as City).city)
         }
         flip
-        onSearch={(text) => {
-          onSearch(text);
-        }}
+        onSearch={onSearch}
+        useCache={false}
       />
       <InputField
         type="text"
