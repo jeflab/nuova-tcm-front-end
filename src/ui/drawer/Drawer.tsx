@@ -74,7 +74,7 @@ export function Drawer({
             {isSuccess ? "Modifica" : "Compila"}
           </Button>
         </CardHeader>
-        {isSuccess && <CardBody>{children}</CardBody>}
+        {children && <CardBody>{children}</CardBody>}
       </Card>
       <Modal
         backdrop="static"

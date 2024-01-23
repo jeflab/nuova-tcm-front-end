@@ -12,6 +12,7 @@ interface State {
 interface Actions {
   openModal: (id: DrawerName) => void;
   closeModal: () => void;
+  updateLipData: (data: Partial<TempLipData>) => void;
   updateFatca: (data: TempLipData["fatca"]) => void;
   updateContractorFiscalCode: (
     data: TempLipData["contractorFiscalCode"],
@@ -35,7 +36,10 @@ const updateLipData = (state: State, data: TempLipData) => {
   if (newState.drawerStates.fatca === "success") {
     if (newState.lipData.contractorFiscalCode === undefined) {
       newState.drawerStates.contractorFiscalCode = "active";
-    } else if (!!newState.lipData.contractorFiscalCode) {
+    } else if (
+      !!newState.lipData.contractorFiscalCode &&
+      (!newState.lipData.agentId || newState.lipData.agentId === 2)
+    ) {
       newState.drawerStates.contractorFiscalCode = "success";
     } else {
       newState.drawerStates.contractorFiscalCode = "danger";
@@ -62,6 +66,8 @@ export const useDrawerStore = create<State & Actions>((set) => ({
   drawerStates: {fatca: "active"},
   openModal: (id) => set(() => ({modalOpen: id})),
   closeModal: () => set(() => ({modalOpen: null})),
+  updateLipData: (data: Partial<TempLipData>) =>
+    set(produce((state) => updateLipData(state, data))),
   updateFatca: (data: TempLipData["fatca"]) =>
     set(
       produce((state) => {
@@ -77,3 +83,15 @@ export const useDrawerStore = create<State & Actions>((set) => ({
 }));
 
 useDrawerStore.getState().updateFatca(false);
+// useDrawerStore.getState().updateContractorFiscalCode({
+//   birthDate: "1984-06-24",
+//   birthPlace: {
+//     city: "Lovere",
+//     province: "BG",
+//   },
+//   fiscalCode: "LZZFBA84H24E704I",
+//   gender: "M",
+//   name: "Fabio",
+//   surname: "Lazzaroni",
+// });
+// useDrawerStore.getState().updateLipData({agentId: 1});

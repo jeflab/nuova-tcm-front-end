@@ -1,7 +1,8 @@
-import {ContractorForm} from "@/app/(menu)/(authenticated)/lips/[id]/ContractorForm";
+import {ContractorFiscalCodeForm} from "@/app/(menu)/(authenticated)/lips/[id]/ContractorFiscalCodeForm";
+import {ContractorFiscalCodeSummary} from "@/app/(menu)/(authenticated)/lips/[id]/ContractorFiscalCodeSummary";
 import {DebugState} from "@/app/(menu)/(authenticated)/lips/[id]/DebugState";
 import {FatcaForm} from "@/app/(menu)/(authenticated)/lips/[id]/FatcaForm";
-import {FatcaRecap} from "@/app/(menu)/(authenticated)/lips/[id]/FatcaSummary";
+import {FatcaSummary} from "@/app/(menu)/(authenticated)/lips/[id]/FatcaSummary";
 import {Lip} from "@/app/(menu)/(authenticated)/lips/model";
 import {cns} from "@/helpers/cns";
 import {AppContainer} from "@/ui/AppContainer";
@@ -51,10 +52,9 @@ export default async function NewLipPage() {
             <NavDrawer name="insured">Assicurato</NavDrawer>
             <NavDrawer name="beneficiaries">Beneficiari</NavDrawer>
           </Nav>
-          <DebugState />
         </Col>
         <Col className="d-flex flex-column gap-3">
-          <Alert variant="info">
+          <Alert variant="info" className="mb-0">
             <h3>
               <FontAwesomeIcon icon={faTriangleExclamation} className="me-2" />
               Avviso Legale: Contraente e Assicurato devono Coincidere
@@ -72,18 +72,21 @@ export default async function NewLipPage() {
               corrispondere.
             </p>
           </Alert>
+          <DebugState />
           <Drawer
             name="fatca"
             title="Verifica residenza USA"
             modalContent={<FatcaForm />}
           >
-            <FatcaRecap />
+            <FatcaSummary />
           </Drawer>
           <Drawer
             name="contractorFiscalCode"
             title="Dati contraente"
-            modalContent={<ContractorForm />}
-          ></Drawer>
+            modalContent={<ContractorFiscalCodeForm />}
+          >
+            <ContractorFiscalCodeSummary />
+          </Drawer>
           <Drawer
             name="contractorPersonalAreaActivation"
             title="Attivazione area contraente"
