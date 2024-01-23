@@ -8,11 +8,15 @@
     top: -70px;
     visibility: hidden;
   }
-}
 
-:not(.isSuccess) {
-  :global(.card-header) {
-    border-bottom: none;
+  :global(.card-body):empty {
+    display: none;
+  }
+
+  &:not(.isSuccess, .isDanger) {
+    :global(.card-header) {
+      border-bottom: none;
+    }
   }
 }
 

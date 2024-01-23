@@ -1,5 +1,6 @@
 "use client";
 
+import {checkIfFiscalCodeExists} from "@/app/(menu)/(authenticated)/lips/[id]/actions";
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {cns} from "@/helpers/cns";
 import {dbDateString} from "@/helpers/dates";
@@ -114,7 +115,7 @@ const contractorFiscalCodeDefaultValues = {
   surname: "",
 };
 
-export function ContractorForm() {
+export function ContractorFiscalCodeForm() {
   const formMethods = useForm({
     mode: "onChange",
     defaultValues: contractorFiscalCodeDefaultValues,
@@ -124,13 +125,20 @@ export function ContractorForm() {
   const updateContractorFiscalCode = useDrawerStore(
     (state) => state.updateContractorFiscalCode,
   );
+  const updateLipData = useDrawerStore((state) => state.updateLipData);
 
   return (
     <>
       <ModalBody>
         <Form
-          onSubmit={(values) => {
+          onSubmit={async (values) => {
+            const existingLip = await checkIfFiscalCodeExists(
+              values.fiscalCode,
+            );
             updateContractorFiscalCode(values);
+            if (existingLip.lastLip) {
+              updateLipData(existingLip.lastLip);
+            }
             closeModal();
           }}
           id="contractor-fiscal-code-form"
