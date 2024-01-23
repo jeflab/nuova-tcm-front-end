@@ -26,7 +26,7 @@ export function getCities(query?: string): City[] {
     city.city.toLowerCase().includes(query.toLowerCase()),
   );
 
-  return matchSorter(cities, query.toLowerCase(), {
+  return matchSorter(filteredCities, query.toLowerCase(), {
     keys: ["city"],
   });
 }

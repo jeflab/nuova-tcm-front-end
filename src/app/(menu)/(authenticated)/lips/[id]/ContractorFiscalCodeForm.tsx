@@ -201,7 +201,10 @@ export function ContractorFiscalCodeForm() {
               <FormGroup controlId="birthPlace" as={BorderFeedback}>
                 <FormLabel>Luogo di nascita</FormLabel>
                 <FieldError name="birthPlace.city" />
-                <FieldError name="birthPlace.province" />
+                <FieldError
+                  name="birthPlace.province"
+                  disableIf={["birthPlace.city"]}
+                />
                 <ComuneProvAutocompleteField />
               </FormGroup>
             </Col>
