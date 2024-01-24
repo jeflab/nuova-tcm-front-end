@@ -12,14 +12,8 @@ export function Advantages({duration, premium}: AdvantagesProps) {
   return (
     <Col>
       <Card className="overflow-hidden">
+        <h3 className="mb-0 p-2 border-bottom">I vantaggi</h3>
         <Table size="small" className={cns(["mb-0", styles.table])}>
-          <thead>
-            <tr>
-              <th colSpan={4}>
-                <h3 className="mb-0">Bonus garantiti</h3>
-              </th>
-            </tr>
-          </thead>
           <tbody>
             <tr className={cns(duration < 30 && "d-none")}>
               <td>Bonus a scadenza</td>
