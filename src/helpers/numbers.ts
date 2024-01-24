@@ -14,3 +14,11 @@ export const toDecimal = (value: number) => {
     .format(value)
     .replaceAll(".", " ");
 };
+
+export const toPercent = (value: number) => {
+  return new Intl.NumberFormat("it-It", {
+    style: "percent",
+  })
+    .format(value)
+    .replaceAll(".", " ");
+};

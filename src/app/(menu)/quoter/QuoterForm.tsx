@@ -1,9 +1,10 @@
 "use client";
 
+import {getQuote} from "@/app/(menu)/quoter/actions";
 import {Advantages} from "@/app/(menu)/quoter/Advantages";
+import {getCoverageDuration} from "@/app/(menu)/quoter/helpers";
 import {cns} from "@/helpers/cns";
-import {toCurrency} from "@/helpers/numbers";
-import {getQuote} from "@/services/quoter";
+import {Currency} from "@/ui/Currency";
 import {FieldError} from "@/ui/form/FieldError";
 import {Form} from "@/ui/form/Form";
 import {SubmitButton} from "@/ui/form/SubmitButton";
@@ -14,7 +15,7 @@ import {
 } from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {useState} from "react";
-import {Alert, Button, Card, CardBody, Row} from "react-bootstrap";
+import {Alert, Button, Row} from "react-bootstrap";
 import {useForm} from "react-hook-form";
 import {ComplementaryCoverages} from "./ComplementaryCoverages";
 import {Coverages} from "./Coverages";
@@ -43,7 +44,7 @@ export function QuoterForm() {
   });
 
   const handleSubmit = async (values: QuoterFormValues) => {
-    let clientResponse;
+    let clientResponse: Awaited<ReturnType<typeof getQuote>>;
     try {
       clientResponse = await getQuote(values);
     } catch (error) {
@@ -59,8 +60,11 @@ export function QuoterForm() {
     if (clientResponse.status === "failed") {
       throw {root: {type: "server", message: clientResponse.message}};
     }
+
     setPremium(clientResponse.quotazione.premium);
   };
+
+  const birthDate = formMethods.watch("birthDate");
 
   return (
     <Form
@@ -77,7 +81,10 @@ export function QuoterForm() {
         <Row xs={1} sm={2} className="row-gap-3 isolate">
           <InsuredData />
           <Coverages />
-          <Advantages />
+          <Advantages
+            premium={premium ?? 0}
+            duration={getCoverageDuration(birthDate)}
+          />
           <ComplementaryCoverages />
         </Row>
       </AppContainer>
@@ -116,9 +123,18 @@ export function QuoterForm() {
             </Button>
           </div>
           <div>
-            {premium
-              ? `Premio mensile: ${toCurrency(premium / 12)}`
-              : "Compila il form per avere il preventivo della polizza."}
+            {formMethods.formState.isSubmitting ? (
+              "Calcolo in corso..."
+            ) : premium ? (
+              <>
+                Premio mensile:{" "}
+                <Currency className="h4 mb-0 fa-beat d-inline-block">
+                  {premium / 12}
+                </Currency>
+              </>
+            ) : (
+              "Compila il form per avere il preventivo della polizza."
+            )}
           </div>
         </AppContainer>
       </div>

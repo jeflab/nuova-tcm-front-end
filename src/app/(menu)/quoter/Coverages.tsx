@@ -1,5 +1,6 @@
 import {getCoverageDuration} from "@/app/(menu)/quoter/helpers";
 import {toCurrency} from "@/helpers/numbers";
+import {Currency} from "@/ui/Currency";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {FieldError} from "@/ui/form/FieldError";
 import {HelpText} from "@/ui/form/HelpText";
@@ -17,7 +18,9 @@ export function Coverages() {
         <FormGroup controlId="death" as={BorderFeedback}>
           <p className="mb-2 input-heading">Caso morte</p>
           <HelpText hideOnError="min" id="death-help-text">
-            Il capitale assicurato deve essere maggiore o uguale a 20 000,00 €
+            Il capitale assicurato deve essere maggiore o uguale a{" "}
+            <Currency>{20_000}</Currency> e minore o uguale a{" "}
+            <Currency>{300_000}</Currency>
           </HelpText>
           <strong>
             Durata: {getCoverageDuration(watch("birthDate"))} anni
@@ -31,6 +34,7 @@ export function Coverages() {
               <InputField
                 aria-describedby="death-help-text"
                 min={20_000}
+                max={300_000}
                 placeholder="Capitale assicurato"
                 step={1_000}
                 type="number"
@@ -40,6 +44,12 @@ export function Coverages() {
                     value: 20_000,
                     message: `Il capitale assicurato deve essere maggiore o uguale a ${toCurrency(
                       20_000,
+                    )}`,
+                  },
+                  max: {
+                    value: 300_000,
+                    message: `Il capitale assicurato deve essere minore o uguale a ${toCurrency(
+                      300_000,
                     )}`,
                   },
                   validate: (value) => {

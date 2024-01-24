@@ -1,38 +1,93 @@
+import {cns} from "@/helpers/cns";
 import {Card, Col, Table} from "react-bootstrap";
+import styles from "./Advantages.module.scss";
+import {Currency, Percent} from "@/ui/Currency";
 
-export function Advantages() {
+interface AdvantagesProps {
+  duration: number;
+  premium: number;
+}
+
+export function Advantages({duration, premium}: AdvantagesProps) {
   return (
     <Col>
       <Card className="overflow-hidden">
-        <Table className="mb-0">
+        <Table size="small" className={cns(["mb-0", styles.table])}>
           <thead>
             <tr>
-              <th>
-                <h3 className="mb-0">I vantaggi</h3>
+              <th colSpan={4}>
+                <h3 className="mb-0">Bonus garantiti</h3>
               </th>
-              <th></th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>Bonus dei premi a scadenza</td>
+            <tr className={cns(duration < 30 && "d-none")}>
+              <td>Bonus a scadenza</td>
               <td>100%</td>
+              <td>Importo</td>
+              <td>
+                {premium ? <Currency>{duration * premium}</Currency> : "? €"}
+              </td>
             </tr>
-            <tr>
-              <td>Bonus dei premi al 25° anno</td>
+            <tr className={cns(duration < 25 && "d-none")}>
+              <td>Bonus dal 25° al 29° anno</td>
               <td>90%</td>
+              <td>Importo minimo garantito</td>
+              <td>
+                {premium ? (
+                  <Currency>{duration * premium * 0.9}</Currency>
+                ) : (
+                  "? €"
+                )}
+              </td>
             </tr>
-            <tr>
-              <td>Bonus dei premi al 20° anno</td>
+            <tr className={cns(duration < 20 && "d-none")}>
+              <td>Bonus dal 20° al 24° anno</td>
               <td>75%</td>
+              <td>Importo minimo garantito</td>
+              <td>
+                {premium ? (
+                  <Currency>{duration * premium * 0.75}</Currency>
+                ) : (
+                  "? €"
+                )}
+              </td>
+            </tr>
+            <tr className={cns(duration < 15 && "d-none")}>
+              <td>Bonus dal 15° al 19° anno</td>
+              <td>50%</td>
+              <td>Importo minimo garantito</td>
+              <td>
+                {premium ? (
+                  <Currency>{duration * premium * 0.5}</Currency>
+                ) : (
+                  "? €"
+                )}
+              </td>
             </tr>
             <tr>
-              <td>Bonus dei premi al 15° anno</td>
-              <td>50%</td>
+              <td>Detrazione fiscale</td>
+              <td>19%</td>
+              <td>Importo</td>
+              <td>
+                {premium ? (
+                  <Currency>{Math.min(101, premium * 0.19)}</Currency>
+                ) : (
+                  "? €"
+                )}
+              </td>
             </tr>
             <tr style={{borderBottom: "transparent"}}>
-              <td>Detrazione fiscale</td>
-              <td>fino al 19%</td>
+              <td></td>
+              <td></td>
+              <td>Percentuale</td>
+              <td>
+                {premium ? (
+                  <Percent>{Math.min(101, premium * 0.19) / premium}</Percent>
+                ) : (
+                  "? %"
+                )}
+              </td>
             </tr>
           </tbody>
         </Table>

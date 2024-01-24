@@ -1,4 +1,3 @@
-import {age, calendarYearAge} from "@/helpers/ages";
 import {dbDateString} from "@/helpers/dates";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {CheckGroup} from "@/ui/form/CheckGroup";
@@ -25,7 +24,7 @@ export function InsuredData() {
           <InputField
             type="date"
             placeholder="Data di nascita"
-            onChange={(e) => {
+            onChange={() => {
               trigger("tpi.coverage");
             }}
             max={dbDateString(subYears(Date(), 18))}
@@ -56,8 +55,8 @@ export function InsuredData() {
             type="radio"
             inline
             options={[
-              {label: "Sì", value: "true"},
-              {label: "No", value: "false"},
+              {label: "Sì", value: "yes"},
+              {label: "No", value: "no"},
             ]}
             validation={{
               required: "Seleziona un'opzione",

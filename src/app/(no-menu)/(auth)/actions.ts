@@ -12,22 +12,17 @@ const LoginResponseRawShape = {
 };
 
 export async function login(data: {fiscalCode: string; password: string}) {
-  try {
-    const body = JSON.stringify({
-      fiscal_code: data.fiscalCode,
-      password: data.password,
-    });
+  const body = JSON.stringify({
+    fiscal_code: data.fiscalCode,
+    password: data.password,
+  });
 
-    const loginResponse = await api.post("/login", LoginResponseRawShape, body);
+  const loginResponse = await api.post("/login", LoginResponseRawShape, body);
+  if (loginResponse.status === "success") {
     cookies().set(AUTH_COOKIE_NAME, loginResponse.access_token);
-
-    return loginResponse;
-  } catch (e) {
-    if (isServerError(e)) {
-      return e;
-    }
-    throw e;
   }
+
+  return loginResponse;
 }
 
 export async function isLoggedIn() {
@@ -36,17 +31,10 @@ export async function isLoggedIn() {
 }
 
 export async function logout() {
-  try {
-    const logoutResponsePromise = api.post("/logout", {});
-    cookies().delete(AUTH_COOKIE_NAME);
+  const logoutResponsePromise = api.post("/logout", {});
+  cookies().delete(AUTH_COOKIE_NAME);
 
-    return await logoutResponsePromise;
-  } catch (e) {
-    if (isServerError(e)) {
-      return e;
-    }
-    throw e;
-  }
+  return await logoutResponsePromise;
 }
 
 export async function checkAuth() {

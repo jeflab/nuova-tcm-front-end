@@ -59,11 +59,7 @@ export async function get<T extends ZodRawShape>(url: string, zodRowShape: T) {
     .union([serverSuccessSchema, serverErrorSchema])
     .parse(responseJson);
 
-  if (isServerSuccess(serverResponseJson, zodRowShape)) {
-    return serverResponseJson;
-  } else {
-    throw serverResponseJson;
-  }
+  return serverResponseJson;
 }
 
 export async function post<T extends ZodRawShape>(
@@ -113,9 +109,5 @@ export async function post<T extends ZodRawShape>(
     throw {status: "failed", message: "Errore imprevisto, riprova più tardi"};
   }
 
-  if (isServerSuccess(serverResponseJson, zodRowShape)) {
-    return serverResponseJson;
-  } else {
-    throw serverResponseJson;
-  }
+  return serverResponseJson;
 }
