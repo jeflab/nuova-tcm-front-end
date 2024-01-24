@@ -1,7 +1,6 @@
+import {getAccount} from "@/app/(no-menu)/(auth)/actions";
 import {AppContainer} from "@/ui/AppContainer";
 import {PageTitle} from "@/ui/PageTitle";
-import {getAccount} from "./actions";
-import {Debug} from "@/ui/Debug";
 
 export default async function ProfilePage() {
   const userAccount = await getAccount();

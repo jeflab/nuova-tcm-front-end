@@ -1,5 +1,7 @@
+import {ContractorDataForm} from "@/app/(menu)/(authenticated)/lips/[id]/ContractorDataForm";
 import {ContractorFiscalCodeForm} from "@/app/(menu)/(authenticated)/lips/[id]/ContractorFiscalCodeForm";
 import {ContractorFiscalCodeSummary} from "@/app/(menu)/(authenticated)/lips/[id]/ContractorFiscalCodeSummary";
+import {ContractorPersonalAreaActivationSummary} from "@/app/(menu)/(authenticated)/lips/[id]/ContractorPersonalAreaActivationSummary";
 import {DebugState} from "@/app/(menu)/(authenticated)/lips/[id]/DebugState";
 import {FatcaForm} from "@/app/(menu)/(authenticated)/lips/[id]/FatcaForm";
 import {FatcaSummary} from "@/app/(menu)/(authenticated)/lips/[id]/FatcaSummary";
@@ -19,6 +21,7 @@ export type DrawerName =
   | "fatca"
   | "contractorFiscalCode"
   | "contractorPersonalAreaActivation"
+  | "contractorData"
   | "adequacy"
   | "quote"
   | "health"
@@ -44,6 +47,7 @@ export default async function NewLipPage() {
             <NavDrawer name="contractorPersonalAreaActivation">
               Attivazione area contraente
             </NavDrawer>
+            <NavDrawer name="contractorData">Censimento contraente</NavDrawer>
             <NavDrawer name="adequacy">Questionario di adeguatezza</NavDrawer>
             <NavDrawer name="quote">Preventivo</NavDrawer>
             <NavDrawer name="health">
@@ -90,6 +94,13 @@ export default async function NewLipPage() {
           <Drawer
             name="contractorPersonalAreaActivation"
             title="Attivazione area contraente"
+          >
+            <ContractorPersonalAreaActivationSummary />
+          </Drawer>
+          <Drawer
+            name="contractorData"
+            title="Censimento contraente"
+            modalContent={<ContractorDataForm />}
           ></Drawer>
           <Drawer name="adequacy" title="Questionario di adeguatezza"></Drawer>
           <Drawer name="quote" title="Preventivo"></Drawer>

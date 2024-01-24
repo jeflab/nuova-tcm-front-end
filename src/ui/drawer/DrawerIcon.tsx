@@ -1,4 +1,5 @@
 import {cns} from "@/helpers/cns";
+import {DrawerState} from "@/ui/drawer/const";
 import {
   faCheckCircle,
   faCircle,
@@ -11,20 +12,11 @@ import {CSSProperties} from "react";
 
 interface DrawerIconProps {
   className?: string;
-  isActive?: boolean;
-  isDanger?: boolean;
-  isLoading?: boolean;
-  isSuccess?: boolean;
+  state?: DrawerState;
 }
 
-export function DrawerIcon({
-  className,
-  isActive,
-  isDanger,
-  isLoading,
-  isSuccess,
-}: DrawerIconProps) {
-  if (isDanger) {
+export function DrawerIcon({className, state}: DrawerIconProps) {
+  if (state === "danger") {
     return (
       <FontAwesomeIcon
         icon={faCircleExclamation}
@@ -33,7 +25,7 @@ export function DrawerIcon({
     );
   }
 
-  if (isSuccess) {
+  if (state === "success") {
     return (
       <FontAwesomeIcon
         icon={faCheckCircle}
@@ -42,7 +34,7 @@ export function DrawerIcon({
     );
   }
 
-  if (isActive) {
+  if (state === "active") {
     return (
       <FontAwesomeIcon
         icon={faCirclePlay}
@@ -51,7 +43,16 @@ export function DrawerIcon({
     );
   }
 
-  if (isLoading) {
+  if (state === "waiting") {
+    return (
+      <FontAwesomeIcon
+        icon={faCirclePause}
+        className={cns("text-warning", className)}
+      />
+    );
+  }
+
+  if (state === "loading") {
     return (
       <>
         <FontAwesomeIcon

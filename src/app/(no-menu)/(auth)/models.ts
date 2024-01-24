@@ -1,5 +1,3 @@
-"use server";
-
 import {userSchema} from "@/entities/user";
 import * as api from "@/services/api";
 import {z} from "zod";
@@ -14,12 +12,9 @@ const permissionSchema = z.object({
   name: z.string(),
 });
 
-const getMeResponseSchema = {
+export const accountSchema = z.object({
   user: userSchema,
   roles: z.array(roleSchema),
   permissions: z.array(permissionSchema),
-};
-
-export async function getAccount() {
-  return await api.get("/me", getMeResponseSchema);
-}
+});
+export type Account = z.infer<typeof accountSchema>;

@@ -4,6 +4,7 @@ import {DrawerName} from "@/app/(menu)/(authenticated)/lips/[id]/page";
 import {cns} from "@/helpers/cns";
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {DrawerIcon} from "@/ui/drawer/DrawerIcon";
+import {upperCaseFirstNormalizer} from "@/ui/form/normalizers";
 import {faPenToSquare} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {ReactNode} from "react";
@@ -26,55 +27,35 @@ interface DrawerProps {
   title: string;
 }
 
-export function Drawer({
-  children,
-  isLoading,
-  modalContent,
-  name,
-  title,
-}: DrawerProps) {
+export function Drawer({children, modalContent, name, title}: DrawerProps) {
   const modalOpen = useDrawerStore((state) => state.modalOpen);
   const openModal = useDrawerStore((state) => state.openModal);
   const closeModal = useDrawerStore((state) => state.closeModal);
-  const drawerStates = useDrawerStore((state) => state.drawerStates);
-
-  const isActive = drawerStates[name] === "active";
-  const isSuccess = drawerStates[name] === "success";
-  const isDanger = drawerStates[name] === "danger";
+  const drawerState = useDrawerStore((state) => state.drawerStates[name]);
 
   return (
     <>
       <Card
         className={cns(
           styles.drawer,
-          isActive && styles.isActive,
-          isSuccess && styles.isSuccess,
-          isDanger && styles.isDanger,
+          drawerState && styles[`is${upperCaseFirstNormalizer(drawerState)}`],
         )}
       >
-        <div id={name} className={styles.anchor}>
-          Test
-        </div>
+        <div id={name} className={styles.anchor} />
         <CardHeader className="d-flex align-items-center justify-content-between py-3">
           <h4 className="mb-0">
-            <DrawerIcon
-              isActive={isActive}
-              isSuccess={isSuccess}
-              isDanger={isDanger}
-              isLoading={isLoading}
-              className="me-2"
-            />
+            <DrawerIcon state={drawerState} className="me-2" />
             {title}
           </h4>
           <Button
-            className={cns(!isActive && "invisible")}
+            className={cns(drawerState !== "active" && "invisible")}
             onClick={() => openModal(name)}
           >
             <FontAwesomeIcon icon={faPenToSquare} className="me-2" />
-            {isSuccess ? "Modifica" : "Compila"}
+            {drawerState === "success" ? "Modifica" : "Compila"}
           </Button>
         </CardHeader>
-        {children && <CardBody>{children}</CardBody>}
+        <CardBody>{children}</CardBody>
       </Card>
       <Modal
         backdrop="static"
@@ -104,7 +85,7 @@ export function DrawerSkeleton({title}: DrawerSkeletonProps) {
       <Card>
         <CardHeader className="d-flex align-items-center justify-content-between py-3">
           <h4 className="mb-0">
-            <DrawerIcon isLoading className="me-2" />
+            <DrawerIcon state="loading" className="me-2" />
             {title}
           </h4>
           <Button className="invisible">Compila</Button>

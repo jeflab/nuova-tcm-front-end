@@ -12,6 +12,13 @@ export function checkIfFiscalCodeExists(
       } else {
         resolve({lastLip: null});
       }
-    }, 3000);
+    }, 1000);
+  });
+}
+
+export function fakeActivateContractorPersonalArea(): Promise<boolean> {
+  // Fake server request
+  return new Promise((resolve) => {
+    resolve(true);
   });
 }
