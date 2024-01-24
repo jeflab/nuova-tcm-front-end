@@ -40,7 +40,7 @@ import {useForm} from "react-hook-form";
 import {z} from "zod";
 
 // TODO: spostare nel file del modello
-const contractorGenders = [
+export const contractorGenders = [
   {label: "Maschio", value: "M"},
   {label: "Femmina", value: "F"},
 ] as const;

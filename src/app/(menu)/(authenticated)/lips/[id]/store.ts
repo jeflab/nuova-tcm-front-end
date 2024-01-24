@@ -1,4 +1,5 @@
 import {DrawerName} from "@/app/(menu)/(authenticated)/lips/[id]/page";
+import {DrawerState} from "@/ui/drawer/const";
 import {create} from "zustand";
 import {TempLipData} from "../model";
 import {produce} from "immer";
@@ -6,7 +7,7 @@ import {produce} from "immer";
 interface State {
   lipData: TempLipData;
   modalOpen: DrawerName | null;
-  drawerStates: Partial<Record<DrawerName, "success" | "danger" | "active">>;
+  drawerStates: Partial<Record<DrawerName, DrawerState>>;
 }
 
 interface Actions {
@@ -15,11 +16,17 @@ interface Actions {
   updateLipData: (data: Partial<TempLipData>) => void;
   updateFatca: (data: TempLipData["fatca"]) => void;
   updateContractorFiscalCode: (
-    data: TempLipData["contractorFiscalCode"],
+    data: Omit<
+      NonNullable<TempLipData["contractorFiscalCode"]>,
+      "phone" | "email"
+    >,
+  ) => void;
+  updateContractorPersonalAreaActivation: (
+    data: TempLipData["contractorPersonalAreaActivation"],
   ) => void;
 }
 
-const updateLipData = (state: State, data: TempLipData) => {
+const updateLipData = (state: State, data: Partial<TempLipData>) => {
   const newState = state;
   newState.lipData = {...newState.lipData, ...data};
 
@@ -51,8 +58,8 @@ const updateLipData = (state: State, data: TempLipData) => {
   // Attesa creazione aria cliente
   if (newState.drawerStates.contractorFiscalCode === "success") {
     if (newState.lipData.contractorPersonalAreaActivation === undefined) {
-      newState.drawerStates.contractorPersonalAreaActivation = "active";
-    } else if (!newState.lipData.contractorPersonalAreaActivation) {
+      newState.drawerStates.contractorPersonalAreaActivation = "waiting";
+    } else if (newState.lipData.contractorPersonalAreaActivation) {
       newState.drawerStates.contractorPersonalAreaActivation = "success";
     } else {
       newState.drawerStates.contractorPersonalAreaActivation = "danger";
@@ -61,10 +68,23 @@ const updateLipData = (state: State, data: TempLipData) => {
     newState.drawerStates.contractorPersonalAreaActivation = undefined;
   }
 
+  // Censimento cliente
+  if (newState.drawerStates.contractorPersonalAreaActivation === "success") {
+    if (newState.lipData.contractorData === undefined) {
+      newState.drawerStates.contractorData = "active";
+    } else if (newState.lipData.contractorData) {
+      newState.drawerStates.contractorData = "success";
+    } else {
+      newState.drawerStates.contractorData = "danger";
+    }
+  } else {
+    newState.drawerStates.contractorData = undefined;
+  }
+
   return newState;
 };
 
-export const useDrawerStore = create<State & Actions>((set) => ({
+export const useDrawerStore = create<State & Actions>()((set) => ({
   lipData: {},
   modalOpen: null,
   drawerStates: {fatca: "active"},
@@ -72,16 +92,24 @@ export const useDrawerStore = create<State & Actions>((set) => ({
   closeModal: () => set(() => ({modalOpen: null})),
   updateLipData: (data: Partial<TempLipData>) =>
     set(produce((state) => updateLipData(state, data))),
-  updateFatca: (data: TempLipData["fatca"]) =>
+  updateFatca: (data) =>
     set(
       produce((state) => {
         updateLipData(state, {fatca: data});
       }),
     ),
-  updateContractorFiscalCode: (data: TempLipData["contractorFiscalCode"]) =>
+  updateContractorFiscalCode: (data) =>
     set(
       produce((state) => {
         updateLipData(state, {contractorFiscalCode: data});
+      }),
+    ),
+  updateContractorPersonalAreaActivation: (data) =>
+    set(
+      produce((state) => {
+        updateLipData(state, {contractorPersonalAreaActivation: data});
+        state.lipData.contractorFiscalCode.phone = "1234567890";
+        state.lipData.contractorFiscalCode.email = "email@example.com";
       }),
     ),
 }));
@@ -99,3 +127,4 @@ useDrawerStore.getState().updateContractorFiscalCode({
   surname: "Lazzaroni",
 });
 useDrawerStore.getState().updateLipData({agentId: 2});
+useDrawerStore.getState().updateContractorPersonalAreaActivation(true);

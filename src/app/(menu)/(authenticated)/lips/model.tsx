@@ -48,6 +48,9 @@ export interface TempLipData {
     gender: "M" | "F";
     name: string;
     surname: string;
+    phone?: string;
+    email?: string;
   };
-  contractorPersonalAreaActivation?: string;
+  contractorPersonalAreaActivation?: boolean;
+  contractorData?: string;
 }

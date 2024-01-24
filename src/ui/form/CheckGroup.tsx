@@ -7,17 +7,25 @@ import invariant from "tiny-invariant";
 type GroupTypes = "checkbox" | "radio" | "switch";
 
 interface CheckGroupProps<TValue> {
+  defaultValue?: TValue;
+  disabled?: boolean;
   inline?: boolean;
   name?: string;
   options: readonly {label: string; value: TValue}[];
+  plaintext?: boolean;
+  readOnly?: boolean;
   type: GroupTypes;
   validation?: RegisterOptions;
 }
 
 export function CheckGroup<TValue extends string | number>({
+  defaultValue,
+  disabled,
   inline,
   name,
   options,
+  plaintext,
+  readOnly,
   type,
   validation,
 }: CheckGroupProps<TValue>) {
@@ -27,17 +35,24 @@ export function CheckGroup<TValue extends string | number>({
 
   return (
     <div>
-      {options.map(({label, value}) => (
-        <CheckboxField
-          key={`${controlName}-${value}`}
-          id={`${controlName}-${value}`}
-          inline={inline}
-          label={label}
-          type={type}
-          validation={validation}
-          value={value}
-        />
-      ))}
+      {options.map(({label, value}) => {
+        const readOnlyDisabled = readOnly && defaultValue !== value;
+        return (
+          <CheckboxField
+            key={`${controlName}-${value}`}
+            defaultChecked={defaultValue === value}
+            disabled={disabled || readOnlyDisabled}
+            id={`${controlName}-${value}`}
+            inline={inline}
+            label={label}
+            plaintext={plaintext}
+            readOnly={readOnly}
+            type={type}
+            validation={validation}
+            value={value}
+          />
+        );
+      })}
     </div>
   );
 }

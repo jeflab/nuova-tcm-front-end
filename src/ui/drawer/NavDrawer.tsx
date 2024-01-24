@@ -12,20 +12,11 @@ interface DrawerProps {
 }
 
 export function NavDrawer({children, name}: DrawerProps) {
-  const drawerStates = useDrawerStore((state) => state.drawerStates);
-
-  const isActive = drawerStates[name] === "active";
-  const isSuccess = drawerStates[name] === "success";
-  const isDanger = drawerStates[name] === "danger";
+  const drawerState = useDrawerStore((state) => state.drawerStates[name]);
 
   return (
-    <NavLink disabled={!isActive && !isDanger && !isSuccess} href={`#${name}`}>
-      <DrawerIcon
-        isActive={isActive}
-        isSuccess={isSuccess}
-        isDanger={isDanger}
-        className="me-2"
-      />
+    <NavLink disabled={!drawerState} href={`#${name}`}>
+      <DrawerIcon state={drawerState} className="me-2" />
       {children}
     </NavLink>
   );
@@ -38,7 +29,7 @@ interface DrawerSkeletonProps {
 export function NavDrawerSkeleton({children}: DrawerSkeletonProps) {
   return (
     <NavLink disabled>
-      <DrawerIcon isLoading className="me-2" />
+      <DrawerIcon state="loading" className="me-2" />
       {children}
     </NavLink>
   );
