@@ -2,8 +2,9 @@
 
 import {getQuote} from "@/app/(menu)/quoter/actions";
 import {Advantages} from "@/app/(menu)/quoter/Advantages";
+import {getCoverageDuration} from "@/app/(menu)/quoter/helpers";
 import {cns} from "@/helpers/cns";
-import {toCurrency} from "@/helpers/numbers";
+import {Currency} from "@/ui/Currency";
 import {FieldError} from "@/ui/form/FieldError";
 import {Form} from "@/ui/form/Form";
 import {SubmitButton} from "@/ui/form/SubmitButton";
@@ -63,6 +64,8 @@ export function QuoterForm() {
     setPremium(clientResponse.quotazione.premium);
   };
 
+  const birthDate = formMethods.watch("birthDate");
+
   return (
     <Form
       onSubmit={handleSubmit}
@@ -78,7 +81,10 @@ export function QuoterForm() {
         <Row xs={1} sm={2} className="row-gap-3 isolate">
           <InsuredData />
           <Coverages />
-          <Advantages premium={premium ?? 0} />
+          <Advantages
+            premium={premium ?? 0}
+            duration={getCoverageDuration(birthDate)}
+          />
           <ComplementaryCoverages />
         </Row>
       </AppContainer>
@@ -117,11 +123,18 @@ export function QuoterForm() {
             </Button>
           </div>
           <div>
-            {formMethods.formState.isSubmitting
-              ? "Calcolo in corso..."
-              : premium
-                ? `Premio mensile: ${toCurrency(premium / 12)}`
-                : "Compila il form per avere il preventivo della polizza."}
+            {formMethods.formState.isSubmitting ? (
+              "Calcolo in corso..."
+            ) : premium ? (
+              <>
+                Premio mensile:{" "}
+                <Currency className="h4 mb-0 fa-beat d-inline-block">
+                  {premium / 12}
+                </Currency>
+              </>
+            ) : (
+              "Compila il form per avere il preventivo della polizza."
+            )}
           </div>
         </AppContainer>
       </div>
