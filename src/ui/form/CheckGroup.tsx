@@ -12,7 +12,6 @@ interface CheckGroupProps<TValue> {
   inline?: boolean;
   name?: string;
   options: readonly {label: string; value: TValue}[];
-  plaintext?: boolean;
   readOnly?: boolean;
   type: GroupTypes;
   validation?: RegisterOptions;
@@ -24,7 +23,6 @@ export function CheckGroup<TValue extends string | number>({
   inline,
   name,
   options,
-  plaintext,
   readOnly,
   type,
   validation,
@@ -45,7 +43,6 @@ export function CheckGroup<TValue extends string | number>({
             id={`${controlName}-${value}`}
             inline={inline}
             label={label}
-            plaintext={plaintext}
             readOnly={readOnly}
             type={type}
             validation={validation}

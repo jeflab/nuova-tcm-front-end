@@ -97,7 +97,6 @@ export function ContractorDataForm() {
                 <CheckGroup
                   type="radio"
                   options={contractorGenders}
-                  plaintext
                   readOnly
                   defaultValue={contractorFiscalCodeData?.gender}
                 />
@@ -121,7 +120,6 @@ export function ContractorDataForm() {
                   plaintext
                   readOnly
                   defaultValue={contractorFiscalCodeData?.birthPlace}
-                  onlyExisting
                 />
               </FormGroup>
             </Col>
@@ -183,7 +181,7 @@ export function ContractorDataForm() {
                   name="residence.place.province"
                   disableIf={["residence.place.city"]}
                 />
-                <ComuneProvAutocompleteField />
+                <ComuneProvAutocompleteField onlyExisting />
               </FormGroup>
             </Col>
             <Col className="d-flex" xs={12} md={3}>

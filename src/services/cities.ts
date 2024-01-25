@@ -14,18 +14,31 @@ const cities: City[] = COMUNI.map(([cc, province, city, exist], index) => ({
   cc,
   province,
   city,
-  exist: exist === "1",
+  exist: exist === 1,
 }));
 
 export function getCities(
   query?: string,
   onlyExisting: boolean = false,
 ): City[] {
+  console.log("getCities", query, onlyExisting);
+
   const safeQuery = query ?? "";
-  const filteredCities = cities.filter(
-    (city) =>
+  console.log("safeQuery", safeQuery);
+
+  const filteredCities = cities.filter((city) => {
+    return (
       city.city.toLowerCase().includes(safeQuery.toLowerCase()) &&
-      (!onlyExisting || city.exist),
+      (!onlyExisting || city.exist)
+    );
+  });
+
+  console.log("filteredCities", filteredCities);
+  console.log(
+    "orderedCities",
+    matchSorter(filteredCities, safeQuery.toLowerCase(), {
+      keys: ["city"],
+    }),
   );
 
   return matchSorter(filteredCities, safeQuery.toLowerCase(), {

@@ -9,7 +9,7 @@ import {
   faSpinner,
 } from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {useCallback, useContext, useEffect, useState} from "react";
+import {useCallback, useContext, useState} from "react";
 import {FormControl} from "react-bootstrap";
 import {AsyncTypeahead, Highlighter} from "react-bootstrap-typeahead";
 import FormContext from "react-bootstrap/FormContext";
@@ -53,7 +53,7 @@ export function ComuneProvAutocompleteField({
 
   const {isInvalid, isValid} = useValidationState(controlName);
 
-  const onSearch = useCallback(
+  const handleSearch = useCallback(
     (query: string) => {
       setCities(getCities(query, onlyExisting));
     },
@@ -144,7 +144,7 @@ export function ComuneProvAutocompleteField({
             upperCaseWordsNormalizer((option as City).city)
           }
           flip
-          onSearch={onSearch}
+          onSearch={handleSearch}
           useCache={false}
         />
       )}
