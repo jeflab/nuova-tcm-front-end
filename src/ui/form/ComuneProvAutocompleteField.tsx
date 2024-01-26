@@ -38,9 +38,8 @@ export function ComuneProvAutocompleteField({
   readOnly,
   validationStyle = true,
 }: ComuneProvAutocompleteFiledProps) {
-  const [cities, setCities] = useState<City[]>(() =>
-    getCities("", onlyExisting),
-  );
+  const [isLoadingCities, setIsLoadingCities] = useState(false);
+  const [cities, setCities] = useState<City[]>([]);
   const {setValue} = useFormContext();
   const [query, setQuery] = useState("");
   const {controlId} = useContext(FormContext);
@@ -54,8 +53,10 @@ export function ComuneProvAutocompleteField({
   const {isInvalid, isValid} = useValidationState(controlName);
 
   const handleSearch = useCallback(
-    (query: string) => {
-      setCities(getCities(query, onlyExisting));
+    async (query: string) => {
+      setIsLoadingCities(true);
+      setCities(await getCities(query, onlyExisting));
+      setIsLoadingCities(false);
     },
     [onlyExisting],
   );
@@ -99,7 +100,7 @@ export function ComuneProvAutocompleteField({
               città in corso...
             </span>
           }
-          isLoading={false}
+          isLoading={isLoadingCities}
           highlightOnlyResult
           onBlur={onBlur}
           onChange={(selected) => {

@@ -1,3 +1,5 @@
+"use server";
+
 import {COMUNI} from "codice-fiscale-js/src/lista-comuni";
 import {matchSorter} from "match-sorter";
 
@@ -17,14 +19,11 @@ const cities: City[] = COMUNI.map(([cc, province, city, exist], index) => ({
   exist: exist === 1,
 }));
 
-export function getCities(
+export async function getCities(
   query?: string,
   onlyExisting: boolean = false,
-): City[] {
-  console.log("getCities", query, onlyExisting);
-
+): Promise<City[]> {
   const safeQuery = query ?? "";
-  console.log("safeQuery", safeQuery);
 
   const filteredCities = cities.filter((city) => {
     return (
@@ -32,14 +31,6 @@ export function getCities(
       (!onlyExisting || city.exist)
     );
   });
-
-  console.log("filteredCities", filteredCities);
-  console.log(
-    "orderedCities",
-    matchSorter(filteredCities, safeQuery.toLowerCase(), {
-      keys: ["city"],
-    }),
-  );
 
   return matchSorter(filteredCities, safeQuery.toLowerCase(), {
     keys: ["city"],
