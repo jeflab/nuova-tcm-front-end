@@ -1,4 +1,5 @@
 import {ContractorDataForm} from "@/app/(menu)/(authenticated)/lips/[id]/ContractorDataForm";
+import {ContractorDataSummary} from "@/app/(menu)/(authenticated)/lips/[id]/ContractorDataSummary";
 import {ContractorFiscalCodeForm} from "@/app/(menu)/(authenticated)/lips/[id]/ContractorFiscalCodeForm";
 import {ContractorFiscalCodeSummary} from "@/app/(menu)/(authenticated)/lips/[id]/ContractorFiscalCodeSummary";
 import {ContractorPersonalAreaActivationSummary} from "@/app/(menu)/(authenticated)/lips/[id]/ContractorPersonalAreaActivationSummary";
@@ -46,6 +47,7 @@ export const drawers: Drawer[] = [
     name: "contractorData",
     title: "Censimento contraente",
     modalContent: <ContractorDataForm />,
+    summaryContent: <ContractorDataSummary />,
   },
   {
     name: "identification",
