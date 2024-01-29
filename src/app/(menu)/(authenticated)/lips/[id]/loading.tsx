@@ -1,4 +1,4 @@
-import styles from "@/app/(menu)/(authenticated)/lips/[id]/page.module.scss";
+import {drawers} from "@/app/(menu)/(authenticated)/lips/[id]/drawers";
 import {cns} from "@/helpers/cns";
 import {AppContainer} from "@/ui/AppContainer";
 import {DrawerSkeleton} from "@/ui/drawer/Drawer";
@@ -7,6 +7,7 @@ import {PageTitle} from "@/ui/PageTitle";
 import {faTriangleExclamation} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Alert, Col, Nav, Row} from "react-bootstrap";
+import styles from "./page.module.scss";
 
 export default async function NewLipPage() {
   return (
@@ -15,15 +16,9 @@ export default async function NewLipPage() {
       <Row className="flex-row-reverse">
         <Col md="auto">
           <Nav className={cns("flex-column", styles.connectedList)}>
-            <NavDrawerSkeleton>Verifica residenza USA</NavDrawerSkeleton>
-            <NavDrawerSkeleton>Dati contraente</NavDrawerSkeleton>
-            <NavDrawerSkeleton>Questionario di adeguatezza</NavDrawerSkeleton>
-            <NavDrawerSkeleton>Preventivo</NavDrawerSkeleton>
-            <NavDrawerSkeleton>
-              Questionario sanitario / non sanitario
-            </NavDrawerSkeleton>
-            <NavDrawerSkeleton>Assicurato</NavDrawerSkeleton>
-            <NavDrawerSkeleton>Beneficiari</NavDrawerSkeleton>
+            {drawers.map(({name, title}) => (
+              <NavDrawerSkeleton key={name}>{title}</NavDrawerSkeleton>
+            ))}
           </Nav>
         </Col>
         <Col className="d-flex flex-column gap-3">
@@ -45,13 +40,9 @@ export default async function NewLipPage() {
               corrispondere.
             </p>
           </Alert>
-          <DrawerSkeleton title="Verifica residenza USA" />
-          <DrawerSkeleton title="Dati contraente" />
-          <DrawerSkeleton title="Questionario di adeguatezza" />
-          <DrawerSkeleton title="Preventivo" />
-          <DrawerSkeleton title="Questionario sanitario / non sanitario" />
-          <DrawerSkeleton title="Assicurato" />
-          <DrawerSkeleton title="Beneficiari" />
+          {drawers.map(({name, title, modalContent, summaryContent}) => (
+            <DrawerSkeleton key={name} title={title} />
+          ))}
         </Col>
       </Row>
     </AppContainer>

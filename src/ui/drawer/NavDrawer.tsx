@@ -1,6 +1,6 @@
 "use client";
 
-import {DrawerName} from "@/app/(menu)/(authenticated)/lips/[id]/page";
+import {DrawerName} from "@/app/(menu)/(authenticated)/lips/[id]/drawers";
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {DrawerIcon} from "@/ui/drawer/DrawerIcon";
 import React, {ReactNode} from "react";

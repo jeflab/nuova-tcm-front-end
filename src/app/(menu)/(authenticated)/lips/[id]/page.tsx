@@ -1,10 +1,5 @@
-import {ContractorDataForm} from "@/app/(menu)/(authenticated)/lips/[id]/ContractorDataForm";
-import {ContractorFiscalCodeForm} from "@/app/(menu)/(authenticated)/lips/[id]/ContractorFiscalCodeForm";
-import {ContractorFiscalCodeSummary} from "@/app/(menu)/(authenticated)/lips/[id]/ContractorFiscalCodeSummary";
-import {ContractorPersonalAreaActivationSummary} from "@/app/(menu)/(authenticated)/lips/[id]/ContractorPersonalAreaActivationSummary";
 import {DebugState} from "@/app/(menu)/(authenticated)/lips/[id]/DebugState";
-import {FatcaForm} from "@/app/(menu)/(authenticated)/lips/[id]/FatcaForm";
-import {FatcaSummary} from "@/app/(menu)/(authenticated)/lips/[id]/FatcaSummary";
+import {drawers} from "@/app/(menu)/(authenticated)/lips/[id]/drawers";
 import {Lip} from "@/app/(menu)/(authenticated)/lips/model";
 import {cns} from "@/helpers/cns";
 import {AppContainer} from "@/ui/AppContainer";
@@ -14,19 +9,8 @@ import {PageTitle} from "@/ui/PageTitle";
 import {faTriangleExclamation} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import React from "react";
-import {Alert, Col, Nav, NavLink, Row} from "react-bootstrap";
+import {Alert, Col, Nav, Row} from "react-bootstrap";
 import styles from "./page.module.scss";
-
-export type DrawerName =
-  | "fatca"
-  | "contractorFiscalCode"
-  | "contractorPersonalAreaActivation"
-  | "contractorData"
-  | "adequacy"
-  | "quote"
-  | "health"
-  | "insured"
-  | "beneficiaries";
 
 // TODO: abbassare il fetch dei dati, o in un sotto-componente client o addirittura nel drawer (fetch è cachata)
 //  Fatto ciò la pagina può tornare server component
@@ -42,30 +26,22 @@ export default async function NewLipPage() {
       <Row className="flex-row-reverse">
         <Col md="auto">
           <Nav className={cns("flex-column", styles.connectedList)}>
-            <NavDrawer name="fatca">Verifica residenza USA</NavDrawer>
-            <NavDrawer name="contractorFiscalCode">Dati contraente</NavDrawer>
-            <NavDrawer name="contractorPersonalAreaActivation">
-              Attivazione area contraente
-            </NavDrawer>
-            <NavDrawer name="contractorData">Censimento contraente</NavDrawer>
-            <NavDrawer name="adequacy">Questionario di adeguatezza</NavDrawer>
-            <NavDrawer name="quote">Preventivo</NavDrawer>
-            <NavDrawer name="health">
-              Questionario sanitario / non sanitario
-            </NavDrawer>
-            <NavDrawer name="insured">Assicurato</NavDrawer>
-            <NavDrawer name="beneficiaries">Beneficiari</NavDrawer>
+            {drawers.map(({name, title}) => (
+              <NavDrawer name={name} key={name}>
+                {title}
+              </NavDrawer>
+            ))}
           </Nav>
         </Col>
         <Col className="d-flex flex-column gap-3">
           <Alert variant="info" className="mb-0">
             <h3>
               <FontAwesomeIcon icon={faTriangleExclamation} className="me-2" />
-              Avviso Legale: Contraente e Assicurato devono Coincidere
+              Avviso legale: contraente e assicurato devono coincidere.
             </h3>
             <p>
-              Ti diamo il benvenuto nell'App di Calcolo Preventivo per Polizze
-              Vita. Ai fini legali, è obbligatorio che il contraente coincida
+              Ti diamo il benvenuto nell'app di calcolo preventivo per polizze
+              vita. Ai fini legali, è obbligatorio che il contraente coincida
               con l'assicurato durante la compilazione dei dati.
             </p>
             <p className="mb-0">
@@ -77,39 +53,16 @@ export default async function NewLipPage() {
             </p>
           </Alert>
           <DebugState />
-          <Drawer
-            name="fatca"
-            title="Verifica residenza USA"
-            modalContent={<FatcaForm />}
-          >
-            <FatcaSummary />
-          </Drawer>
-          <Drawer
-            name="contractorFiscalCode"
-            title="Dati contraente"
-            modalContent={<ContractorFiscalCodeForm />}
-          >
-            <ContractorFiscalCodeSummary />
-          </Drawer>
-          <Drawer
-            name="contractorPersonalAreaActivation"
-            title="Attivazione area contraente"
-          >
-            <ContractorPersonalAreaActivationSummary />
-          </Drawer>
-          <Drawer
-            name="contractorData"
-            title="Censimento contraente"
-            modalContent={<ContractorDataForm />}
-          ></Drawer>
-          <Drawer name="adequacy" title="Questionario di adeguatezza"></Drawer>
-          <Drawer name="quote" title="Preventivo"></Drawer>
-          <Drawer
-            name="health"
-            title="Questionario sanitario / non sanitario"
-          ></Drawer>
-          <Drawer name="insured" title="Assicurato"></Drawer>
-          <Drawer name="beneficiaries" title="Beneficiari"></Drawer>
+          {drawers.map(({name, title, modalContent, summaryContent}) => (
+            <Drawer
+              key={name}
+              name={name}
+              title={title}
+              modalContent={modalContent}
+            >
+              {summaryContent}
+            </Drawer>
+          ))}
         </Col>
       </Row>
     </AppContainer>

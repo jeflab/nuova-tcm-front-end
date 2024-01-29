@@ -51,9 +51,13 @@
   "scripts": {
     "bs": "next build && next start",
     "build": "next build",
+    "build-only": "next build",
     "dev": "next dev",
+    "dev-only": "next dev",
     "format": "prettier --write .",
     "lint": "next lint",
+    "prebuild": "npm i",
+    "predev": "npm i",
     "start": "next start",
     "turbo": "next dev --turbo"
   }

@@ -44,7 +44,7 @@ export const contractorGenders = [
   {label: "Maschio", value: "M"},
   {label: "Femmina", value: "F"},
 ] as const;
-type ContractorGender = (typeof contractorGenders)[number]["value"];
+export type ContractorGender = (typeof contractorGenders)[number]["value"];
 const contractorGenderValues = contractorGenders
   .map((g) => g.value)
   .concat("" as ContractorGender) as [ContractorGender, ...ContractorGender[]];

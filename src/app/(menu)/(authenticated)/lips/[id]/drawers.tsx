@@ -1,0 +1,78 @@
+import {ContractorDataForm} from "@/app/(menu)/(authenticated)/lips/[id]/ContractorDataForm";
+import {ContractorFiscalCodeForm} from "@/app/(menu)/(authenticated)/lips/[id]/ContractorFiscalCodeForm";
+import {ContractorFiscalCodeSummary} from "@/app/(menu)/(authenticated)/lips/[id]/ContractorFiscalCodeSummary";
+import {ContractorPersonalAreaActivationSummary} from "@/app/(menu)/(authenticated)/lips/[id]/ContractorPersonalAreaActivationSummary";
+import {FatcaForm} from "@/app/(menu)/(authenticated)/lips/[id]/FatcaForm";
+import {FatcaSummary} from "@/app/(menu)/(authenticated)/lips/[id]/FatcaSummary";
+import {ReactNode} from "react";
+
+export type DrawerName =
+  | "fatca"
+  | "contractorFiscalCode"
+  | "contractorPersonalAreaActivation"
+  | "contractorData"
+  | "identification"
+  | "den"
+  | "adequacy"
+  | "quote"
+  | "health"
+  | "insured"
+  | "beneficiaries";
+interface Drawer {
+  name: DrawerName;
+  title: string;
+  modalContent?: ReactNode;
+  summaryContent?: ReactNode;
+}
+export const drawers: Drawer[] = [
+  {
+    name: "fatca",
+    title: "Verifica residenza USA",
+    modalContent: <FatcaForm />,
+    summaryContent: <FatcaSummary />,
+  },
+  {
+    name: "contractorFiscalCode",
+    title: "Dati contraente",
+    modalContent: <ContractorFiscalCodeForm />,
+    summaryContent: <ContractorFiscalCodeSummary />,
+  },
+  {
+    name: "contractorPersonalAreaActivation",
+    title: "Attivazione area contraente",
+    summaryContent: <ContractorPersonalAreaActivationSummary />,
+  },
+  {
+    name: "contractorData",
+    title: "Censimento contraente",
+    modalContent: <ContractorDataForm />,
+  },
+  {
+    name: "identification",
+    title: "Identificazione del cliente",
+  },
+  {
+    name: "den",
+    title: "Demand and needs",
+  },
+  {
+    name: "adequacy",
+    title: "Questionario di adeguatezza",
+  },
+  {
+    name: "quote",
+    title: "Preventivo",
+  },
+  {
+    name: "health",
+    title: "Questionario sanitario / non sanitario",
+  },
+  {
+    name: "insured",
+    title: "Assicurato",
+  },
+  {
+    name: "beneficiaries",
+    title: "Beneficiari",
+  },
+];

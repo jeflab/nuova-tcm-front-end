@@ -1,3 +1,4 @@
+import {ContractorGender} from "@/app/(menu)/(authenticated)/lips/[id]/ContractorFiscalCodeForm";
 import {
   faCheckCircle,
   faCircleHalf,
@@ -45,12 +46,47 @@ export interface TempLipData {
       province: string;
     };
     fiscalCode: string;
-    gender: "M" | "F";
+    gender: ContractorGender;
     name: string;
     surname: string;
-    phone?: string;
-    email?: string;
   };
   contractorPersonalAreaActivation?: boolean;
-  contractorData?: string;
+  contractorData?: {
+    contractorPersonalData: {
+      birthDate: string;
+      birthPlace: {
+        city: string;
+        province: string;
+      };
+      fiscalCode: string;
+      gender: ContractorGender;
+      name: string;
+      surname: string;
+    };
+    contact: {
+      phone: string;
+      email: string;
+    };
+    residence: {
+      place: {
+        city: string;
+        province: string;
+      };
+      streetName: string;
+      streetNumber: string;
+      zipCode: string;
+    };
+    pep: {
+      isPep: "yes" | "no";
+      person: string;
+      relation: string;
+    };
+    aml: {
+      job: string;
+      sector: string;
+      netIncome: string;
+      fundSource: string;
+    };
+  };
+  identification?: string;
 }

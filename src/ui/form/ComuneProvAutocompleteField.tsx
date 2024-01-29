@@ -13,7 +13,7 @@ import {useCallback, useContext, useState} from "react";
 import {FormControl} from "react-bootstrap";
 import {AsyncTypeahead, Highlighter} from "react-bootstrap-typeahead";
 import FormContext from "react-bootstrap/FormContext";
-import {useController, useFormContext} from "react-hook-form";
+import {RegisterOptions, useController, useFormContext} from "react-hook-form";
 import invariant from "tiny-invariant";
 import "react-bootstrap-typeahead/css/Typeahead.css";
 import "react-bootstrap-typeahead/css/Typeahead.bs5.css";
@@ -26,6 +26,7 @@ interface ComuneProvAutocompleteFiledProps {
   onlyExisting?: boolean;
   plaintext?: boolean;
   readOnly?: boolean;
+  validation?: RegisterOptions;
   validationStyle?: boolean;
 }
 
@@ -36,6 +37,7 @@ export function ComuneProvAutocompleteField({
   onlyExisting,
   plaintext,
   readOnly,
+  validation,
   validationStyle = true,
 }: ComuneProvAutocompleteFiledProps) {
   const [isLoadingCities, setIsLoadingCities] = useState(false);
@@ -48,7 +50,7 @@ export function ComuneProvAutocompleteField({
 
   const {
     field: {onBlur, onChange},
-  } = useController({name: `${controlName}.city`});
+  } = useController({name: `${controlName}.city`, rules: validation});
 
   const {isInvalid, isValid} = useValidationState(controlName);
 

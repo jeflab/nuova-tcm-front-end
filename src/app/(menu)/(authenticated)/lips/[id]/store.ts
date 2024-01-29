@@ -1,4 +1,4 @@
-import {DrawerName} from "@/app/(menu)/(authenticated)/lips/[id]/page";
+import {DrawerName} from "@/app/(menu)/(authenticated)/lips/[id]/drawers";
 import {DrawerState} from "@/ui/drawer/const";
 import {create} from "zustand";
 import {TempLipData} from "../model";
@@ -24,6 +24,7 @@ interface Actions {
   updateContractorPersonalAreaActivation: (
     data: TempLipData["contractorPersonalAreaActivation"],
   ) => void;
+  updateContractorData: (data: TempLipData["contractorData"]) => void;
 }
 
 const updateLipData = (state: State, data: Partial<TempLipData>) => {
@@ -81,6 +82,19 @@ const updateLipData = (state: State, data: Partial<TempLipData>) => {
     newState.drawerStates.contractorData = undefined;
   }
 
+  // Identificazione cliente
+  if (newState.drawerStates.contractorData === "success") {
+    if (newState.lipData.identification === undefined) {
+      newState.drawerStates.identification = "active";
+    } else if (newState.lipData.identification) {
+      newState.drawerStates.identification = "success";
+    } else {
+      newState.drawerStates.identification = "danger";
+    }
+  } else {
+    newState.drawerStates.identification = undefined;
+  }
+
   return newState;
 };
 
@@ -112,6 +126,12 @@ export const useDrawerStore = create<State & Actions>()((set) => ({
         state.lipData.contractorFiscalCode.email = "email@example.com";
       }),
     ),
+  updateContractorData: (data) =>
+    set(
+      produce((state) => {
+        updateLipData(state, {contractorData: data});
+      }),
+    ),
 }));
 
 useDrawerStore.getState().updateFatca(false);
@@ -128,3 +148,40 @@ useDrawerStore.getState().updateContractorFiscalCode({
 });
 useDrawerStore.getState().updateLipData({agentId: 2});
 useDrawerStore.getState().updateContractorPersonalAreaActivation(true);
+useDrawerStore.getState().updateContractorData({
+  contractorPersonalData: {
+    birthDate: "1984-06-24",
+    birthPlace: {
+      city: "Lovere",
+      province: "BG",
+    },
+    fiscalCode: "LZZFBA84H24E704I",
+    gender: "M",
+    name: "Fabio",
+    surname: "Lazzaroni",
+  },
+  contact: {
+    phone: "0123456789",
+    email: "mail@example.com",
+  },
+  residence: {
+    place: {
+      city: "Castelcovati",
+      province: "BS",
+    },
+    streetName: "Via Tito Speri",
+    streetNumber: "10",
+    zipCode: "25030",
+  },
+  pep: {
+    isPep: "no",
+    person: "",
+    relation: "",
+  },
+  aml: {
+    job: "Ing",
+    sector: "Informatica",
+    netIncome: "100000",
+    fundSource: "Lavoro",
+  },
+});

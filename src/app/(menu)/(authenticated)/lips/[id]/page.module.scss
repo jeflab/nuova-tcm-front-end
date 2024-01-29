@@ -1,17 +1,25 @@
 @import "../../../../variables";
+@import "bootstrap/scss/mixins";
 
 .connectedList {
   position: sticky;
   top: calc(1rem + $headerHeight);
 
   :global(a) {
+    --padding-x: 1rem;
+    @include media-breakpoint-up(md) {
+      --padding-x: 0rem;
+    }
+
     position: relative;
+    padding-left: var(--padding-x);
+    padding-right: var(--padding-x);
 
     + :global(a):before {
       content: "";
       position: absolute;
       top: calc(-8rem / 16);
-      left: calc(1rem + 0.5em - 1px);
+      left: calc(var(--padding-x) + 0.5em - 1px);
       width: 2px;
       height: 1rem;
       background-color: $gray-300;
