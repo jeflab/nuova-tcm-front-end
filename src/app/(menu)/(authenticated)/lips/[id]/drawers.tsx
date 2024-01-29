@@ -5,6 +5,8 @@ import {ContractorFiscalCodeSummary} from "@/app/(menu)/(authenticated)/lips/[id
 import {ContractorPersonalAreaActivationSummary} from "@/app/(menu)/(authenticated)/lips/[id]/ContractorPersonalAreaActivationSummary";
 import {FatcaForm} from "@/app/(menu)/(authenticated)/lips/[id]/FatcaForm";
 import {FatcaSummary} from "@/app/(menu)/(authenticated)/lips/[id]/FatcaSummary";
+import {IdentificationForm} from "@/app/(menu)/(authenticated)/lips/[id]/IdentificationForm";
+import {IdentificationDataSummary} from "@/app/(menu)/(authenticated)/lips/[id]/IdentificationSummary";
 import {ReactNode} from "react";
 
 export type DrawerName =
@@ -52,6 +54,8 @@ export const drawers: Drawer[] = [
   {
     name: "identification",
     title: "Identificazione del cliente",
+    modalContent: <IdentificationForm />,
+    summaryContent: <IdentificationDataSummary />,
   },
   {
     name: "den",

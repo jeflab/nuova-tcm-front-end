@@ -1,4 +1,5 @@
 import {ContractorGender} from "@/app/(menu)/(authenticated)/lips/[id]/ContractorFiscalCodeForm";
+import {IdType} from "@/app/(menu)/(authenticated)/lips/[id]/IdentificationForm";
 import {
   faCheckCircle,
   faCircleHalf,
@@ -88,5 +89,17 @@ export interface TempLipData {
       fundSource: string;
     };
   };
-  identification?: string;
+  identification?: {
+    idType: IdType;
+    number: string;
+    issuedBy: string;
+    issuedDate: string;
+    expiringDate: string;
+    frontPicture: string;
+    backPicture: string;
+    metContractorInPerson: boolean;
+    documentIsCopyShownByContractor: boolean;
+    photoIsOfContractor: boolean;
+    contractorHasBeenIdentified: boolean;
+  };
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {dateString} from "@/helpers/dates";
 import {
   faAddressBook,
   faLandmarkMagnifyingGlass,
@@ -29,8 +30,9 @@ export function ContractorDataSummary() {
         </h4>
         <p className="mb-0">
           {contractorPersonalData.name} {contractorPersonalData.surname}, nato
-          il {contractorPersonalData.birthDate} a{" "}
-          {contractorPersonalData.birthDate}
+          il {dateString(new Date(contractorPersonalData.birthDate))} a{" "}
+          {contractorPersonalData.birthPlace.city} (
+          {contractorPersonalData.birthPlace.province})
         </p>
         <p>
           Residente in {residence.streetName} {residence.streetNumber},{" "}

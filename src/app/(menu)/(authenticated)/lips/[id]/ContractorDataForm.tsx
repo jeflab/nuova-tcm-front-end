@@ -195,6 +195,7 @@ export function ContractorDataForm() {
         <Form
           onSubmit={async (values) => {
             updateContractorData(values);
+            closeModal();
           }}
           id="contractor-fiscal-code-form"
           formMethods={formMethods}
