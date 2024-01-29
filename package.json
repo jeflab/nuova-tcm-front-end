@@ -44,7 +44,7 @@
     "typescript": "^5"
   },
   "engines": {
-    "npm": "^9.8.0",
+    "npm": "^8.19.0 || ^9.8.0",
     "node": "^18.18.0"
   },
   "private": true,
