@@ -56,6 +56,8 @@
     "dev-only": "next dev",
     "format": "prettier --write .",
     "lint": "next lint",
+    "prebuild": "npm i",
+    "predev": "npm i",
     "start": "next start",
     "turbo": "next dev --turbo"
   }
