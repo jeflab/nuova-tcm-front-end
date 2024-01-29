@@ -128,7 +128,7 @@ export function QuoterForm() {
             ) : premium ? (
               <>
                 Premio mensile:{" "}
-                <Currency className="h4 mb-0 fa-beat d-inline-block">
+                <Currency className="h4 mb-0 d-inline-block">
                   {premium / 12}
                 </Currency>
               </>
