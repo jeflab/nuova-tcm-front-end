@@ -26,6 +26,7 @@ interface Actions {
   ) => void;
   updateContractorData: (data: TempLipData["contractorData"]) => void;
   updateIdentification: (data: TempLipData["identification"]) => void;
+  setPicture: (key: string, picture: string) => void;
 }
 
 const updateLipData = (state: State, data: Partial<TempLipData>) => {
@@ -137,6 +138,15 @@ export const useDrawerStore = create<State & Actions>()((set) => ({
     set(
       produce((state) => {
         updateLipData(state, {identification: data});
+      }),
+    ),
+  setPicture: (key, picture) =>
+    set(
+      produce((state) => {
+        if (!state.lipData.idPictures) {
+          state.lipData.idPictures = {};
+        }
+        state.lipData.idPictures[key] = picture;
       }),
     ),
 }));

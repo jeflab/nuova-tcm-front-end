@@ -60,6 +60,8 @@ export const drawers: Drawer[] = [
   {
     name: "den",
     title: "Demand and needs",
+    modalContent: <IdentificationForm />,
+    summaryContent: <IdentificationDataSummary />,
   },
   {
     name: "adequacy",

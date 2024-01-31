@@ -15,6 +15,7 @@ export function IdentificationDataSummary() {
   const identification = useDrawerStore(
     (state) => state.lipData.identification,
   );
+  const idPictures = useDrawerStore((state) => state.lipData.idPictures);
 
   if (!identification) {
     return null;
@@ -47,16 +48,34 @@ export function IdentificationDataSummary() {
       </Col>
       <Col xs={12} sm={3}>
         <div className="ratio ratio-1x1">
-          <div className="bg-primary-subtle d-flex justify-content-center align-items-md-center">
-            Fronte
-          </div>
+          <div
+            className="bg-primary-subtle d-flex justify-content-center align-items-md-center"
+            style={{
+              backgroundImage: `url(${idPictures?.frontPictureUrl})`,
+              borderRadius: "0.5rem",
+              padding: "1rem",
+              backgroundOrigin: "content-box",
+              backgroundPosition: "center center",
+              backgroundRepeat: "no-repeat",
+              backgroundSize: "contain",
+            }}
+          ></div>
         </div>
       </Col>
       <Col xs={12} sm={3}>
         <div className="ratio ratio-1x1">
-          <div className="bg-primary-subtle d-flex justify-content-center align-items-md-center">
-            Retro
-          </div>
+          <div
+            className="bg-primary-subtle d-flex justify-content-center align-items-md-center"
+            style={{
+              backgroundImage: `url(${idPictures?.backPictureUrl})`,
+              borderRadius: "0.5rem",
+              padding: "1rem",
+              backgroundOrigin: "content-box",
+              backgroundPosition: "center center",
+              backgroundRepeat: "no-repeat",
+              backgroundSize: "contain",
+            }}
+          ></div>
         </div>
       </Col>
       <Col xs={12}>

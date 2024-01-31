@@ -1,4 +1,6 @@
 @import "../../app/variables";
+@value isDragAccept from "./DropzoneField.module.scss";
+@value isDragReject from "./DropzoneField.module.scss";
 
 .base {
   padding: map-get($spacers, 3);
@@ -48,6 +50,27 @@
   }
 
   &.isInvalid {
+    border-color: var(--bs-danger);
+    background-color: var(--bs-danger-bg-subtle);
+
+    > label,
+    :not(:global(.form-check-inline)) label,
+    :global(.input-heading) {
+      color: var(--bs-danger);
+    }
+  }
+
+  &:has(.isDragAccept) {
+    border-color: var(--bs-success);
+    background-color: var(--bs-success-bg-subtle);
+
+    > label,
+    :not(:global(.form-check-inline)) label,
+    :global(.input-heading) {
+      color: var(--bs-success);
+    }
+  }
+  &:has(.isDragReject) {
     border-color: var(--bs-danger);
     background-color: var(--bs-danger-bg-subtle);
 

@@ -1,34 +1,22 @@
 "use client";
 
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
-import {cns} from "@/helpers/cns";
-import {dbDateString} from "@/helpers/dates";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {CheckboxField} from "@/ui/form/CheckboxField";
-import {DropzoneField} from "@/ui/form/DropzoneField";
 import {FieldError} from "@/ui/form/FieldError";
 import {Form} from "@/ui/form/Form";
 import {InputField} from "@/ui/form/InputField";
 import {SelectField} from "@/ui/form/SelectField";
-import {
-  faCreditCard,
-  faIdCard,
-  faSave,
-  faSpinner,
-  faXmark,
-} from "@fortawesome/pro-duotone-svg-icons";
+import {faSave, faSpinner, faXmark} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {subYears} from "date-fns/subYears";
 import {
   Button,
   Col,
   FormGroup,
-  FormLabel,
   ModalBody,
   ModalFooter,
   Row,
 } from "react-bootstrap";
-import Dropzone from "react-dropzone";
 import {useForm} from "react-hook-form";
 
 const idTypeOptions = [
@@ -82,7 +70,7 @@ export function IdentificationForm() {
             <h4>Documento d'identità:</h4>
             <Col className="d-flex" xs={12}>
               <FormGroup controlId="idType" as={BorderFeedback}>
-                <FormLabel>Tipo di documento</FormLabel>
+                <p className="mb-2 input-heading">Tipo di documento</p>
                 <FieldError />
                 <SelectField
                   options={idTypeOptions}
@@ -95,7 +83,7 @@ export function IdentificationForm() {
             </Col>
             <Col className="d-flex" xs={12} sm={6}>
               <FormGroup controlId="number" as={BorderFeedback}>
-                <FormLabel>Numero documento</FormLabel>
+                <p className="mb-2 input-heading">Numero documento</p>
                 <FieldError />
                 <InputField
                   type="text"
@@ -108,7 +96,7 @@ export function IdentificationForm() {
             </Col>
             <Col className="d-flex" xs={12} sm={6}>
               <FormGroup controlId="issuedBy" as={BorderFeedback}>
-                <FormLabel>Rilasciato da</FormLabel>
+                <p className="mb-2 input-heading">Rilasciato da</p>
                 <FieldError />
                 <InputField
                   type="text"
@@ -121,74 +109,30 @@ export function IdentificationForm() {
             </Col>
             <Col className="d-flex" xs={12} sm={6}>
               <FormGroup controlId="issuedDate" as={BorderFeedback}>
-                <FormLabel>Data di rilascio</FormLabel>
+                <p className="mb-2 input-heading">Data di rilascio</p>
                 <FieldError />
                 <InputField
                   type="date"
                   placeholder="Data di rilascio"
-                  max={dbDateString()}
                   validation={{
                     required: "Inserisci la data di rilascio",
-                    max: {
-                      value: dbDateString(),
-                      message: "La data di rilascio non può essere nel futuro",
-                    },
                   }}
                 />
               </FormGroup>
             </Col>
             <Col className="d-flex" xs={12} sm={6}>
               <FormGroup controlId="expiringDate" as={BorderFeedback}>
-                <FormLabel>Data di scadenza</FormLabel>
+                <p className="mb-2 input-heading">Data di scadenza</p>
                 <FieldError />
                 <InputField
                   type="date"
                   placeholder="Data di scadenza"
-                  min={dbDateString()}
                   validation={{
-                    min: {
-                      value: dbDateString(),
-                      message: "La data di scadenza non può essere nel passato",
-                    },
                     required: "Inserisci la data di scadenza",
                   }}
                 />
               </FormGroup>
             </Col>
-            <Col className="d-flex" xs={12} sm={6}>
-              <FormGroup controlId="frontPicture" as={BorderFeedback}>
-                <FormLabel>Documento fronte</FormLabel>
-                <FieldError />
-                <DropzoneField
-                  validation={{
-                    required: "Carica la foto del fronte del documento",
-                  }}
-                >
-                  <p className="mb-0">
-                    Trascina il file qui, oppure clicca per cercare il file sul
-                    tuo computer
-                  </p>
-                  <FontAwesomeIcon icon={faIdCard} size="5x" />
-                </DropzoneField>
-              </FormGroup>
-            </Col>
-            <Col className="d-flex" xs={12} sm={6}>
-              <FormGroup controlId="backPicture" as={BorderFeedback}>
-                <FormLabel>Documento fronte</FormLabel>
-                <FieldError />
-                <DropzoneField
-                  validation={{
-                    required: "Carica la foto del retro del documento",
-                  }}
-                >
-                  <p className="mb-0">
-                    Trascina il file qui, oppure clicca per cercare il file sul
-                    tuo computer
-                  </p>
-                  <FontAwesomeIcon icon={faCreditCard} size="5x" />
-                </DropzoneField>
-              </FormGroup>
-            </Col>{" "}
             <h4>Il contraente dichiara:</h4>
             <Col xs={12}>
               <FormGroup

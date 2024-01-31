@@ -102,4 +102,9 @@ export interface TempLipData {
     photoIsOfContractor: boolean;
     contractorHasBeenIdentified: boolean;
   };
+  idPictures?: {
+    frontPictureUrl?: string; // Temp
+    backPictureUrl?: string; // Temp
+  };
+  den?: {};
 }

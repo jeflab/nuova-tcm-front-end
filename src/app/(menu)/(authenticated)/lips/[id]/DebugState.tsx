@@ -71,6 +71,18 @@ useDrawerStore.getState().updateIdentification({
   photoIsOfContractor: true,
   contractorHasBeenIdentified: true,
 });
+useDrawerStore
+  .getState()
+  .setPicture(
+    "frontPictureUrl",
+    "https://v5-dev.prevision.family/api/public/users/9157/get-id-image?id-file-name=20221212143429-front-ci-facsimile-fronte.jpg&size=thumbnail",
+  );
+useDrawerStore
+  .getState()
+  .setPicture(
+    "backPictureUrl",
+    "https://v5-dev.prevision.family/api/public/users/9157/get-id-image?id-file-name=20221212143429-back-ci-facsimile-retro.jpg&size=thumbnail",
+  );
 
 export function DebugState() {
   const lipData = useDrawerStore((state) => state.lipData);
