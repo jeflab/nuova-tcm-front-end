@@ -6,6 +6,7 @@ import {
 } from "@/app/(menu)/(authenticated)/lips/[id]/ContractorFiscalCodeForm";
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {cns} from "@/helpers/cns";
+import {YesNoAnswer} from "@/helpers/TypesHelper";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {CheckGroup} from "@/ui/form/CheckGroup";
 import {ComuneProvAutocompleteField} from "@/ui/form/ComuneProvAutocompleteField";
@@ -155,7 +156,7 @@ const contractorDataDefaultValues = {
     zipCode: "",
   },
   pep: {
-    isPep: "" as "yes" | "no",
+    isPep: "" as YesNoAnswer,
     person: "",
     relation: "",
   },
@@ -274,6 +275,7 @@ export function ContractorDataForm() {
               >
                 <FormLabel>Luogo di nascita</FormLabel>
                 <ComuneProvAutocompleteField
+                  placeholder="Luogo di nascita"
                   plaintext
                   readOnly
                   defaultValue={contractorFiscalCodeData?.birthPlace}
@@ -329,6 +331,7 @@ export function ContractorDataForm() {
                   disableIf={["residence.place.city"]}
                 />
                 <ComuneProvAutocompleteField
+                  placeholder="Città di residenza"
                   onlyExisting
                   validation={{
                     required: "Insersci la città di residenza del contraente",

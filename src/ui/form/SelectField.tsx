@@ -20,6 +20,7 @@ export function SelectField<TValue extends string | number>({
   placeholder,
   validation,
   validationStyle = true,
+  onChange,
   ...inputProps
 }: SelectFieldProps<TValue>) {
   const {register} = useFormContext();
@@ -32,6 +33,7 @@ export function SelectField<TValue extends string | number>({
   return (
     <FormSelect
       {...register(controlName, {
+        onChange,
         ...validation,
       })}
       isInvalid={validationStyle && isInvalid}

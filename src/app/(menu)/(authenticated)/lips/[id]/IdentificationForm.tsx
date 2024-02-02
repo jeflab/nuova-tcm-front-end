@@ -1,7 +1,6 @@
 "use client";
 
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
-import {cns} from "@/helpers/cns";
 import {dbDateString} from "@/helpers/dates";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {CheckboxField} from "@/ui/form/CheckboxField";
@@ -18,7 +17,6 @@ import {
   faXmark,
 } from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {subYears} from "date-fns/subYears";
 import {
   Button,
   Col,
@@ -28,7 +26,6 @@ import {
   ModalFooter,
   Row,
 } from "react-bootstrap";
-import Dropzone from "react-dropzone";
 import {useForm} from "react-hook-form";
 
 const idTypeOptions = [
@@ -63,7 +60,7 @@ export function IdentificationForm() {
 
   const closeModal = useDrawerStore((state) => state.closeModal);
   const updateIdentification = useDrawerStore(
-    (state) => state.updateIdentification,
+    (state) => state.updateIdentificationData,
   );
 
   return (

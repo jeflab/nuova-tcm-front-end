@@ -15,6 +15,8 @@ import styles from "./page.module.scss";
 // TODO: abbassare il fetch dei dati, o in un sotto-componente client o addirittura nel drawer (fetch è cachata)
 //  Fatto ciò la pagina può tornare server component
 
+const minWidthHack = {minWidth: "1px"};
+
 export default async function NewLipPage() {
   const updateLip = async (data: Partial<Lip>) => {
     console.log("Update LIP", data);
@@ -26,14 +28,14 @@ export default async function NewLipPage() {
       <Row className="flex-row-reverse">
         <Col md="auto">
           <Nav className={cns("flex-column", styles.connectedList)}>
-            {drawers.map(({name, title}) => (
+            {drawers.map(({name, title, shortTitle}) => (
               <NavDrawer name={name} key={name}>
-                {title}
+                {shortTitle ?? title}
               </NavDrawer>
             ))}
           </Nav>
         </Col>
-        <Col className="d-flex flex-column gap-3">
+        <Col className="d-flex flex-column gap-3" style={minWidthHack}>
           <Alert variant="info" className="mb-0">
             <h3>
               <FontAwesomeIcon icon={faTriangleExclamation} className="me-2" />
@@ -52,7 +54,6 @@ export default async function NewLipPage() {
               corrispondere.
             </p>
           </Alert>
-          {/*<DebugState />*/}
           {drawers.map(({name, title, modalContent, summaryContent}) => (
             <Drawer
               key={name}

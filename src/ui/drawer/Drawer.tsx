@@ -7,7 +7,7 @@ import {DrawerIcon} from "@/ui/drawer/DrawerIcon";
 import {upperCaseFirstNormalizer} from "@/ui/form/normalizers";
 import {faPenToSquare} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {ReactNode} from "react";
+import {ReactNode, useEffect, useRef} from "react";
 import {
   Button,
   Card,
@@ -17,6 +17,7 @@ import {
   ModalHeader,
 } from "react-bootstrap";
 import styles from "./Drawer.module.scss";
+import autoAnimate from "@formkit/auto-animate";
 
 interface DrawerProps {
   children?: ReactNode;
@@ -33,6 +34,11 @@ export function Drawer({children, modalContent, name, title}: DrawerProps) {
   const closeModal = useDrawerStore((state) => state.closeModal);
   const drawerState = useDrawerStore((state) => state.drawerStates[name]);
 
+  const parent = useRef(null);
+  useEffect(() => {
+    parent.current && autoAnimate(parent.current);
+  }, [parent]);
+
   return (
     <>
       <Card
@@ -43,19 +49,22 @@ export function Drawer({children, modalContent, name, title}: DrawerProps) {
       >
         <div id={name} className={styles.anchor} />
         <CardHeader className="d-flex align-items-center justify-content-between py-3">
-          <h4 className="mb-0">
-            <DrawerIcon state={drawerState} className="me-2" />
+          <h4 className="mb-0 d-flex align-items-center">
+            <DrawerIcon state={drawerState} className="me-3" />
             {title}
           </h4>
           <Button
-            className={cns(drawerState !== "active" && "invisible")}
+            className={cns(
+              "text-nowrap ms-3",
+              drawerState !== "active" && "invisible",
+            )}
             onClick={() => openModal(name)}
           >
             <FontAwesomeIcon icon={faPenToSquare} className="me-2" />
             {drawerState === "success" ? "Modifica" : "Compila"}
           </Button>
         </CardHeader>
-        <CardBody>{children}</CardBody>
+        <CardBody ref={parent}>{children}</CardBody>
       </Card>
       <Modal
         backdrop="static"

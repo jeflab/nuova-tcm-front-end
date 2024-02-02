@@ -25,8 +25,9 @@ interface Actions {
     data: TempLipData["contractorPersonalAreaActivation"],
   ) => void;
   updateContractorData: (data: TempLipData["contractorData"]) => void;
-  updateIdentification: (data: TempLipData["identification"]) => void;
+  updateIdentificationData: (data: TempLipData["identification"]) => void;
   setPicture: (key: string, picture: string) => void;
+  updateDenData: (data: TempLipData["den"]) => void;
 }
 
 const updateLipData = (state: State, data: Partial<TempLipData>) => {
@@ -97,6 +98,39 @@ const updateLipData = (state: State, data: Partial<TempLipData>) => {
     newState.drawerStates.identification = undefined;
   }
 
+  // Demand and needs
+  if (newState.drawerStates.identification === "success") {
+    if (newState.lipData.den === undefined) {
+      newState.drawerStates.den = "active";
+    } else if (
+      newState.lipData.den &&
+      newState.lipData.den.duration === "multi_year" &&
+      (
+        [
+          "capital_for_heirs",
+          "protection_against_death_accident_and_illness",
+        ] as const
+      ).some((value) => newState.lipData.den?.expectations.includes(value))
+    ) {
+      newState.drawerStates.den = "success";
+    } else {
+      newState.drawerStates.den = "danger";
+    }
+  } else {
+    newState.drawerStates.den = undefined;
+  }
+
+  // Preventivo
+  if (newState.drawerStates.den === "success") {
+    if (newState.lipData.quote === undefined) {
+      newState.drawerStates.quote = "active";
+    } else if (newState.lipData.quote) {
+      newState.drawerStates.quote = "success";
+    } else {
+      newState.drawerStates.quote = "danger";
+    }
+  }
+
   return newState;
 };
 
@@ -134,7 +168,7 @@ export const useDrawerStore = create<State & Actions>()((set) => ({
         updateLipData(state, {contractorData: data});
       }),
     ),
-  updateIdentification: (data) =>
+  updateIdentificationData: (data) =>
     set(
       produce((state) => {
         updateLipData(state, {identification: data});
@@ -147,6 +181,12 @@ export const useDrawerStore = create<State & Actions>()((set) => ({
           state.lipData.idPictures = {};
         }
         state.lipData.idPictures[key] = picture;
+      }),
+    ),
+  updateDenData: (data) =>
+    set(
+      produce((state) => {
+        updateLipData(state, {den: data});
       }),
     ),
 }));

@@ -8,7 +8,7 @@ export function FatcaSummary() {
   if (fatcaData === true) {
     return (
       <p className="mb-0">
-        Non è possibile continuare la consulenza poichè il contraente è
+        Non è possibile continuare la consulenza poiché il contraente è
         residente negli Stati Uniti d'America.
       </p>
     );

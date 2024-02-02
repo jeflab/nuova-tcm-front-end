@@ -1,5 +1,17 @@
 import {ContractorGender} from "@/app/(menu)/(authenticated)/lips/[id]/ContractorFiscalCodeForm";
+import {
+  ConsistencyOptions,
+  DependentFamilyMembersOptions,
+  DurationOptions,
+  EconomicConditionOptions,
+  EducationOptions,
+  ExpectationsOptions,
+  FamilyOptions,
+  JobOptions,
+  NeedsToMeetOptions,
+} from "@/app/(menu)/(authenticated)/lips/[id]/DenForm";
 import {IdType} from "@/app/(menu)/(authenticated)/lips/[id]/IdentificationForm";
+import {YesNoAnswer} from "@/helpers/TypesHelper";
 import {
   faCheckCircle,
   faCircleHalf,
@@ -78,7 +90,7 @@ export interface TempLipData {
       zipCode: string;
     };
     pep: {
-      isPep: "yes" | "no";
+      isPep: YesNoAnswer;
       person: string;
       relation: string;
     };
@@ -106,5 +118,18 @@ export interface TempLipData {
     frontPictureUrl?: string; // Temp
     backPictureUrl?: string; // Temp
   };
-  den?: {};
+  den?: {
+    education: EducationOptions;
+    job: JobOptions;
+    family: FamilyOptions;
+    dependentFamilyMembers: DependentFamilyMembersOptions;
+    otherInsuranceProducts: YesNoAnswer;
+    needsIntendToMeet: NeedsToMeetOptions[];
+    savings: string;
+    economicCondition: EconomicConditionOptions;
+    expectations: ExpectationsOptions[];
+    duration: DurationOptions;
+    consistency: ConsistencyOptions[];
+  };
+  quote?: {};
 }

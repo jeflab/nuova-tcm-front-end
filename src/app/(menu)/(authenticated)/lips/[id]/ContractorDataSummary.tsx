@@ -23,7 +23,7 @@ export function ContractorDataSummary() {
   const {contractorPersonalData, contact, residence, pep, aml} = contractorData;
 
   return (
-    <Row className="row-gap-4" xs={1} md={2}>
+    <Row className="row-gap-4" xs={1} sm={2} md={1} lg={2}>
       <Col>
         <h4 className="w-100 text-primary">
           <FontAwesomeIcon icon={faUser} /> Anagrafica

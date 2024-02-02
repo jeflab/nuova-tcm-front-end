@@ -23,7 +23,7 @@ export function IdentificationDataSummary() {
 
   return (
     <Row className="row-gap-3">
-      <Col xs={12} sm={6}>
+      <Col xs={12} sm={6} md={12} lg={6}>
         <h4 className="text-primary">
           <FontAwesomeIcon icon={faAddressCard} className="me-2" />
           Documento di identità
@@ -46,7 +46,7 @@ export function IdentificationDataSummary() {
           {dateString(new Date(identification.expiringDate))}
         </p>
       </Col>
-      <Col xs={12} sm={3}>
+      <Col xs={6} sm={3} md={6} lg={3}>
         <div className="ratio ratio-1x1">
           <div
             className="bg-primary-subtle d-flex justify-content-center align-items-md-center"
@@ -62,7 +62,7 @@ export function IdentificationDataSummary() {
           ></div>
         </div>
       </Col>
-      <Col xs={12} sm={3}>
+      <Col xs={6} sm={3} md={6} lg={3}>
         <div className="ratio ratio-1x1">
           <div
             className="bg-primary-subtle d-flex justify-content-center align-items-md-center"

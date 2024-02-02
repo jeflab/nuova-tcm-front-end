@@ -24,6 +24,7 @@ interface ComuneProvAutocompleteFiledProps {
   disabled?: boolean;
   name?: string;
   onlyExisting?: boolean;
+  placeholder?: string;
   plaintext?: boolean;
   readOnly?: boolean;
   validation?: RegisterOptions;
@@ -35,6 +36,7 @@ export function ComuneProvAutocompleteField({
   disabled,
   name,
   onlyExisting,
+  placeholder,
   plaintext,
   readOnly,
   validation,
@@ -78,7 +80,7 @@ export function ComuneProvAutocompleteField({
           className={styles.cityInputWrapper}
           disabled={disabled}
           options={cities}
-          placeholder="Luogo di nascita"
+          placeholder={placeholder}
           defaultInputValue={defaultValue?.city}
           emptyLabel={
             <span className="dropdown-item-text text-center">

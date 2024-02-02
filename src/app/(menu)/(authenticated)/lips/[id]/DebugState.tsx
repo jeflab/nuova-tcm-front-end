@@ -58,7 +58,7 @@ useDrawerStore.getState().updateContractorData({
     fundSource: "Lavoro",
   },
 });
-useDrawerStore.getState().updateIdentification({
+useDrawerStore.getState().updateIdentificationData({
   idType: "identity_card",
   number: "123456",
   issuedBy: "Castelcovati",
@@ -83,6 +83,27 @@ useDrawerStore
     "backPictureUrl",
     "https://v5-dev.prevision.family/api/public/users/9157/get-id-image?id-file-name=20221212143429-back-ci-facsimile-retro.jpg&size=thumbnail",
   );
+useDrawerStore.getState().updateDenData({
+  education: "degree",
+  job: "self_employed_or_freelancer",
+  family: "1",
+  dependentFamilyMembers: "0",
+  otherInsuranceProducts: "yes",
+  needsIntendToMeet: ["investment", "personal_insurance_protection"],
+  savings: "1000",
+  economicCondition: "stationary",
+  expectations: [
+    "home_protection",
+    "capital_for_heirs",
+    "investment",
+    "investment_and_capital_protection",
+    "protection_against_death_accident_and_illness",
+  ],
+  // expectations: ["home_protection"], // Expected block
+  duration: "multi_year",
+  // duration: "1_year", // Expected block
+  consistency: ["objective_information", "consistent_with_client_needs"],
+});
 
 export function DebugState() {
   const lipData = useDrawerStore((state) => state.lipData);

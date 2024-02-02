@@ -3,6 +3,8 @@ import {ContractorDataSummary} from "@/app/(menu)/(authenticated)/lips/[id]/Cont
 import {ContractorFiscalCodeForm} from "@/app/(menu)/(authenticated)/lips/[id]/ContractorFiscalCodeForm";
 import {ContractorFiscalCodeSummary} from "@/app/(menu)/(authenticated)/lips/[id]/ContractorFiscalCodeSummary";
 import {ContractorPersonalAreaActivationSummary} from "@/app/(menu)/(authenticated)/lips/[id]/ContractorPersonalAreaActivationSummary";
+import {DenForm} from "@/app/(menu)/(authenticated)/lips/[id]/DenForm";
+import {DenSummary} from "@/app/(menu)/(authenticated)/lips/[id]/DenSummary";
 import {FatcaForm} from "@/app/(menu)/(authenticated)/lips/[id]/FatcaForm";
 import {FatcaSummary} from "@/app/(menu)/(authenticated)/lips/[id]/FatcaSummary";
 import {IdentificationForm} from "@/app/(menu)/(authenticated)/lips/[id]/IdentificationForm";
@@ -24,6 +26,7 @@ export type DrawerName =
 interface Drawer {
   name: DrawerName;
   title: string;
+  shortTitle?: string;
   modalContent?: ReactNode;
   summaryContent?: ReactNode;
 }
@@ -59,13 +62,11 @@ export const drawers: Drawer[] = [
   },
   {
     name: "den",
-    title: "Demand and needs",
-    modalContent: <IdentificationForm />,
-    summaryContent: <IdentificationDataSummary />,
-  },
-  {
-    name: "adequacy",
-    title: "Questionario di adeguatezza",
+    title:
+      "Questionario per la coerenza del contratto rispetto alle richieste ed esigenze del cliente",
+    shortTitle: "Questionario di coerenza",
+    modalContent: <DenForm />,
+    summaryContent: <DenSummary />,
   },
   {
     name: "quote",
