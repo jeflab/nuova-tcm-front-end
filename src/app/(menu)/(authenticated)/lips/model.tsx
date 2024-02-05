@@ -143,5 +143,8 @@ export interface TempLipData {
     tpd: {enabled: boolean; coverage: string};
     premium: number;
   };
-  healthQuestionnaire?: {};
+  healthQuestionnaire?: {
+    feelingGood: boolean;
+  };
+  beneficiary?: {}[];
 }

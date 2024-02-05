@@ -1,3 +1,4 @@
+import {DebugState} from "@/app/(menu)/(authenticated)/lips/[id]/DebugState";
 import {drawers} from "@/app/(menu)/(authenticated)/lips/[id]/drawers";
 import {Lip} from "@/app/(menu)/(authenticated)/lips/model";
 import {cns} from "@/helpers/cns";
@@ -53,7 +54,7 @@ export default async function NewLipPage() {
               corrispondere.
             </p>
           </Alert>
-          {/*<DebugState />*/}
+          <DebugState />
           {drawers.map(({name, title, modalContent, summaryContent}) => (
             <Drawer
               key={name}

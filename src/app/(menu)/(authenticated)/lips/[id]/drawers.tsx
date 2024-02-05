@@ -7,6 +7,8 @@ import {DenForm} from "@/app/(menu)/(authenticated)/lips/[id]/DenForm";
 import {DenSummary} from "@/app/(menu)/(authenticated)/lips/[id]/DenSummary";
 import {FatcaForm} from "@/app/(menu)/(authenticated)/lips/[id]/FatcaForm";
 import {FatcaSummary} from "@/app/(menu)/(authenticated)/lips/[id]/FatcaSummary";
+import {HealthQuestionnaireForm} from "@/app/(menu)/(authenticated)/lips/[id]/healthQuestionnaireForm";
+import {HealthQuestionnaireSummary} from "@/app/(menu)/(authenticated)/lips/[id]/HealthQuestionnaireSummary";
 import {IdentificationForm} from "@/app/(menu)/(authenticated)/lips/[id]/IdentificationForm";
 import {IdentificationDataSummary} from "@/app/(menu)/(authenticated)/lips/[id]/IdentificationSummary";
 import {QuoteForm} from "@/app/(menu)/(authenticated)/lips/[id]/QuoteForm";
@@ -79,7 +81,8 @@ export const drawers: Drawer[] = [
     name: "healthQuestionnaire",
     title: "Questionario sanitario / non sanitario",
     shortTitle: "Questionario sanitario",
-    modalContent: <p>In arrivo</p>,
+    modalContent: <HealthQuestionnaireForm />,
+    summaryContent: <HealthQuestionnaireSummary />,
   },
   {
     name: "insured",
