@@ -19,7 +19,11 @@ export async function login(data: {fiscalCode: string; password: string}) {
 
   const loginResponse = await api.post("/login", LoginResponseRawShape, body);
   if (loginResponse.status === "success") {
-    cookies().set(AUTH_COOKIE_NAME, loginResponse.access_token);
+    cookies().set(AUTH_COOKIE_NAME, loginResponse.access_token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "strict",
+    });
   }
 
   return loginResponse;

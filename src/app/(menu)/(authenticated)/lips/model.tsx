@@ -131,5 +131,17 @@ export interface TempLipData {
     duration: DurationOptions;
     consistency: ConsistencyOptions[];
   };
-  quote?: {};
+  quote?: {
+    birthDate: string;
+    smoker: YesNoAnswer;
+    death: string;
+    accidentalDeath: boolean;
+    trafficAccidentalDeath: boolean;
+    exemptionFromPaying: boolean;
+    tpi: {enabled: boolean; coverage: string};
+    cancer: {enabled: boolean; coverage: string};
+    tpd: {enabled: boolean; coverage: string};
+    premium: number;
+  };
+  healthQuestionnaire?: {};
 }

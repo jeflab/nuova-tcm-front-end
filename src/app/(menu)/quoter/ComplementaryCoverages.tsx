@@ -13,7 +13,7 @@ import {Col, FormGroup, FormLabel, InputGroup} from "react-bootstrap";
 import {useFormContext} from "react-hook-form";
 
 export function ComplementaryCoverages() {
-  const {trigger, watch} = useFormContext();
+  const {watch, setValue} = useFormContext();
   const deathValue = watch("death");
   const birthDateValue = watch("birthDate");
   const isMoreThan75 = birthDateValue && calendarYearAge(birthDateValue) > 75;
@@ -160,8 +160,12 @@ export function ComplementaryCoverages() {
             type="switch"
             label="Invalidità permanente da infortunio o malattia"
             name="tpi.enabled"
-            onChange={() => {
-              trigger("tpi.coverage", {shouldFocus: true});
+            onChange={(value) => {
+              if (value.currentTarget.checked) {
+                setValue("tpi.coverage", "20000", {shouldValidate: true});
+              } else {
+                setValue("tpi.coverage", "", {shouldValidate: true});
+              }
             }}
             validationStyle={watch("tpi.enabled")}
             stretchedLabel
@@ -276,8 +280,12 @@ export function ComplementaryCoverages() {
             type="switch"
             label="Cancro"
             name="cancer.enabled"
-            onChange={() => {
-              trigger("cancer.coverage", {shouldFocus: true});
+            onChange={(value) => {
+              if (value.currentTarget.checked) {
+                setValue("cancer.coverage", "20000", {shouldValidate: true});
+              } else {
+                setValue("cancer.coverage", "", {shouldValidate: true});
+              }
             }}
             validationStyle={watch("cancer.enabled")}
             stretchedLabel
@@ -392,8 +400,12 @@ export function ComplementaryCoverages() {
             type="switch"
             label="Perdita totale di autosufficienza"
             name="tpd.enabled"
-            onChange={() => {
-              trigger("tpd.coverage", {shouldFocus: true});
+            onChange={(value) => {
+              if (value.currentTarget.checked) {
+                setValue("tpd.coverage", "20000", {shouldValidate: true});
+              } else {
+                setValue("tpd.coverage", "", {shouldValidate: true});
+              }
             }}
             validationStyle={watch("tpd.enabled")}
             stretchedLabel

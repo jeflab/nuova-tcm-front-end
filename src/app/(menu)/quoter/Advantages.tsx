@@ -6,13 +6,18 @@ import {Currency, Percent} from "@/ui/Currency";
 interface AdvantagesProps {
   duration: number;
   premium: number;
+  showTitle?: boolean;
 }
 
-export function Advantages({duration, premium}: AdvantagesProps) {
+export function Advantages({
+  duration,
+  premium,
+  showTitle = true,
+}: AdvantagesProps) {
   return (
     <Col>
       <Card className="overflow-hidden">
-        <h3 className="mb-0 p-2 border-bottom">I vantaggi</h3>
+        {showTitle && <h3 className="mb-0 p-2 border-bottom">I vantaggi</h3>}
         <Table size="small" className={cns(["mb-0", styles.table])}>
           <tbody>
             <tr className={cns(duration < 30 && "d-none")}>

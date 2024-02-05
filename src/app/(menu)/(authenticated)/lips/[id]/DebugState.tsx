@@ -104,6 +104,27 @@ useDrawerStore.getState().updateDenData({
   // duration: "1_year", // Expected block
   consistency: ["objective_information", "consistent_with_client_needs"],
 });
+useDrawerStore.getState().updateQuoteData({
+  birthDate: "1984-06-24",
+  smoker: "no",
+  death: "50000",
+  accidentalDeath: true,
+  trafficAccidentalDeath: false,
+  exemptionFromPaying: true,
+  tpi: {
+    enabled: false,
+    coverage: "0",
+  },
+  cancer: {
+    enabled: true,
+    coverage: "35000",
+  },
+  tpd: {
+    enabled: false,
+    coverage: "0",
+  },
+  premium: 624.4350796807557,
+});
 
 export function DebugState() {
   const lipData = useDrawerStore((state) => state.lipData);

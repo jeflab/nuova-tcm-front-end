@@ -28,6 +28,7 @@ interface Actions {
   updateIdentificationData: (data: TempLipData["identification"]) => void;
   setPicture: (key: string, picture: string) => void;
   updateDenData: (data: TempLipData["den"]) => void;
+  updateQuoteData: (data: TempLipData["quote"]) => void;
 }
 
 const updateLipData = (state: State, data: Partial<TempLipData>) => {
@@ -131,6 +132,17 @@ const updateLipData = (state: State, data: Partial<TempLipData>) => {
     }
   }
 
+  // Questionario sanitario / non sanitario
+  if (newState.drawerStates.quote === "success") {
+    if (newState.lipData.healthQuestionnaire === undefined) {
+      newState.drawerStates.healthQuestionnaire = "active";
+    } else if (newState.lipData.healthQuestionnaire) {
+      newState.drawerStates.healthQuestionnaire = "success";
+    } else {
+      newState.drawerStates.healthQuestionnaire = "danger";
+    }
+  }
+
   return newState;
 };
 
@@ -187,6 +199,12 @@ export const useDrawerStore = create<State & Actions>()((set) => ({
     set(
       produce((state) => {
         updateLipData(state, {den: data});
+      }),
+    ),
+  updateQuoteData: (data) =>
+    set(
+      produce((state) => {
+        updateLipData(state, {quote: data});
       }),
     ),
 }));

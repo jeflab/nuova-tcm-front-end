@@ -8,6 +8,18 @@ body {
   scroll-behavior: smooth;
 }
 
+.cursor-help {
+  cursor: help;
+}
+
+// Font awesome stacked icon 1x
+.fa-stack.small {
+  margin-left: -0.25em;
+  margin-right: -0.25em;
+  font-size: 0.5em;
+  vertical-align: calc(-0.125em * 2);
+}
+
 .isolate {
   isolation: isolate;
 }

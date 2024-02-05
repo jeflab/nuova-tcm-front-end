@@ -9,6 +9,8 @@ import {FatcaForm} from "@/app/(menu)/(authenticated)/lips/[id]/FatcaForm";
 import {FatcaSummary} from "@/app/(menu)/(authenticated)/lips/[id]/FatcaSummary";
 import {IdentificationForm} from "@/app/(menu)/(authenticated)/lips/[id]/IdentificationForm";
 import {IdentificationDataSummary} from "@/app/(menu)/(authenticated)/lips/[id]/IdentificationSummary";
+import {QuoteForm} from "@/app/(menu)/(authenticated)/lips/[id]/QuoteForm";
+import {QuoteSummary} from "@/app/(menu)/(authenticated)/lips/[id]/QuoteSummary";
 import {ReactNode} from "react";
 
 export type DrawerName =
@@ -18,9 +20,8 @@ export type DrawerName =
   | "contractorData"
   | "identification"
   | "den"
-  | "adequacy"
   | "quote"
-  | "health"
+  | "healthQuestionnaire"
   | "insured"
   | "beneficiaries";
 interface Drawer {
@@ -71,10 +72,14 @@ export const drawers: Drawer[] = [
   {
     name: "quote",
     title: "Preventivo",
+    modalContent: <QuoteForm />,
+    summaryContent: <QuoteSummary />,
   },
   {
-    name: "health",
+    name: "healthQuestionnaire",
     title: "Questionario sanitario / non sanitario",
+    shortTitle: "Questionario sanitario",
+    modalContent: <p>In arrivo</p>,
   },
   {
     name: "insured",

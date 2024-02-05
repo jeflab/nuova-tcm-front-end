@@ -16,8 +16,10 @@ export default async function NewLipPage() {
       <Row className="flex-row-reverse">
         <Col md="auto">
           <Nav className={cns("flex-column", styles.connectedList)}>
-            {drawers.map(({name, title}) => (
-              <NavDrawerSkeleton key={name}>{title}</NavDrawerSkeleton>
+            {drawers.map(({name, title, shortTitle}) => (
+              <NavDrawerSkeleton key={name}>
+                {shortTitle ?? title}
+              </NavDrawerSkeleton>
             ))}
           </Nav>
         </Col>
@@ -40,7 +42,7 @@ export default async function NewLipPage() {
               corrispondere.
             </p>
           </Alert>
-          {drawers.map(({name, title, modalContent, summaryContent}) => (
+          {drawers.map(({name, title}) => (
             <DrawerSkeleton key={name} title={title} />
           ))}
         </Col>
