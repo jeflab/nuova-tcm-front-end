@@ -47,6 +47,9 @@ export const numberNormalizer = (
   return value;
 };
 
+export const onlyNumbersNormalizer = (value: string) =>
+  value.replaceAll(/\D/g, "");
+
 export const upperCaseNormalizer = (text: string) => {
   if (!text) {
     return "";
@@ -54,6 +57,17 @@ export const upperCaseNormalizer = (text: string) => {
 
   return text.toUpperCase().replace(/\s/g, "");
 };
+
+export const lowercaseCaseNormalizer = (text: string) => {
+  if (!text) {
+    return "";
+  }
+
+  return text.toLowerCase().replace(/\s/g, "");
+};
+
+export const emailNormalizer = (code: string) =>
+  code.toLowerCase().replace(/\s/g, "");
 
 export const upperCaseWordsNormalizer = (text: string) => {
   if (!text) {

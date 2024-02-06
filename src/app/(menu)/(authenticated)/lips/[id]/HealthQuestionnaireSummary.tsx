@@ -11,7 +11,7 @@ export function HealthQuestionnaireSummary() {
     return (
       <p className="mb-0">
         Non è possibile continuare la consulenza poiché il contraente dichiara
-        di non stare bene o di avere una patologia o malattia.
+        che l'assicurato non sta bene e ha delle patologie o malattie.
       </p>
     );
   }
@@ -19,8 +19,8 @@ export function HealthQuestionnaireSummary() {
   if (healthQuestionnaireData?.feelingGood) {
     return (
       <p className="mb-0">
-        Il contraente dichiara di stare bene e di non avere alcuna patologia o
-        malattia.
+        Il contraente dichiara che l'assicurato sta bene e non ha alcuna
+        patologia o malattia.
       </p>
     );
   }

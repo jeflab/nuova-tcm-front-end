@@ -29,7 +29,10 @@ interface Actions {
   setPicture: (key: string, picture: string) => void;
   updateDenData: (data: TempLipData["den"]) => void;
   updateQuoteData: (data: TempLipData["quote"]) => void;
-  updateHealthQuestionnaire: (data: TempLipData["healthQuestionnaire"]) => void;
+  updateHealthQuestionnaireData: (
+    data: TempLipData["healthQuestionnaire"],
+  ) => void;
+  updateBeneficiariesData: (data: TempLipData["beneficiaries"]) => void;
 }
 
 const updateLipData = (state: State, data: Partial<TempLipData>) => {
@@ -145,6 +148,15 @@ const updateLipData = (state: State, data: Partial<TempLipData>) => {
   }
 
   // Beneficiari
+  if (newState.drawerStates.healthQuestionnaire === "success") {
+    if (newState.lipData.beneficiaries === undefined) {
+      newState.drawerStates.beneficiaries = "active";
+    } else if (newState.lipData.beneficiaries) {
+      newState.drawerStates.beneficiaries = "success";
+    } else {
+      newState.drawerStates.beneficiaries = "danger";
+    }
+  }
 
   return newState;
 };
@@ -210,10 +222,16 @@ export const useDrawerStore = create<State & Actions>()((set) => ({
         updateLipData(state, {quote: data});
       }),
     ),
-  updateHealthQuestionnaire: (data) =>
+  updateHealthQuestionnaireData: (data) =>
     set(
       produce((state) => {
         updateLipData(state, {healthQuestionnaire: data});
+      }),
+    ),
+  updateBeneficiariesData: (data) =>
+    set(
+      produce((state) => {
+        updateLipData(state, {beneficiaries: data});
       }),
     ),
 }));

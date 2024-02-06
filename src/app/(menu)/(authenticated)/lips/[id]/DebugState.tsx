@@ -125,6 +125,52 @@ useDrawerStore.getState().updateQuoteData({
   },
   premium: 624.4350796807557,
 });
+useDrawerStore.getState().updateHealthQuestionnaireData({feelingGood: true});
+useDrawerStore.getState().updateBeneficiariesData({
+  nomination: "beneficiaries",
+  beneficiaries: [
+    {
+      surname: "Lazzaroni",
+      name: "Fabio",
+      birthDate: "1984-06-24",
+      birthPlace: {
+        city: "Lovere",
+        province: "BG",
+      },
+      fiscalCode: "LZZFBA84H24E704I",
+      streetName: "Via Tito Speri",
+      streetNumber: "10",
+      place: {
+        city: "Castelcovati",
+        province: "BS",
+      },
+      zipCode: "25030",
+      phone: "393206441946",
+      email: "fabio.lazza@tiscali.it",
+      share: "51",
+    },
+    {
+      surname: "Mangiavini",
+      name: "Andrea",
+      birthDate: "1983-09-08",
+      birthPlace: {
+        city: "Brescia",
+        province: "BS",
+      },
+      fiscalCode: "MNGNDR83P08B157U",
+      streetName: "Via San Filastrio",
+      streetNumber: "122",
+      place: {
+        city: "Torbole Casaglia",
+        province: "BS",
+      },
+      zipCode: "25030",
+      phone: "3282883728",
+      email: "mangiavini.andrea@gmail.com",
+      share: "49",
+    },
+  ],
+});
 
 export function DebugState() {
   const lipData = useDrawerStore((state) => state.lipData);

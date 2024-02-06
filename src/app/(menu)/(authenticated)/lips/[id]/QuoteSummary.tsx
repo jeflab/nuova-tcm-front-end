@@ -75,7 +75,7 @@ export function QuoteSummary() {
           <strong>Data di nascita:</strong> {dateString(quoteData.birthDate)}
         </p>
         <p className="mb-0">
-          <strong>Età assicurativa:</strong>
+          <strong>Età assicurativa:</strong>{" "}
           {calendarYearAge(quoteData.birthDate)}
         </p>
         <p className="mb-0">
@@ -117,7 +117,7 @@ export function QuoteSummary() {
           <FontAwesomeIcon icon={faShieldPlus} /> Coperture complementari
         </h4>
         {filteredComplementaryCoverages.length > 0 ? (
-          <Row xs={2} className="row-gap-3">
+          <Row xs={1} sm={2} md={1} lg={2} className="row-gap-3 d-flex">
             {filteredComplementaryCoverages.map(
               ({key, label, maxDuration, maxAge}) => {
                 const coverage = quoteData[key];
@@ -128,7 +128,7 @@ export function QuoteSummary() {
 
                   return (
                     <Col key={key}>
-                      <Card body>
+                      <Card body className="h-100">
                         <h5>
                           <FontAwesomeIcon
                             icon={faCheck}
@@ -174,7 +174,7 @@ export function QuoteSummary() {
 
                   return (
                     <Col key={key}>
-                      <Card body>
+                      <Card body className="h-100">
                         <h5>
                           <FontAwesomeIcon
                             icon={faCheck}

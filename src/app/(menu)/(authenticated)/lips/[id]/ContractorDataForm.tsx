@@ -334,7 +334,7 @@ export function ContractorDataForm() {
                   placeholder="Città di residenza"
                   onlyExisting
                   validation={{
-                    required: "Insersci la città di residenza del contraente",
+                    required: "Inserisci la città di residenza del contraente",
                   }}
                 />
               </FormGroup>

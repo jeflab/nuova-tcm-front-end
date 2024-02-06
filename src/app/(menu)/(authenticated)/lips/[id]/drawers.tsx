@@ -1,3 +1,5 @@
+import {BeneficiariesForm} from "@/app/(menu)/(authenticated)/lips/[id]/BeneficiariesForm";
+import {BeneficiariesSummary} from "@/app/(menu)/(authenticated)/lips/[id]/BeneficiariesSummary";
 import {ContractorDataForm} from "@/app/(menu)/(authenticated)/lips/[id]/ContractorDataForm";
 import {ContractorDataSummary} from "@/app/(menu)/(authenticated)/lips/[id]/ContractorDataSummary";
 import {ContractorFiscalCodeForm} from "@/app/(menu)/(authenticated)/lips/[id]/ContractorFiscalCodeForm";
@@ -7,7 +9,7 @@ import {DenForm} from "@/app/(menu)/(authenticated)/lips/[id]/DenForm";
 import {DenSummary} from "@/app/(menu)/(authenticated)/lips/[id]/DenSummary";
 import {FatcaForm} from "@/app/(menu)/(authenticated)/lips/[id]/FatcaForm";
 import {FatcaSummary} from "@/app/(menu)/(authenticated)/lips/[id]/FatcaSummary";
-import {HealthQuestionnaireForm} from "@/app/(menu)/(authenticated)/lips/[id]/healthQuestionnaireForm";
+import {HealthQuestionnaireForm} from "@/app/(menu)/(authenticated)/lips/[id]/HealthQuestionnaireForm";
 import {HealthQuestionnaireSummary} from "@/app/(menu)/(authenticated)/lips/[id]/HealthQuestionnaireSummary";
 import {IdentificationForm} from "@/app/(menu)/(authenticated)/lips/[id]/IdentificationForm";
 import {IdentificationDataSummary} from "@/app/(menu)/(authenticated)/lips/[id]/IdentificationSummary";
@@ -85,11 +87,9 @@ export const drawers: Drawer[] = [
     summaryContent: <HealthQuestionnaireSummary />,
   },
   {
-    name: "insured",
-    title: "Assicurato",
-  },
-  {
     name: "beneficiaries",
     title: "Beneficiari",
+    modalContent: <BeneficiariesForm />,
+    summaryContent: <BeneficiariesSummary />,
   },
 ];

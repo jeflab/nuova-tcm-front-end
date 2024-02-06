@@ -1,12 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {};
-
 module.exports = nextConfig;
 
 // Injected content via Sentry wizard below
 
 const {withSentryConfig} = require("@sentry/nextjs");
-
 module.exports = withSentryConfig(
   module.exports,
   {
@@ -44,3 +42,8 @@ module.exports = withSentryConfig(
     automaticVercelMonitors: true,
   },
 );
+
+const withBundleAnalyzer = require("@next/bundle-analyzer")({
+  enabled: process.env.ANALYZE === "true",
+});
+module.exports = withBundleAnalyzer(nextConfig);

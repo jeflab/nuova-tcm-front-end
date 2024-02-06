@@ -23,7 +23,7 @@ export function HealthQuestionnaireForm() {
 
   const closeModal = useDrawerStore((state) => state.closeModal);
   const updateHealthQuestionnaire = useDrawerStore(
-    (state) => state.updateHealthQuestionnaire,
+    (state) => state.updateHealthQuestionnaireData,
   );
 
   return (
@@ -44,8 +44,8 @@ export function HealthQuestionnaireForm() {
           <FormGroup controlId="feelingGood" as={BorderFeedback}>
             <p className="mb-2 input-heading">Stato di salute</p>
             <HelpText>
-              Il contraente dichiara di stare bene e di non avere alcuna
-              patologia o malattia?
+              Il contraente dichiara che l'assicurato stia bene e non abbia
+              alcuna patologia o malattia?
             </HelpText>
             <FieldError />
             <CheckGroup

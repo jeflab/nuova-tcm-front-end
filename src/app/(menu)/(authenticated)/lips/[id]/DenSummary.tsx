@@ -11,7 +11,7 @@ import {
   needsToMeetOptions,
 } from "@/app/(menu)/(authenticated)/lips/[id]/DenForm";
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
-import {getOptionsLabel} from "@/helpers/inputOptions";
+import {getOptionsLabel} from "@/helpers/getOptionsLabel";
 import {Currency} from "@/ui/Currency";
 import {
   faCalendarClock,

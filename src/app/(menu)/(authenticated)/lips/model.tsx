@@ -1,3 +1,4 @@
+import {NominationOption} from "@/app/(menu)/(authenticated)/lips/[id]/BeneficiariesForm";
 import {ContractorGender} from "@/app/(menu)/(authenticated)/lips/[id]/ContractorFiscalCodeForm";
 import {
   ConsistencyOptions,
@@ -146,5 +147,25 @@ export interface TempLipData {
   healthQuestionnaire?: {
     feelingGood: boolean;
   };
-  beneficiary?: {}[];
+  beneficiaries?:
+    | {
+        nomination: "heirs";
+      }
+    | {
+        nomination: "beneficiaries";
+        beneficiaries: {
+          surname: string;
+          name: string;
+          birthDate: string;
+          birthPlace: {city: string; province: string};
+          fiscalCode: string;
+          streetName: string;
+          streetNumber: string;
+          place: {city: string; province: string};
+          zipCode: string;
+          phone: string;
+          email: string;
+          share: string;
+        }[];
+      };
 }

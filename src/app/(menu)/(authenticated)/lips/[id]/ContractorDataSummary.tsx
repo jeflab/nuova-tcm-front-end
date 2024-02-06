@@ -1,7 +1,9 @@
 "use client";
 
+import {contractorGenders} from "@/app/(menu)/(authenticated)/lips/[id]/ContractorFiscalCodeForm";
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {dateString} from "@/helpers/dates";
+import {getOptionsLabel} from "@/helpers/getOptionsLabel";
 import {
   faAddressBook,
   faLandmarkMagnifyingGlass,
@@ -40,7 +42,8 @@ export function ContractorDataSummary() {
           )
         </p>
         <p className="mb-0">
-          <strong>Genere:</strong> {contractorPersonalData.gender}
+          <strong>Genere:</strong>{" "}
+          {getOptionsLabel(contractorGenders, contractorPersonalData.gender)}
         </p>
         <p className="mb-0">
           <strong>Codice Fiscale:</strong> {contractorPersonalData.fiscalCode}
