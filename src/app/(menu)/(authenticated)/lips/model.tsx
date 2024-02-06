@@ -1,3 +1,18 @@
+import {NominationOption} from "@/app/(menu)/(authenticated)/lips/[id]/BeneficiariesForm";
+import {ContractorGender} from "@/app/(menu)/(authenticated)/lips/[id]/ContractorFiscalCodeForm";
+import {
+  ConsistencyOptions,
+  DependentFamilyMembersOptions,
+  DurationOptions,
+  EconomicConditionOptions,
+  EducationOptions,
+  ExpectationsOptions,
+  FamilyOptions,
+  JobOptions,
+  NeedsToMeetOptions,
+} from "@/app/(menu)/(authenticated)/lips/[id]/DenForm";
+import {IdType} from "@/app/(menu)/(authenticated)/lips/[id]/IdentificationForm";
+import {YesNoAnswer} from "@/helpers/TypesHelper";
 import {
   faCheckCircle,
   faCircleHalf,
@@ -33,3 +48,124 @@ export const LipStatesIcons: Record<LipStatesKeys, ReactNode> = {
   ),
   complete: <FontAwesomeIcon icon={faCheckCircle} className="text-success" />,
 } as const;
+
+// TODO: sistemare interfaccia
+export interface TempLipData {
+  agentId?: number;
+  fatca?: boolean;
+  contractorFiscalCode?: {
+    birthDate: string;
+    birthPlace: {
+      city: string;
+      province: string;
+    };
+    fiscalCode: string;
+    gender: ContractorGender;
+    name: string;
+    surname: string;
+  };
+  contractorPersonalAreaActivation?: boolean;
+  contractorData?: {
+    contractorPersonalData: {
+      birthDate: string;
+      birthPlace: {
+        city: string;
+        province: string;
+      };
+      fiscalCode: string;
+      gender: ContractorGender;
+      name: string;
+      surname: string;
+    };
+    contact: {
+      phone: string;
+      email: string;
+    };
+    residence: {
+      place: {
+        city: string;
+        province: string;
+      };
+      streetName: string;
+      streetNumber: string;
+      zipCode: string;
+    };
+    pep: {
+      isPep: YesNoAnswer;
+      person: string;
+      relation: string;
+    };
+    aml: {
+      job: string;
+      sector: string;
+      netIncome: string;
+      fundSource: string;
+    };
+  };
+  identification?: {
+    idType: IdType;
+    number: string;
+    issuedBy: string;
+    issuedDate: string;
+    expiringDate: string;
+    frontPicture: string;
+    backPicture: string;
+    metContractorInPerson: boolean;
+    documentIsCopyShownByContractor: boolean;
+    photoIsOfContractor: boolean;
+    contractorHasBeenIdentified: boolean;
+  };
+  idPictures?: {
+    frontPictureUrl?: string; // Temp
+    backPictureUrl?: string; // Temp
+  };
+  den?: {
+    education: EducationOptions;
+    job: JobOptions;
+    family: FamilyOptions;
+    dependentFamilyMembers: DependentFamilyMembersOptions;
+    otherInsuranceProducts: YesNoAnswer;
+    needsIntendToMeet: NeedsToMeetOptions[];
+    savings: string;
+    economicCondition: EconomicConditionOptions;
+    expectations: ExpectationsOptions[];
+    duration: DurationOptions;
+    consistency: ConsistencyOptions[];
+  };
+  quote?: {
+    birthDate: string;
+    smoker: YesNoAnswer;
+    death: string;
+    accidentalDeath: boolean;
+    trafficAccidentalDeath: boolean;
+    exemptionFromPaying: boolean;
+    tpi: {enabled: boolean; coverage: string};
+    cancer: {enabled: boolean; coverage: string};
+    tpd: {enabled: boolean; coverage: string};
+    premium: number;
+  };
+  healthQuestionnaire?: {
+    feelingGood: boolean;
+  };
+  beneficiaries?:
+    | {
+        nomination: "heirs";
+      }
+    | {
+        nomination: "beneficiaries";
+        beneficiaries: {
+          surname: string;
+          name: string;
+          birthDate: string;
+          birthPlace: {city: string; province: string};
+          fiscalCode: string;
+          streetName: string;
+          streetNumber: string;
+          place: {city: string; province: string};
+          zipCode: string;
+          phone: string;
+          email: string;
+          share: string;
+        }[];
+      };
+}

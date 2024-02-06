@@ -7,7 +7,7 @@ import {Form} from "@/ui/form/Form";
 import {InputField} from "@/ui/form/InputField";
 import {upperCaseNormalizer} from "@/ui/form/normalizers";
 import {SubmitButton} from "@/ui/form/SubmitButton";
-import {fiscalCodeValidator} from "@/ui/form/validators";
+import {fiscalCodeValidator} from "@/ui/form/validators/fiscalCode";
 import {faSpinner} from "@fortawesome/pro-duotone-svg-icons";
 import {faSignInAlt} from "@fortawesome/pro-duotone-svg-icons/faSignInAlt";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";

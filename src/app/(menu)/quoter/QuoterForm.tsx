@@ -30,9 +30,9 @@ const quoterFormDefaultValues = {
   accidentalDeath: false,
   trafficAccidentalDeath: false,
   exemptionFromPaying: false,
-  tpi: {enabled: false, coverage: "20000"},
-  cancer: {enabled: false, coverage: "20000"},
-  tpd: {enabled: false, coverage: "20000"},
+  tpi: {enabled: false, coverage: ""},
+  cancer: {enabled: false, coverage: ""},
+  tpd: {enabled: false, coverage: ""},
 };
 export type QuoterFormValues = typeof quoterFormDefaultValues;
 

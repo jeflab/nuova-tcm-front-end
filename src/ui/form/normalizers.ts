@@ -47,13 +47,42 @@ export const numberNormalizer = (
   return value;
 };
 
-export const upperCaseNormalizer = (text: string) =>
-  text.toUpperCase().replace(/\s/g, "");
+export const onlyNumbersNormalizer = (value: string) =>
+  value.replaceAll(/\D/g, "");
 
-export const upperCaseWordsNormalizer = (text: string) =>
-  text.replace(/\w\S*/g, (txt) => {
+export const upperCaseNormalizer = (text: string) => {
+  if (!text) {
+    return "";
+  }
+
+  return text.toUpperCase().replace(/\s/g, "");
+};
+
+export const lowercaseCaseNormalizer = (text: string) => {
+  if (!text) {
+    return "";
+  }
+
+  return text.toLowerCase().replace(/\s/g, "");
+};
+
+export const emailNormalizer = (code: string) =>
+  code.toLowerCase().replace(/\s/g, "");
+
+export const upperCaseWordsNormalizer = (text: string) => {
+  if (!text) {
+    return "";
+  }
+
+  return text.replace(/\w\S*/g, (txt) => {
     return txt.charAt(0).toUpperCase() + txt.substring(1).toLowerCase();
   });
+};
 
-export const upperCaseFirstNormalizer = (text: string) =>
-  text.charAt(0).toUpperCase() + text.substring(1).toLowerCase();
+export const upperCaseFirstNormalizer = (text: string) => {
+  if (!text) {
+    return "";
+  }
+
+  return text.charAt(0).toUpperCase() + text.substring(1).toLowerCase();
+};

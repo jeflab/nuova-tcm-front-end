@@ -1,0 +1,13 @@
+.cityInputWrapper {
+  flex: 1;
+}
+
+.cityInput:global(.form-control-plaintext) {
+  background-color: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.provinceInput {
+  flex: 0 0 80px;
+}

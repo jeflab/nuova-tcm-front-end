@@ -1,11 +1,11 @@
 "use server";
 
 import {AUTH_COOKIE_NAME} from "@/app/(no-menu)/(auth)/const";
-import {isServerError} from "@/services/helpers";
 import {cookies, headers} from "next/headers";
 import {redirect} from "next/navigation";
 import {z} from "zod";
 import * as api from "@/services/api";
+import {accountSchema} from "./models";
 
 const LoginResponseRawShape = {
   access_token: z.string(),
@@ -19,7 +19,11 @@ export async function login(data: {fiscalCode: string; password: string}) {
 
   const loginResponse = await api.post("/login", LoginResponseRawShape, body);
   if (loginResponse.status === "success") {
-    cookies().set(AUTH_COOKIE_NAME, loginResponse.access_token);
+    cookies().set(AUTH_COOKIE_NAME, loginResponse.access_token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "strict",
+    });
   }
 
   return loginResponse;
@@ -47,4 +51,8 @@ export async function checkAuth() {
   if (!cookie) {
     redirect("/login" + (referer ? "?" + searchParams.toString() : ""));
   }
+}
+
+export async function getAccount() {
+  return await api.get("/me", accountSchema.shape);
 }

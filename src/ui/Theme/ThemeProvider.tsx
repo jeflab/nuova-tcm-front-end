@@ -1,4 +1,5 @@
 "use client";
+
 import {THEME_COOKIE_NAME, themeSchema} from "@/ui/Theme/consts";
 import {getThemeClientSide} from "@/ui/Theme/helpers";
 import {WithChildren} from "@/ui/types";
