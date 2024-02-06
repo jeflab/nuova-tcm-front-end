@@ -1,8 +1,22 @@
 @import "../../app/variables";
 
-:not(.isComplete) {
-  :global(.card-header) {
-    border-bottom: none;
+.drawer {
+  position: relative;
+
+  .anchor {
+    position: absolute;
+    top: -70px;
+    visibility: hidden;
+  }
+
+  :global(.card-body):empty {
+    display: none;
+  }
+
+  &:not(.isSuccess, .isDanger) {
+    :global(.card-header) {
+      border-bottom: none;
+    }
   }
 }
 
@@ -11,11 +25,18 @@
     background-color: rgba(var(--bs-primary-rgb), 0.15);
   }
 }
-.isComplete {
+.isSuccess {
   :global(.card-header) {
     background-color: rgba(var(--bs-success-rgb), 0.15);
   }
 }
-
-.modal {
+.isDanger {
+  :global(.card-header) {
+    background-color: rgba(var(--bs-danger-rgb), 0.15);
+  }
+}
+.isWaiting {
+  :global(.card-header) {
+    background-color: rgba(var(--bs-warning-rgb), 0.15);
+  }
 }

@@ -6,10 +6,11 @@ export const isSubmitErrors = <TFieldValues extends FieldValues>(
 ) => {
   const keys = ["root", ...Object.keys(data)] as [string, ...string[]];
 
-  const SubmitErrorsSchema = z.record(
-    z.enum(keys),
-    z.object({type: z.string(), message: z.string()}),
-  );
+  const SubmitErrorsSchema = z
+    .record(z.enum(keys), z.object({type: z.string(), message: z.string()}))
+    .refine((data) => {
+      return Object.keys(data).length > 0;
+    });
 
   return (error: unknown): error is z.infer<typeof SubmitErrorsSchema> =>
     SubmitErrorsSchema.safeParse(error).success;

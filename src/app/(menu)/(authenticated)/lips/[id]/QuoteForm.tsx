@@ -1,0 +1,176 @@
+"use client";
+
+import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {getQuote} from "@/app/(menu)/quoter/actions";
+import {Advantages} from "@/app/(menu)/quoter/Advantages";
+import {ComplementaryCoverages} from "@/app/(menu)/quoter/ComplementaryCoverages";
+import {Coverages} from "@/app/(menu)/quoter/Coverages";
+import {getCoverageDuration} from "@/app/(menu)/quoter/helpers";
+import {InsuredData} from "@/app/(menu)/quoter/InsuredData";
+import {QuoterFormValues} from "@/app/(menu)/quoter/QuoterForm";
+import styles from "@/app/(menu)/quoter/QuoterForm.module.scss";
+import {cns} from "@/helpers/cns";
+import {YesNoAnswer} from "@/helpers/TypesHelper";
+import {Currency} from "@/ui/Currency";
+import {FieldError} from "@/ui/form/FieldError";
+import {Form} from "@/ui/form/Form";
+import {
+  faArrowRotateLeft,
+  faCalculator,
+  faSave,
+  faSpinner,
+  faXmark,
+} from "@fortawesome/pro-duotone-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {useState} from "react";
+import {Alert, Button, ModalBody, ModalFooter, Row} from "react-bootstrap";
+import {useForm} from "react-hook-form";
+
+const quoteDefaultValues = {
+  birthDate: "",
+  smoker: "" as YesNoAnswer,
+  death: "20000",
+  accidentalDeath: false,
+  trafficAccidentalDeath: false,
+  exemptionFromPaying: false,
+  tpi: {enabled: false, coverage: "0"},
+  cancer: {enabled: false, coverage: "0"},
+  tpd: {enabled: false, coverage: "0"},
+};
+
+export function QuoteForm() {
+  const [premium, setPremium] = useState<number>();
+  const [isSaving, setIsSaving] = useState(false);
+  const formMethods = useForm({
+    mode: "onChange",
+    defaultValues: quoteDefaultValues,
+  });
+
+  const closeModal = useDrawerStore((state) => state.closeModal);
+  const updateQuoteData = useDrawerStore((state) => state.updateQuoteData);
+
+  const handleSubmit = async (values: QuoterFormValues) => {
+    let clientResponse: Awaited<ReturnType<typeof getQuote>>;
+    try {
+      clientResponse = await getQuote(values);
+    } catch (error) {
+      console.error(error);
+      throw {
+        root: {
+          type: "server",
+          message: "Errore imprevisto, riprova più tardi.",
+        },
+      };
+    }
+
+    if (clientResponse.status === "failed") {
+      throw {root: {type: "server", message: clientResponse.message}};
+    }
+
+    setPremium(clientResponse.quotazione.premium);
+  };
+
+  const handleSave = () => {
+    setIsSaving(true);
+    updateQuoteData({
+      ...formMethods.getValues(),
+      premium: premium!,
+    });
+    closeModal();
+    setIsSaving(false);
+  };
+
+  const birthDate = formMethods.watch("birthDate");
+
+  return (
+    <>
+      <ModalBody>
+        <Form
+          id="quote-form"
+          onSubmit={handleSubmit}
+          formMethods={formMethods}
+          className="vstack gap-3"
+          onChange={() => {
+            if (formMethods.formState.isSubmitted) {
+              setPremium(undefined);
+            }
+          }}
+        >
+          <Row className="row-gap-3" xs={1} sm={2}>
+            <InsuredData />
+            <Coverages />
+            <Advantages
+              premium={premium ?? 0}
+              duration={getCoverageDuration(birthDate)}
+            />
+            <ComplementaryCoverages />
+          </Row>
+          <FieldError
+            name="root"
+            as={Alert}
+            variant="danger"
+            className="mb-0 w-100"
+          />
+        </Form>
+      </ModalBody>
+      <ModalFooter>
+        <div className="me-auto">
+          {formMethods.formState.isSubmitting ? (
+            "Calcolo in corso..."
+          ) : premium ? (
+            <>
+              Premio mensile:{" "}
+              <Currency className="h4 mb-0 d-inline-block">
+                {premium / 12}
+              </Currency>
+            </>
+          ) : (
+            "Compila il form per avere il preventivo della polizza."
+          )}
+        </div>
+        {premium ? (
+          <Button
+            type="button"
+            variant="cancel"
+            onClick={() => {
+              formMethods.reset();
+              setPremium(undefined);
+            }}
+            className={styles.rotateOnFocus}
+          >
+            <FontAwesomeIcon icon={faArrowRotateLeft} className="me-2" />
+            Reset
+          </Button>
+        ) : (
+          <Button type="button" variant="cancel" onClick={() => closeModal()}>
+            <FontAwesomeIcon icon={faXmark} className="me-2" />
+            Annulla
+          </Button>
+        )}
+        {premium ? (
+          <Button type="button" variant="primary" onClick={handleSave}>
+            {isSaving ? (
+              <FontAwesomeIcon icon={faSpinner} className="fa-spin me-2" />
+            ) : (
+              <FontAwesomeIcon icon={faSave} className="me-2" />
+            )}
+            Accetta il preventivo e prosegui
+          </Button>
+        ) : (
+          <Button type="submit" form="quote-form" variant="primary">
+            <FontAwesomeIcon
+              icon={
+                formMethods.formState.isSubmitting ? faSpinner : faCalculator
+              }
+              className={cns(
+                "me-2",
+                formMethods.formState.isSubmitting && "fa-spin",
+              )}
+            />
+            Calcola preventivo
+          </Button>
+        )}
+      </ModalFooter>
+    </>
+  );
+}

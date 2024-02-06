@@ -10,7 +10,14 @@ import FormContext from "react-bootstrap/FormContext";
 import {RegisterOptions, useFormContext} from "react-hook-form";
 import invariant from "tiny-invariant";
 
-type InputTypes = "email" | "hidden" | "password" | "text" | "date" | "number";
+type InputTypes =
+  | "email"
+  | "hidden"
+  | "password"
+  | "text"
+  | "date"
+  | "number"
+  | "tel";
 
 interface InputFieldProps extends ComponentProps<typeof FormControl> {
   name?: string;

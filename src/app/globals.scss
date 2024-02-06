@@ -1,9 +1,23 @@
 @import "./bootstrap";
+@import "./variables";
 @import "@fortawesome/fontawesome-svg-core/styles.css";
 
 html,
 body {
   height: 100%;
+  scroll-behavior: smooth;
+}
+
+.cursor-help {
+  cursor: help;
+}
+
+// Font awesome stacked icon 1x
+.fa-stack.small {
+  margin-left: -0.25em;
+  margin-right: -0.25em;
+  font-size: 0.5em;
+  vertical-align: calc(-0.125em * 2);
 }
 
 .isolate {
@@ -16,4 +30,10 @@ body {
 
 .btn.placeholder {
   color: transparent;
+}
+
+@include color-mode(dark) {
+  .text-primary {
+    color: $primary-dark !important; // important to override the bootstrap color
+  }
 }

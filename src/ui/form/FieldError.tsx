@@ -7,6 +7,7 @@ import invariant from "tiny-invariant";
 
 interface FieldErrorProps<T extends ElementType> {
   name?: string;
+  disableIf?: string[];
   as?: T;
 }
 
@@ -23,15 +24,21 @@ const DEFAULT_MESSAGES = {
 export function FieldError<T extends ElementType = typeof Feedback>({
   as: Component = Feedback,
   className,
+  disableIf,
   name,
   ...props
-}: FieldErrorProps<T> & ComponentPropsWithRef<T>) {
+}: ComponentPropsWithRef<T> & FieldErrorProps<T>) {
   const {
     formState: {errors},
   } = useFormContext();
   const {controlId} = useContext(FormContext);
   const controlName = name || controlId;
   invariant(controlName, "name or controlId is required");
+
+  const isDisabled = disableIf?.some((otherName: string) => {
+    const otherValue = get(errors, otherName);
+    return !!otherValue;
+  });
 
   const validationError = get(errors, controlName);
   const errorMessage =
@@ -40,6 +47,10 @@ export function FieldError<T extends ElementType = typeof Feedback>({
       `${controlName} ${
         DEFAULT_MESSAGES[validationError.type as keyof typeof DEFAULT_MESSAGES]
       }`);
+
+  if (isDisabled) {
+    return null;
+  }
 
   return validationError ? (
     <Component
