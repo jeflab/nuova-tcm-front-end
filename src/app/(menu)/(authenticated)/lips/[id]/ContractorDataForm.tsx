@@ -5,6 +5,7 @@ import {
   contractorGenders,
 } from "@/app/(menu)/(authenticated)/lips/[id]/ContractorFiscalCodeForm";
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {Pep} from "@/app/(menu)/(authenticated)/lips/model";
 import {cns} from "@/helpers/cns";
 import {YesNoAnswer} from "@/helpers/TypesHelper";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
@@ -159,9 +160,9 @@ const contractorDataDefaultValues = {
   },
   pep: {
     isPep: "" as YesNoAnswer,
-    person: "" as PepPerson,
-    relation: "" as PepRelation,
-  },
+    person: "",
+    relation: "",
+  } as Pep,
   aml: {
     job: "",
     sector: "",

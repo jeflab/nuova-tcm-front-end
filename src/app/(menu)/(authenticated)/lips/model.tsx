@@ -52,6 +52,18 @@ export const LipStatesIcons: Record<LipStatesKeys, ReactNode> = {
   complete: <FontAwesomeIcon icon={faCheckCircle} className="text-success" />,
 } as const;
 
+export type Pep =
+  | {
+      isPep: "yes";
+      person: PepPerson;
+      relation: PepRelation;
+    }
+  | {
+      isPep: "no";
+      person: "";
+      relation: "";
+    };
+
 // TODO: sistemare interfaccia
 export interface TempLipData {
   agentId?: number;
@@ -93,11 +105,7 @@ export interface TempLipData {
       streetNumber: string;
       zipCode: string;
     };
-    pep: {
-      isPep: YesNoAnswer;
-      person: PepPerson;
-      relation: PepRelation;
-    };
+    pep: Pep;
     aml: {
       job: string;
       sector: string;
