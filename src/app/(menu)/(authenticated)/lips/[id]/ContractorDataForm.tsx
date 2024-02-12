@@ -28,7 +28,7 @@ import {
 } from "react-bootstrap";
 import {useForm} from "react-hook-form";
 
-const pepObject = [
+export const pepObject = [
   {label: "Presidente della Repubblica", value: "PRESIDENT_OF_THE_REPUBLIC"},
   {label: "Presidente del Consiglio", value: "PRIME_MINISTER"},
   {label: "Ministro", value: "MINISTER"},
@@ -103,8 +103,9 @@ const pepObject = [
       "DIRECTOR_DEPUTY_DIRECTOR_AND_MEMBER_OF_THE_MANAGEMENT_BODY_OR_EQUIVALENT_FUNCTION_PERFORMERS_IN_INTERNATIONAL_ORGANIZATIONS",
   },
 ] as const;
+export type PepPerson = (typeof pepObject)[number]["value"];
 
-const pepRelations = [
+export const pepRelations = [
   {label: "Genitori", value: "PARENTS"},
   {
     label: "Coniuge o persona legata in unione civile",
@@ -128,7 +129,8 @@ const pepRelations = [
     label: "Persone legate ai figli in istituti assimilabili",
     value: "PERSONS_LINKED_TO_CHILDREN_SIMILAR_INSTITUTES",
   },
-];
+] as const;
+export type PepRelation = (typeof pepRelations)[number]["value"];
 
 const contractorDataDefaultValues = {
   contractorPersonalData: {
@@ -157,8 +159,8 @@ const contractorDataDefaultValues = {
   },
   pep: {
     isPep: "" as YesNoAnswer,
-    person: "",
-    relation: "",
+    person: "" as PepPerson,
+    relation: "" as PepRelation,
   },
   aml: {
     job: "",

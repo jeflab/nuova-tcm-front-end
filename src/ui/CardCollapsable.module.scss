@@ -1,0 +1,37 @@
+.cardCollapsable {
+  transition: border-bottom-width 0.25s;
+  border-bottom-width: 3px;
+  cursor: pointer;
+
+  .caret {
+    rotate: 0deg;
+    transition: rotate 0.3s;
+  }
+
+  :global(.card-header) {
+    transition: border-bottom-color 0.2s 0.1s;
+    border-bottom-color: transparent;
+  }
+
+  &:not(.disabled) {
+    :global(.card-header) {
+      &:hover,
+      &:focus-visible {
+        background-color: rgba(var(--bs-body-color-rgb), 0.06);
+      }
+    }
+  }
+
+  &.open {
+    border-bottom-width: 1px;
+
+    .caret {
+      rotate: 180deg;
+    }
+
+    :global(.card-header) {
+      transition: border-bottom-color 0.1s;
+      border-bottom-color: var(--bs-card-border-color);
+    }
+  }
+}

@@ -3,6 +3,7 @@ import {z} from "zod";
 export const serverErrorSchema = z.object({
   status: z.literal("failed"),
   message: z.string(),
+  code: z.number().optional(),
 });
 
 export function isServerError(

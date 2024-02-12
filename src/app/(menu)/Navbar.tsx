@@ -4,7 +4,6 @@ import logo from "@/images/logo.png";
 import {AppContainer} from "@/ui/AppContainer";
 import {getTheme} from "@/ui/Theme/actions";
 import {ThemeButton} from "@/ui/Theme/ThemeButton";
-import {headers} from "next/headers";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -50,7 +49,7 @@ export async function Navbar() {
                 <NavLink as={Link} href="/lips">
                   Polizze effettuate
                 </NavLink>
-                <NavLink as={Link} href="#home">
+                <NavLink as={Link} href="/contractorLips">
                   Le tue polizze
                 </NavLink>
                 <NavLink as={Link} href="/profile">

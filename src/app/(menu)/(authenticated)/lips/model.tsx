@@ -1,4 +1,7 @@
-import {NominationOption} from "@/app/(menu)/(authenticated)/lips/[id]/BeneficiariesForm";
+import {
+  PepPerson,
+  PepRelation,
+} from "@/app/(menu)/(authenticated)/lips/[id]/ContractorDataForm";
 import {ContractorGender} from "@/app/(menu)/(authenticated)/lips/[id]/ContractorFiscalCodeForm";
 import {
   ConsistencyOptions,
@@ -92,8 +95,8 @@ export interface TempLipData {
     };
     pep: {
       isPep: YesNoAnswer;
-      person: string;
-      relation: string;
+      person: PepPerson;
+      relation: PepRelation;
     };
     aml: {
       job: string;

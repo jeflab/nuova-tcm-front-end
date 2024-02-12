@@ -1,6 +1,7 @@
 "use server";
 
 import {AUTH_COOKIE_NAME} from "@/app/(no-menu)/(auth)/const";
+import {ErrorCodes, errors} from "@/helpers/errors";
 import {logFetchInfo} from "@/helpers/fetchDebug";
 import {apiUrl, contentJsonHeader} from "@/services/const";
 import {serverErrorSchema} from "@/services/helpers";
@@ -50,14 +51,31 @@ export async function get<T extends ZodRawShape>(url: string, zodRowShape: T) {
   try {
     responseJson = await response.clone().json();
   } catch (e) {
-    console.error(e);
+    console.error(
+      chalk.red.inverse("Errore di parsing del JSON della risposta del server"),
+    );
+    console.error(chalk.redBright(e));
     console.error(await response.text());
-    throw {status: "failed", message: "Errore imprevisto, riprova più tardi"};
+    return errors[ErrorCodes.INVALID_JSON] as z.infer<typeof serverErrorSchema>;
   }
 
-  const serverResponseJson = z
-    .union([serverSuccessSchema, serverErrorSchema])
-    .parse(responseJson);
+  let serverResponseJson;
+  try {
+    serverResponseJson = z
+      .union([serverSuccessSchema, serverErrorSchema])
+      .parse(responseJson);
+  } catch (e) {
+    console.error(
+      chalk.red.inverse(
+        "Errore di parsing dello schema della risposta del server",
+      ),
+    );
+    console.error(chalk.redBright(e));
+    console.error(await response.text());
+    return errors[ErrorCodes.INVALID_SCHEMA] as z.infer<
+      typeof serverErrorSchema
+    >;
+  }
 
   return serverResponseJson;
 }
