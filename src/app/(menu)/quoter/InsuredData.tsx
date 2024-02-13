@@ -1,3 +1,5 @@
+import {QuoterFormValues} from "@/app/(menu)/quoter/QuoterForm";
+import {calendarYearAge} from "@/helpers/ages";
 import {dbDateString} from "@/helpers/dates";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {CheckGroup} from "@/ui/form/CheckGroup";
@@ -10,7 +12,7 @@ import {Col, FormGroup, FormLabel} from "react-bootstrap";
 import {useFormContext} from "react-hook-form";
 
 export function InsuredData() {
-  const {trigger} = useFormContext();
+  const {trigger, setValue} = useFormContext<QuoterFormValues>();
   return (
     <>
       <h3 className="w-100">Dati dell'assicurato</h3>
@@ -18,17 +20,25 @@ export function InsuredData() {
         <FormGroup controlId="birthDate" as={BorderFeedback}>
           <FormLabel>Data di nascita</FormLabel>
           <HelpText>
-            L'età dell'assicurato deve essere compresa tra 18 e 75 anni
+            L'età dell'assicurato deve essere compresa tra 18 e 65 anni
           </HelpText>
           <FieldError />
           <InputField
             type="date"
             placeholder="Data di nascita"
-            onChange={() => {
+            onChange={(event) => {
               trigger("tpi.coverage");
+              if (
+                calendarYearAge(event.currentTarget.value) >= 55 &&
+                calendarYearAge(event.currentTarget.value) < 85
+              ) {
+                setValue("exemptionFromPaying", false, {shouldValidate: true});
+                setValue("tpi.enabled", false, {shouldValidate: true});
+                setValue("tpi.coverage", "", {shouldValidate: true});
+              }
             }}
             max={dbDateString(subYears(Date(), 18))}
-            min={dbDateString(startOfYear(subYears(Date(), 75)))}
+            min={dbDateString(startOfYear(subYears(Date(), 65)))}
             validation={{
               required: "Inserisci la data di nascita dell'assicurato",
               max: {
@@ -36,8 +46,8 @@ export function InsuredData() {
                 message: "L'assicurato deve aver compiuto almeno 18 anni",
               },
               min: {
-                value: dbDateString(startOfYear(subYears(Date(), 75))),
-                message: "L'assicurato deve avere al massimo 75 anni",
+                value: dbDateString(startOfYear(subYears(Date(), 65))),
+                message: "L'assicurato deve avere al massimo 65 anni",
               },
             }}
           />
