@@ -5,6 +5,7 @@ import {getCoverageDuration} from "@/app/(menu)/quoter/helpers";
 import {calendarYearAge} from "@/helpers/ages";
 import {dateString} from "@/helpers/dates";
 import {Currency} from "@/ui/Currency";
+import {IconStack} from "@/ui/IconStack";
 import {
   faCheck,
   faPiggyBank,
@@ -84,10 +85,10 @@ export function QuoteSummary() {
       </Col>
       <Col xs={12} sm={6} md={12} lg={6}>
         <h4 className="text-primary">
-          <span className="fa-stack small">
+          <IconStack>
             <FontAwesomeIcon icon={faShield} className="fa-stack-2x" />
             <FontAwesomeIcon icon={faDollar} className="fa-stack-1x" />
-          </span>{" "}
+          </IconStack>{" "}
           Coperture assicurative
         </h4>
         <h5>

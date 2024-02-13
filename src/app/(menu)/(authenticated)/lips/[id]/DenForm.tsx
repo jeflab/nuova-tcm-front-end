@@ -152,21 +152,6 @@ export const durationOptions = [
 ] as const;
 export type DurationOptions = (typeof durationOptions)[number]["value"];
 
-export const consistencyOptions = [
-  {
-    label:
-      "Ha fornito al Cliente informazioni oggettive sul contratto, illustrandone le caratteristiche, la durata, i costi, i limiti della copertura ed ogni altro elemento utile a consentirgli di prendere una\n" +
-      "decisione informata.",
-    value: "objective_information",
-  },
-  {
-    label:
-      "Il contratto offerto risulta coerente con le richieste ed esigenze del Cliente.",
-    value: "consistent_with_client_needs",
-  },
-] as const;
-export type ConsistencyOptions = (typeof consistencyOptions)[number]["value"];
-
 const denDefaultValues = {
   education: "" as EducationOptions,
   job: "" as JobOptions,
@@ -178,7 +163,6 @@ const denDefaultValues = {
   economicCondition: "" as EconomicConditionOptions,
   expectations: [] as ExpectationsOptions[],
   duration: "" as DurationOptions,
-  consistency: [] as ConsistencyOptions[],
 };
 
 export function DenForm() {
@@ -428,32 +412,6 @@ export function DenForm() {
                   type="radio"
                   options={durationOptions}
                   validation={{required: "Seleziona un'opzione"}}
-                />
-              </FormGroup>
-            </Col>
-            <h4>
-              Dichiarazione di coerenza con le richieste ed esigenze del cliente
-            </h4>
-            <Col xs={12}>
-              <FormGroup controlId="consistency" as={BorderFeedback}>
-                <FormLabel>
-                  Il sottoscritto Intermediario dichiara che, in base alle
-                  informazioni acquisite dal Cliente e alla valutazione delle
-                  sue richieste ed esigenze, in maniera chiara e comprensibile:
-                </FormLabel>
-                <FieldError />
-                <CheckGroup
-                  type={"checkbox"}
-                  options={consistencyOptions}
-                  validation={{
-                    validate: {
-                      required: (value) => {
-                        if (!value || value.length < 2) {
-                          return "Pre procedere confermare entrambe le dichiarazioni";
-                        }
-                      },
-                    },
-                  }}
                 />
               </FormGroup>
             </Col>

@@ -4,7 +4,6 @@ import {
 } from "@/app/(menu)/(authenticated)/lips/[id]/ContractorDataForm";
 import {ContractorGender} from "@/app/(menu)/(authenticated)/lips/[id]/ContractorFiscalCodeForm";
 import {
-  ConsistencyOptions,
   DependentFamilyMembersOptions,
   DurationOptions,
   EconomicConditionOptions,
@@ -141,7 +140,6 @@ export interface TempLipData {
     economicCondition: EconomicConditionOptions;
     expectations: ExpectationsOptions[];
     duration: DurationOptions;
-    consistency: ConsistencyOptions[];
   };
   quote?: {
     birthDate: string;
@@ -158,7 +156,7 @@ export interface TempLipData {
   healthQuestionnaire?: {
     feelingGood: boolean;
   };
-  beneficiaries?:
+  beneficiaries?: (
     | {
         nomination: "heirs";
       }
@@ -178,5 +176,28 @@ export interface TempLipData {
           email: string;
           share: string;
         }[];
-      };
+      }
+  ) &
+    (
+      | {thirdParty: false}
+      | {
+          thirdParty: true;
+          thirdPartyContactPerson: {
+            name: string;
+            surname: string;
+            birthDate: string;
+            birthPlace: {city: string; province: string};
+            fiscalCode: string;
+            place: {
+              city: string;
+              province: string;
+            };
+            streetName: string;
+            streetNumber: string;
+            zipCode: string;
+            phone: string;
+            email: string;
+          };
+        }
+    );
 }

@@ -102,7 +102,6 @@ useDrawerStore.getState().updateDenData({
   // expectations: ["home_protection"], // Expected block
   duration: "multi_year",
   // duration: "1_year", // Expected block
-  consistency: ["objective_information", "consistent_with_client_needs"],
 });
 useDrawerStore.getState().updateQuoteData({
   birthDate: "1984-06-24",
@@ -126,8 +125,32 @@ useDrawerStore.getState().updateQuoteData({
   premium: 624.4350796807557,
 });
 useDrawerStore.getState().updateHealthQuestionnaireData({feelingGood: true});
+// useDrawerStore.getState().updateBeneficiariesData({
+//   nomination: "heirs",
+//   thirdParty: true,
+//   thirdPartyContactPerson: {
+//     name: "Mangiavini",
+//     surname: "Andrea",
+//     birthDate: "1983-09-08",
+//     birthPlace: {
+//       city: "Brescia",
+//       province: "BS",
+//     },
+//     fiscalCode: "MNGNDR83P08B157U",
+//     place: {
+//       city: "Torbole Casaglia",
+//       province: "BS",
+//     },
+//     streetName: "Via San Filastrio",
+//     streetNumber: "122",
+//     zipCode: "25030",
+//     phone: "3282883728",
+//     email: "mangiavini.andrea@gmail.com",
+//   },
+// });
 useDrawerStore.getState().updateBeneficiariesData({
   nomination: "beneficiaries",
+  thirdParty: true,
   beneficiaries: [
     {
       surname: "Lazzaroni",
@@ -170,6 +193,25 @@ useDrawerStore.getState().updateBeneficiariesData({
       share: "49",
     },
   ],
+  thirdPartyContactPerson: {
+    name: "Mangiavini",
+    surname: "Andrea",
+    birthDate: "1983-09-08",
+    birthPlace: {
+      city: "Brescia",
+      province: "BS",
+    },
+    fiscalCode: "MNGNDR83P08B157U",
+    place: {
+      city: "Torbole Casaglia",
+      province: "BS",
+    },
+    streetName: "Via San Filastrio",
+    streetNumber: "122",
+    zipCode: "25030",
+    phone: "3282883728",
+    email: "mangiavini.andrea@gmail.com",
+  },
 });
 
 export function DebugState() {
