@@ -26,7 +26,6 @@ export type DrawerName =
   | "den"
   | "quote"
   | "healthQuestionnaire"
-  | "insured"
   | "beneficiaries";
 interface Drawer {
   name: DrawerName;

@@ -3,21 +3,29 @@ import {drawers} from "@/app/(menu)/(authenticated)/lips/[id]/drawers";
 import {Lip} from "@/app/(menu)/(authenticated)/lips/model";
 import {cns} from "@/helpers/cns";
 import {AppContainer} from "@/ui/AppContainer";
+import {ButtonLink} from "@/ui/ButtonLink";
 import {Drawer} from "@/ui/drawer/Drawer";
 import {NavDrawer} from "@/ui/drawer/NavDrawer";
 import {PageTitle} from "@/ui/PageTitle";
 import {faTriangleExclamation} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import React from "react";
-import {Alert, Col, Nav, Row} from "react-bootstrap";
+import {Alert, ButtonGroup, Col, Nav, Row} from "react-bootstrap";
 import styles from "./page.module.scss";
 
 // TODO: abbassare il fetch dei dati, o in un sotto-componente client o addirittura nel drawer (fetch è cachata)
 //  Fatto ciò la pagina può tornare server component
 
+interface NewLipPageProps {
+  params: {id: string};
+  searchParams: {step?: string};
+}
+
 const minWidthHack = {minWidth: "1px"};
 
-export default async function NewLipPage() {
+export default async function NewLipPage({
+  params,
+  searchParams,
+}: NewLipPageProps) {
   const updateLip = async (data: Partial<Lip>) => {
     console.log("Update LIP", data);
   };
@@ -54,7 +62,28 @@ export default async function NewLipPage() {
               corrispondere.
             </p>
           </Alert>
-          {process.env.NODE_ENV === "development" && <DebugState />}
+          {params.id === "debug" && (
+            <ButtonGroup className="d-flex flex-wrap gap-2">
+              {drawers.map((drawer) => (
+                <ButtonLink
+                  key={drawer.name}
+                  href={`debug?step=${drawer.name}`}
+                  variant="primary"
+                  className="d-flex align-items-center btn-sm"
+                >
+                  {drawer.shortTitle ?? drawer.title}
+                </ButtonLink>
+              ))}
+              <ButtonLink
+                href="debug?step=all"
+                variant="primary"
+                className="d-flex align-items-center btn-sm"
+              >
+                Tutti
+              </ButtonLink>
+            </ButtonGroup>
+          )}
+          {params.id === "debug" && <DebugState step={searchParams.step} />}
           {drawers.map(({name, title, modalContent, summaryContent}) => (
             <Drawer
               key={name}

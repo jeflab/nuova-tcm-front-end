@@ -7,13 +7,34 @@ import {CheckGroup} from "@/ui/form/CheckGroup";
 import {FieldError} from "@/ui/form/FieldError";
 import {Form} from "@/ui/form/Form";
 import {HelpText} from "@/ui/form/HelpText";
+import {InputField} from "@/ui/form/InputField";
 import {faSave, faSpinner, faXmark} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {Button, FormGroup, ModalBody, ModalFooter} from "react-bootstrap";
+import {
+  Button,
+  Col,
+  FormGroup,
+  FormLabel,
+  InputGroup,
+  ModalBody,
+  ModalFooter,
+  Row,
+} from "react-bootstrap";
 import {useForm} from "react-hook-form";
 
 const healthQuestionnaireDefaultValues = {
-  feelingGood: "" as YesNoAnswer,
+  weight: "",
+  height: "",
+  hospitalization: "" as YesNoAnswer,
+  diseases: "" as YesNoAnswer,
+  drugTherapy: "" as YesNoAnswer,
+  symptomatology: "" as YesNoAnswer,
+  professionalRisk: "" as YesNoAnswer,
+  sportRisk: "" as YesNoAnswer,
+  cancer: "" as YesNoAnswer,
+  nervousSystemDiseases: "" as YesNoAnswer,
+  invalidityPension: "" as YesNoAnswer,
+  physicalImpairment: "" as YesNoAnswer,
 };
 export function HealthQuestionnaireForm() {
   const formMethods = useForm({
@@ -26,40 +47,363 @@ export function HealthQuestionnaireForm() {
     (state) => state.updateHealthQuestionnaireData,
   );
 
+  const hasCancerCoverage = useDrawerStore(
+    (state) => state.lipData.quote?.cancer.enabled,
+  );
+
+  const hasTpiOrTpdCoverage = useDrawerStore(
+    (state) =>
+      state.lipData.quote?.tpd.enabled || state.lipData.quote?.tpi.enabled,
+  );
+
   return (
     <>
       <ModalBody>
         <Form
           id="healt-questionnaire-form"
           onSubmit={(values) => {
-            updateHealthQuestionnaire({
-              feelingGood: values.feelingGood === "yes",
-            });
+            updateHealthQuestionnaire(values);
             closeModal();
           }}
           formMethods={formMethods}
-          className="vstack gap-3"
         >
-          {" "}
-          <FormGroup controlId="feelingGood" as={BorderFeedback}>
-            <p className="mb-2 input-heading">Stato di salute</p>
-            <HelpText>
-              Il contraente dichiara che l'assicurato stia bene e non abbia
-              alcuna patologia o malattia?
-            </HelpText>
-            <FieldError />
-            <CheckGroup
-              type="radio"
-              inline
-              options={[
-                {label: "Sì", value: "yes"},
-                {label: "No", value: "no"},
-              ]}
-              validation={{
-                required: "Seleziona un'opzione",
-              }}
-            />
-          </FormGroup>
+          <Row className="row-gap-3">
+            <Col className="d-flex" xs={12} sm={6}>
+              <FormGroup controlId="height" as={BorderFeedback}>
+                <FormLabel>Altezza</FormLabel>
+                <FieldError />
+                <InputGroup>
+                  <InputField
+                    type="number"
+                    min={60}
+                    max={250}
+                    step={1}
+                    validation={{
+                      required: "Inserisci l'altezza dell'Assicurato",
+                      max: {value: 250, message: "Altezza massima 250 cm"},
+                      min: {value: 60, message: "Altezza minima 60 cm"},
+                    }}
+                  />
+                  <InputGroup.Text>cm</InputGroup.Text>
+                </InputGroup>
+              </FormGroup>
+            </Col>
+            <Col className="d-flex" xs={12} sm={6}>
+              <FormGroup controlId="weight" as={BorderFeedback}>
+                <FormLabel>Peso</FormLabel>
+                <HelpText>
+                  Se incinta, si prega di indicare il peso immediatamente
+                  precedente la gravidanza.
+                </HelpText>
+                <FieldError />
+                <InputGroup>
+                  <InputField
+                    type="number"
+                    min={30}
+                    max={250}
+                    step={1}
+                    validation={{
+                      required: "Inserisci ll peso dell'Assicurato",
+                      max: {value: 250, message: "Peso massimo 250 kg"},
+                      min: {value: 30, message: "Peso minimo 30 kg"},
+                    }}
+                  />
+                  <InputGroup.Text>kg</InputGroup.Text>
+                </InputGroup>
+              </FormGroup>
+            </Col>
+            <Col className="d-flex" xs={12}>
+              <FormGroup controlId="hospitalization" as={BorderFeedback}>
+                <p className="mb-2 input-heading">
+                  <strong>Negli ultimi 5 anni</strong> ha subito ricoveri o
+                  interventi chirurgici{" "}
+                  <strong>oppure è attualmente in attesa</strong> di ricovero,
+                  di intervento, di accertamenti diagnostici o di ricevere i
+                  referti di esami effettuati recentemente?
+                </p>
+                <HelpText>
+                  <p>
+                    I seguenti interventi non sono da dichiarare:
+                    appendicectomia, erniotomia addominali/inguinali,
+                    adenoidectomia, tonsillectomia, safenectomia, varicectomia
+                    degli arti inferiori, varicocele, deviazioni del setto
+                    nasale, meniscectomia o rottura legamenti del ginocchio,
+                    fratture senza complicazioni, parto senza complicanze,
+                    estrazione dentale, chirurgia estetica.
+                  </p>
+                  <p className="mb-0">
+                    Esempio di accertamenti diagnostici: risonanza magnetica,
+                    ecografia, TAC, scintigrafia, radiografia, ecocardiogramma,
+                    elettrocardiogramma, biopsia, mammografia, densitometria
+                    ossea).
+                  </p>
+                </HelpText>
+                <FieldError />
+                <CheckGroup
+                  type="radio"
+                  inline
+                  options={[
+                    {label: "Sì", value: "yes"},
+                    {label: "No", value: "no"},
+                  ]}
+                  validation={{
+                    required: "Seleziona un'opzione",
+                  }}
+                />
+              </FormGroup>
+            </Col>
+            <Col className="d-flex" xs={12}>
+              <FormGroup controlId="diseases" as={BorderFeedback}>
+                <p className="mb-2 input-heading">
+                  Negli ultimi 10 anni ha sofferto di una delle seguenti
+                  patologie:
+                </p>
+                <HelpText>
+                  Tumore, cancro (compresi leucemia, linfoma e mieloma);
+                  infarto, ictus, attacco ischemico transitorio, aritmie o altre
+                  malattie cardiovascolari o cerebrovascolari; epatite, cirrosi
+                  o altre malattie del fegato; diabete, insufficienza renale,
+                  rene policistico o altre malattie dell’apparato urogenitale;
+                  insufficienza respiratoria cronica, enfisema,
+                  broncopneumopatia cronica ostruttiva; infezione da HIV; abuso
+                  di alcool, droghe o sostanze stupefacenti?
+                </HelpText>
+                <FieldError />
+                <CheckGroup
+                  type="radio"
+                  inline
+                  options={[
+                    {label: "Sì", value: "yes"},
+                    {label: "No", value: "no"},
+                  ]}
+                  validation={{
+                    required: "Seleziona un'opzione",
+                  }}
+                />
+              </FormGroup>
+            </Col>
+            <Col className="d-flex" xs={12}>
+              <FormGroup controlId="drugTherapy" as={BorderFeedback}>
+                <p className="mb-2 input-heading">
+                  Negli ultimi 5 anni ha sofferto di malattie per cui le è stata
+                  necessaria una terapia farmacologica per un periodo
+                  continuativo di oltre 21 giorni?
+                </p>
+                <HelpText>
+                  I seguenti farmaci non sono da dichiarare: anticoncezionali,
+                  antistaminici, farmaci per la tiroide, farmaci per la
+                  ipercolesterolemia, farmaci per la pressione con valori medi
+                  della pressione inferiori a 140/90.
+                </HelpText>
+                <FieldError />
+                <CheckGroup
+                  type="radio"
+                  inline
+                  options={[
+                    {label: "Sì", value: "yes"},
+                    {label: "No", value: "no"},
+                  ]}
+                  validation={{
+                    required: "Seleziona un'opzione",
+                  }}
+                />
+              </FormGroup>
+            </Col>
+            <Col className="d-flex" xs={12}>
+              <FormGroup controlId="symptomatology" as={BorderFeedback}>
+                <p className="mb-2 input-heading">
+                  Soffre di una sintomatologia persistente per la quale intende
+                  sottoporti a degli accertamenti sanitari?
+                </p>
+                <HelpText>
+                  Per esempio, ingrossamento delle ghiandole linfatiche,
+                  tumefazioni, noduli, rigonfiamenti, dolori toracici, diarrea,
+                  stitichezza, sangue nelle urine, tosse, emicranie, sudorazione
+                  notturna, perdita di peso involontaria.
+                </HelpText>
+                <FieldError />
+                <CheckGroup
+                  type="radio"
+                  inline
+                  options={[
+                    {label: "Sì", value: "yes"},
+                    {label: "No", value: "no"},
+                  ]}
+                  validation={{
+                    required: "Seleziona un'opzione",
+                  }}
+                />
+              </FormGroup>
+            </Col>
+            <Col className="d-flex" xs={12}>
+              <FormGroup controlId="professionalRisk" as={BorderFeedback}>
+                <p className="mb-2 input-heading">
+                  Pratica un’attività professionale che la espone ad un rischio
+                  particolare?
+                </p>
+                <HelpText>
+                  Es: addetti a lavori in sotterranea o su piattaforme
+                  petrolifere; lavori in altezza superiore a 15m (ad esempio: su
+                  impalcature, tetti, ponteggi, antennista, etc.);
+                  palombari/sommozzatori, speleologi, paracadutisti; piloti
+                  commerciali privati (non di linea); addetti a contatto con
+                  alta tensione, radiazioni, gas, acidi, esplosivi, veleni;
+                  collaudatori di veicoli; motoveicoli e/o aeromobili; militare;
+                  pompiere; agente di polizia?
+                </HelpText>
+                <FieldError />
+                <CheckGroup
+                  type="radio"
+                  inline
+                  options={[
+                    {label: "Sì", value: "yes"},
+                    {label: "No", value: "no"},
+                  ]}
+                  validation={{
+                    required: "Seleziona un'opzione",
+                  }}
+                />
+              </FormGroup>
+            </Col>
+            <Col className="d-flex" xs={12}>
+              <FormGroup controlId="sportRisk" as={BorderFeedback}>
+                <p className="mb-2 input-heading">
+                  Pratica attività sportive esposte a particolari rischi?
+                </p>
+                <HelpText>
+                  Es: alpinismo oltre i 4000 metri, arrampicata, scalate su
+                  ghiaccio, sci d’alpinismo in solitaria o con spedizioni
+                  extraeuropee, speleologia, sport aerei (come ad esempio
+                  paracadutismo, parapendio, deltaplano, ultraleggeri, aliante,
+                  volo acrobatico), sport motoristici (come ad esempio
+                  automobilismo, motociclismo e motonautica), sport acquatici
+                  (come ad esempio immersioni subacquee, kitesurf), vela
+                  d’altura, pugilato e altre forme di boxe, sport estremi in
+                  genere (come ad esempio base jumping, rooftopping, parkour,
+                  speedflying, canyoning)?
+                </HelpText>
+                <FieldError />
+                <CheckGroup
+                  type="radio"
+                  inline
+                  options={[
+                    {label: "Sì", value: "yes"},
+                    {label: "No", value: "no"},
+                  ]}
+                  validation={{
+                    required: "Seleziona un'opzione",
+                  }}
+                />
+              </FormGroup>
+            </Col>
+            {hasCancerCoverage && (
+              <Col className="d-flex" xs={12}>
+                <FormGroup controlId="cancer" as={BorderFeedback}>
+                  <p className="mb-2 input-heading">
+                    Nella sua parentela consanguinea (genitori, fratelli,
+                    sorelle, nonni) ci sono stati almeno due casi con la stessa
+                    diagnosi di cancro o di tumore maligno diagnosticato prima
+                    dell'età di 50 anni.
+                  </p>
+                  <FieldError />
+                  <CheckGroup
+                    type="radio"
+                    inline
+                    options={[
+                      {label: "Sì", value: "yes"},
+                      {label: "No", value: "no"},
+                    ]}
+                    validation={{
+                      required: "Seleziona un'opzione",
+                    }}
+                  />
+                </FormGroup>
+              </Col>
+            )}
+            {hasTpiOrTpdCoverage && (
+              <>
+                <Col className="d-flex" xs={12}>
+                  <FormGroup
+                    controlId="nervousSystemDiseases"
+                    as={BorderFeedback}
+                  >
+                    <p className="mb-2 input-heading">
+                      Negli ultimi 10 anni ha sofferto di una delle seguenti
+                      patologie?
+                    </p>
+                    <HelpText>
+                      Es: malattie del sistema nervoso centrale e/o periferico
+                      (come SLA, sclerosi multipla, paralisi ecc.); malattie
+                      neurodegenerative (come Parkinson, Sclerosi multipla,
+                      Alzheimer); malattie della psiche (come depressione,
+                      schizofrenia); malattie osteoarticolari (come artrite,
+                      osteoporosi).
+                    </HelpText>
+                    <FieldError />
+                    <CheckGroup
+                      type="radio"
+                      inline
+                      options={[
+                        {label: "Sì", value: "yes"},
+                        {label: "No", value: "no"},
+                      ]}
+                      validation={{
+                        required: "Seleziona un'opzione",
+                      }}
+                    />
+                  </FormGroup>
+                </Col>
+                <Col className="d-flex" xs={12}>
+                  <FormGroup controlId="invalidityPension" as={BorderFeedback}>
+                    <p className="mb-2 input-heading">
+                      Le è stata riconosciuta o ha fatto richiesta di una
+                      pensione di invalidità e/o di una pensione per incapacità
+                      permanente dovuta a malattia o a infortunio?{" "}
+                    </p>
+                    <FieldError />
+                    <CheckGroup
+                      type="radio"
+                      inline
+                      options={[
+                        {label: "Sì", value: "yes"},
+                        {label: "No", value: "no"},
+                      ]}
+                      validation={{
+                        required: "Seleziona un'opzione",
+                      }}
+                    />
+                  </FormGroup>
+                </Col>
+                <Col className="d-flex" xs={12}>
+                  <FormGroup controlId="physicalImpairment" as={BorderFeedback}>
+                    <p className="mb-2 input-heading">
+                      È affetto da difetti fisici, malformazioni, disturbi
+                      funzionali o cognitivi?
+                    </p>
+                    <HelpText>
+                      I quali richiedono l'utilizzo di ausili e/o l'assistenza
+                      di una terza persona per lo svolgimento di attività della
+                      vita quotidiana quali vestirsi, lavarsi, cucinare, fare la
+                      spesa, alzarsi, spostarsi dentro e fuori la propria
+                      abitazione, gestione dei soldi?
+                    </HelpText>
+                    <FieldError />
+                    <CheckGroup
+                      type="radio"
+                      inline
+                      options={[
+                        {label: "Sì", value: "yes"},
+                        {label: "No", value: "no"},
+                      ]}
+                      validation={{
+                        required: "Seleziona un'opzione",
+                      }}
+                    />
+                  </FormGroup>
+                </Col>
+              </>
+            )}
+          </Row>
         </Form>
       </ModalBody>
       <ModalFooter>

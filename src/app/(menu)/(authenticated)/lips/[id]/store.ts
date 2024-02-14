@@ -1,4 +1,5 @@
 import {DrawerName} from "@/app/(menu)/(authenticated)/lips/[id]/drawers";
+import {calculateImc} from "@/app/(menu)/(authenticated)/lips/[id]/imc";
 import {DrawerState} from "@/ui/drawer/const";
 import {create} from "zustand";
 import {TempLipData} from "../model";
@@ -33,6 +34,7 @@ interface Actions {
     data: TempLipData["healthQuestionnaire"],
   ) => void;
   updateBeneficiariesData: (data: TempLipData["beneficiaries"]) => void;
+  resetLipData: () => void;
 }
 
 const updateLipData = (state: State, data: Partial<TempLipData>) => {
@@ -140,7 +142,16 @@ const updateLipData = (state: State, data: Partial<TempLipData>) => {
   if (newState.drawerStates.quote === "success") {
     if (newState.lipData.healthQuestionnaire === undefined) {
       newState.drawerStates.healthQuestionnaire = "active";
-    } else if (newState.lipData.healthQuestionnaire.feelingGood) {
+    } else if (
+      calculateImc(
+        parseInt(newState.lipData.healthQuestionnaire.weight, 10),
+        parseInt(newState.lipData.healthQuestionnaire.height, 10),
+      ) < 30 &&
+      calculateImc(
+        parseInt(newState.lipData.healthQuestionnaire.weight, 10),
+        parseInt(newState.lipData.healthQuestionnaire.height, 10),
+      ) > 18.5
+    ) {
       newState.drawerStates.healthQuestionnaire = "success";
     } else {
       newState.drawerStates.healthQuestionnaire = "danger";
@@ -234,4 +245,10 @@ export const useDrawerStore = create<State & Actions>()((set) => ({
         updateLipData(state, {beneficiaries: data});
       }),
     ),
+  resetLipData: () =>
+    set(() => ({
+      lipData: {},
+      modalOpen: null,
+      drawerStates: {fatca: "active"},
+    })),
 }));

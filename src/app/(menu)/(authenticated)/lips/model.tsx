@@ -154,7 +154,18 @@ export interface TempLipData {
     premium: number;
   };
   healthQuestionnaire?: {
-    feelingGood: boolean;
+    weight: string;
+    height: string;
+    hospitalization: YesNoAnswer;
+    diseases: YesNoAnswer;
+    drugTherapy: YesNoAnswer;
+    symptomatology: YesNoAnswer;
+    professionalRisk: YesNoAnswer;
+    sportRisk: YesNoAnswer;
+    cancer?: YesNoAnswer;
+    nervousSystemDiseases?: YesNoAnswer;
+    invalidityPension?: YesNoAnswer;
+    physicalImpairment?: YesNoAnswer;
   };
   beneficiaries?: (
     | {

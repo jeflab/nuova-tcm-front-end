@@ -1,10 +1,14 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+const nextConfig = {
+  logging: {fetches: {fullUrl: true}},
+};
 module.exports = nextConfig;
 
 // Injected content via Sentry wizard below
 
 const {withSentryConfig} = require("@sentry/nextjs");
+const {getRelease} = require("./src/helpers/releaseCommon.ts");
+
 module.exports = withSentryConfig(
   module.exports,
   {
@@ -15,6 +19,7 @@ module.exports = withSentryConfig(
     silent: true,
     org: "fabio-lazzaroni",
     project: "piattaforma-tcm",
+    release: getRelease(),
   },
   {
     // For all available options, see:
@@ -24,7 +29,7 @@ module.exports = withSentryConfig(
     widenClientFileUpload: true,
 
     // Transpiles SDK to be compatible with IE11 (increases bundle size)
-    transpileClientSDK: true,
+    transpileClientSDK: false,
 
     // Routes browser requests to Sentry through a Next.js rewrite to circumvent ad-blockers (increases server load)
     // tunnelRoute: "/monitoring",
