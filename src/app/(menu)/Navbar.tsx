@@ -47,7 +47,7 @@ export async function Navbar() {
             {loggedIn ? (
               <>
                 <NavLink as={Link} href="/lips">
-                  Polizze effettuate
+                  Elenco clienti
                 </NavLink>
                 <NavLink as={Link} href="/contractorLips">
                   Le tue polizze

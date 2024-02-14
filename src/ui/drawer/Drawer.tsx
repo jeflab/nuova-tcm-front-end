@@ -47,8 +47,8 @@ export function Drawer({children, modalContent, name, title}: DrawerProps) {
           drawerState && styles[`is${upperCaseFirstNormalizer(drawerState)}`],
         )}
       >
-        <div id={name} className={styles.anchor} />
         <CardHeader className="d-flex align-items-center justify-content-between py-3">
+          <div id={name} className={styles.anchor} />
           <h4 className="mb-0 d-flex align-items-center">
             <DrawerIcon state={drawerState} className="me-3" />
             {title}
