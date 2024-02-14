@@ -17,7 +17,7 @@ export default async function LipsPage({searchParams}: LipsPageProps) {
   return (
     <AppContainer className="vstack gap-3">
       <PageTitle>
-        Lista polizze effettuate
+        Elenco clienti
         <ButtonLink href="lips/new">
           <FontAwesomeIcon icon={faPlus} /> Nuova polizza
         </ButtonLink>

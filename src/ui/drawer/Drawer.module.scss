@@ -18,6 +18,7 @@
   &:not(.isSuccess, .isDanger) {
     :global(.card-header) {
       border-bottom: none;
+      border-radius: var(--bs-card-inner-border-radius);
     }
   }
 

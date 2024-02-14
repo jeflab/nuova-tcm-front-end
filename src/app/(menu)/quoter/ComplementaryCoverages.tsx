@@ -20,11 +20,11 @@ export function ComplementaryCoverages() {
   const isMoreThan75 =
     !!birthDateValue &&
     calendarYearAge(birthDateValue) > 75 &&
-    calendarYearAge(birthDateValue) < 85; // per escludere date erronee tipo 0001-06-24
-  const isMoreOrEqualThan55 =
+    calendarYearAge(birthDateValue) <= 85; // per escludere date erronee tipo 0001-06-24
+  const isMoreThan55 =
     !!birthDateValue &&
-    calendarYearAge(birthDateValue) >= 55 &&
-    calendarYearAge(birthDateValue) < 85; // per escludere date erronee tipo 0001-06-24
+    calendarYearAge(birthDateValue) > 55 &&
+    calendarYearAge(birthDateValue) <= 85; // per escludere date erronee tipo 0001-06-24
 
   return (
     <>
@@ -119,11 +119,11 @@ export function ComplementaryCoverages() {
         <FormGroup
           controlId="exemptionFromPaying"
           as={BorderFeedback}
-          disabled={isMoreOrEqualThan55}
+          disabled={isMoreThan55}
           className="position-relative"
         >
           <CheckboxField
-            disabled={isMoreOrEqualThan55}
+            disabled={isMoreThan55}
             type="switch"
             label="Esonero dal pagamento dei premi"
             validationStyle={watch("exemptionFromPaying")}
@@ -136,10 +136,10 @@ export function ComplementaryCoverages() {
             resto della durata del contratto.
           </HelpText>
           <div>
-            {!isMoreOrEqualThan55 ? (
+            {!isMoreThan55 ? (
               <strong>
-                Durata: {getCoverageDuration(watch("birthDate"), 30, 55)}{" "}
-                {getCoverageDuration(watch("birthDate"), 30, 55) === 1
+                Durata: {getCoverageDuration(watch("birthDate"), 30, 65)}{" "}
+                {getCoverageDuration(watch("birthDate"), 30, 65) === 1
                   ? "anno"
                   : "anni"}
               </strong>
@@ -149,7 +149,7 @@ export function ComplementaryCoverages() {
                   icon={faTriangleExclamation}
                   className="me-2"
                 />
-                Opzione non attivabile per gli assicurati con 55 anni o più
+                Opzione non attivabile per gli assicurati con più di 55 anni
               </strong>
             )}
           </div>
@@ -160,11 +160,11 @@ export function ComplementaryCoverages() {
           controlId="tpi"
           as={BorderFeedback}
           validationStyle={watch("tpi.enabled")}
-          disabled={isMoreOrEqualThan55}
+          disabled={isMoreThan55}
           className="position-relative"
         >
           <CheckboxField
-            disabled={isMoreOrEqualThan55}
+            disabled={isMoreThan55}
             type="switch"
             label="Invalidità permanente da infortunio o malattia"
             name="tpi.enabled"
@@ -189,10 +189,10 @@ export function ComplementaryCoverages() {
             ).
           </HelpText>
           <div>
-            {!isMoreOrEqualThan55 ? (
+            {!isMoreThan55 ? (
               <strong>
-                Durata: {getCoverageDuration(watch("birthDate"), 10, 55)}{" "}
-                {getCoverageDuration(watch("birthDate"), 10, 55) === 1
+                Durata: {getCoverageDuration(watch("birthDate"), 10, 65)}{" "}
+                {getCoverageDuration(watch("birthDate"), 10, 65) === 1
                   ? "anno"
                   : "anni"}
               </strong>
@@ -202,7 +202,7 @@ export function ComplementaryCoverages() {
                   icon={faTriangleExclamation}
                   className="me-2"
                 />
-                Opzione non attivabile per gli assicurati con 55 anni o più
+                Opzione non attivabile per gli assicurati con più di 55 anni
               </strong>
             )}
           </div>
@@ -213,7 +213,7 @@ export function ComplementaryCoverages() {
             </FormLabel>
             <InputGroup>
               <InputField
-                disabled={!watch("tpi.enabled") || isMoreOrEqualThan55}
+                disabled={!watch("tpi.enabled") || isMoreThan55}
                 id="tpi-coverage"
                 min={20_000}
                 max={watch("death")}
@@ -224,18 +224,14 @@ export function ComplementaryCoverages() {
                 validation={{
                   validate: {
                     required: (value, formValues) => {
-                      if (
-                        formValues.tpi?.enabled &&
-                        !isMoreOrEqualThan55 &&
-                        !value
-                      ) {
+                      if (formValues.tpi?.enabled && !isMoreThan55 && !value) {
                         return "Inserisci l'importo del capitale assicurato";
                       }
                     },
                     min: (value, formValues) => {
                       if (
                         formValues.tpi?.enabled &&
-                        !isMoreOrEqualThan55 &&
+                        !isMoreThan55 &&
                         value < 20_000
                       ) {
                         return `Il capitale assicurato deve essere maggiore o uguale a ${toCurrency(
@@ -246,7 +242,7 @@ export function ComplementaryCoverages() {
                     max: (value, formValues) => {
                       if (
                         formValues.tpi?.enabled &&
-                        !isMoreOrEqualThan55 &&
+                        !isMoreThan55 &&
                         value >
                           Math.min(parseInt(formValues.death, 10), 100_000)
                       ) {
@@ -258,7 +254,7 @@ export function ComplementaryCoverages() {
                     format: (value, formValues) => {
                       if (
                         formValues.tpi?.enabled &&
-                        !isMoreOrEqualThan55 &&
+                        !isMoreThan55 &&
                         value % 1_000 !== 0
                       ) {
                         return `Il capitale assicurato deve essere multiplo di ${toCurrency(

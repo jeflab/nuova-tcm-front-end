@@ -62,27 +62,6 @@ export default async function NewLipPage({
               corrispondere.
             </p>
           </Alert>
-          {params.id === "debug" && (
-            <ButtonGroup className="d-flex flex-wrap gap-2">
-              {drawers.map((drawer) => (
-                <ButtonLink
-                  key={drawer.name}
-                  href={`debug?step=${drawer.name}`}
-                  variant="primary"
-                  className="d-flex align-items-center btn-sm"
-                >
-                  {drawer.shortTitle ?? drawer.title}
-                </ButtonLink>
-              ))}
-              <ButtonLink
-                href="debug?step=all"
-                variant="primary"
-                className="d-flex align-items-center btn-sm"
-              >
-                Tutti
-              </ButtonLink>
-            </ButtonGroup>
-          )}
           {params.id === "debug" && <DebugState step={searchParams.step} />}
           {drawers.map(({name, title, modalContent, summaryContent}) => (
             <Drawer
