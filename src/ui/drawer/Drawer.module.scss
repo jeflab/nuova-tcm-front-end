@@ -1,3 +1,5 @@
+@use "sass:map";
+@import "bootstrap/scss/mixins";
 @import "../../app/variables";
 
 .drawer {
@@ -16,6 +18,32 @@
   &:not(.isSuccess, .isDanger) {
     :global(.card-header) {
       border-bottom: none;
+    }
+  }
+
+  .actionButton {
+    white-space: nowrap;
+
+    @include media-breakpoint-only(sm) {
+      display: flex;
+      align-items: center;
+      gap: map.get($spacers, 2);
+    }
+    @include media-breakpoint-up(lg) {
+      display: flex;
+      align-items: center;
+      gap: map.get($spacers, 2);
+    }
+
+    @include media-breakpoint-down(sm) {
+      .actionButtonLabel {
+        @include visually-hidden;
+      }
+    }
+    @include media-breakpoint-only(md) {
+      .actionButtonLabel {
+        @include visually-hidden;
+      }
     }
   }
 }

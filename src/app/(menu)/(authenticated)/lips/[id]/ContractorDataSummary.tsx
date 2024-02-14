@@ -1,5 +1,9 @@
 "use client";
 
+import {
+  pepObject,
+  pepRelations,
+} from "@/app/(menu)/(authenticated)/lips/[id]/ContractorDataForm";
 import {contractorGenders} from "@/app/(menu)/(authenticated)/lips/[id]/ContractorFiscalCodeForm";
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {dateString} from "@/helpers/dates";
@@ -71,10 +75,11 @@ export function ContractorDataSummary() {
               Il contraente è una persona esposta politicamente:
             </p>
             <p className="mb-0">
-              <strong>Persona:</strong> {pep.person}
+              <strong>Persona:</strong> {getOptionsLabel(pepObject, pep.person)}
             </p>
             <p className="mb-0">
-              <strong>Rapporto:</strong> {pep.relation}
+              <strong>Rapporto:</strong>{" "}
+              {getOptionsLabel(pepRelations, pep.relation)}
             </p>
           </>
         ) : (

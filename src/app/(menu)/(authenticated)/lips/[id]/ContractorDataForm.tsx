@@ -5,6 +5,7 @@ import {
   contractorGenders,
 } from "@/app/(menu)/(authenticated)/lips/[id]/ContractorFiscalCodeForm";
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {Pep} from "@/app/(menu)/(authenticated)/lips/model";
 import {cns} from "@/helpers/cns";
 import {YesNoAnswer} from "@/helpers/TypesHelper";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
@@ -28,7 +29,7 @@ import {
 } from "react-bootstrap";
 import {useForm} from "react-hook-form";
 
-const pepObject = [
+export const pepObject = [
   {label: "Presidente della Repubblica", value: "PRESIDENT_OF_THE_REPUBLIC"},
   {label: "Presidente del Consiglio", value: "PRIME_MINISTER"},
   {label: "Ministro", value: "MINISTER"},
@@ -103,8 +104,9 @@ const pepObject = [
       "DIRECTOR_DEPUTY_DIRECTOR_AND_MEMBER_OF_THE_MANAGEMENT_BODY_OR_EQUIVALENT_FUNCTION_PERFORMERS_IN_INTERNATIONAL_ORGANIZATIONS",
   },
 ] as const;
+export type PepPerson = (typeof pepObject)[number]["value"];
 
-const pepRelations = [
+export const pepRelations = [
   {label: "Genitori", value: "PARENTS"},
   {
     label: "Coniuge o persona legata in unione civile",
@@ -128,7 +130,8 @@ const pepRelations = [
     label: "Persone legate ai figli in istituti assimilabili",
     value: "PERSONS_LINKED_TO_CHILDREN_SIMILAR_INSTITUTES",
   },
-];
+] as const;
+export type PepRelation = (typeof pepRelations)[number]["value"];
 
 const contractorDataDefaultValues = {
   contractorPersonalData: {
@@ -159,7 +162,7 @@ const contractorDataDefaultValues = {
     isPep: "" as YesNoAnswer,
     person: "",
     relation: "",
-  },
+  } as Pep,
   aml: {
     job: "",
     sector: "",

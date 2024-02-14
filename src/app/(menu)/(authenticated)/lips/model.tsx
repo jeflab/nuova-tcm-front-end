@@ -1,7 +1,9 @@
-import {NominationOption} from "@/app/(menu)/(authenticated)/lips/[id]/BeneficiariesForm";
+import {
+  PepPerson,
+  PepRelation,
+} from "@/app/(menu)/(authenticated)/lips/[id]/ContractorDataForm";
 import {ContractorGender} from "@/app/(menu)/(authenticated)/lips/[id]/ContractorFiscalCodeForm";
 import {
-  ConsistencyOptions,
   DependentFamilyMembersOptions,
   DurationOptions,
   EconomicConditionOptions,
@@ -49,6 +51,18 @@ export const LipStatesIcons: Record<LipStatesKeys, ReactNode> = {
   complete: <FontAwesomeIcon icon={faCheckCircle} className="text-success" />,
 } as const;
 
+export type Pep =
+  | {
+      isPep: "yes";
+      person: PepPerson;
+      relation: PepRelation;
+    }
+  | {
+      isPep: "no";
+      person: "";
+      relation: "";
+    };
+
 // TODO: sistemare interfaccia
 export interface TempLipData {
   agentId?: number;
@@ -90,11 +104,7 @@ export interface TempLipData {
       streetNumber: string;
       zipCode: string;
     };
-    pep: {
-      isPep: YesNoAnswer;
-      person: string;
-      relation: string;
-    };
+    pep: Pep;
     aml: {
       job: string;
       sector: string;
@@ -130,7 +140,6 @@ export interface TempLipData {
     economicCondition: EconomicConditionOptions;
     expectations: ExpectationsOptions[];
     duration: DurationOptions;
-    consistency: ConsistencyOptions[];
   };
   quote?: {
     birthDate: string;
@@ -145,9 +154,20 @@ export interface TempLipData {
     premium: number;
   };
   healthQuestionnaire?: {
-    feelingGood: boolean;
+    weight: string;
+    height: string;
+    hospitalization: YesNoAnswer;
+    diseases: YesNoAnswer;
+    drugTherapy: YesNoAnswer;
+    symptomatology: YesNoAnswer;
+    professionalRisk: YesNoAnswer;
+    sportRisk: YesNoAnswer;
+    cancer?: YesNoAnswer;
+    nervousSystemDiseases?: YesNoAnswer;
+    invalidityPension?: YesNoAnswer;
+    physicalImpairment?: YesNoAnswer;
   };
-  beneficiaries?:
+  beneficiaries?: (
     | {
         nomination: "heirs";
       }
@@ -167,5 +187,28 @@ export interface TempLipData {
           email: string;
           share: string;
         }[];
-      };
+      }
+  ) &
+    (
+      | {thirdParty: false}
+      | {
+          thirdParty: true;
+          thirdPartyContactPerson: {
+            name: string;
+            surname: string;
+            birthDate: string;
+            birthPlace: {city: string; province: string};
+            fiscalCode: string;
+            place: {
+              city: string;
+              province: string;
+            };
+            streetName: string;
+            streetNumber: string;
+            zipCode: string;
+            phone: string;
+            email: string;
+          };
+        }
+    );
 }

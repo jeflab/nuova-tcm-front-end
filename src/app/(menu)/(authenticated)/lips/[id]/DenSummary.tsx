@@ -15,7 +15,6 @@ import {getOptionsLabel} from "@/helpers/getOptionsLabel";
 import {Currency} from "@/ui/Currency";
 import {
   faCalendarClock,
-  faClipboardListCheck,
   faFamily,
   faSackDollar,
   faShieldCheck,
@@ -128,7 +127,7 @@ export function DenSummary() {
             Aspettative in relazione al contratto di assicurazione:
           </strong>
         </p>
-        <ul className="list-unstyled">
+        <ul className="list-unstyled mb-0">
           {denData.expectations.map((value) => (
             <li key={value} className="d-flex">
               <FontAwesomeIcon icon={faSquareCheck} className="me-2 mt-1" />
@@ -148,33 +147,6 @@ export function DenSummary() {
           </strong>{" "}
           {getOptionsLabel(durationOptions, denData.duration)}
         </p>
-      </Col>
-      <Col xs={12}>
-        <h4 className="text-primary">
-          <FontAwesomeIcon icon={faClipboardListCheck} className="me-2" />
-          Dichiarazione di coerenza con le richieste ed esigenze del cliente
-        </h4>
-        <p className="mb-0">
-          <strong>
-            L'intermediario dichiara che, in base alle informazioni fornite dal
-            contraente e alla valutazione delle sue richieste ed esigenze, in
-            maniera chiara e comprensibile:
-          </strong>
-        </p>
-        <ul className="list-unstyled">
-          <li className="d-flex">
-            <FontAwesomeIcon icon={faSquareCheck} className="me-2 mt-1" />
-            Ha fornito al Cliente informazioni oggettive sul contratto,
-            illustrandone le caratteristiche, la durata, i costi, i limiti della
-            copertura ed ogni altro elemento utile a consentirgli di prendere
-            una decisione informata.
-          </li>
-          <li className="d-flex">
-            <FontAwesomeIcon icon={faSquareCheck} className="me-2 mt-1" />
-            il contratto offerto risulta coerente con le richieste ed esigenze
-            del Cliente.
-          </li>
-        </ul>
       </Col>
     </Row>
   );

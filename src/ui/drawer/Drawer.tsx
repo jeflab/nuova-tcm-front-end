@@ -55,13 +55,16 @@ export function Drawer({children, modalContent, name, title}: DrawerProps) {
           </h4>
           <Button
             className={cns(
-              "text-nowrap ms-3",
-              drawerState !== "active" && "invisible",
+              styles.actionButton,
+              "ms-3",
+              drawerState !== "active" && "d-none",
             )}
             onClick={() => openModal(name)}
           >
-            <FontAwesomeIcon icon={faPenToSquare} className="me-2" />
-            {drawerState === "success" ? "Modifica" : "Compila"}
+            <FontAwesomeIcon icon={faPenToSquare} />
+            <span className={styles.actionButtonLabel}>
+              {drawerState === "success" ? "Modifica" : "Compila"}
+            </span>
           </Button>
         </CardHeader>
         <CardBody ref={parent}>{children}</CardBody>

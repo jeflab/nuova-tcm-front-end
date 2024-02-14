@@ -1,9 +1,9 @@
 "use client";
 import {cns} from "@/helpers/cns";
 import {ButtonLink} from "@/ui/ButtonLink";
+import {CardCollapsable} from "@/ui/CardCollapsable";
 import {Filter} from "@/ui/table/Filter";
 import {
-  faAngleDown,
   faArrowDownShortWide,
   faArrowUpWideShort,
   faBackward,
@@ -23,13 +23,9 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import {usePathname, useRouter} from "next/navigation";
-import {Fragment, ReactNode, useState} from "react";
+import {Fragment, ReactNode} from "react";
 import {
   Button,
-  Card,
-  CardBody,
-  CardHeader,
-  Collapse,
   FormControl,
   FormGroup,
   FormLabel,
@@ -70,7 +66,6 @@ export function DataTable<Row>({
   const pathname = usePathname();
   const router = useRouter();
 
-  const [mobileFilterIn, setMobileFilterIn] = useState(false);
   const mobileReset = () => {
     const newPath = createPageURL({
       page: undefined,
@@ -167,100 +162,91 @@ export function DataTable<Row>({
 
   return (
     <>
-      <Card className={responsiveStyles.filterPanel}>
-        <CardHeader
-          onClick={() => {
-            setMobileFilterIn((filterIn) => !filterIn);
-          }}
-          className="d-flex justify-content-between align-items-center"
-        >
-          <span>
-            Filtri {getActiveFilterCount() > 0 && `(${getActiveFilterCount()})`}{" "}
-            <FontAwesomeIcon
-              icon={faAngleDown}
-              flip={mobileFilterIn ? "vertical" : undefined}
-            />
-          </span>{" "}
-          <Button
-            size="sm"
-            onClick={(event) => {
-              event.stopPropagation();
-              mobileReset();
-            }}
-            hidden={getActiveFilterCount() === 0}
-          >
-            <FontAwesomeIcon icon={faFilterCircleXmark} />
-            Reset filtri
-          </Button>
-        </CardHeader>
-        <Collapse in={mobileFilterIn}>
-          <div>
-            <CardBody>
-              <FormGroup className="mb-3" controlId="mobile-order-by">
-                <FormLabel>Ordina per</FormLabel>
-                <FormSelect
-                  size="sm"
-                  onChange={(event) => {
-                    table.setSorting(sortingStringToObject(event.target.value));
-                  }}
-                  defaultValue={sortingObjectToString(table.getState().sorting)}
-                >
-                  {table.getFlatHeaders().map((header) => {
-                    return header.column.getCanSort() ? (
-                      <Fragment key={header.id}>
-                        <option value={header.id}>
-                          {flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}{" "}
-                          crescente
-                        </option>
-                        <option value={"-" + header.id}>
-                          {flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}{" "}
-                          decrescente
-                        </option>
-                      </Fragment>
-                    ) : null;
-                  })}
-                </FormSelect>
-              </FormGroup>
-              <FormLabel>Filtra per</FormLabel>
-              {table.getFlatHeaders().map((header) => {
-                return header.column.getCanFilter() ? (
-                  <FormGroup
-                    key={header.id}
-                    className="mb-3"
-                    controlId={`mobile-filter-${header.id}`}
-                  >
-                    <FormLabel>
-                      {flexRender(
-                        header.column.columnDef.header,
-                        header.getContext(),
-                      )}
-                    </FormLabel>
-                    <div className="mt-2">
-                      <Filter column={header.column} idPrefix="mobile" />
-                    </div>
-                  </FormGroup>
-                ) : null;
-              })}
-              <Button
-                size="sm"
-                className="w-100"
-                onClick={() => {
-                  mobileReset();
-                }}
-              >
-                <FontAwesomeIcon icon={faFilterCircleXmark} />
-                Reset filtri
-              </Button>
-            </CardBody>
+      <CardCollapsable
+        className={responsiveStyles.filterPanel}
+        header={
+          <div className="d-flex justify-content-between align-items-center">
+            <span>
+              Filtri
+              {getActiveFilterCount() > 0 && ` (${getActiveFilterCount()})`}
+            </span>
+            <Button
+              size="sm"
+              onClick={(event) => {
+                event.stopPropagation();
+                mobileReset();
+              }}
+              hidden={getActiveFilterCount() === 0}
+              // className="ms-auto"
+            >
+              <FontAwesomeIcon icon={faFilterCircleXmark} />
+              Reset filtri
+            </Button>
           </div>
-        </Collapse>
-      </Card>
+        }
+      >
+        <FormGroup className="mb-3" controlId="mobile-order-by">
+          <FormLabel>Ordina per</FormLabel>
+          <FormSelect
+            size="sm"
+            onChange={(event) => {
+              table.setSorting(sortingStringToObject(event.target.value));
+            }}
+            defaultValue={sortingObjectToString(table.getState().sorting)}
+          >
+            {table.getFlatHeaders().map((header) => {
+              return header.column.getCanSort() ? (
+                <Fragment key={header.id}>
+                  <option value={header.id}>
+                    {flexRender(
+                      header.column.columnDef.header,
+                      header.getContext(),
+                    )}{" "}
+                    crescente
+                  </option>
+                  <option value={"-" + header.id}>
+                    {flexRender(
+                      header.column.columnDef.header,
+                      header.getContext(),
+                    )}{" "}
+                    decrescente
+                  </option>
+                </Fragment>
+              ) : null;
+            })}
+          </FormSelect>
+        </FormGroup>
+        <FormLabel>Filtra per</FormLabel>
+        {table.getFlatHeaders().map((header) => {
+          return header.column.getCanFilter() ? (
+            <FormGroup
+              key={header.id}
+              className="mb-3"
+              controlId={`mobile-filter-${header.id}`}
+            >
+              <FormLabel>
+                {flexRender(
+                  header.column.columnDef.header,
+                  header.getContext(),
+                )}
+              </FormLabel>
+              <div className="mt-2">
+                <Filter column={header.column} idPrefix="mobile" />
+              </div>
+            </FormGroup>
+          ) : null;
+        })}
+        <Button
+          size="sm"
+          className="w-100"
+          onClick={() => {
+            mobileReset();
+          }}
+        >
+          <FontAwesomeIcon icon={faFilterCircleXmark} />
+          Reset filtri
+        </Button>
+      </CardCollapsable>
       <Table
         hover
         striped
