@@ -57,7 +57,7 @@
     "dev": "next dev",
     "dev-only": "next dev",
     "format": "prettier --write .",
-    "analyze": "set ANALYZE='true' && npm run build",
+    "analyze": "set ANALYZE=true&& npm run build",
     "lint": "next lint",
     "predev": "npm i",
     "start": "next start",
