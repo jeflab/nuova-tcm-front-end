@@ -1,7 +1,7 @@
 "use client";
 
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
-import {calculateImc} from "./imc";
+import {calculateImc, RANGE} from "./imc";
 
 export function HealthQuestionnaireSummary() {
   const healthQuestionnaireData = useDrawerStore(
@@ -17,7 +17,7 @@ export function HealthQuestionnaireSummary() {
     parseInt(healthQuestionnaireData?.height, 10),
   );
 
-  if (imc > 30 || imc < 18.5) {
+  if (imc > RANGE.max || imc < RANGE.min) {
     return (
       <p className="mb-0">
         Non è possibile continuare la consulenza poiché l'indice di massa

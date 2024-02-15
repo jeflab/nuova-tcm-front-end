@@ -1,5 +1,5 @@
 import {DrawerName} from "@/app/(menu)/(authenticated)/lips/[id]/drawers";
-import {calculateImc} from "@/app/(menu)/(authenticated)/lips/[id]/imc";
+import {RANGE, calculateImc} from "@/app/(menu)/(authenticated)/lips/[id]/imc";
 import {DrawerState} from "@/ui/drawer/const";
 import {create} from "zustand";
 import {TempLipData} from "../model";
@@ -146,11 +146,11 @@ const updateLipData = (state: State, data: Partial<TempLipData>) => {
       calculateImc(
         parseInt(newState.lipData.healthQuestionnaire.weight, 10),
         parseInt(newState.lipData.healthQuestionnaire.height, 10),
-      ) < 30 &&
+      ) < RANGE.max &&
       calculateImc(
         parseInt(newState.lipData.healthQuestionnaire.weight, 10),
         parseInt(newState.lipData.healthQuestionnaire.height, 10),
-      ) > 18.5
+      ) > RANGE.min
     ) {
       newState.drawerStates.healthQuestionnaire = "success";
     } else {
