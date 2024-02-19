@@ -1,4 +1,4 @@
-export function checkIfFiscalCodeExists(): Promise<{
+export function checkIfFiscalCodeExists(fiscalCode: string): Promise<{
   lastLip: {agentId: number} | null;
 }> {
   // Fake server request
