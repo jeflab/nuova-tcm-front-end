@@ -26,7 +26,7 @@
     border-bottom-width: 1px;
 
     .caret {
-      rotate: 180deg;
+      rotate: -180deg;
     }
 
     :global(.card-header) {

@@ -3,7 +3,7 @@
 import {cns} from "@/helpers/cns";
 import {WithChildren} from "@/ui/types";
 import autoAnimate from "@formkit/auto-animate";
-import {faChevronUp} from "@fortawesome/pro-solid-svg-icons";
+import {faChevronDown} from "@fortawesome/pro-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {ReactNode, useEffect, useId, useRef, useState} from "react";
 import {Card, CardBody, CardHeader} from "react-bootstrap";
@@ -60,7 +60,7 @@ export function CardCollapsable({
         tabIndex={disabled ? -1 : 0}
       >
         <div className="flex-grow-0">
-          <FontAwesomeIcon icon={faChevronUp} className={styles.caret} />
+          <FontAwesomeIcon icon={faChevronDown} className={styles.caret} />
         </div>
         <div className="flex-grow-1">{header}</div>
       </CardHeader>
