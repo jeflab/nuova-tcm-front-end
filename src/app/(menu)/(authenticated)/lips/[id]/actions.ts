@@ -1,6 +1,6 @@
-export function checkIfFiscalCodeExists(
-  fiscalCode: string,
-): Promise<{lastLip: {agentId: number} | null}> {
+export function checkIfFiscalCodeExists(): Promise<{
+  lastLip: {agentId: number} | null;
+}> {
   // Fake server request
   return new Promise((resolve) => {
     setTimeout(() => {

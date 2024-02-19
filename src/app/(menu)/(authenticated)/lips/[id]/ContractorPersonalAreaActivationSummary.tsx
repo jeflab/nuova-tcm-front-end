@@ -17,7 +17,7 @@ export function ContractorPersonalAreaActivationSummary() {
     (state) => state.lipData.contractorPersonalAreaActivation,
   );
 
-  const [isCleared, clearInterval] = useInterval(async () => {
+  const [, clearInterval] = useInterval(async () => {
     if (drawerState === "waiting") {
       if (countdown <= 0) {
         clearInterval();

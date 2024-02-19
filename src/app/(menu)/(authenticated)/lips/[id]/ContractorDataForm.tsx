@@ -197,7 +197,7 @@ export function ContractorDataForm() {
     <>
       <ModalBody>
         <Form
-          onSubmit={async (values) => {
+          onSubmit={(values) => {
             updateContractorData(values);
             closeModal();
           }}
