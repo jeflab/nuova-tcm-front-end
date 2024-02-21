@@ -68,11 +68,11 @@ export function ComuneProvAutocompleteField({
   return (
     <div className="hstack gap-3">
       {readOnly ? (
-        <FormControl
+        <InputField
           type="text"
+          name={`${controlName}.city`}
           readOnly
           plaintext={plaintext}
-          defaultValue={defaultValue?.city}
         />
       ) : (
         <AsyncTypeahead
@@ -81,7 +81,6 @@ export function ComuneProvAutocompleteField({
           disabled={disabled}
           options={cities}
           placeholder={placeholder}
-          defaultInputValue={defaultValue?.city}
           emptyLabel={
             <span className="dropdown-item-text text-center">
               <FontAwesomeIcon
@@ -155,7 +154,6 @@ export function ComuneProvAutocompleteField({
       )}
       <InputField
         className={styles.provinceInput}
-        defaultValue={defaultValue?.province}
         maxLength={2}
         name={`${controlName}.province`}
         plaintext={plaintext}

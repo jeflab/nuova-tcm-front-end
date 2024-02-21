@@ -1,5 +1,6 @@
 "use client";
 
+import {pepRelations} from "@/app/(menu)/(authenticated)/lips/[id]/ContractorDataForm";
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {CheckGroup} from "@/ui/form/CheckGroup";
@@ -11,8 +12,20 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Button, FormGroup, ModalBody, ModalFooter} from "react-bootstrap";
 import {useForm} from "react-hook-form";
 
+export const fatcaQuestions = {
+  fatcaCheck: {
+    label: "Residenza USA",
+    text: "Il contraente è residente negli Stati Uniti d'America?",
+    options: [
+      {label: "Sì", value: "yes"},
+      {label: "No", value: "no"},
+    ],
+  },
+} as const;
+
 const fatcaDefaultValues = {
-  fatcaCheck: undefined,
+  fatcaCheck:
+    "" as (typeof fatcaQuestions)["fatcaCheck"]["options"][number]["value"],
 };
 
 export function FatcaForm() {
@@ -22,7 +35,9 @@ export function FatcaForm() {
   });
 
   const closeModal = useDrawerStore((state) => state.closeModal);
-  const updateFatca = useDrawerStore((state) => state.updateFatca);
+  const updatePreliminaryData = useDrawerStore(
+    (state) => state.updatePreliminaryData,
+  );
 
   return (
     <>
@@ -30,25 +45,22 @@ export function FatcaForm() {
         <Form
           id="fatca-form"
           onSubmit={(values) => {
-            updateFatca(values.fatcaCheck === "yes");
+            updatePreliminaryData({fatca: values.fatcaCheck});
             closeModal();
           }}
           formMethods={formMethods}
           className="vstack gap-3"
         >
           <FormGroup controlId="fatcaCheck" as={BorderFeedback}>
-            <p className="mb-2 input-heading">Residenza USA</p>
-            <HelpText>
-              Il contraente è residente negli Stati Uniti d'America?
-            </HelpText>
+            <p className="mb-2 input-heading">
+              {fatcaQuestions.fatcaCheck.label}
+            </p>
+            <HelpText>{fatcaQuestions.fatcaCheck.text}</HelpText>
             <FieldError />
             <CheckGroup
               type="radio"
               inline
-              options={[
-                {label: "Sì", value: "yes"},
-                {label: "No", value: "no"},
-              ]}
+              options={fatcaQuestions.fatcaCheck.options}
               validation={{
                 required: "Seleziona un'opzione",
               }}

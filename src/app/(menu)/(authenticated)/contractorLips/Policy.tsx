@@ -1,9 +1,6 @@
 "use client";
 
-import {
-  Contractor,
-  Lip,
-} from "@/app/(menu)/(authenticated)/contractorLips/models";
+import {Contractor, Lip} from "@/entities/models";
 import {dateString} from "@/helpers/dates";
 import {CardCollapsable} from "@/ui/CardCollapsable";
 import {faEye} from "@fortawesome/pro-duotone-svg-icons";

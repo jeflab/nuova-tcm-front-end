@@ -5,7 +5,7 @@ import {
   contractorGenders,
 } from "@/app/(menu)/(authenticated)/lips/[id]/ContractorFiscalCodeForm";
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
-import {Pep} from "@/app/(menu)/(authenticated)/lips/model";
+import {Pep} from "@/app/(menu)/(authenticated)/lips/models";
 import {cns} from "@/helpers/cns";
 import {YesNoAnswer} from "@/helpers/TypesHelper";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
@@ -172,16 +172,28 @@ const contractorDataDefaultValues = {
 };
 
 export function ContractorDataForm() {
-  const contractorFiscalCodeData = useDrawerStore(
-    (state) => state.lipData.contractorFiscalCode,
-  );
+  const contractor = useDrawerStore((state) => state.contractor);
 
   const formMethods = useForm({
     mode: "onChange",
     defaultValues: {
       ...contractorDataDefaultValues,
-      ...(contractorFiscalCodeData && {
-        contractorPersonalData: contractorFiscalCodeData,
+      ...(contractor && {
+        contractorPersonalData: {
+          birthDate: contractor.birthDate,
+          birthPlace: {
+            city: contractor.birthPlace,
+            province: "AA",
+          },
+          fiscalCode: contractor.fiscalCode,
+          gender: contractor.gender,
+          name: contractor.name,
+          surname: contractor.surname,
+        },
+        contact: {
+          phone: contractor.phone,
+          email: contractor.email,
+        },
       }),
     },
   });
@@ -221,12 +233,7 @@ export function ContractorDataForm() {
                 as={BorderFeedback}
               >
                 <FormLabel>Cognome</FormLabel>
-                <InputField
-                  type="text"
-                  plaintext
-                  readOnly
-                  defaultValue={contractorFiscalCodeData?.surname}
-                />
+                <InputField type="text" plaintext readOnly />
               </FormGroup>
             </Col>
             <Col className="d-flex" xs={12} sm={6} lg={5}>
@@ -235,12 +242,7 @@ export function ContractorDataForm() {
                 as={BorderFeedback}
               >
                 <FormLabel>Nome</FormLabel>
-                <InputField
-                  type="text"
-                  plaintext
-                  readOnly
-                  defaultValue={contractorFiscalCodeData?.name}
-                />
+                <InputField type="text" plaintext readOnly />
               </FormGroup>
             </Col>
             <Col className="d-flex" xs={12} sm={6} md={3} lg={2}>
@@ -249,12 +251,7 @@ export function ContractorDataForm() {
                 as={BorderFeedback}
               >
                 <FormLabel>Genere</FormLabel>
-                <CheckGroup
-                  type="radio"
-                  options={contractorGenders}
-                  readOnly
-                  defaultValue={contractorFiscalCodeData?.gender}
-                />
+                <CheckGroup type="radio" options={contractorGenders} readOnly />
               </FormGroup>
             </Col>
             <Col className="d-flex" xs={12} sm={6} md={4} lg={5}>
@@ -263,12 +260,7 @@ export function ContractorDataForm() {
                 as={BorderFeedback}
               >
                 <FormLabel>Data di nascita</FormLabel>
-                <InputField
-                  type="date"
-                  plaintext
-                  readOnly
-                  defaultValue={contractorFiscalCodeData?.birthDate}
-                />
+                <InputField type="date" plaintext readOnly />
               </FormGroup>
             </Col>
             <Col className="d-flex" xs={12} md={5} lg={7}>
@@ -281,7 +273,6 @@ export function ContractorDataForm() {
                   placeholder="Luogo di nascita"
                   plaintext
                   readOnly
-                  defaultValue={contractorFiscalCodeData?.birthPlace}
                 />
               </FormGroup>
             </Col>

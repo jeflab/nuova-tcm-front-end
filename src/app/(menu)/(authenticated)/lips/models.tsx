@@ -66,18 +66,6 @@ export type Pep =
 // TODO: sistemare interfaccia
 export interface TempLipData {
   agentId?: number;
-  fatca?: boolean;
-  contractorFiscalCode?: {
-    birthDate: string;
-    birthPlace: {
-      city: string;
-      province: string;
-    };
-    fiscalCode: string;
-    gender: ContractorGender;
-    name: string;
-    surname: string;
-  };
   contractorPersonalAreaActivation?: boolean;
   contractorData?: {
     contractorPersonalData: {
@@ -240,5 +228,21 @@ export interface TempLipData {
     }[];
     allFilesUploaded: boolean;
     allRequiredFilesUploaded: boolean;
+  };
+}
+
+export interface PreliminaryData {
+  fatca?: YesNoAnswer;
+  contractorAlreadyRegistered?: boolean;
+  contractorPersonalData?: {
+    birthDate: string;
+    birthPlace: {
+      city: string;
+      province: string;
+    };
+    fiscalCode: string;
+    gender: ContractorGender;
+    name: string;
+    surname: string;
   };
 }

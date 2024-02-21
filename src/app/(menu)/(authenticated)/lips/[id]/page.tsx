@@ -1,15 +1,14 @@
 import {DebugState} from "@/app/(menu)/(authenticated)/lips/[id]/DebugState";
 import {drawers} from "@/app/(menu)/(authenticated)/lips/[id]/drawers";
-import {Lip} from "@/app/(menu)/(authenticated)/lips/model";
+import {Lip} from "@/app/(menu)/(authenticated)/lips/models";
 import {cns} from "@/helpers/cns";
 import {AppContainer} from "@/ui/AppContainer";
-import {ButtonLink} from "@/ui/ButtonLink";
 import {Drawer} from "@/ui/drawer/Drawer";
 import {NavDrawer} from "@/ui/drawer/NavDrawer";
 import {PageTitle} from "@/ui/PageTitle";
 import {faTriangleExclamation} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {Alert, ButtonGroup, Col, Nav, Row} from "react-bootstrap";
+import {Alert, Col, Nav, Row} from "react-bootstrap";
 import styles from "./page.module.scss";
 
 // TODO: abbassare il fetch dei dati, o in un sotto-componente client o addirittura nel drawer (fetch è cachata)

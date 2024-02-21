@@ -88,7 +88,7 @@ export function QuoterForm() {
           <ComplementaryCoverages />
         </Row>
       </AppContainer>
-      <div className="position-sticky bottom-0 bg-primary-subtle py-3">
+      <div className="position-sticky bottom-0 bg-primary-subtle py-3 h-100">
         <AppContainer className="d-flex align-items-center justify-content-between flex-wrap gap-3">
           <FieldError
             name="root"

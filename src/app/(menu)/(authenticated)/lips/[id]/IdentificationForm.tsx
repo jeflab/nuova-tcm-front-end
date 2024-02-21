@@ -171,7 +171,7 @@ export function IdentificationForm() {
             </Col>
             <Col className="d-flex" xs={12} sm={6}>
               <FormGroup controlId="backPicture" as={BorderFeedback}>
-                <FormLabel>Documento fronte</FormLabel>
+                <FormLabel>Documento retro</FormLabel>
                 <FieldError />
                 <DropzoneField
                   validation={{

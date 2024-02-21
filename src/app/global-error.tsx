@@ -15,7 +15,7 @@ import * as Sentry from "@sentry/nextjs";
 import {useEffect} from "react";
 import {Button} from "react-bootstrap";
 
-const containerStyle = {"--content-width": "450px"};
+const containerStyle = {"--content-width": "max-content"};
 
 export default function GlobalError({
   error,
