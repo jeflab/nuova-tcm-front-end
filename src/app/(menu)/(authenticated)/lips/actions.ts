@@ -3,7 +3,7 @@
 import {standard} from "@/app/(menu)/(authenticated)/lips/mock";
 import {sortingStringToObject} from "@/ui/table/helpers";
 import {z} from "zod";
-import {Lip, lipSchema} from "./model";
+import {Lip, lipSchema} from "./models";
 
 interface GetLipsListOptions {
   query: string;

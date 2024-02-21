@@ -41,8 +41,8 @@ import {z} from "zod";
 
 // TODO: spostare nel file del modello
 export const contractorGenders = [
-  {label: "Maschio", value: "M"},
-  {label: "Femmina", value: "F"},
+  {label: "Maschio", value: "male"},
+  {label: "Femmina", value: "female"},
 ] as const;
 export type ContractorGender = (typeof contractorGenders)[number]["value"];
 const contractorGenderValues = contractorGenders
@@ -91,7 +91,7 @@ const ContractorFormSchema = z
       {
         name: formValues.name,
         surname: formValues.surname,
-        gender: formValues.gender,
+        gender: formValues.gender === "male" ? "M" : "F",
         day: getDate(formValues.birthDate),
         month: getMonth(formValues.birthDate) + 1,
         year: getYear(formValues.birthDate),
@@ -122,24 +122,72 @@ export function ContractorFiscalCodeForm() {
     resolver: zodResolver(ContractorFormSchema),
   });
   const closeModal = useDrawerStore((state) => state.closeModal);
-  const updateContractorFiscalCode = useDrawerStore(
-    (state) => state.updateContractorFiscalCode,
+  const updatePreliminaryData = useDrawerStore(
+    (state) => state.updatePreliminaryData,
   );
-  const updateLipData = useDrawerStore((state) => state.updateLipData);
+  const updateLip = useDrawerStore((state) => state.updateLip);
 
   return (
     <>
       <ModalBody>
         <Form
           onSubmit={async (values) => {
-            const existingLip = await checkIfFiscalCodeExists(
-              values.fiscalCode,
-            );
-            updateContractorFiscalCode(values);
-            if (existingLip.lastLip) {
-              updateLipData(existingLip.lastLip);
+            let checkIfFiscalCodeExistsResponse: Awaited<
+              ReturnType<typeof checkIfFiscalCodeExists>
+            >;
+
+            try {
+              checkIfFiscalCodeExistsResponse = await checkIfFiscalCodeExists(
+                values.fiscalCode,
+              );
+            } catch (error) {
+              console.error(error);
+              throw {
+                root: {
+                  type: "server",
+                  message: "Errore imprevisto, riprova più tardi.",
+                },
+              };
             }
-            closeModal();
+
+            // Possono verificarsi 4 casi:
+            //  - success con lastLipContractor e contractor
+            //  - success senza niente
+            //  - error con messaggio "Utente già censito da un altro Advisor"
+            //  - error con messaggio generico
+
+            if (checkIfFiscalCodeExistsResponse.status === "success") {
+              if (
+                !!checkIfFiscalCodeExistsResponse.lip &&
+                !!checkIfFiscalCodeExistsResponse.contractor
+              ) {
+                updateLip({
+                  lip: checkIfFiscalCodeExistsResponse.lip,
+                  contractor: checkIfFiscalCodeExistsResponse.contractor,
+                });
+                updatePreliminaryData({contractorPersonalData: values});
+                closeModal();
+                return;
+              }
+              updatePreliminaryData({contractorPersonalData: values});
+              closeModal();
+              return;
+            }
+            if (
+              checkIfFiscalCodeExistsResponse.message ===
+              "Utente già censito da un altro Advisor"
+            ) {
+              updatePreliminaryData({contractorAlreadyRegistered: true});
+              closeModal();
+              return;
+            }
+
+            throw {
+              root: {
+                type: "server",
+                message: checkIfFiscalCodeExistsResponse.message,
+              },
+            };
           }}
           id="contractor-fiscal-code-form"
           formMethods={formMethods}

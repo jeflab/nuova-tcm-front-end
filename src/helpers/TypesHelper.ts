@@ -1,3 +1,4 @@
+export type Option = {label: string; value: string};
 export type YesNoAnswer = "yes" | "no";
 
 export type Identity<T> = T extends object ? {[K in keyof T]: T[K]} : T;

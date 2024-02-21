@@ -29,6 +29,7 @@
     "sharp": "^0.33.0",
     "tiny-invariant": "^1.3.1",
     "zod": "^3.22.4",
+    "zod_utilz": "^0.8.1-beta",
     "zustand": "^4.4.7"
   },
   "devDependencies": {

@@ -1,5 +1,5 @@
 import {LoginButton} from "@/app/(menu)/LoginButton";
-import {isLoggedIn} from "@/app/(no-menu)/(auth)/actions";
+import {getAccount, isLoggedIn} from "@/app/(no-menu)/(auth)/actions";
 import logo from "@/images/logo.png";
 import {AppContainer} from "@/ui/AppContainer";
 import {getTheme} from "@/ui/Theme/actions";
@@ -20,6 +20,7 @@ import {LogoutButton} from "./LogoutButton";
 export async function Navbar() {
   const serverTheme = getTheme();
   const loggedIn = await isLoggedIn();
+  const loggedUser = await getAccount();
 
   return (
     <BSNavbar

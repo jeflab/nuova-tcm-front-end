@@ -1,4 +1,4 @@
-import {lipStates} from "@/app/(menu)/(authenticated)/lips/model";
+import {lipStates} from "@/app/(menu)/(authenticated)/lips/models";
 import {faker} from "@faker-js/faker/locale/it";
 
 export const standard = (/* vars, { ctx, req } */) => {

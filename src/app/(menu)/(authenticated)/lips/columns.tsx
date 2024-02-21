@@ -5,7 +5,7 @@ import {
   lipStates,
   LipStatesIcons,
   lipStatesLabels,
-} from "@/app/(menu)/(authenticated)/lips/model";
+} from "@/app/(menu)/(authenticated)/lips/models";
 import {cns} from "@/helpers/cns";
 import {dateString, dbDateString} from "@/helpers/dates";
 import dataTableStyles from "@/ui/table/DataTable.module.scss";
@@ -137,7 +137,6 @@ export const columns = [
 ] as ColumnDef<Lip>[];
 
 // TODO: Facciamo in modo che in skeletonColumns ci siano solo le proprietà che cambiano da columns
-
 export const skeletonColumns = [
   columnHelper.accessor("surname", {
     header: "Cognome",

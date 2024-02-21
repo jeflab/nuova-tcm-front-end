@@ -8,6 +8,7 @@ import {contractorGenders} from "@/app/(menu)/(authenticated)/lips/[id]/Contract
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {dateString} from "@/helpers/dates";
 import {getOptionsLabel} from "@/helpers/getOptionsLabel";
+import {Debug} from "@/ui/Debug";
 import {
   faAddressBook,
   faLandmarkMagnifyingGlass,
