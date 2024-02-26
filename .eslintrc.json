@@ -1,10 +1,12 @@
+// https://typescript-eslint.io/users/configs/
 {
   "extends": [
     //    "eslint:recommended",
     //    "plugin:@typescript-eslint/recommended-type-checked",
     //    "plugin:@typescript-eslint/stylistic-type-checked",
     //    "plugin:@typescript-eslint/strict-type-checked",
-    "next/core-web-vitals"
+    "next/core-web-vitals",
+    "prettier"
   ],
   "parserOptions": {
     "ecmaVersion": 2020,

@@ -42,6 +42,8 @@
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "eslint": "^8",
     "eslint-config-next": "^14",
+    "eslint-config-prettier": "^9.1.0",
+    "husky": "^9.0.11",
     "prettier": "^3.1.0",
     "sass": "^1.69.5",
     "typescript": "^5"
@@ -61,6 +63,9 @@
     "lint": "next lint",
     "predev": "npm i",
     "start": "next start",
-    "turbo": "next dev --turbo"
+    "type-check": "tsc --noEmit",
+    "validate": "prettier . --check && npm run lint && npm run type-check && npm run build",
+    "turbo": "next dev --turbo",
+    "prepare": "husky"
   }
 }

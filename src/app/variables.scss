@@ -8,6 +8,8 @@ $primary: #404483;
 $primary-dark: #5e65ad;
 $secondary: #c42f57;
 
+$zindex-modal-backdrop: 1055 !default; // per supportare modali innestate
+
 @import "bootstrap/scss/variables";
 @import "bootstrap/scss/variables-dark";
 
@@ -19,3 +21,7 @@ $custom-colors: (
 
 // Merge the maps
 $theme-colors: map-merge($theme-colors, $custom-colors);
+
+@import "bootstrap/scss/maps";
+@import "bootstrap/scss/mixins";
+@import "bootstrap/scss/utilities";

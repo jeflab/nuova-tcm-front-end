@@ -34,6 +34,7 @@ interface Actions {
     data: TempLipData["healthQuestionnaire"],
   ) => void;
   updateBeneficiariesData: (data: TempLipData["beneficiaries"]) => void;
+  updateDocumentationData: (data: TempLipData["documentation"]) => void;
   resetLipData: () => void;
 }
 
@@ -169,6 +170,17 @@ const updateLipData = (state: State, data: Partial<TempLipData>) => {
     }
   }
 
+  // Documentazione
+  if (newState.drawerStates.beneficiaries === "success") {
+    if (newState.lipData.documentation === undefined) {
+      newState.drawerStates.documentation = "active";
+    } else if (newState.lipData.documentation) {
+      newState.drawerStates.documentation = "success";
+    } else {
+      newState.drawerStates.documentation = "danger";
+    }
+  }
+
   return newState;
 };
 
@@ -243,6 +255,12 @@ export const useDrawerStore = create<State & Actions>()((set) => ({
     set(
       produce((state) => {
         updateLipData(state, {beneficiaries: data});
+      }),
+    ),
+  updateDocumentationData: (data) =>
+    set(
+      produce((state) => {
+        updateLipData(state, {documentation: data});
       }),
     ),
   resetLipData: () =>

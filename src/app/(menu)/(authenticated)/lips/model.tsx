@@ -211,4 +211,34 @@ export interface TempLipData {
           };
         }
     );
+  documentation?: {
+    files: {
+      fileName: string;
+      requiredFile: boolean;
+      esigns: {
+        whoEsign: "contractor" | "advisor";
+        required: boolean;
+        description: string;
+        page: string;
+        leftX: string;
+        leftY: string;
+        rightX: string;
+        rightY: string;
+        esignId: string;
+        esignDate: string;
+        esignUser: {
+          name: string;
+          surname: string;
+          cell: string;
+          email: string;
+          fiscalCode: string;
+        };
+      }[];
+      uploaded: boolean;
+      uploadedFileName: string;
+      uploadDate: string;
+    }[];
+    allFilesUploaded: boolean;
+    allRequiredFilesUploaded: boolean;
+  };
 }

@@ -7,6 +7,7 @@ import {ContractorFiscalCodeSummary} from "@/app/(menu)/(authenticated)/lips/[id
 import {ContractorPersonalAreaActivationSummary} from "@/app/(menu)/(authenticated)/lips/[id]/ContractorPersonalAreaActivationSummary";
 import {DenForm} from "@/app/(menu)/(authenticated)/lips/[id]/DenForm";
 import {DenSummary} from "@/app/(menu)/(authenticated)/lips/[id]/DenSummary";
+import {DocumentsManagement} from "@/app/(menu)/(authenticated)/lips/[id]/DocumentsManagement";
 import {FatcaForm} from "@/app/(menu)/(authenticated)/lips/[id]/FatcaForm";
 import {FatcaSummary} from "@/app/(menu)/(authenticated)/lips/[id]/FatcaSummary";
 import {HealthQuestionnaireForm} from "@/app/(menu)/(authenticated)/lips/[id]/HealthQuestionnaireForm";
@@ -26,7 +27,9 @@ export type DrawerName =
   | "den"
   | "quote"
   | "healthQuestionnaire"
-  | "beneficiaries";
+  | "beneficiaries"
+  | "documentation"
+  | "payment";
 interface Drawer {
   name: DrawerName;
   title: string;
@@ -90,5 +93,14 @@ export const drawers: Drawer[] = [
     title: "Beneficiari",
     modalContent: <BeneficiariesForm />,
     summaryContent: <BeneficiariesSummary />,
+  },
+  {
+    name: "documentation",
+    title: "Documentazione",
+    modalContent: <DocumentsManagement />,
+  },
+  {
+    name: "payment",
+    title: "Pagamento",
   },
 ];
