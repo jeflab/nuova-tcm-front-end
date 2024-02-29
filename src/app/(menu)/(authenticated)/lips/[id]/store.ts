@@ -1,8 +1,8 @@
 import {DrawerName} from "@/app/(menu)/(authenticated)/lips/[id]/drawers";
 import {PreliminaryData} from "@/app/(menu)/(authenticated)/lips/models";
-import {Contractor} from "@/entities/contractor";
+import {PersonalData} from "@/entities/personalData";
 import {Lip} from "@/entities/lip";
-import {DrawerState} from "@/ui/drawer/const";
+import {DrawerState, presetButtons} from "@/ui/drawer/types";
 import {produce} from "immer";
 import {create} from "zustand";
 import {TempLipData} from "../models";
@@ -10,7 +10,7 @@ import {TempLipData} from "../models";
 interface State {
   preliminaryData: PreliminaryData;
   lip?: Lip;
-  contractor?: Contractor;
+  contractor?: PersonalData;
   lipData: TempLipData;
   modalOpen: DrawerName | null;
   drawerStates: Partial<Record<DrawerName, DrawerState>>;
@@ -21,8 +21,8 @@ interface Actions {
   closeModal: () => void;
   updatePreliminaryData: (data: Partial<PreliminaryData>) => void;
   updateLip: (data: {
-    lip: Partial<Lip>;
-    contractor: Partial<Contractor>;
+    lip?: Partial<Lip>;
+    contractor?: Partial<PersonalData>;
   }) => void;
   updateLipData: (data: Partial<TempLipData>) => void;
   updateContractorPersonalAreaActivation: (
@@ -123,16 +123,16 @@ const updateLipData = (state: State, data: Partial<TempLipData>) => {
   //   }
   // }
 
-  // Documentazione
-  if (newState.drawerStates.beneficiaries === "success") {
-    if (newState.lipData.documentation === undefined) {
-      newState.drawerStates.documentation = "active";
-    } else if (newState.lipData.documentation) {
-      newState.drawerStates.documentation = "success";
-    } else {
-      newState.drawerStates.documentation = "danger";
-    }
-  }
+  // // Documentazione
+  // if (newState.drawerStates.beneficiaries === "success") {
+  //   if (newState.lipData.documentation === undefined) {
+  //     newState.drawerStates.documentation = "active";
+  //   } else if (newState.lipData.documentation) {
+  //     newState.drawerStates.documentation = "success";
+  //   } else {
+  //     newState.drawerStates.documentation = "danger";
+  //   }
+  // }
 
   return newState;
 };
@@ -140,47 +140,63 @@ const updateLipData = (state: State, data: Partial<TempLipData>) => {
 function createDrawerState(state: State & Actions) {
   // fatca
   if (state.preliminaryData.fatca === undefined) {
-    state.drawerStates.fatca = "active";
+    state.drawerStates.fatca = {variant: "active", ...presetButtons.compile};
   } else if (state.preliminaryData.fatca === "no") {
-    state.drawerStates.fatca = "success";
+    state.drawerStates.fatca = {variant: "success"};
   } else {
-    state.drawerStates.fatca = "danger";
+    state.drawerStates.fatca = {variant: "danger"};
   }
 
   // contractor fiscal code
-  if (state.drawerStates.fatca === "success") {
+  if (state.drawerStates.fatca?.variant === "success") {
     if (state.preliminaryData.contractorPersonalData === undefined) {
-      state.drawerStates.contractorFiscalCode = "active";
+      state.drawerStates.contractorFiscalCode = {
+        variant: "active",
+        ...presetButtons.compile,
+      };
     } else if (!state.preliminaryData.contractorAlreadyRegistered) {
-      state.drawerStates.contractorFiscalCode = "success";
+      state.drawerStates.contractorFiscalCode = {variant: "success"};
     } else {
-      state.drawerStates.contractorFiscalCode = "danger";
+      state.drawerStates.contractorFiscalCode = {variant: "danger"};
     }
   } else {
     state.drawerStates.contractorFiscalCode = undefined;
   }
 
   // Attesa creazione aria cliente
-  if (state.drawerStates.contractorFiscalCode === "success") {
+  if (state.drawerStates.contractorFiscalCode?.variant === "success") {
     if (state.contractor === undefined) {
-      state.drawerStates.contractorPersonalAreaActivation = "active";
+      state.drawerStates.contractorPersonalAreaActivation = {
+        variant: "active",
+        ...presetButtons.compile,
+      };
     } else if (state.contractor.lastPrivacyEsignId === null) {
-      state.drawerStates.contractorPersonalAreaActivation = "waiting";
+      state.drawerStates.contractorPersonalAreaActivation = {
+        variant: "waiting",
+        ...presetButtons.privacyEsign,
+      };
     } else {
-      state.drawerStates.contractorPersonalAreaActivation = "success";
+      state.drawerStates.contractorPersonalAreaActivation = {
+        variant: "success",
+      };
     }
   } else {
     state.drawerStates.contractorPersonalAreaActivation = undefined;
   }
 
   // Censimento cliente
-  if (state.drawerStates.contractorPersonalAreaActivation === "success") {
+  if (
+    state.drawerStates.contractorPersonalAreaActivation?.variant === "success"
+  ) {
     if (state.lipData.contractorData === undefined) {
-      state.drawerStates.contractorData = "active";
+      state.drawerStates.contractorData = {
+        variant: "active",
+        ...presetButtons.compile,
+      };
     } else if (state.lipData.contractorData) {
-      state.drawerStates.contractorData = "success";
+      state.drawerStates.contractorData = {variant: "success"};
     } else {
-      state.drawerStates.contractorData = "danger";
+      state.drawerStates.contractorData = {variant: "danger"};
     }
   } else {
     state.drawerStates.contractorData = undefined;
@@ -191,7 +207,7 @@ export const useDrawerStore = create<State & Actions>()((set) => ({
   lipData: {},
   preliminaryData: {},
   modalOpen: null,
-  drawerStates: {fatca: "active"},
+  drawerStates: {fatca: {variant: "active", ...presetButtons.compile}},
   openModal: (id) => set(() => ({modalOpen: id})),
   closeModal: () => set(() => ({modalOpen: null})),
   updatePreliminaryData: (data: Partial<PreliminaryData>) =>
@@ -201,7 +217,7 @@ export const useDrawerStore = create<State & Actions>()((set) => ({
         createDrawerState(state);
       }),
     ),
-  updateLip: (data: {lip: Partial<Lip>; contractor: Partial<Contractor>}) =>
+  updateLip: (data) =>
     set(
       produce((state) => {
         state.lip = {...state.lip, ...data.lip};
@@ -274,6 +290,6 @@ export const useDrawerStore = create<State & Actions>()((set) => ({
     set(() => ({
       lipData: {},
       modalOpen: null,
-      drawerStates: {fatca: "active"},
+      drawerStates: {fatca: {variant: "active", ...presetButtons.compile}},
     })),
 }));

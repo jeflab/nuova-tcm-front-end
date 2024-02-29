@@ -210,7 +210,7 @@ export function ContractorDataForm() {
       <ModalBody>
         <Form
           onSubmit={(values) => {
-            updateContractorData(values);
+            updateContractorData(values as any);
             closeModal();
           }}
           id="contractor-fiscal-code-form"

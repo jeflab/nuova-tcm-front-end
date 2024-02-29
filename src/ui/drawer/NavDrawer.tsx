@@ -22,7 +22,7 @@ export function NavDrawer({active, children, name}: DrawerProps) {
       href={`#${name}`}
       className={cns(active && "fw-bold")}
     >
-      <DrawerIcon state={drawerState} className="me-2" />
+      <DrawerIcon variant={drawerState?.variant} className="me-2" />
       {children}
     </NavLink>
   );
@@ -35,7 +35,7 @@ interface DrawerSkeletonProps {
 export function NavDrawerSkeleton({children}: DrawerSkeletonProps) {
   return (
     <NavLink disabled>
-      <DrawerIcon state="loading" className="me-2" />
+      <DrawerIcon variant="loading" className="me-2" />
       {children}
     </NavLink>
   );

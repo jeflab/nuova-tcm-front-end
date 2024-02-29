@@ -3,11 +3,11 @@
 import {lipSchema} from "@/entities/lip";
 import {get} from "@/services/api";
 import {z} from "zod";
-import {contractorSchema} from "@/entities/contractor";
+import {personalDataSchema} from "@/entities/personalData";
 
 const getContractorLipsShape = {
   lips: z.array(lipSchema),
-  contractor: contractorSchema,
+  contractor: personalDataSchema,
 };
 
 export async function getContractorLips() {

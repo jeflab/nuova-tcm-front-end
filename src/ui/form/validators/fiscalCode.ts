@@ -80,7 +80,6 @@ export const fiscalCodeMatchDataSuperRefine = (
   code: string,
   ctx: z.RefinementCtx,
 ) => {
-  console.log({data, ctx});
   if (
     !data.name ||
     !data.surname ||

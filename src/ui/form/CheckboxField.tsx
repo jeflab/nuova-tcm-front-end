@@ -40,17 +40,19 @@ export function CheckboxField({
   const {isInvalid, isValid} = useValidationState(controlName);
 
   return (
-    <FormCheck
-      type={type}
-      {...register(name || controlId, {
-        ...validation,
-        onChange,
-      })}
-      isInvalid={validationStyle && isInvalid}
-      isValid={validationStyle && isValid}
-      aria-invalid={isInvalid}
-      className={cns([className, stretchedLabel && styles.stretchedLabel])}
-      {...checkboxProps}
-    />
+    <>
+      <FormCheck
+        type={type}
+        {...register(name || controlId, {
+          ...validation,
+          onChange,
+        })}
+        isInvalid={validationStyle && isInvalid}
+        isValid={validationStyle && isValid}
+        aria-invalid={isInvalid}
+        className={cns([className, stretchedLabel && styles.stretchedLabel])}
+        {...checkboxProps}
+      />
+    </>
   );
 }

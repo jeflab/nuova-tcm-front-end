@@ -2,14 +2,17 @@
 
 import {ContractorGender} from "@/app/(menu)/(authenticated)/lips/[id]/ContractorFiscalCodeForm";
 import {fatcaQuestions} from "@/app/(menu)/(authenticated)/lips/[id]/FatcaForm";
-import {contractorSchema} from "@/entities/contractor";
+import {personalDataSchema} from "@/entities/personalData";
 import {lipSchema} from "@/entities/lip";
+import {privacySchema} from "@/entities/privacy";
 import {Option, YesNoAnswer} from "@/helpers/TypesHelper";
-import {post} from "@/services/api";
+import {get, post} from "@/services/api";
+import {cache} from "react";
+import {z} from "zod";
 
 const checkContractorShape = {
   lip: lipSchema.optional(),
-  contractor: contractorSchema.optional(),
+  contractor: personalDataSchema.optional(),
 };
 interface ActivateContractorParams {
   fatca: {
@@ -43,7 +46,7 @@ export async function activateContractor(
       contractorData.birthPlace.province !== "EE"
         ? contractorData.birthPlace.city
         : "Estero",
-    region: contractorData.birthPlace.province,
+    region_birth: contractorData.birthPlace.province,
     country_birth:
       contractorData.birthPlace.province !== "EE"
         ? "Italia"
@@ -64,7 +67,7 @@ export async function activateContractor(
 
 const checkIfFiscalCodeExistsShape = {
   lip: lipSchema.optional(),
-  contractor: contractorSchema.optional(),
+  contractor: personalDataSchema.optional(),
 };
 export async function checkIfFiscalCodeExists(fiscalCode: string) {
   const data = {
@@ -76,4 +79,11 @@ export async function checkIfFiscalCodeExists(fiscalCode: string) {
     checkContractorShape,
     JSON.stringify(data),
   );
+}
+
+const lastPrivacyShape = {
+  privacy: privacySchema,
+};
+export async function getLastPrivacy() {
+  return get("/last-privacy", lastPrivacyShape);
 }

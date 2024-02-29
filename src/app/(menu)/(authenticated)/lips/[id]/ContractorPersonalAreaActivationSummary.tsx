@@ -10,8 +10,12 @@ export function ContractorPersonalAreaActivationSummary() {
   }
 
   if (contractor.lastPrivacyEsignId === null) {
-    return <p className="mb-0">In attesa dell'attivazione area cliente</p>;
+    return (
+      <p className="mb-0">
+        In attesa che il Contraente accetti e firmi la privacy
+      </p>
+    );
   }
 
-  return <p className="mb-0">Area cliente attivata</p>;
+  return <p className="mb-0">Area Contraente attivata</p>;
 }

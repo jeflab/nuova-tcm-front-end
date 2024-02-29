@@ -11,15 +11,16 @@ const factaSchema = z.object({
   }),
 });
 
-export const contractorSchema = z
+export const personalDataSchema = z
   .object({
+    id: z.number(),
     name: z.string(),
     surname: z.string(),
     email: z.string(),
     phone: z.string(),
     date_birth: z.coerce.date(),
     place_birth: z.string(),
-    province_birth: z.string(),
+    region_birth: z.string(),
     fiscal_code: z.string(),
     gender: z.enum(["male", "female", "other"]),
     last_privacy_esign_id: z.number().nullable(),
@@ -44,7 +45,7 @@ export const contractorSchema = z
       };
     },
   );
-export type Contractor = Prettify<z.infer<typeof contractorSchema>>;
+export type PersonalData = Prettify<z.infer<typeof personalDataSchema>>;
 
 /**************************************************************/
 

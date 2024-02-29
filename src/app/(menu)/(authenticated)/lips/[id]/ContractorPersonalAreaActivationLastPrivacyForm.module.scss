@@ -1,0 +1,21 @@
+@import "@/app/variables";
+
+.conScroll :global(.card-body) {
+  max-height: 300px;
+  overflow: auto;
+}
+
+.privacySection {
+  + .privacySection {
+    border-top: 1px solid $primary;
+    padding-top: $spacer;
+  }
+
+  :global(.privacy-ol > li) {
+    padding-bottom: $spacer;
+  }
+
+  h4 {
+    color: $primary;
+  }
+}

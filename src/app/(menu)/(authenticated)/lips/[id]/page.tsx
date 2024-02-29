@@ -9,6 +9,7 @@ import {PageTitle} from "@/ui/PageTitle";
 import {faTriangleExclamation} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Alert, Col, Nav, Row} from "react-bootstrap";
+import {DebugStateNav} from "./DebugStateNav";
 import styles from "./page.module.scss";
 
 // TODO: abbassare il fetch dei dati, o in un sotto-componente client o addirittura nel drawer (fetch è cachata)
@@ -46,7 +47,7 @@ export default async function NewLipPage({
           <Alert variant="info" className="mb-0">
             <h3>
               <FontAwesomeIcon icon={faTriangleExclamation} className="me-2" />
-              Avviso legale: contraente e assicurato devono coincidere.
+              Avviso legale: Contraente e Assicurato devono coincidere.
             </h3>
             <p>
               Ti diamo il benvenuto nell'app di calcolo preventivo per polizze
@@ -61,7 +62,7 @@ export default async function NewLipPage({
               corrispondere.
             </p>
           </Alert>
-          {params.id === "debug" && <DebugState step={searchParams.step} />}
+          {params.id === "debug" && <DebugState debugNav={<DebugStateNav />} />}
           {drawers.map(({name, title, modalContent, summaryContent}) => (
             <Drawer
               key={name}

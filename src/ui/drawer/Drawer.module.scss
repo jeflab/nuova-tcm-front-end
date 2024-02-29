@@ -18,7 +18,7 @@
     display: none;
   }
 
-  &:not(.isSuccess, .isDanger) {
+  &:not(.isSuccess, .isDanger, .isWaiting) {
     :global(.card-header) {
       border-bottom: none;
       border-radius: var(--bs-card-inner-border-radius);

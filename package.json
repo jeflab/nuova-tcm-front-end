@@ -45,6 +45,8 @@
     "eslint-config-next": "^14",
     "eslint-config-prettier": "^9.1.0",
     "husky": "^9.0.11",
+    "lint-staged": "^15.2.2",
+    "npm-run-all": "^4.1.5",
     "prettier": "^3.1.0",
     "sass": "^1.69.5",
     "typescript": "^5"
@@ -60,12 +62,14 @@
     "dev": "next dev",
     "dev-only": "next dev",
     "format": "prettier --write .",
+    "check-format": "prettier --check .",
     "analyze": "set ANALYZE=true&& npm run build",
     "lint": "next lint",
     "predev": "npm i",
+    "lint-staged": "lint-staged",
     "start": "next start",
-    "type-check": "tsc --noEmit",
-    "validate": "prettier . --check && npm run lint && npm run type-check && npm run build",
+    "check-types": "tsc --noEmit",
+    "validate": "npm-run-all --print-label --parallel check-format lint check-types --sequential build",
     "turbo": "next dev --turbo",
     "prepare": "husky"
   }
