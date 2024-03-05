@@ -1,3 +1,4 @@
+import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {dateTimeString} from "@/helpers/dates";
 import {
   faCheckCircle,
@@ -5,7 +6,6 @@ import {
   faFileSignature,
 } from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {useEffect} from "react";
 import {
   Alert,
   Button,
@@ -30,10 +30,9 @@ export function ESignsManagementModal({
   show,
   onHide,
 }: ESignsManagementModalProps) {
-  function openRequestOTPCapModal(index: string) {
-    // TODO: apri modale firma
-    console.log("openRequestOTPCapModal", index);
-  }
+  const esignDocument = useDrawerStore((state) => state.esignDocument);
+
+  const allEsigned = eSigns.every((eSign) => !!eSign.esignId);
 
   return (
     <Modal
@@ -56,26 +55,27 @@ export function ESignsManagementModal({
             <FontAwesomeIcon icon={faEye} /> Visualizza anteprima documento
           </Button>
           <h3>Firme richieste</h3>
-          {eSigns[0].whoEsign}
           {eSigns.map((eSign, index) => (
             <Card body key={index} className="auto-margin-3">
               <div dangerouslySetInnerHTML={{__html: eSign.description}} />
               {eSign.esignId ? (
                 <Alert variant="success" className="mb-0">
-                  <FontAwesomeIcon icon={faCheckCircle} /> Firmato{" "}
-                  {eSign.whoEsign === "advisor"
-                    ? "dal consulente"
-                    : eSign.whoEsign === "contractor"
-                      ? "dal cliente"
-                      : ""}{" "}
-                  in data {dateTimeString(eSign.esignDate)}
+                  <FontAwesomeIcon icon={faCheckCircle} /> Firmato da{" "}
+                  {eSign.esignUser?.name} {eSign.esignUser?.surname} in data{" "}
+                  {dateTimeString(eSign.esignDate)}
                 </Alert>
               ) : (
                 <Button
-                  onClick={() => openRequestOTPCapModal(index.toString())}
+                  onClick={() => {
+                    esignDocument(document.fileName, eSign.esignIndex!);
+                    if (allEsigned) {
+                      onHide();
+                    }
+                  }}
                 >
                   <FontAwesomeIcon icon={faFileSignature} /> Firma tu per il
-                  cliente
+                  cliente document.fileName {document.fileName} eSign.esignIndex{" "}
+                  {eSign.esignIndex}
                 </Button>
               )}
             </Card>

@@ -66,6 +66,7 @@ export const jobOptions = [
 export type JobOptions = (typeof jobOptions)[number]["value"];
 
 export const familyOptions = [
+  {label: "Nessuno", value: "0"},
   {label: "1", value: "1"},
   {label: "2", value: "2"},
   {label: "3", value: "3"},
@@ -124,31 +125,24 @@ export const expectationsOptions = [
   },
   {
     label:
-      "Prevedere un capitale assicurato ai miei eredi o, comunque, a persone a me care che intendo proteggere",
-    value: "capital_for_heirs",
+      "Prevedere un capitale assicurato ai miei eredi (o comunque a persone a me care), che intendo proteggere contro il rischio di decesso, e/o proteggermi dal rischio di infortunio e/o malattia",
+    value: "capital_and_personal_protection",
+  },
+  {
+    label: "Investimento unitamente a una protezione del capitale",
+    value: "investment_with_capital_protection",
   },
   {
     label: "Investimento",
     value: "investment",
   },
-  {
-    label: "Investimento unitamente a una protezione del capitale",
-    value: "investment_and_capital_protection",
-  },
-  {
-    label: "Proteggermi contro il rischio di decesso, infortunio e/o malattia",
-    value: "protection_against_death_accident_and_illness",
-  },
 ] as const;
 export type ExpectationsOptions = (typeof expectationsOptions)[number]["value"];
 
 export const durationOptions = [
-  {
-    label: "Molto limitato (meno di un anno)",
-    value: "less_than_1_year",
-  },
   {label: "Limitato (un anno)", value: "1_year"},
-  {label: "Lungo (pluriennale)", value: "multi_year"},
+  {label: "Breve (da uno a cinque anni)", value: "short_term"},
+  {label: "Lungo (maggiore di cinque anni)", value: "long_term"},
 ] as const;
 export type DurationOptions = (typeof durationOptions)[number]["value"];
 
@@ -160,6 +154,7 @@ const denDefaultValues = {
   otherInsuranceProducts: "" as YesNoAnswer,
   needsIntendToMeet: [] as NeedsToMeetOptions[],
   savings: "",
+  income: "",
   economicCondition: "" as EconomicConditionOptions,
   expectations: [] as ExpectationsOptions[],
   duration: "" as DurationOptions,
@@ -339,7 +334,25 @@ export function DenForm() {
               </FormGroup>
             </Col>
             <h4>Situazione finanziaria</h4>
-            <Col className="d-flex" xs={12} sm={6}>
+            <Col className="d-flex" xs={12} sm={4}>
+              <FormGroup controlId="income" as={BorderFeedback}>
+                <FormLabel>
+                  A quanto ammonta attualmente il suo reddito medio annuo?
+                </FormLabel>
+                <FieldError />
+                <InputGroup>
+                  <InputField
+                    type="number"
+                    placeholder="A quanto ammonta attualmente il suo reddito medio annuo?"
+                    validation={{
+                      required: "Inserisci il tuo reddito medio annuo attuale",
+                    }}
+                  />
+                  <InputGroup.Text>,00 €</InputGroup.Text>
+                </InputGroup>
+              </FormGroup>
+            </Col>
+            <Col className="d-flex" xs={12} sm={4}>
               <FormGroup controlId="savings" as={BorderFeedback}>
                 <FormLabel>
                   Qual è attualmente la sua capacità di risparmio media annua?
@@ -358,7 +371,7 @@ export function DenForm() {
                 </InputGroup>
               </FormGroup>
             </Col>
-            <Col className="d-flex" xs={12} sm={6}>
+            <Col className="d-flex" xs={12} sm={4}>
               <FormGroup controlId="economicCondition" as={BorderFeedback}>
                 <FormLabel>
                   Quale potrebbe essere, in prospettiva, l'andamento della sua
