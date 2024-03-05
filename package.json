@@ -1,6 +1,6 @@
 {
   "name": "nuova-tcm-front-end",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "dependencies": {
     "@formkit/auto-animate": "^0.8.1",
     "@fortawesome/fontawesome-svg-core": "^6.4.2",
@@ -16,6 +16,7 @@
     "codice-fiscale-js": "^2.3.20",
     "cycle": "^1.0.3",
     "date-fns": "^3.0.0",
+    "ibantools": "^4.5.0",
     "immer": "^10.0.3",
     "js-cookie": "^3.0.5",
     "match-sorter": "^6.3.3",
@@ -42,6 +43,8 @@
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "eslint": "^8",
     "eslint-config-next": "^14",
+    "eslint-config-prettier": "^9.1.0",
+    "husky": "^9.0.11",
     "prettier": "^3.1.0",
     "sass": "^1.69.5",
     "typescript": "^5"
@@ -57,10 +60,13 @@
     "dev": "next dev",
     "dev-only": "next dev",
     "format": "prettier --write .",
-    "analyze": "set ANALYZE='true' && npm run build",
+    "analyze": "set ANALYZE=true&& npm run build",
     "lint": "next lint",
     "predev": "npm i",
     "start": "next start",
-    "turbo": "next dev --turbo"
+    "type-check": "tsc --noEmit",
+    "validate": "prettier . --check && npm run lint && npm run type-check && npm run build",
+    "turbo": "next dev --turbo",
+    "prepare": "husky"
   }
 }

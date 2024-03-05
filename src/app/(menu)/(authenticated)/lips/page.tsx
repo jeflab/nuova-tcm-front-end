@@ -13,7 +13,7 @@ interface LipsPageProps {
   searchParams: Partial<DataTableParams>;
 }
 
-export default async function LipsPage({searchParams}: LipsPageProps) {
+export default function LipsPage({searchParams}: LipsPageProps) {
   return (
     <AppContainer className="vstack gap-3">
       <PageTitle>

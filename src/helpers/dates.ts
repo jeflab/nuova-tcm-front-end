@@ -16,3 +16,8 @@ const dbDatePattern = "yyyy-MM-dd";
 export const dbDateString = (date?: Date | string) => {
   return format(dateOrNow(date), dbDatePattern, locale);
 };
+
+const dateTimePattern = "dd MMMM yyyy 'alle' HH:mm";
+export const dateTimeString = (date?: Date | string) => {
+  return format(dateOrNow(date), dateTimePattern, locale);
+};

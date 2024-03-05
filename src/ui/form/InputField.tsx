@@ -7,7 +7,13 @@ import {
 } from "react";
 import {FormControl} from "react-bootstrap";
 import FormContext from "react-bootstrap/FormContext";
-import {RegisterOptions, useFormContext} from "react-hook-form";
+import {
+  FieldPath,
+  FieldPathValue,
+  type FieldValues,
+  RegisterOptions,
+  useFormContext,
+} from "react-hook-form";
 import invariant from "tiny-invariant";
 
 type InputTypes =
@@ -19,16 +25,22 @@ type InputTypes =
   | "number"
   | "tel";
 
-interface InputFieldProps extends ComponentProps<typeof FormControl> {
-  name?: string;
+interface InputFieldProps<
+  TFieldValues extends FieldValues,
+  TFieldName extends FieldPath<TFieldValues>,
+> extends Omit<ComponentProps<typeof FormControl>, "name"> {
+  name?: TFieldName;
   type: InputTypes;
-  validation?: RegisterOptions;
-  normalize?: (value: string) => string;
+  validation?: RegisterOptions<TFieldValues, TFieldName>;
+  normalize?: (value: string) => FieldPathValue<TFieldValues, TFieldName>;
   validationStyle?: boolean;
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
 }
 
-export function InputField({
+export function InputField<
+  TFieldValues extends FieldValues,
+  TFieldName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+>({
   name,
   normalize,
   onChange,
@@ -36,10 +48,10 @@ export function InputField({
   validation,
   validationStyle = true,
   ...inputProps
-}: InputFieldProps) {
-  const {setValue, register} = useFormContext();
-  const {controlId} = useContext(FormContext);
-  const controlName = name || controlId;
+}: InputFieldProps<TFieldValues, TFieldName>) {
+  const {setValue, register} = useFormContext<TFieldValues>();
+  const {controlId} = useContext<{controlId?: TFieldName}>(FormContext);
+  const controlName = name ?? controlId;
   invariant(controlName, "name or controlId is required");
 
   const {isInvalid, isValid} = useValidationState(controlName);

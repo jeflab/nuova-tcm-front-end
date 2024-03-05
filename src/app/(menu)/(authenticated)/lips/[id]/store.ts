@@ -1,5 +1,6 @@
 import {DrawerName} from "@/app/(menu)/(authenticated)/lips/[id]/drawers";
 import {RANGE, calculateImc} from "@/app/(menu)/(authenticated)/lips/[id]/imc";
+import {Document, Documents, DocumentsSchema} from "@/entities/document";
 import {DrawerState} from "@/ui/drawer/const";
 import {create} from "zustand";
 import {TempLipData} from "../model";
@@ -7,6 +8,7 @@ import {produce} from "immer";
 
 interface State {
   lipData: TempLipData;
+  defaultDocuments: Documents;
   modalOpen: DrawerName | null;
   drawerStates: Partial<Record<DrawerName, DrawerState>>;
 }
@@ -34,6 +36,9 @@ interface Actions {
     data: TempLipData["healthQuestionnaire"],
   ) => void;
   updateBeneficiariesData: (data: TempLipData["beneficiaries"]) => void;
+  updateDocumentationData: (data: TempLipData["documentation"]) => void;
+  esignDocument: (fileName: string, esignIndex: number) => void;
+  updatePaymentData: (data: TempLipData["payment"]) => void;
   resetLipData: () => void;
 }
 
@@ -111,13 +116,10 @@ const updateLipData = (state: State, data: Partial<TempLipData>) => {
       newState.drawerStates.den = "active";
     } else if (
       newState.lipData.den &&
-      newState.lipData.den.duration === "multi_year" &&
-      (
-        [
-          "capital_for_heirs",
-          "protection_against_death_accident_and_illness",
-        ] as const
-      ).some((value) => newState.lipData.den?.expectations.includes(value))
+      newState.lipData.den.duration === "long_term" &&
+      (["capital_and_personal_protection"] as const).some((value) =>
+        newState.lipData.den?.expectations.includes(value),
+      )
     ) {
       newState.drawerStates.den = "success";
     } else {
@@ -169,10 +171,111 @@ const updateLipData = (state: State, data: Partial<TempLipData>) => {
     }
   }
 
+  // Documentazione
+  if (newState.drawerStates.beneficiaries === "success") {
+    if (newState.lipData.documentation === undefined) {
+      newState.drawerStates.documentation = "active";
+    } else if (
+      newState.lipData.documentation.files.every((file) =>
+        file.esigns.every((esign) => esign.esignId),
+      )
+    ) {
+      newState.drawerStates.documentation = "success";
+    } else {
+      newState.drawerStates.documentation = "danger";
+    }
+  }
+
+  // Pagamento
+  if (newState.drawerStates.documentation === "success") {
+    if (newState.lipData.payment === undefined) {
+      newState.drawerStates.payment = "active";
+    } else if (newState.lipData.payment) {
+      newState.drawerStates.payment = "success";
+    } else {
+      newState.drawerStates.payment = "danger";
+    }
+  } else {
+    newState.drawerStates.payment = undefined;
+  }
+
   return newState;
 };
 
+const documentsBase = DocumentsSchema.parse({
+  totalEsigns: 2,
+  files: [
+    {
+      fileName: "altro_file_altra_firma.pdf",
+      requiredFile: true,
+      esigns: [
+        {
+          whoEsign: "contractor",
+          required: true,
+          description:
+            "<p>Con la presente firma verranno accettati i contenuti dei seguenti capitoli:</p><ul><li>PG 4/13 - PREMIO UNICO LORDO</li><li>PG 4/13 - CARATTERISTICHE DEL INVESTIMENTO</li><li>PG 4/13 - DICHIARAZIONI</li><li>PG 5/13 - DICHIARAZIONI</li><li>PG 5/13 - COPERTURA COMPLEMENTARE FACOLTATIVA PER IL CASO MORTE</li><li>PG 6/13 - CONSENSO PER DATI PERSONALI  - COMUNICAZIONE ELETTRONICA</li><li>PG 6/13 - DICHIARAZIONE DI RESIDENZA AI FINI FISCALI</li><li>PG 7/13 - ATTESTAZIONE DI CONSEGNA</li><li>PG 8/13 - INFORMAZIONI SULLA OPERAZIONE</li></ul>",
+          page: "14",
+          leftX: "30",
+          leftY: "110",
+          rightX: "450",
+          rightY: "40",
+        },
+        {
+          whoEsign: "advisor",
+          required: true,
+          description:
+            "<p>Con la presente firma verranno accettati i contenuti dei seguenti capitoli:</p><ul><li>PG 6/13 - SPAZIO RISERVATO AL SOGGETTO INCARICATO DELL ADEGUATA VERIFICA</li></ul>",
+          page: "14",
+          leftX: "320",
+          leftY: "110",
+          rightX: "740",
+          rightY: "40",
+        },
+        {
+          whoEsign: "contractor",
+          required: true,
+          description:
+            "<p>seconda firma per il contractor:</p><ul><li>PG 4/13 - PREMIO UNICO LORDO</li><li>PG 4/13 - CARATTERISTICHE DEL INVESTIMENTO</li><li>PG 4/13 - DICHIARAZIONI</li><li>PG 5/13 - DICHIARAZIONI</li><li>PG 5/13 - COPERTURA COMPLEMENTARE FACOLTATIVA PER IL CASO MORTE</li><li>PG 6/13 - CONSENSO PER DATI PERSONALI  - COMUNICAZIONE ELETTRONICA</li><li>PG 6/13 - DICHIARAZIONE DI RESIDENZA AI FINI FISCALI</li><li>PG 7/13 - ATTESTAZIONE DI CONSEGNA</li><li>PG 8/13 - INFORMAZIONI SULLA OPERAZIONE</li></ul>",
+          page: "14",
+          leftX: "30",
+          leftY: "110",
+          rightX: "450",
+          rightY: "40",
+        },
+      ],
+      uploaded: true,
+      uploadedFileName:
+        "allianz_darta_saving_periodical_solution_0703260006.pdf",
+      uploadDate: "2022-03-08 15:46:16",
+    },
+    {
+      fileName: "allianz_darta_saving_periodical_solution.pdf",
+      requiredFile: true,
+      esigns: [
+        {
+          whoEsign: "advisor",
+          required: true,
+          description:
+            "<p>Con la presente firma verranno accettati i contenuti dei seguenti capitoli:</p><ul><li>PG 6/13 - SPAZIO RISERVATO AL SOGGETTO INCARICATO DELL ADEGUATA VERIFICA</li></ul>",
+          page: "14",
+          leftX: "320",
+          leftY: "110",
+          rightX: "740",
+          rightY: "40",
+        },
+      ],
+      uploaded: true,
+      uploadedFileName:
+        "allianz_darta_saving_periodical_solution_0703260006.pdf",
+      uploadDate: "2022-03-08 15:46:16",
+    },
+  ],
+  allFilesUploaded: true,
+  allRequiredFilesUploaded: true,
+});
+
 export const useDrawerStore = create<State & Actions>()((set) => ({
+  defaultDocuments: documentsBase,
   lipData: {},
   modalOpen: null,
   drawerStates: {fatca: "active"},
@@ -243,6 +346,40 @@ export const useDrawerStore = create<State & Actions>()((set) => ({
     set(
       produce((state) => {
         updateLipData(state, {beneficiaries: data});
+      }),
+    ),
+  updateDocumentationData: (data) =>
+    set(
+      produce((state) => {
+        updateLipData(state, {documentation: data});
+      }),
+    ),
+  esignDocument: (fileName, esignIndex) =>
+    set(
+      produce((state: State) => {
+        state.lipData.documentation ??= state.defaultDocuments;
+        const file = state.lipData.documentation.files.find(
+          (file) => file.fileName === fileName,
+        );
+        if (!file) {
+          return;
+        }
+
+        file.esigns[esignIndex].esignId = 1;
+        file.esigns[esignIndex].esignDate = new Date();
+        file.esigns[esignIndex].esignUser = {
+          cell: "0123456789",
+          email: "mario@example.com",
+          fiscalCode: "MRSRSS84H24E704I",
+          name: "Mario",
+          surname: "Rossi",
+        };
+      }),
+    ),
+  updatePaymentData: (data) =>
+    set(
+      produce((state) => {
+        updateLipData(state, {payment: data});
       }),
     ),
   resetLipData: () =>

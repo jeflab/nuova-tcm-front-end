@@ -31,7 +31,7 @@ export function DenSummary() {
     return null;
   }
 
-  if (denData.duration !== "multi_year") {
+  if (denData.duration !== "long_term") {
     return (
       <p className="mb-0">
         Non è possibile continuare la consulenza poiché le aspettative del
@@ -42,12 +42,9 @@ export function DenSummary() {
   }
 
   if (
-    !(
-      [
-        "capital_for_heirs",
-        "protection_against_death_accident_and_illness",
-      ] as const
-    ).some((value) => denData.expectations.includes(value))
+    !(["capital_and_personal_protection"] as const).some((value) =>
+      denData.expectations.includes(value),
+    )
   ) {
     return (
       <p className="mb-0">
@@ -108,6 +105,10 @@ export function DenSummary() {
           <FontAwesomeIcon icon={faSackDollar} className="me-2" />
           Situazione finanziaria
         </h4>
+        <p className="mb-0">
+          <strong>Reddito medio annuale:</strong>{" "}
+          <Currency>{denData.income}</Currency>
+        </p>
         <p className="mb-0">
           <strong>Capacità di risparmio media annua:</strong>{" "}
           <Currency>{denData.savings}</Currency>

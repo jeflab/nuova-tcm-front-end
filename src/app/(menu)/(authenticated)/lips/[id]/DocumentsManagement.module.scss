@@ -1,0 +1,61 @@
+@import "@/app/variables";
+
+.documentHeader {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: map-get($spacers, 2);
+
+  strong {
+    word-break: break-all;
+  }
+
+  @include media-breakpoint-up(sm) {
+    flex-direction: row;
+  }
+}
+
+.docTableActions {
+  display: grid;
+  grid-template-columns: 1fr;
+
+  @include media-breakpoint-up(sm) {
+    grid-template-columns: auto 1fr;
+  }
+
+  > div {
+    padding: 0.5rem 1rem;
+    border: 0 solid $gray-300;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    &:nth-child(2n) {
+      border-width: 0 0 1px;
+    }
+
+    &:nth-last-child(-n + 2) {
+      border-width: 0;
+    }
+
+    @include media-breakpoint-up(sm) {
+      & {
+        border-width: 0 0 1px;
+      }
+    }
+  }
+
+  > div:nth-child(2n) {
+    flex-direction: column;
+    align-items: start;
+
+    @include media-breakpoint-up(sm) {
+      align-items: center;
+      flex-direction: row;
+    }
+
+    @include media-breakpoint-up(lg) {
+    }
+  }
+}

@@ -14,6 +14,8 @@ import {
   NeedsToMeetOptions,
 } from "@/app/(menu)/(authenticated)/lips/[id]/DenForm";
 import {IdType} from "@/app/(menu)/(authenticated)/lips/[id]/IdentificationForm";
+import {PaymentMethodsOptions} from "@/app/(menu)/(authenticated)/lips/[id]/PaymentForm";
+import {Documents} from "@/entities/document";
 import {YesNoAnswer} from "@/helpers/TypesHelper";
 import {
   faCheckCircle,
@@ -137,6 +139,7 @@ export interface TempLipData {
     otherInsuranceProducts: YesNoAnswer;
     needsIntendToMeet: NeedsToMeetOptions[];
     savings: string;
+    income: string;
     economicCondition: EconomicConditionOptions;
     expectations: ExpectationsOptions[];
     duration: DurationOptions;
@@ -211,4 +214,10 @@ export interface TempLipData {
           };
         }
     );
+  documentation?: Documents;
+  payment?: {
+    bank: string;
+    iban: string;
+    paymentMethod: PaymentMethodsOptions;
+  };
 }

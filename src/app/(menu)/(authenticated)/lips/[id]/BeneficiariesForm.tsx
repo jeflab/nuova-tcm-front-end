@@ -87,6 +87,8 @@ const beneficiariesDefaultValues = {
     email: "",
   },
 };
+type BeneficiariesValues = typeof beneficiariesDefaultValues;
+
 export function BeneficiariesForm() {
   const animateContainer = useRef(null);
   const formMethods = useForm({
@@ -249,7 +251,10 @@ export function BeneficiariesForm() {
                       >
                         <FormLabel>Codice Fiscale</FormLabel>
                         <FieldError />
-                        <InputField
+                        <InputField<
+                          BeneficiariesValues,
+                          `beneficiaries.${number}.fiscalCode`
+                        >
                           type="text"
                           placeholder="Codice Fiscale"
                           normalize={upperCaseNormalizer}
@@ -374,7 +379,10 @@ export function BeneficiariesForm() {
                       >
                         <FormLabel>Email</FormLabel>
                         <FieldError />
-                        <InputField
+                        <InputField<
+                          BeneficiariesValues,
+                          `beneficiaries.${number}.email`
+                        >
                           type="email"
                           placeholder="Email"
                           validation={{
@@ -560,7 +568,10 @@ export function BeneficiariesForm() {
                   >
                     <FormLabel>Codice Fiscale</FormLabel>
                     <FieldError />
-                    <InputField
+                    <InputField<
+                      BeneficiariesValues,
+                      `thirdPartyContactPerson.fiscalCode`
+                    >
                       type="text"
                       placeholder="Codice Fiscale"
                       normalize={upperCaseNormalizer}
@@ -683,7 +694,10 @@ export function BeneficiariesForm() {
                   >
                     <FormLabel>Email</FormLabel>
                     <FieldError />
-                    <InputField
+                    <InputField<
+                      BeneficiariesValues,
+                      `thirdPartyContactPerson.email`
+                    >
                       type="email"
                       placeholder="Email"
                       validation={{
