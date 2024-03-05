@@ -1,9 +1,8 @@
 "use server";
 
-import {standard} from "@/app/(menu)/(authenticated)/lips/mock";
-import {sortingStringToObject} from "@/ui/table/helpers";
+import {lipSchema} from "@/entities/lip";
+import {get} from "@/services/api";
 import {z} from "zod";
-import {Lip, lipSchema} from "./models";
 
 interface GetLipsListOptions {
   query: string;
@@ -12,10 +11,23 @@ interface GetLipsListOptions {
   sorting: string;
 }
 
-const getLipsSchema = z.object({
-  pageCount: z.number(),
-  lips: z.array(lipSchema),
-});
+const getLipsShape = {
+  lips: z
+    .object({
+      data: z.array(lipSchema),
+      from: z.number(),
+      last_page: z.number(),
+      links: z.any(),
+      to: z.number(),
+      total: z.number(),
+    })
+    .transform(({last_page, ...data}) => {
+      return {
+        ...data,
+        lastPage: last_page,
+      };
+    }),
+};
 
 export async function getLipsList({
   query,
@@ -23,36 +35,10 @@ export async function getLipsList({
   perPage,
   sorting,
 }: GetLipsListOptions) {
-  const offset = (page - 1) * perPage;
-  const sortingRules = sortingStringToObject<Lip>(sorting);
-
-  // Fingiamo di ricevere i dati dal server
-  const lips = standard()
-    .lips.filter((lip) => {
-      if (query.length === 0) {
-        return true;
-      }
-      return lip.name.toLowerCase().includes(query.toLowerCase());
-    })
-    .sort((a, b) => {
-      for (const {id, desc} of sortingRules) {
-        if (a[id] < b[id]) {
-          return desc ? 1 : -1;
-        }
-        if (a[id] > b[id]) {
-          return desc ? -1 : 1;
-        }
-      }
-      return 0;
-    })
-    .slice(offset, offset + perPage);
-  const pageCount = Math.ceil(standard().lips.length / perPage);
-
-  const response = getLipsSchema.parse({lips, pageCount});
-
-  return new Promise<z.infer<typeof getLipsSchema>>((resolve) => {
-    // setTimeout(() => {
-    resolve(response);
-    // }, 3000);
+  return get("/lips", getLipsShape, {
+    query,
+    page: page.toString(),
+    per_page: perPage.toString(),
+    sorting,
   });
 }

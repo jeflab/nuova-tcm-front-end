@@ -60,10 +60,14 @@ function isServerSuccess<T extends ZodRawShape>(
 export async function get<T extends ZodRawShape>(
   url: `/${string}`,
   zodRowShape: T,
+  searchParams?: Record<string, string>,
 ) {
   const serverSuccessSchema = createServerSuccessSchema(zodRowShape);
+  const searchParamsString = searchParams
+    ? "?" + new URLSearchParams(searchParams).toString()
+    : "";
 
-  const response = await fetch(apiUrl + url, {
+  const response = await fetch(apiUrl + url + searchParamsString, {
     headers: {
       ...contentJsonHeader,
       ...authorizationHeader(),

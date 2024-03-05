@@ -2,29 +2,32 @@
 
 import {
   Lip,
-  lipStates,
-  LipStatesIcons,
-  lipStatesLabels,
-} from "@/app/(menu)/(authenticated)/lips/models";
+  lipStatuses,
+  LipStatusesIcons,
+  lipStatusesLabels,
+} from "@/entities/lip";
 import {cns} from "@/helpers/cns";
 import {dateString, dbDateString} from "@/helpers/dates";
 import dataTableStyles from "@/ui/table/DataTable.module.scss";
-import {
-  faEye,
-  faFilterCircleXmark,
-  faTrash,
-} from "@fortawesome/pro-duotone-svg-icons";
+import {faEye, faFilterCircleXmark} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {ColumnDef, createColumnHelper} from "@tanstack/react-table";
 import {Button, FormControl, FormSelect, Placeholder} from "react-bootstrap";
 
 const columnHelper = createColumnHelper<Lip>();
 export const columns = [
-  columnHelper.accessor("surname", {
-    header: "Cognome",
+  columnHelper.accessor("lipNumber", {
+    header: "Numero",
   }),
-  columnHelper.accessor("name", {header: "Nome"}),
-  columnHelper.accessor("date", {
+  columnHelper.accessor((row) => `${row.agent.surname} ${row.agent.name}`, {
+    id: "agent",
+    header: "Agente",
+  }),
+  columnHelper.accessor((row) => `${row.agent.surname} ${row.agent.name}`, {
+    id: "contractor",
+    header: "Contraente",
+  }),
+  columnHelper.accessor("createdAt", {
     header: "Data",
     cell: (props) => dateString(props.getValue()),
     meta: {
@@ -67,11 +70,12 @@ export const columns = [
       },
     },
   }),
-  columnHelper.accessor("state", {
+  columnHelper.accessor("status", {
     header: "Stato",
     cell: (props) => (
       <>
-        {LipStatesIcons[props.getValue()]} {lipStatesLabels[props.getValue()]}
+        {LipStatusesIcons[props.getValue()]}{" "}
+        {lipStatusesLabels[props.getValue()]}
       </>
     ),
     meta: {
@@ -79,16 +83,16 @@ export const columns = [
         return (
           <FormSelect
             defaultValue={filterValue}
-            onChange={(e) => setFilterValue(e.target.value as Lip["state"])}
+            onChange={(e) => setFilterValue(e.target.value as Lip["status"])}
             size="sm"
             aria-label="Filtra per stato"
           >
             <option key="all" value="all">
               Tutti
             </option>
-            {lipStates.map((state) => (
-              <option key={state} value={state}>
-                {lipStatesLabels[state]}
+            {lipStatuses.map((status) => (
+              <option key={status} value={status}>
+                {lipStatusesLabels[status]}
               </option>
             ))}
           </FormSelect>
@@ -115,21 +119,15 @@ export const columns = [
           size="sm"
           className={cns("text-nowrap", dataTableStyles.rowDefaultLink)}
           onClick={() => {
-            alert("Vedi " + row.original.name + " " + row.original.surname);
+            alert(
+              "Vedi " +
+                row.original.agent.name +
+                " " +
+                row.original.agent.surname,
+            );
           }}
         >
           <FontAwesomeIcon icon={faEye} /> Visualizza
-        </Button>{" "}
-        <Button
-          variant="danger"
-          size="sm"
-          title="Elimina polizza"
-          className={dataTableStyles.rowOtherLink}
-          onClick={() => {
-            alert("Elimina " + row.original.name + " " + row.original.surname);
-          }}
-        >
-          <FontAwesomeIcon icon={faTrash} />
         </Button>
       </span>
     ),
@@ -138,10 +136,23 @@ export const columns = [
 
 // TODO: Facciamo in modo che in skeletonColumns ci siano solo le proprietà che cambiano da columns
 export const skeletonColumns = [
-  columnHelper.accessor("surname", {
-    header: "Cognome",
+  columnHelper.accessor("lipNumber", {
+    header: "Numero",
     cell: () => (
       <Placeholder as="span" animation="glow">
+        <Placeholder as="span" style={{width: `84px`}} />
+      </Placeholder>
+    ),
+  }),
+  columnHelper.accessor("agent", {
+    header: "Agente",
+    id: "agent",
+    cell: () => (
+      <Placeholder as="span" animation="glow">
+        <Placeholder
+          as="span"
+          style={{width: `${40 + Math.random() * 35}px`}}
+        />{" "}
         <Placeholder
           as="span"
           style={{width: `${40 + Math.random() * 35}px`}}
@@ -149,10 +160,15 @@ export const skeletonColumns = [
       </Placeholder>
     ),
   }),
-  columnHelper.accessor("name", {
-    header: "Nome",
+  columnHelper.accessor("contractorId", {
+    header: "Cliente",
+    id: "contractor",
     cell: () => (
       <Placeholder as="span" animation="glow">
+        <Placeholder
+          as="span"
+          style={{width: `${40 + Math.random() * 35}px`}}
+        />{" "}
         <Placeholder
           as="span"
           style={{width: `${40 + Math.random() * 35}px`}}
@@ -160,7 +176,7 @@ export const skeletonColumns = [
       </Placeholder>
     ),
   }),
-  columnHelper.accessor("date", {
+  columnHelper.accessor("createdAt", {
     header: "Data",
     cell: () => (
       <Placeholder as="span" animation="glow">
@@ -194,7 +210,7 @@ export const skeletonColumns = [
       },
     },
   }),
-  columnHelper.accessor("state", {
+  columnHelper.accessor("status", {
     header: "Stato",
     cell: () => (
       <>
@@ -217,16 +233,16 @@ export const skeletonColumns = [
           <FormSelect
             defaultValue={filterValue}
             disabled={disabled}
-            onChange={(e) => setFilterValue(e.target.value as Lip["state"])}
+            onChange={(e) => setFilterValue(e.target.value as Lip["status"])}
             size="sm"
             aria-label="Filtra per stato"
           >
             <option key="all" value="all">
               Tutti
             </option>
-            {lipStates.map((state) => (
-              <option key={state} value={state}>
-                {lipStatesLabels[state]}
+            {lipStatuses.map((status) => (
+              <option key={status} value={status}>
+                {lipStatusesLabels[status]}
               </option>
             ))}
           </FormSelect>
@@ -256,14 +272,6 @@ export const skeletonColumns = [
           className="text-nowrap disabled placeholder"
         >
           <FontAwesomeIcon icon={faEye} /> Visualizza
-        </Button>{" "}
-        <Button
-          variant="danger"
-          size="sm"
-          title="Elimina polizza"
-          className="disabled placeholder"
-        >
-          <FontAwesomeIcon icon={faTrash} />
         </Button>
       </Placeholder>
     ),

@@ -1,6 +1,6 @@
 import {DebugState} from "@/app/(menu)/(authenticated)/lips/[id]/DebugState";
 import {drawers} from "@/app/(menu)/(authenticated)/lips/[id]/drawers";
-import {Lip} from "@/app/(menu)/(authenticated)/lips/models";
+import {Lip} from "@/entities/lip";
 import {cns} from "@/helpers/cns";
 import {AppContainer} from "@/ui/AppContainer";
 import {Drawer} from "@/ui/drawer/Drawer";

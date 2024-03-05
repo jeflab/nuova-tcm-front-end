@@ -1,5 +1,25 @@
 import {agentSchema} from "@/entities/agent";
+import {
+  faCheckCircle,
+  faCircleHalf,
+  faCircleTrash,
+  faDollarCircle,
+} from "@fortawesome/pro-duotone-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {ReactNode} from "react";
 import {z} from "zod";
+
+export const lipStatuses = ["softDeleted", "open"] as const;
+export type LipStatesKeys = (typeof lipStatuses)[number];
+
+export const lipStatusesLabels: Record<LipStatesKeys, string> = {
+  softDeleted: "Eliminata",
+  open: "Aperta",
+} as const;
+export const LipStatusesIcons: Record<LipStatesKeys, ReactNode> = {
+  softDeleted: <FontAwesomeIcon icon={faCircleTrash} className="text-danger" />,
+  open: <FontAwesomeIcon icon={faCircleHalf} className="text-warning" />,
+} as const;
 
 export const lipSchema = z
   .object({
@@ -8,13 +28,18 @@ export const lipSchema = z
     insured_id: z.number(),
     created_at: z.coerce.date(),
     agent: agentSchema,
+    lip_number: z.coerce.string(),
+    status: z.union([z.literal(0), z.literal(1)]).transform((status) => {
+      return lipStatuses[status];
+    }),
   })
-  .transform(({created_at, contractor_id, insured_id, ...data}) => {
+  .transform(({created_at, contractor_id, insured_id, lip_number, ...data}) => {
     return {
       ...data,
       createdAt: created_at,
       contractorId: contractor_id,
       insuredId: insured_id,
+      lipNumber: lip_number,
     };
   });
 export type Lip = z.infer<typeof lipSchema>;
