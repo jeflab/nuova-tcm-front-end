@@ -8,12 +8,15 @@ import {ContractorPersonalAreaActivationSummary} from "@/app/(menu)/(authenticat
 import {DenForm} from "@/app/(menu)/(authenticated)/lips/[id]/DenForm";
 import {DenSummary} from "@/app/(menu)/(authenticated)/lips/[id]/DenSummary";
 import {DocumentsManagement} from "@/app/(menu)/(authenticated)/lips/[id]/DocumentsManagement";
+import {DocumentsSummary} from "@/app/(menu)/(authenticated)/lips/[id]/DocumentsSummary";
 import {FatcaForm} from "@/app/(menu)/(authenticated)/lips/[id]/FatcaForm";
 import {FatcaSummary} from "@/app/(menu)/(authenticated)/lips/[id]/FatcaSummary";
 import {HealthQuestionnaireForm} from "@/app/(menu)/(authenticated)/lips/[id]/HealthQuestionnaireForm";
 import {HealthQuestionnaireSummary} from "@/app/(menu)/(authenticated)/lips/[id]/HealthQuestionnaireSummary";
 import {IdentificationForm} from "@/app/(menu)/(authenticated)/lips/[id]/IdentificationForm";
 import {IdentificationDataSummary} from "@/app/(menu)/(authenticated)/lips/[id]/IdentificationSummary";
+import {PaymentForm} from "@/app/(menu)/(authenticated)/lips/[id]/PaymentForm";
+import {PaymentSummary} from "@/app/(menu)/(authenticated)/lips/[id]/PaymentSummary";
 import {QuoteForm} from "@/app/(menu)/(authenticated)/lips/[id]/QuoteForm";
 import {QuoteSummary} from "@/app/(menu)/(authenticated)/lips/[id]/QuoteSummary";
 import {ReactNode} from "react";
@@ -98,9 +101,12 @@ export const drawers: Drawer[] = [
     name: "documentation",
     title: "Documentazione",
     modalContent: <DocumentsManagement />,
+    summaryContent: <DocumentsSummary />,
   },
   {
     name: "payment",
     title: "Pagamento",
+    modalContent: <PaymentForm />,
+    summaryContent: <PaymentSummary />,
   },
 ];

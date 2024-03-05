@@ -9,6 +9,7 @@ const FileEsignSchema = z.object({
   leftY: z.string(),
   rightX: z.string(),
   rightY: z.string(),
+  esignIndex: z.number().optional(), // me lo sto ricavando io da FE. Ha senso farlo gestire da BE?
   esignId: z.coerce.number().optional(),
   esignDate: z.coerce.date().optional(),
   esignUser: z
@@ -38,3 +39,4 @@ export const DocumentsSchema = z.object({
   allFilesUploaded: z.boolean(),
   allRequiredFilesUploaded: z.boolean(),
 });
+export type Documents = z.infer<typeof DocumentsSchema>;

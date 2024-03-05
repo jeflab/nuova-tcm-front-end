@@ -2,7 +2,7 @@
 
 import {ESignsManagementModal} from "@/app/(menu)/(authenticated)/lips/[id]/DocumentsManagement/ESignsManagementModal";
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
-import {DocumentsSchema, FileEsign} from "@/entities/document";
+import {FileEsign} from "@/entities/document";
 import {
   faCheckCircle,
   faDownload,
@@ -23,9 +23,14 @@ import {
 import styles from "./DocumentsManagement.module.scss";
 
 const eSignsCount = (eSigns: FileEsign[], filter?: string) => {
-  let filteredESigns = eSigns;
+  let filteredESigns = eSigns.map((eSign, index) => ({
+    ...eSign,
+    esignIndex: index,
+  }));
   if (filter) {
-    filteredESigns = eSigns.filter((eSign) => eSign.whoEsign === filter);
+    filteredESigns = filteredESigns.filter(
+      (eSign) => eSign.whoEsign === filter,
+    );
   }
 
   const total = filteredESigns;
@@ -33,61 +38,15 @@ const eSignsCount = (eSigns: FileEsign[], filter?: string) => {
   return [partial, total];
 };
 
-const documents = DocumentsSchema.parse({
-  totalEsigns: 2,
-  files: [
-    {
-      fileName: "allianz_darta_saving_periodical_solution.pdf",
-      requiredFile: true,
-      esigns: [
-        {
-          whoEsign: "contractor",
-          required: true,
-          description:
-            "<p>Con la presente firma verranno accettati i contenuti dei seguenti capitoli:</p><ul><li>PG 4/13 - PREMIO UNICO LORDO</li><li>PG 4/13 - CARATTERISTICHE DEL INVESTIMENTO</li><li>PG 4/13 - DICHIARAZIONI</li><li>PG 5/13 - DICHIARAZIONI</li><li>PG 5/13 - COPERTURA COMPLEMENTARE FACOLTATIVA PER IL CASO MORTE</li><li>PG 6/13 - CONSENSO PER DATI PERSONALI  - COMUNICAZIONE ELETTRONICA</li><li>PG 6/13 - DICHIARAZIONE DI RESIDENZA AI FINI FISCALI</li><li>PG 7/13 - ATTESTAZIONE DI CONSEGNA</li><li>PG 8/13 - INFORMAZIONI SULLA OPERAZIONE</li></ul>",
-          page: "14",
-          leftX: "30",
-          leftY: "110",
-          rightX: "450",
-          rightY: "40",
-        },
-        {
-          whoEsign: "advisor",
-          required: true,
-          description:
-            "<p>Con la presente firma verranno accettati i contenuti dei seguenti capitoli:</p><ul><li>PG 6/13 - SPAZIO RISERVATO AL SOGGETTO INCARICATO DELL ADEGUATA VERIFICA</li></ul>",
-          page: "14",
-          leftX: "320",
-          leftY: "110",
-          rightX: "740",
-          rightY: "40",
-          esignId: "945",
-          esignDate: "2022-03-08 15:46:35",
-          esignUser: {
-            name: "Fabio",
-            surname: "Lazzaroni",
-            cell: "3206441946",
-            email: "fakkio84@gmail.com",
-            fiscalCode: "LZZFBA84H24E704I",
-          },
-        },
-      ],
-      uploaded: true,
-      uploadedFileName:
-        "allianz_darta_saving_periodical_solution_0703260006.pdf",
-      uploadDate: "2022-03-08 15:46:16",
-    },
-  ],
-  allFilesUploaded: true,
-  allRequiredFilesUploaded: true,
-});
-
 export function DocumentsManagement() {
-  const [esignModalOpen, setEsignModalOpen] = useState<
-    "advisor" | "contractor"
-  >();
+  const [esignModalOpen, setEsignModalOpen] =
+    useState<`${"advisor" | "contractor"}-${string}`>();
+  const defaultDocuments = useDrawerStore((state) => state.defaultDocuments);
+  const lipsDocuments = useDrawerStore((state) => state.lipData.documentation);
   const closeModal = useDrawerStore((state) => state.closeModal);
   const lipId = 1;
+
+  const documents = lipsDocuments ?? defaultDocuments;
 
   const allAdvisorESigns = documents.files.every((file) =>
     file.esigns
@@ -97,7 +56,7 @@ export function DocumentsManagement() {
 
   return (
     <>
-      <ModalBody>
+      <ModalBody className="vstack gap-3">
         {documents.files.map((document) => {
           const [partialAdvisorESign, totalAdvisorESign] = eSignsCount(
             document.esigns,
@@ -172,7 +131,7 @@ export function DocumentsManagement() {
                           size="sm"
                           className="text-nowrap"
                           onClick={() => {
-                            setEsignModalOpen("advisor");
+                            setEsignModalOpen(`advisor-${document.fileName}`);
                           }}
                         >
                           {totalAdvisorESign.length >
@@ -189,7 +148,9 @@ export function DocumentsManagement() {
                         <ESignsManagementModal
                           document={document}
                           eSigns={totalAdvisorESign}
-                          show={esignModalOpen === "advisor"}
+                          show={
+                            esignModalOpen === `advisor-${document.fileName}`
+                          }
                           onHide={() => setEsignModalOpen(undefined)}
                         />
                       </>
@@ -235,7 +196,9 @@ export function DocumentsManagement() {
                               size="sm"
                               className="text-nowrap"
                               onClick={() => {
-                                setEsignModalOpen("contractor");
+                                setEsignModalOpen(
+                                  `contractor-${document.fileName}`,
+                                );
                               }}
                             >
                               {totalContractorESign.length >
@@ -253,7 +216,10 @@ export function DocumentsManagement() {
                             <ESignsManagementModal
                               document={document}
                               eSigns={totalContractorESign}
-                              show={esignModalOpen === "contractor"}
+                              show={
+                                esignModalOpen ===
+                                `contractor-${document.fileName}`
+                              }
                               onHide={() => setEsignModalOpen(undefined)}
                             />
                           </>
@@ -274,7 +240,7 @@ export function DocumentsManagement() {
           <FontAwesomeIcon icon={faXmark} className="me-2" />
           Annulla
         </Button>
-        <Button type="submit" variant="primary" form="documentsManagement-form">
+        <Button type="submit" variant="primary" onClick={() => closeModal()}>
           <FontAwesomeIcon icon={faSave} className="me-2" />
           Salva e prosegui
         </Button>

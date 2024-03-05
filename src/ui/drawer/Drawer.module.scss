@@ -16,7 +16,7 @@
   }
 
   &:not(.isSuccess, .isDanger) {
-    :global(.card-header) {
+    > :global(.card-header) {
       border-bottom: none;
       border-radius: var(--bs-card-inner-border-radius);
     }
@@ -50,22 +50,22 @@
 }
 
 .isActive {
-  :global(.card-header) {
+  > :global(.card-header) {
     background-color: rgba(var(--bs-primary-rgb), 0.15);
   }
 }
 .isSuccess {
-  :global(.card-header) {
+  > :global(.card-header) {
     background-color: rgba(var(--bs-success-rgb), 0.15);
   }
 }
 .isDanger {
-  :global(.card-header) {
+  > :global(.card-header) {
     background-color: rgba(var(--bs-danger-rgb), 0.15);
   }
 }
 .isWaiting {
-  :global(.card-header) {
+  > :global(.card-header) {
     background-color: rgba(var(--bs-warning-rgb), 0.15);
   }
 }
