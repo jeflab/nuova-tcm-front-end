@@ -14,7 +14,6 @@
     "bootstrap": "^5.3.2",
     "chalk": "^5.3.0",
     "codice-fiscale-js": "^2.3.20",
-    "cycle": "^1.0.3",
     "date-fns": "^3.0.0",
     "ibantools": "^4.5.0",
     "immer": "^10.0.3",
@@ -43,7 +42,7 @@
     "@types/react-dom": "^18",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "eslint": "^8",
-    "eslint-config-next": "^14",
+    "eslint-config-next": "^14.1.2",
     "eslint-config-prettier": "^9.1.0",
     "husky": "^9.0.11",
     "lint-staged": "^15.2.2",
@@ -58,20 +57,20 @@
   },
   "private": true,
   "scripts": {
+    "analyze": "set ANALYZE=true&& npm run build",
     "bs": "npm i && next build && next start",
     "build": "next build",
+    "check-format": "prettier --check .",
+    "check-types": "tsc --noEmit",
     "dev": "next dev",
     "dev-only": "next dev",
     "format": "prettier --write .",
-    "check-format": "prettier --check .",
-    "analyze": "set ANALYZE=true&& npm run build",
     "lint": "next lint",
-    "predev": "npm i",
     "lint-staged": "lint-staged",
+    "predev": "npm i",
+    "prepare": "husky",
     "start": "next start",
-    "check-types": "tsc --noEmit",
-    "validate": "npm-run-all --print-label --parallel check-format lint check-types --sequential build",
     "turbo": "next dev --turbo",
-    "prepare": "husky"
+    "validate": "npm-run-all --print-label --parallel check-format lint check-types --sequential build"
   }
 }
