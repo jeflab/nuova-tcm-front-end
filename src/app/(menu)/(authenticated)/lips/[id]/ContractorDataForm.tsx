@@ -172,7 +172,7 @@ const contractorDataDefaultValues = {
 };
 
 export function ContractorDataForm() {
-  const contractor = useDrawerStore((state) => state.contractor);
+  const contractor = useDrawerStore((state) => state.lip?.contractor);
 
   const formMethods = useForm({
     mode: "onChange",
@@ -183,7 +183,7 @@ export function ContractorDataForm() {
           birthDate: contractor.birthDate,
           birthPlace: {
             city: contractor.birthPlace,
-            province: "AA",
+            province: contractor.regionBirth,
           },
           fiscalCode: contractor.fiscalCode,
           gender: contractor.gender,

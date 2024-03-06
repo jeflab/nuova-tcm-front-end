@@ -159,12 +159,9 @@ export function ContractorFiscalCodeForm() {
             if (checkIfFiscalCodeExistsResponse.status === "success") {
               if (
                 !!checkIfFiscalCodeExistsResponse.lip &&
-                !!checkIfFiscalCodeExistsResponse.contractor
+                !!checkIfFiscalCodeExistsResponse.lip.contractor
               ) {
-                updateLip({
-                  lip: checkIfFiscalCodeExistsResponse.lip,
-                  contractor: checkIfFiscalCodeExistsResponse.contractor,
-                });
+                updateLip(checkIfFiscalCodeExistsResponse.lip);
                 updatePreliminaryData({contractorPersonalData: values});
                 closeModal();
                 return;

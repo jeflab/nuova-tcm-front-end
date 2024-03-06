@@ -30,6 +30,7 @@ export const personalDataSchema = z
     ({
       date_birth,
       place_birth,
+      region_birth,
       fiscal_code,
       last_privacy_esign_id,
       json_fatca,
@@ -39,6 +40,7 @@ export const personalDataSchema = z
         ...data,
         birthDate: date_birth,
         birthPlace: place_birth,
+        regionBirth: region_birth,
         fiscalCode: fiscal_code,
         lastPrivacyEsignId: last_privacy_esign_id,
         fatca: json_fatca,

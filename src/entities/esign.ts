@@ -1,3 +1,5 @@
+import {z} from "zod";
+
 /**
  * Enum con i tipi di documento, per ogni tipo dobbiamo inviare l'id dell'entità
  *  corrispondente
@@ -28,3 +30,14 @@ export enum PDFType {
   // Delivery = "templateDichiarazioneAvvenutaConsegna",
   // BeneMarketing = "templateDichiarazioneCoerenzaBeneMarketing",
 }
+
+export const esignSchema = z
+  .object({
+    transaction_id: z.string(),
+  })
+  .transform(({transaction_id}) => {
+    return {
+      transactionId: transaction_id,
+    };
+  });
+export type ESign = z.infer<typeof esignSchema>;

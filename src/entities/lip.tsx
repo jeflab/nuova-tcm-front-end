@@ -1,10 +1,6 @@
 import {agentSchema} from "@/entities/agent";
-import {
-  faCheckCircle,
-  faCircleHalf,
-  faCircleTrash,
-  faDollarCircle,
-} from "@fortawesome/pro-duotone-svg-icons";
+import {personalDataSchema} from "@/entities/personalData";
+import {faCircleHalf, faCircleTrash} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {ReactNode} from "react";
 import {z} from "zod";
@@ -24,20 +20,19 @@ export const LipStatusesIcons: Record<LipStatesKeys, ReactNode> = {
 export const lipSchema = z
   .object({
     id: z.number(),
-    contractor_id: z.number(),
     insured_id: z.number(),
     created_at: z.coerce.date(),
     agent: agentSchema,
+    contractor: personalDataSchema,
     lip_number: z.coerce.string(),
     status: z.union([z.literal(0), z.literal(1)]).transform((status) => {
       return lipStatuses[status];
     }),
   })
-  .transform(({created_at, contractor_id, insured_id, lip_number, ...data}) => {
+  .transform(({created_at, insured_id, lip_number, ...data}) => {
     return {
       ...data,
       createdAt: created_at,
-      contractorId: contractor_id,
       insuredId: insured_id,
       lipNumber: lip_number,
     };

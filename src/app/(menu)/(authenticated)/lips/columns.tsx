@@ -8,6 +8,7 @@ import {
 } from "@/entities/lip";
 import {cns} from "@/helpers/cns";
 import {dateString, dbDateString} from "@/helpers/dates";
+import {ButtonLink} from "@/ui/ButtonLink";
 import dataTableStyles from "@/ui/table/DataTable.module.scss";
 import {faEye, faFilterCircleXmark} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
@@ -23,10 +24,13 @@ export const columns = [
     id: "agent",
     header: "Agente",
   }),
-  columnHelper.accessor((row) => `${row.agent.surname} ${row.agent.name}`, {
-    id: "contractor",
-    header: "Contraente",
-  }),
+  columnHelper.accessor(
+    (row) => `${row.contractor.surname} ${row.contractor.name}`,
+    {
+      id: "contractor",
+      header: "Contraente",
+    },
+  ),
   columnHelper.accessor("createdAt", {
     header: "Data",
     cell: (props) => dateString(props.getValue()),
@@ -114,21 +118,14 @@ export const columns = [
     ),
     cell: ({row}) => (
       <span className={dataTableStyles.actions}>
-        <Button
+        <ButtonLink
           variant="primary"
           size="sm"
+          href={`/lips/${row.original.id}`}
           className={cns("text-nowrap", dataTableStyles.rowDefaultLink)}
-          onClick={() => {
-            alert(
-              "Vedi " +
-                row.original.agent.name +
-                " " +
-                row.original.agent.surname,
-            );
-          }}
         >
           <FontAwesomeIcon icon={faEye} /> Visualizza
-        </Button>
+        </ButtonLink>
       </span>
     ),
   }),
@@ -160,7 +157,7 @@ export const skeletonColumns = [
       </Placeholder>
     ),
   }),
-  columnHelper.accessor("contractorId", {
+  columnHelper.accessor("contractor", {
     header: "Cliente",
     id: "contractor",
     cell: () => (

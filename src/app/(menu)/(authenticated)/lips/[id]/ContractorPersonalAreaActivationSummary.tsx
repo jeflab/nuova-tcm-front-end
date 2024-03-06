@@ -3,7 +3,7 @@
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 
 export function ContractorPersonalAreaActivationSummary() {
-  const contractor = useDrawerStore((state) => state.contractor);
+  const contractor = useDrawerStore((state) => state.lip?.contractor);
 
   if (!contractor) {
     return null;

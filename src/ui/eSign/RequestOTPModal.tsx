@@ -4,21 +4,23 @@ import {RequestOTPModalContent} from "@/ui/eSign/RequestOTPModalContent";
 import {Modal, ModalBody} from "react-bootstrap";
 
 interface RequestOTPModalProps<TPayload> {
+  lipId: number;
+  onEsignComplete?: () => void;
   onHide: () => void;
+  payload: TPayload;
   personalData?: PersonalData;
   profile: Profile;
   show: boolean;
-  payload: TPayload;
-  lipId: number;
 }
 
 export function RequestOTPModal<TPayload>({
+  lipId,
+  onEsignComplete,
   onHide,
+  payload,
   personalData,
   profile,
   show,
-  payload,
-  lipId,
 }: RequestOTPModalProps<TPayload>) {
   return (
     <Modal show={show} onHide={onHide} backdrop="static" centered>
@@ -29,6 +31,7 @@ export function RequestOTPModal<TPayload>({
           profile={profile}
           payload={payload}
           lipId={lipId}
+          onEsignComplete={onEsignComplete}
         />
       </ModalBody>
     </Modal>

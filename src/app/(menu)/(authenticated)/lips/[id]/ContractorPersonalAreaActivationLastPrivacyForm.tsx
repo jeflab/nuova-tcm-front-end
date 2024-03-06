@@ -12,6 +12,7 @@ import {Form} from "@/ui/form/Form";
 import {SubmitButton} from "@/ui/form/SubmitButton";
 import {faFileSignature, faSpinner} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {redirect} from "next/navigation";
 import {startTransition, useState} from "react";
 import {Alert, FormGroup} from "react-bootstrap";
 import styles from "./ContractorPersonalAreaActivationLastPrivacyForm.module.scss";
@@ -30,7 +31,6 @@ export function ContractorPersonalAreaActivationLastPrivacyForm({
     mode: "onChange",
   });
   const [esignModalOpen, setEsignModalOpen] = useState(false);
-  const contractor = useDrawerStore((state) => state.contractor);
   const lip = useDrawerStore((state) => state.lip);
 
   return (
@@ -93,7 +93,10 @@ export function ContractorPersonalAreaActivationLastPrivacyForm({
                 setEsignModalOpen(false);
               });
             }}
-            personalData={contractor}
+            onEsignComplete={() => {
+              redirect(`/lips/${lip.id}`);
+            }}
+            personalData={lip.contractor}
             profile={profile}
             show={esignModalOpen}
             payload={{values: formMethods.watch()}}

@@ -2,17 +2,21 @@
 
 import {ContractorGender} from "@/app/(menu)/(authenticated)/lips/[id]/ContractorFiscalCodeForm";
 import {fatcaQuestions} from "@/app/(menu)/(authenticated)/lips/[id]/FatcaForm";
-import {personalDataSchema} from "@/entities/personalData";
 import {lipSchema} from "@/entities/lip";
+import {personalDataSchema} from "@/entities/personalData";
 import {privacySchema} from "@/entities/privacy";
-import {Option, YesNoAnswer} from "@/helpers/TypesHelper";
+import {Option} from "@/helpers/TypesHelper";
 import {get, post} from "@/services/api";
-import {cache} from "react";
-import {z} from "zod";
+
+const getLipShape = {
+  lip: lipSchema,
+};
+export async function getLip(id: number) {
+  return get(`/lips/${id}`, getLipShape);
+}
 
 const checkContractorShape = {
   lip: lipSchema.optional(),
-  contractor: personalDataSchema.optional(),
 };
 interface ActivateContractorParams {
   fatca: {

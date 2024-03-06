@@ -81,11 +81,7 @@ export function ContractorPersonalAreaActivationForm() {
               };
             }
 
-            updateLip({
-              contractor: activateContractorResponse.contractor,
-              lip: activateContractorResponse.lip,
-            });
-
+            updateLip(activateContractorResponse.lip);
             closeModal();
           }}
           id="activate-contractor-form"

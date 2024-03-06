@@ -2,7 +2,6 @@ import {DrawerName} from "@/app/(menu)/(authenticated)/lips/[id]/drawers";
 import {PreliminaryData} from "@/app/(menu)/(authenticated)/lips/models";
 import {Documents, DocumentsSchema} from "@/entities/document";
 import {Lip} from "@/entities/lip";
-import {PersonalData} from "@/entities/personalData";
 import {DrawerState, presetButtons} from "@/ui/drawer/types";
 import {produce} from "immer";
 import {create} from "zustand";
@@ -11,7 +10,6 @@ import {TempLipData} from "../models";
 interface State {
   preliminaryData: PreliminaryData;
   lip?: Lip;
-  contractor?: PersonalData;
   lipData: TempLipData;
   defaultDocuments: Documents;
   modalOpen: DrawerName | null;
@@ -22,10 +20,7 @@ interface Actions {
   openModal: (id: DrawerName) => void;
   closeModal: () => void;
   updatePreliminaryData: (data: Partial<PreliminaryData>) => void;
-  updateLip: (data: {
-    lip?: Partial<Lip>;
-    contractor?: Partial<PersonalData>;
-  }) => void;
+  updateLip: (lip?: Partial<Lip>) => void;
   updateLipData: (data: Partial<TempLipData>) => void;
   updateContractorPersonalAreaActivation: (
     data: TempLipData["contractorPersonalAreaActivation"],
@@ -169,12 +164,12 @@ function createDrawerState(state: State & Actions) {
 
   // Attesa creazione aria cliente
   if (state.drawerStates.contractorFiscalCode?.variant === "success") {
-    if (state.contractor === undefined) {
+    if (state.lip?.contractor === undefined) {
       state.drawerStates.contractorPersonalAreaActivation = {
         variant: "active",
         ...presetButtons.compile,
       };
-    } else if (state.contractor.lastPrivacyEsignId === null) {
+    } else if (state.lip.contractor.lastPrivacyEsignId === null) {
       state.drawerStates.contractorPersonalAreaActivation = {
         variant: "waiting",
         ...presetButtons.privacyEsign,
@@ -294,11 +289,10 @@ export const useDrawerStore = create<State & Actions>()((set) => ({
         createDrawerState(state);
       }),
     ),
-  updateLip: (data) =>
+  updateLip: (lip) =>
     set(
       produce((state) => {
-        state.lip = {...state.lip, ...data.lip};
-        state.contractor = {...state.contractor, ...data.contractor};
+        state.lip = {...lip};
         createDrawerState(state);
       }),
     ),

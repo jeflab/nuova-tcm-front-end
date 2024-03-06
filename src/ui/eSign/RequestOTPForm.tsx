@@ -1,6 +1,8 @@
 import {Profile} from "@/entities/account";
+import {PDFType} from "@/entities/esign";
 import {PersonalData} from "@/entities/personalData";
 import {cns} from "@/helpers/cns";
+import {signFEADoc} from "@/ui/eSign/actions";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {FieldError} from "@/ui/form/FieldError";
 import {Form} from "@/ui/form/Form";
@@ -8,23 +10,24 @@ import {HelpText} from "@/ui/form/HelpText";
 import {InputField} from "@/ui/form/InputField";
 import {onlyNumbersNormalizer} from "@/ui/form/normalizers";
 import {SubmitButton} from "@/ui/form/SubmitButton";
-import {faSpinner} from "@fortawesome/pro-duotone-svg-icons";
-import {faSignInAlt} from "@fortawesome/pro-duotone-svg-icons/faSignInAlt";
+import {
+  faClose,
+  faRotate,
+  faSignature,
+  faSpinner,
+} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {Alert, Button, FormGroup, FormLabel} from "react-bootstrap";
-
-interface IRequestOTPFormData {
-  otp: string;
-}
-interface IRequestOTPFormErrors {
-  otp?: string;
-}
+import {Alert, Button, FormGroup, FormLabel, Stack} from "react-bootstrap";
 
 interface RequestOTPFormProps {
+  lipId: number;
   onCancel: () => void;
+  onEsignComplete?: () => void;
   openEditNumberForm: () => void;
+  pdfType: PDFType;
   personalData?: PersonalData;
   profile: Profile;
+  transactionId: string;
 }
 
 const requestOTPFormDefaultValues = {
@@ -32,10 +35,14 @@ const requestOTPFormDefaultValues = {
 };
 
 export function RequestOTPForm({
+  lipId,
   onCancel,
+  onEsignComplete,
   openEditNumberForm,
+  pdfType,
   personalData,
   profile,
+  transactionId,
 }: RequestOTPFormProps) {
   // const [
   //   requestOTP,
@@ -55,38 +62,25 @@ export function RequestOTPForm({
   //   },
   // ] = eSignsApi.useSignFEADocMutation();
 
-  // if (isRequestOTPLoading) {
-  //   return (
-  //     <Alert color="info" className="mb-0">
-  //       <IconSpinner className="icon-spin" /> Invio OTP in corso...
-  //     </Alert>
-  //   );
-  // } else if (isRequestOTPError) {
-  //   return (
-  //     <>
-  //       <Alert color="danger">{requestOTPError?.message}</Alert>
-  //       <div className="text-center">
-  //         <Button color="secondary" outline type="button" onClick={onCancel}>
-  //           Chiudi
-  //         </Button>
-  //       </div>
-  //     </>
-  //   );
-  // }
-
   return (
     <Form
-      onSubmit={(values) => {
-        console.log(values);
-        // await signFEADoc({
-        //   OTP: values.otp,
-        //   pdfType,
-        //   referenceId,
-        //   ...(inPlaceOfContractor && {contractorId: inPlaceOfContractor?.id}),
-        //   transactionId: openedTransaction.transactionId[0],
-        //   ...additionalParams,
-        // });
-        onCancel();
+      onSubmit={async (values) => {
+        const response = await signFEADoc({
+          OTP: values.otp,
+          pdfType,
+          lipId,
+          transactionId,
+        });
+
+        if (response.status === "failed") {
+          throw {
+            root: {
+              type: "server",
+              message: response.message,
+            },
+          };
+        }
+        onEsignComplete?.();
       }}
       defaultValues={requestOTPFormDefaultValues}
       className="vstack gap-3"
@@ -154,22 +148,25 @@ export function RequestOTPForm({
         variant="danger"
         className="mb-0 w-100"
       />
-      <div>
+      <Stack direction="horizontal" gap={2}>
         <SubmitButton>
           {(isLoggingIn) => (
             <>
               <FontAwesomeIcon
-                icon={isLoggingIn ? faSpinner : faSignInAlt}
+                icon={isLoggingIn ? faSpinner : faSignature}
                 className={cns("me-2", isLoggingIn && "fa-spin")}
               />
               Conferma
             </>
           )}
-        </SubmitButton>{" "}
-        <Button variant="cancel" type="button" onClick={onCancel}>
-          Annulla
+        </SubmitButton>
+        <Button variant="secondary" type="button" onClick={onCancel}>
+          <FontAwesomeIcon icon={faRotate} /> Invia di nuovo
         </Button>
-      </div>
+        <Button variant="cancel" type="button" onClick={onCancel}>
+          <FontAwesomeIcon icon={faClose} /> Annulla
+        </Button>
+      </Stack>
     </Form>
   );
 }

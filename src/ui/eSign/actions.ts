@@ -1,9 +1,11 @@
 "use server";
 
-import {PDFType} from "@/entities/esign";
-import {post} from "@/services/api";
+import {esignSchema, PDFType} from "@/entities/esign";
+import {post, put} from "@/services/api";
 
-const createFEATransactionSchema = {};
+const createFEATransactionSchema = {
+  esign: esignSchema,
+};
 interface CreateFEATransactionParams<TPayload> {
   contractorId?: number;
   lipId: number;
@@ -27,4 +29,15 @@ export async function createFEATransaction<TPayload>({
       ...payload,
     }),
   );
+}
+
+interface SignFEADocParams {
+  OTP: string;
+  lipId: number;
+  pdfType: PDFType;
+  transactionId: string;
+}
+
+export async function signFEADoc(data: SignFEADocParams) {
+  return put("/esigns/sign-feadoc", {}, JSON.stringify(data));
 }

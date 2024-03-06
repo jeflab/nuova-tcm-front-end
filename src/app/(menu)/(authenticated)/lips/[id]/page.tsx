@@ -11,6 +11,9 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Alert, Col, Nav, Row} from "react-bootstrap";
 import {DebugStateNav} from "./DebugStateNav";
 import styles from "./page.module.scss";
+import {getLip} from "./actions";
+import {Debug} from "@/ui/Debug";
+import {notFound} from "next/navigation";
 
 // TODO: abbassare il fetch dei dati, o in un sotto-componente client o addirittura nel drawer (fetch è cachata)
 //  Fatto ciò la pagina può tornare server component
@@ -26,13 +29,22 @@ export default async function NewLipPage({
   params,
   searchParams,
 }: NewLipPageProps) {
-  const updateLip = async (data: Partial<Lip>) => {
-    console.log("Update LIP", data);
-  };
+  let lip: Lip | undefined = undefined;
+  if (params.id !== "new" && params.id !== "debug") {
+    const lipResponse = await getLip(parseInt(params.id, 10));
+    if (lipResponse.status === "failed") {
+      if (lipResponse.responseStatus === 404) {
+        notFound();
+      }
+      throw new Error(lipResponse.message);
+    }
+    lip = lipResponse.lip;
+  }
 
   return (
     <AppContainer className="vstack gap-3">
-      <PageTitle>Nuova polizza</PageTitle>
+      <PageTitle>Nuova polizza {params.id}</PageTitle>
+      <Debug>{lip}</Debug>
       <Row className="flex-row-reverse">
         <Col md="auto">
           <Nav className={cns("flex-column", styles.connectedList)}>
