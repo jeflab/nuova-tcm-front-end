@@ -1,6 +1,4 @@
 import CodiceFiscale from "codice-fiscale-js";
-import {PROVINCE} from "codice-fiscale-js/src/lista-province";
-import {COMUNI} from "codice-fiscale-js/src/lista-comuni";
 import {z} from "zod";
 
 const lastCharFiscalCode = (fc: string): boolean => {

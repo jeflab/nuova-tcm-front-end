@@ -6,14 +6,13 @@ import {logFetchInfo} from "@/helpers/fetchDebug";
 import {apiUrl, contentJsonHeader} from "@/services/const";
 import {serverErrorSchema} from "@/services/helpers";
 import chalk from "chalk";
-import * as fs from "fs";
 import {cookies} from "next/headers";
 import {z, ZodRawShape} from "zod";
 
-export const authorizationHeader = () => {
+function authorizationHeader() {
   const authCookie = cookies().get(AUTH_COOKIE_NAME)?.value;
   return authCookie ? {Authorization: `Bearer ${authCookie}`} : undefined;
-};
+}
 
 function parseLaravelErrorPage(text: string) {
   let ok = false;
