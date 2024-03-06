@@ -147,14 +147,16 @@ export function PaymentForm() {
               </FormGroup>
             </Col>
             <h4>Modalità di pagamento</h4>
-            <FormGroup controlId="paymentMethod" as={BorderFeedback}>
-              <FormLabel>Modalità di pagamento</FormLabel>
-              <FieldError />
-              <CheckGroup
-                type="radio-switch"
-                options={paymentMethodsOptions(premium, paymentMethodValue)}
-              />
-            </FormGroup>
+            <Col className="d-flex">
+              <FormGroup controlId="paymentMethod" as={BorderFeedback}>
+                <FormLabel>Modalità di pagamento</FormLabel>
+                <FieldError />
+                <CheckGroup
+                  type="radio-switch"
+                  options={paymentMethodsOptions(premium, paymentMethodValue)}
+                />
+              </FormGroup>
+            </Col>
           </Row>
         </Form>
       </ModalBody>
