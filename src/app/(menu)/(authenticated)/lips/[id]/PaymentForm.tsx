@@ -22,7 +22,10 @@ import {
 } from "react-bootstrap";
 import {useForm} from "react-hook-form";
 
-function paymentMethodsOptions<T>(premium: number, paymentMethodValue: T) {
+export function paymentMethodsOptions<T>(
+  premium: number,
+  paymentMethodValue: T,
+) {
   return [
     {
       label: (
@@ -147,14 +150,16 @@ export function PaymentForm() {
               </FormGroup>
             </Col>
             <h4>Modalità di pagamento</h4>
-            <FormGroup controlId="paymentMethod" as={BorderFeedback}>
-              <FormLabel>Modalità di pagamento</FormLabel>
-              <FieldError />
-              <CheckGroup
-                type="radio-switch"
-                options={paymentMethodsOptions(premium, paymentMethodValue)}
-              />
-            </FormGroup>
+            <Col className="d-flex">
+              <FormGroup controlId="paymentMethod" as={BorderFeedback}>
+                <FormLabel>Modalità di pagamento</FormLabel>
+                <FieldError />
+                <CheckGroup
+                  type="radio-switch"
+                  options={paymentMethodsOptions(premium, paymentMethodValue)}
+                />
+              </FormGroup>
+            </Col>
           </Row>
         </Form>
       </ModalBody>
