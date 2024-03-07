@@ -59,7 +59,7 @@ export type QuoterFormValues = typeof quoterFormDefaultValues;
 
 export function QuoterForm() {
   const [premium, setPremium] = useState<number>();
-  const [isDetailsOpen, setIsDetailsOpen] = useState(true);
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethodsOptions>();
   const formMethods = useForm({
     mode: "onChange",
