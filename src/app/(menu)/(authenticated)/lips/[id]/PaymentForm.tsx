@@ -22,7 +22,10 @@ import {
 } from "react-bootstrap";
 import {useForm} from "react-hook-form";
 
-function paymentMethodsOptions<T>(premium: number, paymentMethodValue: T) {
+export function paymentMethodsOptions<T>(
+  premium: number,
+  paymentMethodValue: T,
+) {
   return [
     {
       label: (
