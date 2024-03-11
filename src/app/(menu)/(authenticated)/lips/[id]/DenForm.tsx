@@ -6,6 +6,7 @@ import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {CheckGroup} from "@/ui/form/CheckGroup";
 import {FieldError} from "@/ui/form/FieldError";
 import {Form} from "@/ui/form/Form";
+import {HelpText} from "@/ui/form/HelpText";
 import {InputField} from "@/ui/form/InputField";
 import {SelectField} from "@/ui/form/SelectField";
 import {faSave, faSpinner, faXmark} from "@fortawesome/pro-duotone-svg-icons";
@@ -243,6 +244,10 @@ export function DenForm() {
                 <FormLabel>
                   Componenti del nucleo famigliare a carico del contraente
                 </FormLabel>
+                <HelpText>
+                  Indicare tutti i componenti del nucleo famigliare che non
+                  hanno reddito
+                </HelpText>
                 <FieldError />
                 <SelectField
                   placeholder="Componenti del nucleo famigliare a carico del contraente"
@@ -289,8 +294,9 @@ export function DenForm() {
                   ]}
                   onChange={(value) => {
                     if (value === "no") {
-                      formMethods.trigger("needsIntendToMeet");
+                      formMethods.setValue("needsIntendToMeet", []);
                     }
+                    formMethods.trigger("needsIntendToMeet");
                   }}
                   validation={{
                     required: "Seleziona un'opzione",
@@ -343,7 +349,7 @@ export function DenForm() {
                 <InputGroup>
                   <InputField
                     type="number"
-                    placeholder="A quanto ammonta attualmente il suo reddito medio annuo?"
+                    placeholder="Reddito medio annuo"
                     validation={{
                       required: "Inserisci il tuo reddito medio annuo attuale",
                     }}
@@ -355,16 +361,16 @@ export function DenForm() {
             <Col className="d-flex" xs={12} sm={4}>
               <FormGroup controlId="savings" as={BorderFeedback}>
                 <FormLabel>
-                  Qual è attualmente la sua capacità di risparmio media annua?
+                  Qual è attualmente la sua capacità di risparmio media mensile?
                 </FormLabel>
                 <FieldError />
                 <InputGroup>
                   <InputField
                     type="number"
-                    placeholder="Qual è attualmente la sua capacità di risparmio media annua?"
+                    placeholder="Capacità di risparmio media mensile"
                     validation={{
                       required:
-                        "Inserisci la tua capacità di risparmio media annua",
+                        "Inserisci la tua capacità di risparmio media mensile",
                     }}
                   />
                   <InputGroup.Text>,00 €</InputGroup.Text>

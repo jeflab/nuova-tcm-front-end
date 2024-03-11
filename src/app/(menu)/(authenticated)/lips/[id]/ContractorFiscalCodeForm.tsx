@@ -25,6 +25,7 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import {getDate} from "date-fns/getDate";
 import {getMonth} from "date-fns/getMonth";
 import {getYear} from "date-fns/getYear";
+import {startOfYear} from "date-fns/startOfYear";
 import {subYears} from "date-fns/subYears";
 import {
   Alert,
@@ -58,7 +59,11 @@ const ContractorFormSchema = z
       .refine((value) => {
         const date = new Date(value);
         return date <= subYears(Date(), 18);
-      }, "Il contraente deve essere maggiorenne"),
+      }, "Il contraente deve essere maggiorenne")
+      .refine((value) => {
+        const date = new Date(value);
+        return date > startOfYear(subYears(Date(), 65));
+      }, "L'età assicurativa del contraente deve essere inferiore a 65 anni"),
     birthPlace: z.object({
       city: z
         .string()

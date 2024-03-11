@@ -10,6 +10,7 @@ import {InsuredData} from "@/app/(menu)/quoter/InsuredData";
 import {QuoterFormValues} from "@/app/(menu)/quoter/QuoterForm";
 import styles from "@/app/(menu)/quoter/QuoterForm.module.scss";
 import {cns} from "@/helpers/cns";
+import {dbDateString} from "@/helpers/dates";
 import {YesNoAnswer} from "@/helpers/TypesHelper";
 import {Currency} from "@/ui/Currency";
 import {FieldError} from "@/ui/form/FieldError";
@@ -41,13 +42,21 @@ const quoteDefaultValues = {
 export function QuoteForm() {
   const [premium, setPremium] = useState<number>();
   const [isSaving, setIsSaving] = useState(false);
-  const formMethods = useForm({
-    mode: "onChange",
-    defaultValues: quoteDefaultValues,
-  });
+  const [firstTry, setFirstTry] = useState(true);
 
+  const contractorData = useDrawerStore(
+    (state) => state.lipData.contractorData?.contractorPersonalData,
+  );
   const closeModal = useDrawerStore((state) => state.closeModal);
   const updateQuoteData = useDrawerStore((state) => state.updateQuoteData);
+
+  const formMethods = useForm({
+    mode: "onChange",
+    defaultValues: {
+      ...quoteDefaultValues,
+      birthDate: dbDateString(contractorData?.birthDate),
+    },
+  });
 
   const handleSubmit = async (values: QuoterFormValues) => {
     let clientResponse: Awaited<ReturnType<typeof getQuote>>;
@@ -68,6 +77,7 @@ export function QuoteForm() {
     }
 
     setPremium(clientResponse.quotazione.premium);
+    setFirstTry(false);
   };
 
   const handleSave = () => {
@@ -97,7 +107,7 @@ export function QuoteForm() {
           }}
         >
           <Row className="row-gap-3" xs={1} sm={2}>
-            <InsuredData />
+            <InsuredData blockBirthDate />
             <Coverages />
             <Advantages
               premium={premium ?? 0}
@@ -124,8 +134,10 @@ export function QuoteForm() {
                 {premium / 12}
               </Currency>
             </>
-          ) : (
+          ) : firstTry ? (
             "Compila il form per avere il preventivo della polizza."
+          ) : (
+            "Clicca nuovamente calcolo preventivo per aggiornare il preventivo."
           )}
         </div>
         {premium ? (
