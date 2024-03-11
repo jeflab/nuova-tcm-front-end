@@ -1,6 +1,5 @@
 "use client";
 
-import {Advantages} from "@/app/(menu)/quoter/Advantages";
 import {getCoverageDuration} from "@/app/(menu)/quoter/helpers";
 import {calendarYearAge} from "@/helpers/ages";
 import {dateString} from "@/helpers/dates";
@@ -8,7 +7,6 @@ import {Currency} from "@/ui/Currency";
 import {IconStack} from "@/ui/IconStack";
 import {
   faCheck,
-  faPiggyBank,
   faShield,
   faShieldPlus,
   faUser,
@@ -102,16 +100,6 @@ export function QuoteSummary() {
           <strong>Durata:</strong> {getCoverageDuration(quoteData.birthDate)}{" "}
           anni
         </p>
-      </Col>
-      <Col xs={12}>
-        <h4 className="text-primary">
-          <FontAwesomeIcon icon={faPiggyBank} /> Vantaggi assicurativi
-        </h4>
-        <Advantages
-          premium={quoteData.premium ?? 0}
-          duration={getCoverageDuration(quoteData.birthDate)}
-          showTitle={false}
-        />
       </Col>
       <Col>
         <h4 className="text-primary">

@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  PaymentForm,
   PaymentMethodsOptions,
   paymentMethodsOptions,
 } from "@/app/(menu)/(authenticated)/lips/[id]/PaymentForm";
@@ -11,9 +10,6 @@ import {getCoverageDuration} from "@/app/(menu)/quoter/helpers";
 import {cns} from "@/helpers/cns";
 import {AppContainer} from "@/ui/AppContainer";
 import {Currency} from "@/ui/Currency";
-import {BorderFeedback} from "@/ui/form/BorderFeedback";
-import {CheckboxField} from "@/ui/form/CheckboxField";
-import {CheckGroup} from "@/ui/form/CheckGroup";
 import {FieldError} from "@/ui/form/FieldError";
 import {Form} from "@/ui/form/Form";
 import {SubmitButton} from "@/ui/form/SubmitButton";
@@ -33,7 +29,6 @@ import {
   Collapse,
   FormCheck,
   FormGroup,
-  FormLabel,
   OverlayTrigger,
   Row,
   Tooltip,
@@ -61,6 +56,8 @@ export function QuoterForm() {
   const [premium, setPremium] = useState<number>();
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethodsOptions>();
+  const [firstTry, setFirstTry] = useState(true);
+
   const formMethods = useForm({
     mode: "onChange",
     defaultValues: quoterFormDefaultValues,
@@ -85,6 +82,7 @@ export function QuoterForm() {
     }
 
     setPremium(clientResponse.quotazione.premium);
+    setFirstTry(false);
   };
 
   const birthDate = formMethods.watch("birthDate");
@@ -119,53 +117,61 @@ export function QuoterForm() {
         </Row>
       </AppContainer>
       <div className="position-sticky bottom-0 bg-primary-subtle py-3">
-        <AppContainer className="d-flex align-items-center justify-content-between flex-wrap gap-3">
-          <FieldError
-            name="root"
-            as={Alert}
-            variant="danger"
-            className="mb-0 w-100"
-          />
-          <div className="hstack gap-2">
-            <SubmitButton>
-              <FontAwesomeIcon
-                icon={
-                  formMethods.formState.isSubmitting ? faSpinner : faCalculator
-                }
-                className={cns(
-                  "me-2",
-                  formMethods.formState.isSubmitting && "fa-spin",
-                )}
-              />
-              Calcola preventivo
-            </SubmitButton>
-            <Button
-              type="button"
-              variant="cancel"
-              onClick={() => {
-                formMethods.reset();
-                setIsDetailsOpen(false);
-                setPremium(undefined);
-              }}
-              className={styles.rotateOnFocus}
-            >
-              <FontAwesomeIcon icon={faArrowRotateLeft} className="me-2" />
-              Reset
-            </Button>
+        <AppContainer className="d-flex gap-3">
+          <div className="d-flex flex-grow-1 align-items-center justify-content-between flex-wrap gap-3">
+            <FieldError
+              name="root"
+              as={Alert}
+              variant="danger"
+              className="mb-0 w-100"
+            />
+            <div className="hstack gap-2">
+              <SubmitButton>
+                <FontAwesomeIcon
+                  icon={
+                    formMethods.formState.isSubmitting
+                      ? faSpinner
+                      : faCalculator
+                  }
+                  className={cns(
+                    "me-2",
+                    formMethods.formState.isSubmitting && "fa-spin",
+                  )}
+                />
+                Calcola preventivo
+              </SubmitButton>
+              <Button
+                type="button"
+                variant="cancel"
+                onClick={() => {
+                  formMethods.reset();
+                  setIsDetailsOpen(false);
+                  setPremium(undefined);
+                }}
+                className={styles.rotateOnFocus}
+              >
+                <FontAwesomeIcon icon={faArrowRotateLeft} className="me-2" />
+                Reset
+              </Button>
+            </div>
+            <div className="hstack gap-2">
+              {formMethods.formState.isSubmitting ? (
+                "Calcolo in corso..."
+              ) : premium ? (
+                <>
+                  Premio mensile:{" "}
+                  <Currency className="h4 mb-0 d-inline-block">
+                    {premium / 12}
+                  </Currency>
+                </>
+              ) : firstTry ? (
+                "Compila il form per avere il preventivo della polizza."
+              ) : (
+                "Clicca nuovamente calcolo preventivo per aggiornare il preventivo."
+              )}
+            </div>
           </div>
-          <div className="hstack gap-2">
-            {formMethods.formState.isSubmitting ? (
-              "Calcolo in corso..."
-            ) : premium ? (
-              <>
-                Premio mensile:{" "}
-                <Currency className="h4 mb-0 d-inline-block">
-                  {premium / 12}
-                </Currency>
-              </>
-            ) : (
-              "Compila il form per avere il preventivo della polizza."
-            )}
+          <div>
             <OverlayTrigger
               overlay={
                 <Tooltip>
