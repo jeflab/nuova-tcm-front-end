@@ -11,7 +11,11 @@ import {subYears} from "date-fns/subYears";
 import {Col, FormGroup, FormLabel} from "react-bootstrap";
 import {useFormContext} from "react-hook-form";
 
-export function InsuredData() {
+interface InsuredDataProps {
+  blockBirthDate?: boolean;
+}
+
+export function InsuredData({blockBirthDate}: InsuredDataProps) {
   const {trigger, setValue} = useFormContext<QuoterFormValues>();
   return (
     <>
@@ -26,6 +30,8 @@ export function InsuredData() {
           <InputField
             type="date"
             placeholder="Data di nascita"
+            readOnly={blockBirthDate}
+            plaintext={blockBirthDate}
             onChange={(event) => {
               trigger("tpi.coverage");
               if (

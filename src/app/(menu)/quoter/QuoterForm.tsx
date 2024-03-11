@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  PaymentForm,
   PaymentMethodsOptions,
   paymentMethodsOptions,
 } from "@/app/(menu)/(authenticated)/lips/[id]/PaymentForm";
@@ -11,9 +10,6 @@ import {getCoverageDuration} from "@/app/(menu)/quoter/helpers";
 import {cns} from "@/helpers/cns";
 import {AppContainer} from "@/ui/AppContainer";
 import {Currency} from "@/ui/Currency";
-import {BorderFeedback} from "@/ui/form/BorderFeedback";
-import {CheckboxField} from "@/ui/form/CheckboxField";
-import {CheckGroup} from "@/ui/form/CheckGroup";
 import {FieldError} from "@/ui/form/FieldError";
 import {Form} from "@/ui/form/Form";
 import {SubmitButton} from "@/ui/form/SubmitButton";
@@ -33,7 +29,6 @@ import {
   Collapse,
   FormCheck,
   FormGroup,
-  FormLabel,
   OverlayTrigger,
   Row,
   Tooltip,
@@ -61,6 +56,8 @@ export function QuoterForm() {
   const [premium, setPremium] = useState<number>();
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethodsOptions>();
+  const [firstTry, setFirstTry] = useState(true);
+
   const formMethods = useForm({
     mode: "onChange",
     defaultValues: quoterFormDefaultValues,
@@ -85,6 +82,7 @@ export function QuoterForm() {
     }
 
     setPremium(clientResponse.quotazione.premium);
+    setFirstTry(false);
   };
 
   const birthDate = formMethods.watch("birthDate");
@@ -166,8 +164,10 @@ export function QuoterForm() {
                     {premium / 12}
                   </Currency>
                 </>
-              ) : (
+              ) : firstTry ? (
                 "Compila il form per avere il preventivo della polizza."
+              ) : (
+                "Clicca nuovamente calcolo preventivo per aggiornare il preventivo."
               )}
             </div>
           </div>
