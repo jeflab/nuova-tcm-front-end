@@ -4,6 +4,7 @@ import {DrawerName} from "@/app/(menu)/(authenticated)/lips/[id]/drawers";
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {cns} from "@/helpers/cns";
 import {DrawerIcon} from "@/ui/drawer/DrawerIcon";
+import {buttonMap} from "@/ui/drawer/types";
 import {upperCaseFirstNormalizer} from "@/ui/form/normalizers";
 import autoAnimate from "@formkit/auto-animate";
 import {faPenToSquare} from "@fortawesome/pro-duotone-svg-icons";
@@ -55,19 +56,19 @@ export function Drawer({children, modalContent, name, title}: DrawerProps) {
             <DrawerIcon variant={variant} className="me-3" />
             {title}
           </h4>
-          <Button
-            className={cns(
-              styles.actionButton,
-              "ms-3",
-              buttonLabel || "d-none",
-            )}
-            onClick={() => {
-              openModal(name);
-            }}
-          >
-            <FontAwesomeIcon icon={buttonIcon ?? faPenToSquare} />
-            <span className={styles.actionButtonLabel}>{buttonLabel}</span>
-          </Button>
+          {buttonLabel && (
+            <Button
+              className={cns(styles.actionButton, "ms-3")}
+              onClick={() => {
+                openModal(name);
+              }}
+            >
+              <FontAwesomeIcon
+                icon={buttonIcon ? buttonMap[buttonIcon] : faPenToSquare}
+              />
+              <span className={styles.actionButtonLabel}>{buttonLabel}</span>
+            </Button>
+          )}
         </CardHeader>
         <CardBody ref={parent}>{children}</CardBody>
       </Card>

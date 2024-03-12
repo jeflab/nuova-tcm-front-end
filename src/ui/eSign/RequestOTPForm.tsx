@@ -18,58 +18,59 @@ import {
 } from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Alert, Button, FormGroup, FormLabel, Stack} from "react-bootstrap";
+import {useForm} from "react-hook-form";
 
-interface RequestOTPFormProps {
+interface RequestOTPFormProps<TPayload> {
   lipId: number;
   onCancel: () => void;
-  onEsignComplete?: () => void;
+  onEsignComplete?: (
+    response: Extract<
+      Awaited<ReturnType<typeof signFEADoc>>,
+      {status: "success"}
+    >,
+  ) => void;
   openEditNumberForm: () => void;
+  payload: TPayload;
   pdfType: PDFType;
   personalData?: PersonalData;
   profile: Profile;
+  resendOTP?: () => void;
   transactionId: string;
+  tagToRevalidate?: string;
 }
 
 const requestOTPFormDefaultValues = {
   otp: "",
 };
 
-export function RequestOTPForm({
+export function RequestOTPForm<TPayload>({
   lipId,
   onCancel,
   onEsignComplete,
   openEditNumberForm,
+  payload,
   pdfType,
   personalData,
   profile,
+  resendOTP,
   transactionId,
-}: RequestOTPFormProps) {
-  // const [
-  //   requestOTP,
-  //   {
-  //     data: openedTransaction,
-  //     isLoading: isRequestOTPLoading,
-  //     isError: isRequestOTPError,
-  //     error: requestOTPError,
-  //   },
-  // ] = eSignsApi.useCreateFEATransactionMutation();
-  // const [
-  //   signFEADoc,
-  //   {
-  //     isLoading: isSignFEADocLoading,
-  //     isError: isSignFEADocError,
-  //     error: signFEADocError,
-  //   },
-  // ] = eSignsApi.useSignFEADocMutation();
+  tagToRevalidate,
+}: RequestOTPFormProps<TPayload>) {
+  const formMethods = useForm({
+    defaultValues: requestOTPFormDefaultValues,
+  });
 
   return (
     <Form
       onSubmit={async (values) => {
         const response = await signFEADoc({
-          OTP: values.otp,
-          pdfType,
+          contractorId: personalData?.id,
           lipId,
+          OTP: values.otp,
+          payload,
+          pdfType,
           transactionId,
+          tagToRevalidate,
         });
 
         if (response.status === "failed") {
@@ -80,9 +81,10 @@ export function RequestOTPForm({
             },
           };
         }
-        onEsignComplete?.();
+
+        onEsignComplete?.(response);
       }}
-      defaultValues={requestOTPFormDefaultValues}
+      formMethods={formMethods}
       className="vstack gap-3"
     >
       <FormGroup controlId="otp" as={BorderFeedback}>
@@ -150,20 +152,29 @@ export function RequestOTPForm({
       />
       <Stack direction="horizontal" gap={2}>
         <SubmitButton>
-          {(isLoggingIn) => (
-            <>
-              <FontAwesomeIcon
-                icon={isLoggingIn ? faSpinner : faSignature}
-                className={cns("me-2", isLoggingIn && "fa-spin")}
-              />
-              Conferma
-            </>
-          )}
+          <FontAwesomeIcon
+            icon={formMethods.formState.isSubmitting ? faSpinner : faSignature}
+            className={cns(
+              "me-2",
+              formMethods.formState.isSubmitting && "fa-spin",
+            )}
+          />
+          Conferma
         </SubmitButton>
-        <Button variant="secondary" type="button" onClick={onCancel}>
+        <Button
+          variant="secondary"
+          type="button"
+          disabled={formMethods.formState.isSubmitting}
+          onClick={resendOTP}
+        >
           <FontAwesomeIcon icon={faRotate} /> Invia di nuovo
         </Button>
-        <Button variant="cancel" type="button" onClick={onCancel}>
+        <Button
+          variant="cancel"
+          type="button"
+          disabled={formMethods.formState.isSubmitting}
+          onClick={onCancel}
+        >
           <FontAwesomeIcon icon={faClose} /> Annulla
         </Button>
       </Stack>

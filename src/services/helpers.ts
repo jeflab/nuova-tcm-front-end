@@ -1,4 +1,4 @@
-import {z} from "zod";
+import {z, ZodRawShape} from "zod";
 
 export const serverErrorSchema = z.object({
   status: z.literal("failed"),
@@ -16,3 +16,13 @@ export function isServerError(
     (json as z.infer<typeof serverErrorSchema>).status === "failed"
   );
 }
+
+export const createServerSuccessSchema = <T extends ZodRawShape>(
+  successSchema: T,
+) =>
+  z
+    .object({
+      status: z.literal("success"),
+      responseStatus: z.number(),
+    })
+    .extend(successSchema);

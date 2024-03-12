@@ -2,17 +2,27 @@
 
 import {ContractorGender} from "@/app/(menu)/(authenticated)/lips/[id]/ContractorFiscalCodeForm";
 import {fatcaQuestions} from "@/app/(menu)/(authenticated)/lips/[id]/FatcaForm";
+import {
+  FundSource,
+  JobPosition,
+  jobPositionOptions,
+  PublicOffices,
+  publicOfficesOptions,
+  TAECode,
+  tAECodeOptions,
+} from "@/app/(menu)/(authenticated)/lips/[id]/selectsOptions";
 import {lipSchema} from "@/entities/lip";
 import {personalDataSchema} from "@/entities/personalData";
 import {privacySchema} from "@/entities/privacy";
-import {Option} from "@/helpers/TypesHelper";
-import {get, post} from "@/services/api";
+import {Option, YesNoAnswer, yesNoOptions} from "@/helpers/getOptionsLabel";
+import {get, patch, post, put} from "@/services/api";
+import {revalidateTag} from "next/cache";
 
 const getLipShape = {
   lip: lipSchema,
 };
 export async function getLip(id: number) {
-  return get(`/lips/${id}`, getLipShape);
+  return get(`/lips/${id}`, getLipShape, {tags: ["getLip", `getLip-${id}`]});
 }
 
 const checkContractorShape = {
@@ -90,4 +100,65 @@ const lastPrivacyShape = {
 };
 export async function getLastPrivacy() {
   return get("/last-privacy", lastPrivacyShape);
+}
+
+interface updateContractorDataParams {
+  residence: {
+    place: {
+      city: string;
+      province: string;
+    };
+    streetName: string;
+    streetNumber: string;
+    zipCode: string;
+  };
+  pep: {
+    isPep: YesNoAnswer;
+    publicOffice: PublicOffices;
+    otherPep: YesNoAnswer;
+  };
+  job: {
+    position: JobPosition;
+    positionOther: string;
+    tAECode: TAECode;
+    province: string;
+    country: string;
+  };
+  fundSource: FundSource;
+  fundSourceOther: string;
+}
+export async function updateContractorData(
+  contractorId: number,
+  lipId: number,
+  formData: updateContractorDataParams,
+) {
+  const data = {
+    city: formData.residence.place.city,
+    province: formData.residence.place.province,
+    address: formData.residence.streetName,
+    street_number: formData.residence.streetNumber,
+    zip_code: formData.residence.zipCode,
+    json_pep: JSON.stringify({
+      isPep: {options: yesNoOptions, response: formData.pep.isPep},
+      publicOffice: {
+        options: publicOfficesOptions,
+        response: formData.pep.publicOffice,
+      },
+      otherPep: {options: yesNoOptions, response: formData.pep.otherPep},
+      job: {
+        position: {
+          options: jobPositionOptions,
+          response: formData.job.position,
+        },
+        positionOther: formData.job.positionOther,
+        tAECode: {options: tAECodeOptions, response: formData.job.tAECode},
+        province: formData.job.province,
+        country: formData.job.country,
+      },
+      fundSource: formData.fundSource,
+      fundSourceOther: formData.fundSourceOther,
+    }),
+  };
+  revalidateTag(`getLip-${lipId}`);
+  return patch(`/personal-datas/${contractorId}`, {}, JSON.stringify(data));
 }

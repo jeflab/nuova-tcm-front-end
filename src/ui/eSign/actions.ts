@@ -1,43 +1,67 @@
 "use server";
 
 import {esignSchema, PDFType} from "@/entities/esign";
+import {lipSchema} from "@/entities/lip";
 import {post, put} from "@/services/api";
+import {revalidateTag} from "next/cache";
 
 const createFEATransactionSchema = {
   esign: esignSchema,
 };
-interface CreateFEATransactionParams<TPayload> {
+interface CreateFEATransactionParams {
   contractorId?: number;
   lipId: number;
-  payload: TPayload;
-  pdfType: PDFType;
 }
 
-export async function createFEATransaction<TPayload>({
-  pdfType,
-  payload,
+export async function createFEATransaction({
   contractorId,
   lipId,
-}: CreateFEATransactionParams<TPayload>) {
+}: CreateFEATransactionParams) {
   return post(
     "/esigns/create-featransaction",
     createFEATransactionSchema,
     JSON.stringify({
-      pdfType,
       contractorId,
       lipId,
-      ...payload,
     }),
   );
 }
 
-interface SignFEADocParams {
-  OTP: string;
+const signFEADocSchema = {
+  lip: lipSchema.optional(),
+};
+interface SignFEADocParams<TPayload> {
+  contractorId?: number;
   lipId: number;
+  OTP: string;
+  payload: TPayload;
   pdfType: PDFType;
+  tagToRevalidate?: string;
   transactionId: string;
 }
 
-export async function signFEADoc(data: SignFEADocParams) {
-  return put("/esigns/sign-feadoc", {}, JSON.stringify(data));
+export async function signFEADoc<TPayload>({
+  contractorId,
+  lipId,
+  OTP,
+  payload,
+  pdfType,
+  tagToRevalidate,
+  transactionId,
+}: SignFEADocParams<TPayload>) {
+  if (tagToRevalidate) {
+    revalidateTag(tagToRevalidate);
+  }
+  return put(
+    "/esigns/sign-feadoc",
+    signFEADocSchema,
+    JSON.stringify({
+      OTP,
+      transactionId,
+      lipId,
+      pdfType,
+      contractorId,
+      ...payload,
+    }),
+  );
 }

@@ -1,22 +1,28 @@
 import {Profile} from "@/entities/account";
 import {PDFType} from "@/entities/esign";
 import {PersonalData} from "@/entities/personalData";
-import {createFEATransaction} from "@/ui/eSign/actions";
+import {createFEATransaction, signFEADoc} from "@/ui/eSign/actions";
 import {InsertPhoneForm} from "@/ui/eSign/InsertPhoneForm";
 import {RequestOTPForm} from "@/ui/eSign/RequestOTPForm";
 import {faSpinner} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import useMountEffect from "@restart/hooks/useMountEffect";
-import {useRef, useState} from "react";
+import {useCallback, useRef, useState} from "react";
 import {Alert, Button} from "react-bootstrap";
 
 interface RequestOTPModalContentProps<TPayload> {
   lipId: number;
   onCancel: () => void;
-  onEsignComplete?: () => void;
+  onEsignComplete?: (
+    response: Extract<
+      Awaited<ReturnType<typeof signFEADoc>>,
+      {status: "success"}
+    >,
+  ) => void;
   payload: TPayload;
   personalData?: PersonalData;
   profile: Profile;
+  tagToRevalidate?: string;
 }
 export function RequestOTPModalContent<TPayload>({
   lipId,
@@ -25,6 +31,7 @@ export function RequestOTPModalContent<TPayload>({
   payload,
   personalData,
   profile,
+  tagToRevalidate,
 }: RequestOTPModalContentProps<TPayload>) {
   const callingServer = useRef(false);
   const [updatePhoneOpen, setUpdatePhoneOpen] = useState(false);
@@ -34,30 +41,30 @@ export function RequestOTPModalContent<TPayload>({
     useState<Awaited<ReturnType<typeof createFEATransaction>>>();
 
   // TODO: Da sostituire con tanstack-query o rtk-query per ora usiamo il ref
-  useMountEffect(() => {
-    (async () => {
-      if (!callingServer.current) {
-        setIsRequestOTPLoading(true);
-        callingServer.current = true;
-        const response = await createFEATransaction({
-          pdfType: PDFType.Privacy,
-          contractorId: personalData?.id,
-          lipId: lipId,
-          payload,
-        });
+  const requestOTP = useCallback(async () => {
+    if (!callingServer.current) {
+      setIsRequestOTPLoading(true);
+      callingServer.current = true;
+      const response = await createFEATransaction({
+        contractorId: personalData?.id,
+        lipId: lipId,
+      });
 
-        if (response.status === "failed") {
-          setRequestOTPError(response.message);
-          setIsRequestOTPLoading(false);
-          callingServer.current = false;
-          return;
-        }
-
-        setCreatedFEATransaction(response);
+      if (response.status === "failed") {
+        setRequestOTPError(response.message);
         setIsRequestOTPLoading(false);
         callingServer.current = false;
+        return;
       }
-    })();
+
+      setCreatedFEATransaction(response);
+      setIsRequestOTPLoading(false);
+      callingServer.current = false;
+    }
+  }, [lipId, personalData?.id]);
+
+  useMountEffect(() => {
+    void requestOTP();
   });
 
   if (isRequestOTPLoading) {
@@ -109,6 +116,9 @@ export function RequestOTPModalContent<TPayload>({
       pdfType={PDFType.Privacy}
       transactionId={createdFEATransaction.esign.transactionId}
       onEsignComplete={onEsignComplete}
+      payload={payload}
+      resendOTP={requestOTP}
+      tagToRevalidate={tagToRevalidate}
     />
   ) : (
     <InsertPhoneForm

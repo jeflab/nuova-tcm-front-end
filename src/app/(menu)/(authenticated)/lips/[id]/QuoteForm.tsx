@@ -11,7 +11,7 @@ import {QuoterFormValues} from "@/app/(menu)/quoter/QuoterForm";
 import styles from "@/app/(menu)/quoter/QuoterForm.module.scss";
 import {cns} from "@/helpers/cns";
 import {dbDateString} from "@/helpers/dates";
-import {YesNoAnswer} from "@/helpers/TypesHelper";
+import {YesNoAnswer} from "@/helpers/getOptionsLabel";
 import {Currency} from "@/ui/Currency";
 import {FieldError} from "@/ui/form/FieldError";
 import {Form} from "@/ui/form/Form";

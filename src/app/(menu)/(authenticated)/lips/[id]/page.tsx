@@ -1,34 +1,31 @@
-import {DebugState} from "@/app/(menu)/(authenticated)/lips/[id]/DebugState";
-import {drawers} from "@/app/(menu)/(authenticated)/lips/[id]/drawers";
 import {Lip} from "@/entities/lip";
 import {cns} from "@/helpers/cns";
 import {AppContainer} from "@/ui/AppContainer";
+import {Debug} from "@/ui/Debug";
 import {Drawer} from "@/ui/drawer/Drawer";
 import {NavDrawer} from "@/ui/drawer/NavDrawer";
 import {PageTitle} from "@/ui/PageTitle";
 import {faTriangleExclamation} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {Alert, Col, Nav, Row} from "react-bootstrap";
-import {DebugStateNav} from "./DebugStateNav";
-import styles from "./page.module.scss";
-import {getLip} from "./actions";
-import {Debug} from "@/ui/Debug";
 import {notFound} from "next/navigation";
+import {Alert, Col, Nav, Row} from "react-bootstrap";
+import {getLip} from "./actions";
+import {DebugState} from "./DebugState";
+import {DebugStateNav} from "./DebugStateNav";
+import {drawers} from "./drawers";
+import styles from "./page.module.scss";
+import {InitStoreWithServerData} from "./InitStoreWithServerData";
 
 // TODO: abbassare il fetch dei dati, o in un sotto-componente client o addirittura nel drawer (fetch è cachata)
 //  Fatto ciò la pagina può tornare server component
 
 interface NewLipPageProps {
   params: {id: string};
-  searchParams: {step?: string};
 }
 
 const minWidthHack = {minWidth: "1px"};
 
-export default async function NewLipPage({
-  params,
-  searchParams,
-}: NewLipPageProps) {
+export default async function NewLipPage({params}: NewLipPageProps) {
   let lip: Lip | undefined = undefined;
   if (params.id !== "new" && params.id !== "debug") {
     const lipResponse = await getLip(parseInt(params.id, 10));
@@ -44,7 +41,11 @@ export default async function NewLipPage({
   return (
     <AppContainer className="vstack gap-3">
       <PageTitle>Nuova polizza {params.id}</PageTitle>
+      <InitStoreWithServerData lip={lip} />
+      <h4>Lip:</h4>
       <Debug>{lip}</Debug>
+      <h4>Store:</h4>
+      <DebugState debugNav={<DebugStateNav />} />
       <Row className="flex-row-reverse">
         <Col md="auto">
           <Nav className={cns("flex-column", styles.connectedList)}>
@@ -74,7 +75,6 @@ export default async function NewLipPage({
               corrispondere.
             </p>
           </Alert>
-          {params.id === "debug" && <DebugState debugNav={<DebugStateNav />} />}
           {drawers.map(({name, title, modalContent, summaryContent}) => (
             <Drawer
               key={name}

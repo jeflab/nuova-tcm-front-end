@@ -27,6 +27,7 @@ import {getMonth} from "date-fns/getMonth";
 import {getYear} from "date-fns/getYear";
 import {startOfYear} from "date-fns/startOfYear";
 import {subYears} from "date-fns/subYears";
+import {useRouter} from "next/navigation";
 import {
   Alert,
   Button,
@@ -121,6 +122,7 @@ const contractorFiscalCodeDefaultValues = {
 };
 
 export function ContractorFiscalCodeForm() {
+  const router = useRouter();
   const formMethods = useForm({
     mode: "onChange",
     defaultValues: contractorFiscalCodeDefaultValues,
@@ -131,6 +133,8 @@ export function ContractorFiscalCodeForm() {
     (state) => state.updatePreliminaryData,
   );
   const updateLip = useDrawerStore((state) => state.updateLip);
+  // Lip dovrebbe essere sempre a undefined la prima volta, ma così siamo future proof
+  const lip = useDrawerStore((state) => state.lip);
 
   return (
     <>
@@ -166,8 +170,12 @@ export function ContractorFiscalCodeForm() {
                 !!checkIfFiscalCodeExistsResponse.lip &&
                 !!checkIfFiscalCodeExistsResponse.lip.contractor
               ) {
-                updateLip(checkIfFiscalCodeExistsResponse.lip);
-                updatePreliminaryData({contractorPersonalData: values});
+                if (!lip) {
+                  router.push(
+                    `/lips/${checkIfFiscalCodeExistsResponse.lip.id}`,
+                    {scroll: false},
+                  );
+                }
                 closeModal();
                 return;
               }
@@ -175,6 +183,7 @@ export function ContractorFiscalCodeForm() {
               closeModal();
               return;
             }
+            // TODO: Sarebbe meglio avere un codice errore piùttosto che il messaggio come discriminante
             if (
               checkIfFiscalCodeExistsResponse.message ===
               "Utente già censito da un altro Advisor"
@@ -243,7 +252,7 @@ export function ContractorFiscalCodeForm() {
                   type="date"
                   placeholder="Data di nascita"
                   max={dbDateString(subYears(Date(), 18))}
-                  min={dbDateString(subYears(Date(), 100))}
+                  min={dbDateString(startOfYear(subYears(Date(), 64)))}
                 />
               </FormGroup>
             </Col>

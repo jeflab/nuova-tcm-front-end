@@ -1,6 +1,5 @@
 "use client";
 
-import {pepRelations} from "@/app/(menu)/(authenticated)/lips/[id]/ContractorDataForm";
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {CheckGroup} from "@/ui/form/CheckGroup";

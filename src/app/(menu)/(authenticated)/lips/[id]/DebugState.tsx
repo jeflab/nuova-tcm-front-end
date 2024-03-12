@@ -15,13 +15,16 @@ export function DebugState({debugNav}: DebugStateProps) {
   const preliminaryData = useDrawerStore((state) => state.preliminaryData);
   const lipData = useDrawerStore((state) => state.lipData);
   const lip = useDrawerStore((state) => state.lip);
+  const drawerStates = useDrawerStore((state) => state.drawerStates);
 
   return (
     <Card style={divStyle}>
       <CardHeader>Debug stato lip</CardHeader>
       <CardBody>
         {debugNav}
-        <Debug className="mt-3">{{preliminaryData, lipData, lip}}</Debug>
+        <Debug className="mt-3">
+          {{preliminaryData, lipData, lip, drawerStates}}
+        </Debug>
       </CardBody>
     </Card>
   );

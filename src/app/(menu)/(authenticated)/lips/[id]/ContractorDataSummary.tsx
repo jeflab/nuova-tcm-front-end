@@ -1,16 +1,19 @@
 "use client";
 
-import {
-  pepObject,
-  pepRelations,
-} from "@/app/(menu)/(authenticated)/lips/[id]/ContractorDataForm";
 import {contractorGenders} from "@/app/(menu)/(authenticated)/lips/[id]/ContractorFiscalCodeForm";
+import {
+  fundSourceOptions,
+  jobPositionOptions,
+  publicOfficesOptions,
+  tAECodeOptions,
+} from "@/app/(menu)/(authenticated)/lips/[id]/selectsOptions";
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {dateString} from "@/helpers/dates";
-import {getOptionsLabel} from "@/helpers/getOptionsLabel";
-import {Debug} from "@/ui/Debug";
+import {getOptionsLabel, yesNoOptions} from "@/helpers/getOptionsLabel";
 import {
   faAddressBook,
+  faBriefcase,
+  faHandHoldingDollar,
   faLandmarkMagnifyingGlass,
   faUser,
   faWashingMachine,
@@ -19,15 +22,11 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Col, Row} from "react-bootstrap";
 
 export function ContractorDataSummary() {
-  const contractorData = useDrawerStore(
-    (state) => state.lipData.contractorData,
-  );
+  const contractor = useDrawerStore((state) => state.lip?.contractor);
 
-  if (!contractorData) {
+  if (!contractor?.pep) {
     return null;
   }
-
-  const {contractorPersonalData, contact, residence, pep, aml} = contractorData;
 
   return (
     <Row className="row-gap-4" xs={1} sm={2} md={1} lg={2}>
@@ -36,22 +35,20 @@ export function ContractorDataSummary() {
           <FontAwesomeIcon icon={faUser} /> Anagrafica
         </h4>
         <p className="mb-0">
-          {contractorPersonalData.name} {contractorPersonalData.surname}, nato
-          il {dateString(new Date(contractorPersonalData.birthDate))} a{" "}
-          {contractorPersonalData.birthPlace.city} (
-          {contractorPersonalData.birthPlace.province})
+          {contractor.name} {contractor.surname}, nato il{" "}
+          {dateString(contractor.birthDate)} a {contractor.birthPlace} (
+          {contractor.birthProvince})
         </p>
         <p>
-          Residente in {residence.streetName} {residence.streetNumber},{" "}
-          {residence.zipCode} {residence.place.city} ({residence.place.province}
-          )
+          Residente in {contractor.address} {contractor.streetNumber},{" "}
+          {contractor.zipCode} {contractor.city} ({contractor.region})
         </p>
         <p className="mb-0">
           <strong>Genere:</strong>{" "}
-          {getOptionsLabel(contractorGenders, contractorPersonalData.gender)}
+          {getOptionsLabel(contractorGenders, contractor.gender)}
         </p>
         <p className="mb-0">
-          <strong>Codice Fiscale:</strong> {contractorPersonalData.fiscalCode}
+          <strong>Codice Fiscale:</strong> {contractor.fiscalCode}
         </p>
       </Col>
       <Col>
@@ -59,51 +56,76 @@ export function ContractorDataSummary() {
           <FontAwesomeIcon icon={faAddressBook} /> Contatti
         </h4>
         <p className="mb-0">
-          <strong>Telefono:</strong> {contact.phone}
+          <strong>Telefono:</strong> {contractor.phone}
         </p>
         <p className="mb-0">
-          <strong>Email:</strong> {contact.email}
+          <strong>Email:</strong> {contractor.email}
         </p>
       </Col>
       <Col>
+        <h4 className="w-100 text-primary">
+          <FontAwesomeIcon icon={faBriefcase} /> Situazione professionale
+        </h4>
+        <p className="mb-0">
+          <strong>Attività esercitata:</strong>{" "}
+          {contractor.pep.job.position.response !== "other"
+            ? getOptionsLabel(
+                jobPositionOptions,
+                contractor.pep.job.position.response,
+              )
+            : contractor.pep.job.positionOther}
+        </p>
+        <p className="mb-0">
+          <strong>Codice TAE attività:</strong>{" "}
+          {getOptionsLabel(tAECodeOptions, contractor.pep.job.tAECode.response)}{" "}
+          (codice: {contractor.pep.job.tAECode.response})
+        </p>
+        <p className="mb-0">
+          <strong>Provincia attività prevalente:</strong>{" "}
+          {contractor.pep.job.province}
+        </p>
+        <p className="mb-0">
+          <strong>Paese attività prevalente:</strong>{" "}
+          {contractor.pep.job.country}
+        </p>
+      </Col>
+      <Col>
+        <h4 className="w-100 text-primary">
+          <FontAwesomeIcon icon={faHandHoldingDollar} /> Origine prevalente dei
+          fondi
+        </h4>
+        <p className="mb-0">
+          <strong>Origine prevalente dei fondi:</strong>{" "}
+          {contractor.pep.fundSource !== "other"
+            ? getOptionsLabel(fundSourceOptions, contractor.pep.fundSource)
+            : contractor.pep.fundSourceOther}
+        </p>
+      </Col>
+      <Col className="w-100">
         <h4 className="w-100 text-primary">
           <FontAwesomeIcon icon={faLandmarkMagnifyingGlass} /> Persona esposta
           politicamente
         </h4>
-        {pep.isPep === "yes" ? (
-          <>
-            <p className="mb-0">
-              Il contraente è una persona esposta politicamente:
-            </p>
-            <p className="mb-0">
-              <strong>Persona:</strong> {getOptionsLabel(pepObject, pep.person)}
-            </p>
-            <p className="mb-0">
-              <strong>Rapporto:</strong>{" "}
-              {getOptionsLabel(pepRelations, pep.relation)}
-            </p>
-          </>
-        ) : (
-          <p className="mb-0">
-            Il contraente non è una persona esposta politicamente
-          </p>
-        )}
-      </Col>
-      <Col>
-        <h4 className="w-100 text-primary">
-          <FontAwesomeIcon icon={faWashingMachine} /> Antiriciclaggio
-        </h4>
         <p className="mb-0">
-          <strong>Professione:</strong> {aml.job}
+          <strong>Il contraente è una persona esposta politicamente:</strong>{" "}
+          {getOptionsLabel(yesNoOptions, contractor.pep.isPep.response)}
         </p>
         <p className="mb-0">
-          <strong>Settore:</strong> {aml.sector}
+          <strong>
+            Il contraente Ricopre cariche pubbliche diverse da P.E.P.:
+          </strong>{" "}
+          {getOptionsLabel(
+            publicOfficesOptions,
+            contractor.pep.publicOffice.response,
+          )}
         </p>
         <p className="mb-0">
-          <strong>Reddito netto:</strong> {aml.netIncome}
-        </p>
-        <p className="mb-0">
-          <strong>Fonte del reddito:</strong> {aml.fundSource}
+          <strong>
+            È stato qualificato come P.E.P. nell’ambito di altri rapporti
+            contrattuali stipulati con altri soggetti destinatari del Decreto
+            231/2007 negli ultimi 2 anni:
+          </strong>{" "}
+          {getOptionsLabel(yesNoOptions, contractor.pep.otherPep.response)}
         </p>
       </Col>
     </Row>

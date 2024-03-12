@@ -44,20 +44,6 @@ const updateLipData = (state: State, data: Partial<TempLipData>) => {
   const newState = state;
   newState.lipData = {...newState.lipData, ...data};
 
-  //
-  // // Identificazione cliente
-  // if (newState.drawerStates.contractorData === "success") {
-  //   if (newState.lipData.identification === undefined) {
-  //     newState.drawerStates.identification = "active";
-  //   } else if (newState.lipData.identification) {
-  //     newState.drawerStates.identification = "success";
-  //   } else {
-  //     newState.drawerStates.identification = "danger";
-  //   }
-  // } else {
-  //   newState.drawerStates.identification = undefined;
-  // }
-  //
   // // Demand and needs
   // if (newState.drawerStates.identification === "success") {
   //   if (newState.lipData.den === undefined) {
@@ -137,68 +123,132 @@ const updateLipData = (state: State, data: Partial<TempLipData>) => {
 };
 
 function createDrawerState(state: State & Actions) {
-  // fatca
-  if (state.preliminaryData.fatca === undefined) {
-    state.drawerStates.fatca = {variant: "active", ...presetButtons.compile};
-  } else if (state.preliminaryData.fatca === "no") {
-    state.drawerStates.fatca = {variant: "success"};
-  } else {
-    state.drawerStates.fatca = {variant: "danger"};
-  }
+  // Dati preliminari
+  const isPreliminary = !state.lip;
 
-  // contractor fiscal code
-  if (state.drawerStates.fatca?.variant === "success") {
-    if (state.preliminaryData.contractorPersonalData === undefined) {
-      state.drawerStates.contractorFiscalCode = {
-        variant: "active",
-        ...presetButtons.compile,
-      };
-    } else if (!state.preliminaryData.contractorAlreadyRegistered) {
-      state.drawerStates.contractorFiscalCode = {variant: "success"};
+  if (isPreliminary) {
+    // fatca
+    if (state.preliminaryData.fatca === undefined) {
+      state.drawerStates.fatca = {variant: "active", ...presetButtons.compile};
+    } else if (state.preliminaryData.fatca === "no") {
+      state.drawerStates.fatca = {variant: "success"};
     } else {
-      state.drawerStates.contractorFiscalCode = {variant: "danger"};
+      state.drawerStates.fatca = {variant: "danger"};
+    }
+
+    // contractor fiscal code
+    if (state.drawerStates.fatca?.variant === "success") {
+      if (state.preliminaryData.contractorPersonalData === undefined) {
+        state.drawerStates.contractorFiscalCode = {
+          variant: "active",
+          ...presetButtons.compile,
+        };
+      } else if (!state.preliminaryData.contractorAlreadyRegistered) {
+        state.drawerStates.contractorFiscalCode = {variant: "success"};
+      } else {
+        state.drawerStates.contractorFiscalCode = {variant: "danger"};
+      }
+    } else {
+      state.drawerStates.contractorFiscalCode = undefined;
+    }
+
+    // Attesa creazione aria cliente
+    if (state.drawerStates.contractorFiscalCode?.variant === "success") {
+      if (state.lip?.contractor === undefined) {
+        state.drawerStates.contractorPersonalAreaActivation = {
+          variant: "active",
+          ...presetButtons.compile,
+        };
+      } else if (state.lip.contractor.lastPrivacyEsignId === null) {
+        state.drawerStates.contractorPersonalAreaActivation = {
+          variant: "waiting",
+          ...presetButtons.privacyEsign,
+        };
+      } else {
+        state.drawerStates.contractorPersonalAreaActivation = {
+          variant: "success",
+        };
+      }
+    } else {
+      state.drawerStates.contractorPersonalAreaActivation = undefined;
     }
   } else {
-    state.drawerStates.contractorFiscalCode = undefined;
-  }
-
-  // Attesa creazione aria cliente
-  if (state.drawerStates.contractorFiscalCode?.variant === "success") {
-    if (state.lip?.contractor === undefined) {
-      state.drawerStates.contractorPersonalAreaActivation = {
-        variant: "active",
-        ...presetButtons.compile,
-      };
-    } else if (state.lip.contractor.lastPrivacyEsignId === null) {
-      state.drawerStates.contractorPersonalAreaActivation = {
-        variant: "waiting",
-        ...presetButtons.privacyEsign,
-      };
+    // Dati da server
+    // fatca
+    if (state.lip?.contractor?.fatca.fatcaCheck.response === undefined) {
+      state.drawerStates.fatca = {variant: "active", ...presetButtons.compile};
+    } else if (state.lip?.contractor.fatca.fatcaCheck.response === "no") {
+      state.drawerStates.fatca = {variant: "success"};
     } else {
-      state.drawerStates.contractorPersonalAreaActivation = {
-        variant: "success",
-      };
+      state.drawerStates.fatca = {variant: "danger"};
     }
-  } else {
-    state.drawerStates.contractorPersonalAreaActivation = undefined;
-  }
 
-  // Censimento cliente
-  if (
-    state.drawerStates.contractorPersonalAreaActivation?.variant === "success"
-  ) {
-    if (state.lipData.contractorData === undefined) {
-      state.drawerStates.contractorData = {
-        variant: "active",
-        ...presetButtons.compile,
-      };
-    } else if (state.lipData.contractorData) {
-      state.drawerStates.contractorData = {variant: "success"};
+    // contractor fiscal code
+    if (state.drawerStates.fatca?.variant === "success") {
+      if (state.lip?.contractor === undefined) {
+        state.drawerStates.contractorFiscalCode = {
+          variant: "active",
+          ...presetButtons.compile,
+        };
+      } else {
+        state.drawerStates.contractorFiscalCode = {variant: "success"};
+      }
     } else {
-      state.drawerStates.contractorData = {variant: "danger"};
+      state.drawerStates.contractorFiscalCode = undefined;
     }
-  } else {
-    state.drawerStates.contractorData = undefined;
+
+    // Attesa creazione aria cliente
+    if (state.drawerStates.contractorFiscalCode?.variant === "success") {
+      if (state.lip?.contractor === undefined) {
+        state.drawerStates.contractorPersonalAreaActivation = {
+          variant: "active",
+          ...presetButtons.compile,
+        };
+      } else if (state.lip.contractor.lastPrivacyEsignId === null) {
+        state.drawerStates.contractorPersonalAreaActivation = {
+          variant: "waiting",
+          ...presetButtons.privacyEsign,
+        };
+      } else {
+        state.drawerStates.contractorPersonalAreaActivation = {
+          variant: "success",
+        };
+      }
+    } else {
+      state.drawerStates.contractorPersonalAreaActivation = undefined;
+    }
+
+    // Censimento cliente
+    if (
+      state.drawerStates.contractorPersonalAreaActivation?.variant === "success"
+    ) {
+      if (state.lip?.contractor.city === null) {
+        state.drawerStates.contractorData = {
+          variant: "active",
+          ...presetButtons.compile,
+        };
+      } else {
+        state.drawerStates.contractorData = {variant: "success"};
+      }
+    } else {
+      state.drawerStates.contractorData = undefined;
+    }
+
+    // Identificazione cliente
+    if (state.drawerStates.contractorData?.variant === "success") {
+      if (state.lipData.identification === undefined) {
+        state.drawerStates.identification = {
+          variant: "active",
+          ...presetButtons.compile,
+        };
+      } else if (state.lipData.identification) {
+        state.drawerStates.identification = {variant: "success"};
+      } else {
+        state.drawerStates.identification = {variant: "danger"};
+      }
+    } else {
+      state.drawerStates.identification = undefined;
+    }
   }
 }
 

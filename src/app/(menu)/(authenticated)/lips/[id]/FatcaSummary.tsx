@@ -3,7 +3,14 @@
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 
 export function FatcaSummary() {
-  const fatcaData = useDrawerStore((state) => state.preliminaryData.fatca);
+  const fatcaPreliminary = useDrawerStore(
+    (state) => state.preliminaryData.fatca,
+  );
+  const fatcaLip = useDrawerStore(
+    (state) => state.lip?.contractor?.fatca.fatcaCheck.response,
+  );
+
+  const fatcaData = fatcaLip ?? fatcaPreliminary;
 
   if (fatcaData === "yes") {
     return (

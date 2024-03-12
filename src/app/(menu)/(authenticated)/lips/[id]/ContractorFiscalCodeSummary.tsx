@@ -3,12 +3,19 @@
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 
 export function ContractorFiscalCodeSummary() {
-  const contractorFiscalCodeData = useDrawerStore(
-    (state) => state.preliminaryData.contractorPersonalData,
-  );
   const contractorAlreadyRegistered = useDrawerStore(
     (state) => state.preliminaryData.contractorAlreadyRegistered,
   );
+
+  const contractorFiscalCodeDataPreliminary = useDrawerStore(
+    (state) => state.preliminaryData.contractorPersonalData,
+  );
+  const contractorFiscalCodeDataLip = useDrawerStore(
+    (state) => state.lip?.contractor?.fiscalCode,
+  );
+
+  const contractorFiscalCodeData =
+    contractorFiscalCodeDataLip ?? contractorFiscalCodeDataPreliminary;
 
   if (!contractorFiscalCodeData && !contractorAlreadyRegistered) {
     return null;

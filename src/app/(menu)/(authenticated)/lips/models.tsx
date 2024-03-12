@@ -1,7 +1,3 @@
-import {
-  PepPerson,
-  PepRelation,
-} from "@/app/(menu)/(authenticated)/lips/[id]/ContractorDataForm";
 import {ContractorGender} from "@/app/(menu)/(authenticated)/lips/[id]/ContractorFiscalCodeForm";
 import {
   DependentFamilyMembersOptions,
@@ -16,19 +12,7 @@ import {
 import {IdType} from "@/app/(menu)/(authenticated)/lips/[id]/IdentificationForm";
 import {PaymentMethodsOptions} from "@/app/(menu)/(authenticated)/lips/[id]/PaymentForm";
 import {Documents} from "@/entities/document";
-import {YesNoAnswer} from "@/helpers/TypesHelper";
-
-export type Pep =
-  | {
-      isPep: "yes";
-      person: PepPerson;
-      relation: PepRelation;
-    }
-  | {
-      isPep: "no";
-      person: "";
-      relation: "";
-    };
+import {YesNoAnswer} from "@/helpers/getOptionsLabel";
 
 // TODO: sistemare interfaccia
 export interface TempLipData {
@@ -59,7 +43,6 @@ export interface TempLipData {
       streetNumber: string;
       zipCode: string;
     };
-    pep: Pep;
     aml: {
       job: string;
       sector: string;

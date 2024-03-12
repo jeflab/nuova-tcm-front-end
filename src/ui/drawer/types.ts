@@ -1,4 +1,3 @@
-import {IconDefinition} from "@fortawesome/fontawesome-svg-core";
 import {faPenToSquare} from "@fortawesome/pro-duotone-svg-icons";
 
 export type DrawerVariant =
@@ -11,16 +10,20 @@ export type DrawerVariant =
 export type DrawerState = {
   variant: DrawerVariant;
   buttonLabel?: string;
-  buttonIcon?: IconDefinition;
+  buttonIcon?: keyof typeof buttonMap;
 };
 
 export const presetButtons = {
   compile: {
-    buttonIcon: faPenToSquare,
+    buttonIcon: "faPenToSquare",
     buttonLabel: "Compila",
   },
   privacyEsign: {
-    buttonIcon: faPenToSquare,
+    buttonIcon: "faPenToSquare",
     buttonLabel: "Leggi e firma",
   },
+} as const;
+
+export const buttonMap = {
+  faPenToSquare,
 } as const;

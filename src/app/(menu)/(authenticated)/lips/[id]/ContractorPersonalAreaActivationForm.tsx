@@ -12,6 +12,7 @@ import {emailNormalizer, onlyNumbersNormalizer} from "@/ui/form/normalizers";
 import {email} from "@/ui/form/validators/email";
 import {faSave, faSpinner, faXmark} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {useRouter} from "next/navigation";
 import {
   Alert,
   Button,
@@ -31,6 +32,7 @@ const ContractorPersonalAreaActivationDefaultValues = {
 };
 
 export function ContractorPersonalAreaActivationForm() {
+  const router = useRouter();
   const formMethods = useForm({
     mode: "onChange",
     defaultValues: ContractorPersonalAreaActivationDefaultValues,
@@ -81,7 +83,9 @@ export function ContractorPersonalAreaActivationForm() {
               };
             }
 
-            updateLip(activateContractorResponse.lip);
+            router.push(`/lips/${activateContractorResponse.lip?.id}`, {
+              scroll: false,
+            });
             closeModal();
           }}
           id="activate-contractor-form"

@@ -12,7 +12,7 @@ import styles from "./page.module.scss";
 export default async function NewLipPage() {
   return (
     <AppContainer className="vstack gap-3">
-      <PageTitle>Nuova polizza</PageTitle>
+      <PageTitle>Caricamento polizza</PageTitle>
       <Row className="flex-row-reverse">
         <Col md="auto">
           <Nav className={cns("flex-column", styles.connectedList)}>

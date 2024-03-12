@@ -4,7 +4,7 @@ import {AUTH_COOKIE_NAME} from "@/app/(no-menu)/(auth)/const";
 import {ErrorCodes, errors} from "@/helpers/errors";
 import {logFetchInfo} from "@/helpers/fetchDebug";
 import {apiUrl, contentJsonHeader} from "@/services/const";
-import {serverErrorSchema} from "@/services/helpers";
+import {createServerSuccessSchema, serverErrorSchema} from "@/services/helpers";
 import chalk from "chalk";
 import {cookies} from "next/headers";
 import {z, ZodRawShape} from "zod";
@@ -37,14 +37,6 @@ function parseLaravelErrorPage(text: string) {
   }
 }
 
-const createServerSuccessSchema = <T extends ZodRawShape>(successSchema: T) =>
-  z
-    .object({
-      status: z.literal("success"),
-      responseStatus: z.number(),
-    })
-    .extend(successSchema);
-
 function isServerSuccess<T extends ZodRawShape>(
   json: unknown,
   zodRowShape: T,
@@ -60,7 +52,10 @@ function isServerSuccess<T extends ZodRawShape>(
 export async function get<T extends ZodRawShape>(
   url: `/${string}`,
   zodRowShape: T,
-  searchParams?: Record<string, string>,
+  {
+    searchParams,
+    tags,
+  }: {searchParams?: Record<string, string>; tags?: string[]} = {},
 ) {
   const serverSuccessSchema = createServerSuccessSchema(zodRowShape);
   const searchParamsString = searchParams
@@ -74,6 +69,7 @@ export async function get<T extends ZodRawShape>(
     },
     method: "GET",
     credentials: "include",
+    ...(tags ? {tags} : {}),
   });
 
   void logFetchInfo("GET", response);
@@ -203,6 +199,69 @@ export async function put<T extends ZodRawShape>(
   });
 
   void logFetchInfo("PUT", response, body);
+
+  let responseJson;
+  try {
+    responseJson = await response.clone().json();
+    responseJson.responseStatus = response.status;
+  } catch (e) {
+    console.error(
+      chalk.red.inverse("Errore di parsing del JSON della risposta del server"),
+    );
+    console.error(chalk.redBright(e));
+    const text = await response.clone().text();
+    if (text.length > 50000) {
+      const parsed = parseLaravelErrorPage(text);
+      if (parsed === false) {
+        console.error(text.slice(0, 50000));
+      } else {
+        console.error(parsed);
+      }
+    } else {
+      console.error(text);
+    }
+    return errors[ErrorCodes.INVALID_JSON] as z.infer<typeof serverErrorSchema>;
+  }
+
+  let serverResponseJson;
+  try {
+    serverResponseJson = z
+      .union([serverSuccessSchema, serverErrorSchema])
+      .parse(responseJson);
+  } catch (e) {
+    console.error(
+      chalk.red.inverse(
+        "Errore di parsing dello schema della risposta del server",
+      ),
+    );
+    console.error(chalk.redBright(e));
+    console.error(await response.text());
+    return errors[ErrorCodes.INVALID_SCHEMA] as z.infer<
+      typeof serverErrorSchema
+    >;
+  }
+
+  return serverResponseJson;
+}
+
+export async function patch<T extends ZodRawShape>(
+  url: `/${string}`,
+  zodRowShape: T,
+  body?: string,
+) {
+  const serverSuccessSchema = createServerSuccessSchema(zodRowShape);
+
+  const response = await fetch(apiUrl + url, {
+    headers: {
+      ...contentJsonHeader,
+      ...authorizationHeader(),
+    },
+    method: "PATCH",
+    credentials: "include",
+    body,
+  });
+
+  void logFetchInfo("PATCH", response, body);
 
   let responseJson;
   try {

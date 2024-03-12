@@ -12,11 +12,11 @@ import {Form} from "@/ui/form/Form";
 import {SubmitButton} from "@/ui/form/SubmitButton";
 import {faFileSignature, faSpinner} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {redirect} from "next/navigation";
+import {useRouter} from "next/navigation";
 import {startTransition, useState} from "react";
 import {Alert, FormGroup} from "react-bootstrap";
-import styles from "./ContractorPersonalAreaActivationLastPrivacyForm.module.scss";
 import {useForm} from "react-hook-form";
+import styles from "./ContractorPersonalAreaActivationLastPrivacyForm.module.scss";
 
 interface ContractorPersonalAreaActivationLastPrivacyFormProps {
   profile: Profile;
@@ -30,8 +30,10 @@ export function ContractorPersonalAreaActivationLastPrivacyForm({
   const formMethods = useForm({
     mode: "onChange",
   });
+  const router = useRouter();
   const [esignModalOpen, setEsignModalOpen] = useState(false);
   const lip = useDrawerStore((state) => state.lip);
+  const closeModal = useDrawerStore((state) => state.closeModal);
 
   return (
     <Form
@@ -93,14 +95,16 @@ export function ContractorPersonalAreaActivationLastPrivacyForm({
                 setEsignModalOpen(false);
               });
             }}
-            onEsignComplete={() => {
-              redirect(`/lips/${lip.id}`);
+            onEsignComplete={async (response) => {
+              setEsignModalOpen(false);
+              closeModal();
             }}
             personalData={lip.contractor}
             profile={profile}
             show={esignModalOpen}
             payload={{values: formMethods.watch()}}
             lipId={lip.id}
+            tagToRevalidate={`getLip-${lip.id}`}
           />
         )}
       </div>
