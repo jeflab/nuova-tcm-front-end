@@ -1,7 +1,6 @@
 import {Lip} from "@/entities/lip";
 import {cns} from "@/helpers/cns";
 import {AppContainer} from "@/ui/AppContainer";
-import {Debug} from "@/ui/Debug";
 import {Drawer} from "@/ui/drawer/Drawer";
 import {NavDrawer} from "@/ui/drawer/NavDrawer";
 import {PageTitle} from "@/ui/PageTitle";
@@ -10,11 +9,9 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {notFound} from "next/navigation";
 import {Alert, Col, Nav, Row} from "react-bootstrap";
 import {getLip} from "./actions";
-import {DebugState} from "./DebugState";
-import {DebugStateNav} from "./DebugStateNav";
 import {drawers} from "./drawers";
-import styles from "./page.module.scss";
 import {InitStoreWithServerData} from "./InitStoreWithServerData";
+import styles from "./page.module.scss";
 
 // TODO: abbassare il fetch dei dati, o in un sotto-componente client o addirittura nel drawer (fetch è cachata)
 //  Fatto ciò la pagina può tornare server component
@@ -42,10 +39,6 @@ export default async function NewLipPage({params}: NewLipPageProps) {
     <AppContainer className="vstack gap-3">
       <PageTitle>Nuova polizza {params.id}</PageTitle>
       <InitStoreWithServerData lip={lip} />
-      <h4>Lip:</h4>
-      <Debug>{lip}</Debug>
-      <h4>Store:</h4>
-      <DebugState debugNav={<DebugStateNav />} />
       <Row className="flex-row-reverse">
         <Col md="auto">
           <Nav className={cns("flex-column", styles.connectedList)}>

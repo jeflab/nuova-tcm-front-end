@@ -3,7 +3,6 @@ import {cns} from "@/helpers/cns";
 import {ErrorCodes, errors} from "@/helpers/errors";
 import {useValidationState} from "@/ui/form/hooks";
 import {WithChildren} from "@/ui/types";
-import chalk from "chalk";
 import {useContext, useState} from "react";
 import FormContext from "react-bootstrap/FormContext";
 import Dropzone, {FileRejection} from "react-dropzone";

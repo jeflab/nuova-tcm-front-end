@@ -3,6 +3,7 @@ import {
   publicOfficesOptions,
   tAECodeOptions,
 } from "@/app/(menu)/(authenticated)/lips/[id]/selectsOptions";
+import {identityDocumentSchema} from "@/entities/identityDocument";
 import {getOptionsValues, yesNoOptions} from "@/helpers/getOptionsLabel";
 import {Prettify} from "@/helpers/TypesHelper";
 import {z} from "zod";
@@ -97,6 +98,7 @@ export const personalDataSchema = z
     region: z.string().nullable(),
     citizenship: z.string().nullable(),
     json_pep: zu.stringToJSON().pipe(pepSchema).nullable(),
+    identitydocument: z.array(identityDocumentSchema),
   })
   .transform(
     ({

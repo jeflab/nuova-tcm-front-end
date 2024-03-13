@@ -1,3 +1,5 @@
+// Contractor data
+
 export const publicOfficesOptions = [
   {label: "No", value: "no"},
   {label: "Politico/istituzionale", value: "political"},
@@ -202,3 +204,12 @@ export const fundSourceOptions = [
   {label: "Altro (specificare)", value: "other"},
 ] as const;
 export type FundSource = (typeof fundSourceOptions)[number]["value"];
+
+// Identification
+export const idTypeOptions = [
+  {label: "Passaporto", value: "passport"},
+  {label: "Carta d'identità", value: "identity_card"},
+  {label: "Patente", value: "driving_license"},
+  {label: "Altro", value: "other"},
+] as const;
+export type IdType = (typeof idTypeOptions)[number]["value"];

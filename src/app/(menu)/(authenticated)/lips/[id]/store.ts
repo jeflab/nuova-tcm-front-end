@@ -44,27 +44,6 @@ const updateLipData = (state: State, data: Partial<TempLipData>) => {
   const newState = state;
   newState.lipData = {...newState.lipData, ...data};
 
-  // // Demand and needs
-  // if (newState.drawerStates.identification === "success") {
-  //   if (newState.lipData.den === undefined) {
-  //     newState.drawerStates.den = "active";
-  //   } else if (
-  //     newState.lipData.den &&
-  //     newState.lipData.den.duration === "multi_year" &&
-  //     (
-  //       [
-  //         "capital_for_heirs",
-  //         "protection_against_death_accident_and_illness",
-  //       ] as const
-  //     ).some((value) => newState.lipData.den?.expectations.includes(value))
-  //   ) {
-  //     newState.drawerStates.den = "success";
-  //   } else {
-  //     newState.drawerStates.den = "danger";
-  //   }
-  // } else {
-  //   newState.drawerStates.den = undefined;
-  // }
   //
   // // Preventivo
   // if (newState.drawerStates.den === "success") {
@@ -236,18 +215,40 @@ function createDrawerState(state: State & Actions) {
 
     // Identificazione cliente
     if (state.drawerStates.contractorData?.variant === "success") {
-      if (state.lipData.identification === undefined) {
+      if (!state.lip || state.lip.contractor.identitydocument.length === 0) {
         state.drawerStates.identification = {
           variant: "active",
           ...presetButtons.compile,
         };
-      } else if (state.lipData.identification) {
+      } else if (state.lip.contractor.identitydocument.length > 0) {
         state.drawerStates.identification = {variant: "success"};
       } else {
         state.drawerStates.identification = {variant: "danger"};
       }
     } else {
       state.drawerStates.identification = undefined;
+    }
+
+    // Demand and needs
+    if (state.drawerStates.identification?.variant === "success") {
+      if (state.lip?.json_den === null) {
+        state.drawerStates.den = {variant: "active", ...presetButtons.compile};
+      } else if (
+        state.lip?.json_den // &&
+        // state.lip.json_den.duration === "multi_year" &&
+        // (
+        //   [
+        //     "capital_for_heirs",
+        //     "protection_against_death_accident_and_illness",
+        //   ] as const
+        // ).some((value) => state.lip.json_den?.expectations.includes(value))
+      ) {
+        state.drawerStates.den = {variant: "success"};
+      } else {
+        state.drawerStates.den = {variant: "danger"};
+      }
+    } else {
+      state.drawerStates.den = undefined;
     }
   }
 }

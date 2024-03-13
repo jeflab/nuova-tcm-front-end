@@ -9,8 +9,8 @@ import {
   JobOptions,
   NeedsToMeetOptions,
 } from "@/app/(menu)/(authenticated)/lips/[id]/DenForm";
-import {IdType} from "@/app/(menu)/(authenticated)/lips/[id]/IdentificationForm";
 import {PaymentMethodsOptions} from "@/app/(menu)/(authenticated)/lips/[id]/PaymentForm";
+import {IdType} from "@/app/(menu)/(authenticated)/lips/[id]/selectsOptions";
 import {Documents} from "@/entities/document";
 import {YesNoAnswer} from "@/helpers/getOptionsLabel";
 

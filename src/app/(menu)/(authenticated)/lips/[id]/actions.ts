@@ -4,6 +4,7 @@ import {ContractorGender} from "@/app/(menu)/(authenticated)/lips/[id]/Contracto
 import {fatcaQuestions} from "@/app/(menu)/(authenticated)/lips/[id]/FatcaForm";
 import {
   FundSource,
+  IdType,
   JobPosition,
   jobPositionOptions,
   PublicOffices,
@@ -15,7 +16,7 @@ import {lipSchema} from "@/entities/lip";
 import {personalDataSchema} from "@/entities/personalData";
 import {privacySchema} from "@/entities/privacy";
 import {Option, YesNoAnswer, yesNoOptions} from "@/helpers/getOptionsLabel";
-import {get, patch, post, put} from "@/services/api";
+import {get, patch, post, postFormData, put} from "@/services/api";
 import {revalidateTag} from "next/cache";
 
 const getLipShape = {
@@ -161,4 +162,23 @@ export async function updateContractorData(
   };
   revalidateTag(`getLip-${lipId}`);
   return patch(`/personal-datas/${contractorId}`, {}, JSON.stringify(data));
+}
+
+interface UpdateContractorFiscalCodeParams {
+  frontPicture: File;
+  backPicture: File;
+  idType: IdType;
+  number: string;
+  issuedBy: string;
+  issuedByOrg: string;
+  issuedDate: string;
+  expiringDate: string;
+  fiscalCode: string;
+}
+export async function identificationContractor(
+  formData: FormData,
+  lipId: number,
+) {
+  revalidateTag(`getLip-${lipId}`);
+  return postFormData("/identification-contractor", {}, formData);
 }

@@ -25,6 +25,7 @@ export const lipSchema = z
     agent: agentSchema,
     contractor: personalDataSchema,
     lip_number: z.coerce.string(),
+    json_den: z.string().nullable(),
     status: z.union([z.literal(0), z.literal(1)]).transform((status) => {
       return lipStatuses[status];
     }),
