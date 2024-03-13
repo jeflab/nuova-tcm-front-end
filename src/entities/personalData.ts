@@ -97,8 +97,8 @@ export const personalDataSchema = z
     city: z.string().nullable(),
     region: z.string().nullable(),
     citizenship: z.string().nullable(),
-    json_pep: zu.stringToJSON().pipe(pepSchema).nullable(),
-    identitydocument: z.array(identityDocumentSchema),
+    json_pep: zu.stringToJSON().pipe(pepSchema).nullable().optional(),
+    identitydocument: z.array(identityDocumentSchema).optional(),
   })
   .transform(
     ({

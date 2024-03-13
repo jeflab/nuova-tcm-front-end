@@ -38,7 +38,7 @@ const complementaryCoverages = [
   {
     key: "tpi",
     label: "Invalidità permanente da infortunio o malattia",
-    maxDuration: 30,
+    maxDuration: 10,
     maxAge: 65,
   },
   {key: "cancer", label: "Cancro", maxDuration: 10, maxAge: 85},
@@ -51,7 +51,7 @@ const complementaryCoverages = [
 ] as const;
 
 export function QuoteSummary() {
-  const quoteData = useDrawerStore((state) => state.lipData.quote);
+  const quoteData = useDrawerStore((state) => state.lip?.quotation);
 
   if (!quoteData) {
     return null;
@@ -129,16 +129,12 @@ export function QuoteSummary() {
                           {key === "accidentalDeath" ? (
                             <>
                               <strong>Capitale assicurato:</strong>{" "}
-                              <Currency>
-                                {parseInt(quoteData.death, 10) * 2}
-                              </Currency>
+                              <Currency>{quoteData.death * 2}</Currency>
                             </>
                           ) : key === "trafficAccidentalDeath" ? (
                             <>
                               <strong>Capitale assicurato:</strong>{" "}
-                              <Currency>
-                                {parseInt(quoteData.death, 10) * 3}
-                              </Currency>
+                              <Currency>{quoteData.death * 3}</Currency>
                             </>
                           ) : (
                             <strong>Attiva</strong>

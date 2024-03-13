@@ -8,7 +8,7 @@ interface IdImageProps {
   filename: string;
   size?: "thumbnail" | "full";
 }
-export async function IdImage({
+export function IdImage({
   agentId,
   contractorId,
   filename,

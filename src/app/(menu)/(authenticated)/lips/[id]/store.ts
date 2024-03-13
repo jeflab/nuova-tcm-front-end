@@ -1,4 +1,5 @@
 import {DrawerName} from "@/app/(menu)/(authenticated)/lips/[id]/drawers";
+import {calculateImc, RANGE} from "@/app/(menu)/(authenticated)/lips/[id]/imc";
 import {PreliminaryData} from "@/app/(menu)/(authenticated)/lips/models";
 import {Documents, DocumentsSchema} from "@/entities/document";
 import {Lip} from "@/entities/lip";
@@ -43,26 +44,6 @@ const updateLipData = (state: State, data: Partial<TempLipData>) => {
   const newState = state;
   newState.lipData = {...newState.lipData, ...data};
 
-  //
-  // // Questionario sanitario / non sanitario
-  // if (newState.drawerStates.quote === "success") {
-  //   if (newState.lipData.healthQuestionnaire === undefined) {
-  //     newState.drawerStates.healthQuestionnaire = "active";
-  //   } else if (
-  //     calculateImc(
-  //       parseInt(newState.lipData.healthQuestionnaire.weight, 10),
-  //       parseInt(newState.lipData.healthQuestionnaire.height, 10),
-  //     ) < RANGE.max &&
-  //     calculateImc(
-  //       parseInt(newState.lipData.healthQuestionnaire.weight, 10),
-  //       parseInt(newState.lipData.healthQuestionnaire.height, 10),
-  //     ) > RANGE.min
-  //   ) {
-  //     newState.drawerStates.healthQuestionnaire = "success";
-  //   } else {
-  //     newState.drawerStates.healthQuestionnaire = "danger";
-  //   }
-  // }
   //
   // // Beneficiari
   // if (newState.drawerStates.healthQuestionnaire === "success") {
@@ -203,7 +184,10 @@ function createDrawerState(state: State & Actions) {
 
     // Identificazione cliente
     if (state.drawerStates.contractorData?.variant === "success") {
-      if (!state.lip || state.lip.contractor.identitydocument.length === 0) {
+      if (
+        !state.lip?.contractor.identitydocument ||
+        state.lip.contractor.identitydocument.length === 0
+      ) {
         state.drawerStates.identification = {
           variant: "active",
           ...presetButtons.compile,
@@ -238,15 +222,40 @@ function createDrawerState(state: State & Actions) {
 
     // Preventivo
     if (state.drawerStates.den?.variant === "success") {
-      if (state.lip?.json_quotation === null) {
+      if (state.lip?.quotation === null) {
         state.drawerStates.quote = {
           variant: "active",
           ...presetButtons.compile,
         };
-      } else if (state.lipData.quote) {
+      } else if (state.lip?.quotation?.premium) {
         state.drawerStates.quote = {variant: "success"};
       } else {
         state.drawerStates.quote = {variant: "danger"};
+      }
+    } else {
+      state.drawerStates.quote = undefined;
+    }
+
+    // Questionario sanitario / non sanitario
+    if (state.drawerStates.quote?.variant === "success") {
+      if (state.lipData.healthQuestionnaire === undefined) {
+        state.drawerStates.healthQuestionnaire = {
+          variant: "active",
+          ...presetButtons.compile,
+        };
+      } else if (
+        calculateImc(
+          parseInt(state.lipData.healthQuestionnaire.weight, 10),
+          parseInt(state.lipData.healthQuestionnaire.height, 10),
+        ) < RANGE.max &&
+        calculateImc(
+          parseInt(state.lipData.healthQuestionnaire.weight, 10),
+          parseInt(state.lipData.healthQuestionnaire.height, 10),
+        ) > RANGE.min
+      ) {
+        state.drawerStates.healthQuestionnaire = {variant: "success"};
+      } else {
+        state.drawerStates.healthQuestionnaire = {variant: "danger"};
       }
     }
   }

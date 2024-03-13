@@ -419,7 +419,7 @@ export function ComplementaryCoverages() {
             compagnia liquida il 100% del capitale assicurato (dev'essere
             compreso tra <Currency>{20_000}</Currency> e{" "}
             <Currency>
-              {Math.min(parseInt(watch("death"), 10), 100_000)}
+              {Math.min(parseInt(watch("death"), 10), 96_000)}
             </Currency>
             ).
           </HelpText>
@@ -448,7 +448,7 @@ export function ComplementaryCoverages() {
                 disabled={!watch("tpd.enabled") || isMoreThan75}
                 id="tpd-coverage"
                 min={20_000}
-                max={watch("death")}
+                max={Math.min(parseInt(watch("death"), 10), 96_000)}
                 name="tpd.coverage"
                 placeholder="Capitale assicurato"
                 step={1_000}
@@ -475,11 +475,10 @@ export function ComplementaryCoverages() {
                       if (
                         formValues.tpd?.enabled &&
                         !isMoreThan75 &&
-                        value >
-                          Math.min(parseInt(formValues.death, 10), 100_000)
+                        value > Math.min(parseInt(formValues.death, 10), 96_000)
                       ) {
                         return `Il capitale assicurato deve essere minore o uguale a ${toCurrency(
-                          Math.min(parseInt(formValues.death, 10), 100_000),
+                          Math.min(parseInt(formValues.death, 10), 96_000),
                         )}`;
                       }
                     },

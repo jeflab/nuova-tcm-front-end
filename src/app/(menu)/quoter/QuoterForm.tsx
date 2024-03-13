@@ -171,27 +171,20 @@ export function QuoterForm() {
             </div>
           </div>
           <div>
-            <OverlayTrigger
-              overlay={
-                <Tooltip>
-                  {isDetailsOpen ? "Chiudi dettagli" : "Dettagli"}
-                </Tooltip>
-              }
+            <Button
+              type="button"
+              variant="info"
+              disabled={!premium}
+              onClick={() => {
+                setIsDetailsOpen(!isDetailsOpen);
+              }}
             >
-              <Button
-                type="button"
-                variant="link"
-                disabled={!premium}
-                onClick={() => {
-                  setIsDetailsOpen(!isDetailsOpen);
-                }}
-              >
-                <FontAwesomeIcon
-                  icon={isDetailsOpen ? faClose : faInfoCircle}
-                  fixedWidth
-                />
-              </Button>
-            </OverlayTrigger>
+              <FontAwesomeIcon
+                icon={isDetailsOpen ? faClose : faInfoCircle}
+                fixedWidth
+              />{" "}
+              {isDetailsOpen ? "Meno" : "Maggiori"} dettagli
+            </Button>
           </div>
         </AppContainer>
         <Collapse in={isDetailsOpen}>

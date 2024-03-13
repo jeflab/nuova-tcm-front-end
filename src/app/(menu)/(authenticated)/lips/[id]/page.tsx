@@ -37,7 +37,9 @@ export default async function NewLipPage({params}: NewLipPageProps) {
 
   return (
     <AppContainer className="vstack gap-3">
-      <PageTitle>Nuova polizza {params.id}</PageTitle>
+      <PageTitle>
+        {lip?.lipNumber ? `Polizza n° ${lip?.lipNumber}` : "Nuova polizza"}
+      </PageTitle>
       <InitStoreWithServerData lip={lip} />
       <Row className="flex-row-reverse">
         <Col md="auto">

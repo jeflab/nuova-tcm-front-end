@@ -246,3 +246,49 @@ export async function updateDen(formData: UpdateDenParams, lipId: number) {
     JSON.stringify({json_den: JSON.stringify(data)}),
   );
 }
+
+interface UpdateQuotationParams {
+  birthDate: string;
+  smoker: YesNoAnswer;
+  death: string;
+  accidentalDeath: boolean;
+  trafficAccidentalDeath: boolean;
+  exemptionFromPaying: boolean;
+  tpi: {enabled: boolean; coverage: string};
+  cancer: {enabled: boolean; coverage: string};
+  tpd: {enabled: boolean; coverage: string};
+  premium: number;
+}
+export async function updateQuotation(
+  formData: UpdateQuotationParams,
+  lipId: number,
+) {
+  const data = {
+    birthDate: formData.birthDate,
+    smoker: formData.smoker,
+    death: parseInt(formData.death, 10),
+    accidentalDeath: formData.accidentalDeath,
+    trafficAccidentalDeath: formData.trafficAccidentalDeath,
+    exemptionFromPaying: formData.exemptionFromPaying,
+    tpi: {
+      enabled: formData.tpi.enabled,
+      coverage: parseInt(formData.tpi.coverage, 10),
+    },
+    cancer: {
+      enabled: formData.cancer.enabled,
+      coverage: parseInt(formData.cancer.coverage, 10),
+    },
+    tpd: {
+      enabled: formData.tpd.enabled,
+      coverage: parseInt(formData.tpd.coverage, 10),
+    },
+    premium: formData.premium,
+  };
+
+  revalidateTag(`getLip-${lipId}`);
+  return patch(
+    `/lips/${lipId}`,
+    {},
+    JSON.stringify({json_quotation: JSON.stringify(data)}),
+  );
+}

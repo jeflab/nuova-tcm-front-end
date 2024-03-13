@@ -1,5 +1,6 @@
 "use client";
 
+import {updateQuotation} from "@/app/(menu)/(authenticated)/lips/[id]/actions";
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {getQuote} from "@/app/(menu)/quoter/actions";
 import {Advantages} from "@/app/(menu)/quoter/Advantages";
@@ -26,6 +27,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {useState} from "react";
 import {Alert, Button, ModalBody, ModalFooter, Row} from "react-bootstrap";
 import {useForm} from "react-hook-form";
+import invariant from "tiny-invariant";
 
 const quoteDefaultValues = {
   birthDate: "",
@@ -44,17 +46,17 @@ export function QuoteForm() {
   const [isSaving, setIsSaving] = useState(false);
   const [firstTry, setFirstTry] = useState(true);
 
-  const contractorData = useDrawerStore(
-    (state) => state.lipData.contractorData?.contractorPersonalData,
+  const contractorBirthDate = useDrawerStore(
+    (state) => state.lip?.contractor?.birthDate,
   );
+  const lipId = useDrawerStore((state) => state.lip?.id);
   const closeModal = useDrawerStore((state) => state.closeModal);
-  const updateQuoteData = useDrawerStore((state) => state.updateQuoteData);
 
   const formMethods = useForm({
     mode: "onChange",
     defaultValues: {
       ...quoteDefaultValues,
-      birthDate: dbDateString(contractorData?.birthDate),
+      birthDate: dbDateString(contractorBirthDate),
     },
   });
 
@@ -80,14 +82,30 @@ export function QuoteForm() {
     setFirstTry(false);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     setIsSaving(true);
-    updateQuoteData({
-      ...formMethods.getValues(),
-      premium: premium!,
-    });
-    closeModal();
-    setIsSaving(false);
+    invariant(premium, "premium required");
+    invariant(lipId, "lipId required");
+
+    const updateQuotationResponse = await updateQuotation(
+      {
+        ...formMethods.getValues(),
+        premium,
+      },
+      lipId,
+    );
+
+    if (updateQuotationResponse.status === "failed") {
+      formMethods.setError("root", {
+        type: "server",
+        message: updateQuotationResponse.message,
+      });
+      setIsSaving(false);
+      return;
+    } else {
+      closeModal();
+      setIsSaving(false);
+    }
   };
 
   const birthDate = formMethods.watch("birthDate");

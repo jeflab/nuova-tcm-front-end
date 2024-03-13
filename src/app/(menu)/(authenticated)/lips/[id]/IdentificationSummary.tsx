@@ -18,7 +18,7 @@ export function IdentificationDataSummary() {
   const agentId = useDrawerStore((state) => state.lip?.agent.id);
   const contractorId = useDrawerStore((state) => state.lip?.contractor.id);
   const identification = useDrawerStore(
-    (state) => state.lip?.contractor.identitydocument[0],
+    (state) => state.lip?.contractor.identitydocument?.[0],
   );
 
   if (!identification) {

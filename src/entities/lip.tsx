@@ -59,6 +59,19 @@ const denSchema = z.object({
   }),
 });
 
+const quotationSchema = z.object({
+  birthDate: z.string(),
+  smoker: z.string(),
+  death: z.number(),
+  accidentalDeath: z.boolean(),
+  trafficAccidentalDeath: z.boolean(),
+  exemptionFromPaying: z.boolean(),
+  tpi: z.object({enabled: z.boolean(), coverage: z.number()}),
+  cancer: z.object({enabled: z.boolean(), coverage: z.number()}),
+  tpd: z.object({enabled: z.boolean(), coverage: z.number()}),
+  premium: z.number(),
+});
+
 export const lipSchema = z
   .object({
     id: z.number(),
@@ -67,21 +80,35 @@ export const lipSchema = z
     agent: agentSchema,
     contractor: personalDataSchema,
     lip_number: z.coerce.string(),
-    json_den: zu.stringToJSON().pipe(denSchema).nullable(),
-    json_quotation: z.string().nullable(),
+    json_den: zu.stringToJSON().pipe(denSchema).nullable().optional(),
+    json_quotation: zu
+      .stringToJSON()
+      .pipe(quotationSchema)
+      .nullable()
+      .optional(),
     status: z.union([z.literal(0), z.literal(1)]).transform((status) => {
       return lipStatuses[status];
     }),
   })
-  .transform(({created_at, insured_id, lip_number, json_den, ...data}) => {
-    return {
-      ...data,
-      createdAt: created_at,
-      insuredId: insured_id,
-      lipNumber: lip_number,
-      den: json_den,
-    };
-  });
+  .transform(
+    ({
+      created_at,
+      insured_id,
+      lip_number,
+      json_den,
+      json_quotation,
+      ...data
+    }) => {
+      return {
+        ...data,
+        createdAt: created_at,
+        insuredId: insured_id,
+        lipNumber: lip_number,
+        den: json_den,
+        quotation: json_quotation,
+      };
+    },
+  );
 export type Lip = z.infer<typeof lipSchema>;
 
 /**************************************************************/
