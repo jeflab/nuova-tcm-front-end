@@ -7,9 +7,9 @@ import {
   educationOptions,
   expectationsOptions,
   familyOptions,
-  jobOptions,
+  jobPositionOptions,
   needsToMeetOptions,
-} from "@/app/(menu)/(authenticated)/lips/[id]/DenForm";
+} from "@/app/(menu)/(authenticated)/lips/[id]/selectsOptions";
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {getOptionsLabel} from "@/helpers/getOptionsLabel";
 import {Currency} from "@/ui/Currency";
@@ -25,13 +25,13 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Col, Row} from "react-bootstrap";
 
 export function DenSummary() {
-  const denData = useDrawerStore((state) => state.lipData.den);
+  const denData = useDrawerStore((state) => state.lip?.den);
 
   if (!denData) {
     return null;
   }
 
-  if (denData.duration !== "long_term") {
+  if (denData.duration.response !== "long_term") {
     return (
       <p className="mb-0">
         Non è possibile continuare la consulenza poiché le aspettative del
@@ -43,7 +43,7 @@ export function DenSummary() {
 
   if (
     !(["capital_and_personal_protection"] as const).some((value) =>
-      denData.expectations.includes(value),
+      denData.expectations.response.includes(value),
     )
   ) {
     return (
@@ -63,20 +63,20 @@ export function DenSummary() {
         </h4>
         <p className="mb-0">
           <strong>Titolo di studio:</strong>{" "}
-          {getOptionsLabel(educationOptions, denData.education)}
+          {getOptionsLabel(educationOptions, denData.education.response)}
         </p>
         <p className="mb-0">
           <strong>Occupazione:</strong>{" "}
-          {getOptionsLabel(jobOptions, denData.job)}
+          {getOptionsLabel(jobPositionOptions, denData.job.response)}
         </p>
         <p className="mb-0">
           <strong>
             Numero di componenti del nucleo familiare oltre al contraente:
           </strong>{" "}
-          {getOptionsLabel(familyOptions, denData.family)} di cui{" "}
+          {getOptionsLabel(familyOptions, denData.family.response)} di cui{" "}
           {getOptionsLabel(
             dependentFamilyMembersOptions,
-            denData.dependentFamilyMembers,
+            denData.dependentFamilyMembers.response,
           )}{" "}
           a carico
         </p>
@@ -90,8 +90,8 @@ export function DenSummary() {
           <strong>Prodotti assicurativi in essere:</strong>
         </p>
         <ul className="list-unstyled">
-          {denData.otherInsuranceProducts === "yes"
-            ? denData.needsIntendToMeet.map((value) => (
+          {denData.otherInsuranceProducts.response === "yes"
+            ? denData.needsIntendToMeet.response.map((value) => (
                 <li key={value} className="d-flex">
                   <FontAwesomeIcon icon={faSquareCheck} className="me-2 mt-1" />
                   {getOptionsLabel(needsToMeetOptions, value)}
@@ -115,7 +115,10 @@ export function DenSummary() {
         </p>
         <p className="mb-0">
           <strong>Andamento della condizione economica:</strong>{" "}
-          {getOptionsLabel(economicConditionOptions, denData.economicCondition)}
+          {getOptionsLabel(
+            economicConditionOptions,
+            denData.economicCondition.response,
+          )}
         </p>
       </Col>
       <Col xs={12} sm={8} md={12} lg={8}>
@@ -129,7 +132,7 @@ export function DenSummary() {
           </strong>
         </p>
         <ul className="list-unstyled mb-0">
-          {denData.expectations.map((value) => (
+          {denData.expectations.response.map((value) => (
             <li key={value} className="d-flex">
               <FontAwesomeIcon icon={faSquareCheck} className="me-2 mt-1" />
               {getOptionsLabel(expectationsOptions, value)}
@@ -146,7 +149,7 @@ export function DenSummary() {
           <strong>
             Il contraente ha bisogno di coperture per un periodo di tempo:
           </strong>{" "}
-          {getOptionsLabel(durationOptions, denData.duration)}
+          {getOptionsLabel(durationOptions, denData.duration.response)}
         </p>
       </Col>
     </Row>

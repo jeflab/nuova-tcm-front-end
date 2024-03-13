@@ -28,7 +28,6 @@ interface Actions {
   updateContractorData: (data: TempLipData["contractorData"]) => void;
   updateIdentificationData: (data: TempLipData["identification"]) => void;
   setPicture: (key: string, picture: string) => void;
-  updateDenData: (data: TempLipData["den"]) => void;
   updateQuoteData: (data: TempLipData["quote"]) => void;
   updateHealthQuestionnaireData: (
     data: TempLipData["healthQuestionnaire"],
@@ -44,17 +43,6 @@ const updateLipData = (state: State, data: Partial<TempLipData>) => {
   const newState = state;
   newState.lipData = {...newState.lipData, ...data};
 
-  //
-  // // Preventivo
-  // if (newState.drawerStates.den === "success") {
-  //   if (newState.lipData.quote === undefined) {
-  //     newState.drawerStates.quote = "active";
-  //   } else if (newState.lipData.quote) {
-  //     newState.drawerStates.quote = "success";
-  //   } else {
-  //     newState.drawerStates.quote = "danger";
-  //   }
-  // }
   //
   // // Questionario sanitario / non sanitario
   // if (newState.drawerStates.quote === "success") {
@@ -231,17 +219,14 @@ function createDrawerState(state: State & Actions) {
 
     // Demand and needs
     if (state.drawerStates.identification?.variant === "success") {
-      if (state.lip?.json_den === null) {
+      if (state.lip?.den === null) {
         state.drawerStates.den = {variant: "active", ...presetButtons.compile};
       } else if (
-        state.lip?.json_den // &&
-        // state.lip.json_den.duration === "multi_year" &&
-        // (
-        //   [
-        //     "capital_for_heirs",
-        //     "protection_against_death_accident_and_illness",
-        //   ] as const
-        // ).some((value) => state.lip.json_den?.expectations.includes(value))
+        state.lip?.den &&
+        state.lip.den.duration.response === "long_term" &&
+        (["capital_and_personal_protection"] as const).some((value) =>
+          state.lip?.den?.expectations.response.includes(value),
+        )
       ) {
         state.drawerStates.den = {variant: "success"};
       } else {
@@ -249,6 +234,20 @@ function createDrawerState(state: State & Actions) {
       }
     } else {
       state.drawerStates.den = undefined;
+    }
+
+    // Preventivo
+    if (state.drawerStates.den?.variant === "success") {
+      if (state.lip?.json_quotation === null) {
+        state.drawerStates.quote = {
+          variant: "active",
+          ...presetButtons.compile,
+        };
+      } else if (state.lipData.quote) {
+        state.drawerStates.quote = {variant: "success"};
+      } else {
+        state.drawerStates.quote = {variant: "danger"};
+      }
     }
   }
 }
@@ -376,12 +375,6 @@ export const useDrawerStore = create<State & Actions>()((set) => ({
           state.lipData.idPictures = {};
         }
         state.lipData.idPictures[key] = picture;
-      }),
-    ),
-  updateDenData: (data) =>
-    set(
-      produce((state) => {
-        updateLipData(state, {den: data});
       }),
     ),
   updateQuoteData: (data) =>

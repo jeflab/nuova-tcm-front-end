@@ -3,10 +3,24 @@
 import {ContractorGender} from "@/app/(menu)/(authenticated)/lips/[id]/ContractorFiscalCodeForm";
 import {fatcaQuestions} from "@/app/(menu)/(authenticated)/lips/[id]/FatcaForm";
 import {
+  dependentFamilyMembersOptions,
+  DependentFamilyMembersOptions,
+  durationOptions,
+  DurationOptions,
+  economicConditionOptions,
+  EconomicConditionOptions,
+  educationOptions,
+  EducationOptions,
+  expectationsOptions,
+  ExpectationsOptions,
+  familyOptions,
+  FamilyOptions,
   FundSource,
   IdType,
   JobPosition,
   jobPositionOptions,
+  needsToMeetOptions,
+  NeedsToMeetOptions,
   PublicOffices,
   publicOfficesOptions,
   TAECode,
@@ -181,4 +195,54 @@ export async function identificationContractor(
 ) {
   revalidateTag(`getLip-${lipId}`);
   return postFormData("/identification-contractor", {}, formData);
+}
+
+interface UpdateDenParams {
+  education: EducationOptions;
+  job: JobPosition;
+  family: FamilyOptions;
+  dependentFamilyMembers: DependentFamilyMembersOptions;
+  otherInsuranceProducts: YesNoAnswer;
+  needsIntendToMeet: NeedsToMeetOptions[];
+  savings: string;
+  income: string;
+  economicCondition: EconomicConditionOptions;
+  expectations: ExpectationsOptions[];
+  duration: DurationOptions;
+}
+export async function updateDen(formData: UpdateDenParams, lipId: number) {
+  const data = {
+    education: {options: educationOptions, response: formData.education},
+    job: {options: jobPositionOptions, response: formData.job},
+    family: {options: familyOptions, response: formData.family},
+    dependentFamilyMembers: {
+      options: dependentFamilyMembersOptions,
+      response: formData.dependentFamilyMembers,
+    },
+    otherInsuranceProducts: {
+      options: yesNoOptions,
+      response: formData.otherInsuranceProducts,
+    },
+    needsIntendToMeet: {
+      options: needsToMeetOptions,
+      response: formData.needsIntendToMeet,
+    },
+    savings: formData.savings,
+    income: formData.income,
+    economicCondition: {
+      options: economicConditionOptions,
+      response: formData.economicCondition,
+    },
+    expectations: {
+      options: expectationsOptions,
+      response: formData.expectations,
+    },
+    duration: {options: durationOptions, response: formData.duration},
+  };
+  revalidateTag(`getLip-${lipId}`);
+  return patch(
+    `/lips/${lipId}`,
+    {},
+    JSON.stringify({json_den: JSON.stringify(data)}),
+  );
 }

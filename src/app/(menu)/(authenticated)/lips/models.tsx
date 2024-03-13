@@ -1,14 +1,4 @@
 import {ContractorGender} from "@/app/(menu)/(authenticated)/lips/[id]/ContractorFiscalCodeForm";
-import {
-  DependentFamilyMembersOptions,
-  DurationOptions,
-  EconomicConditionOptions,
-  EducationOptions,
-  ExpectationsOptions,
-  FamilyOptions,
-  JobOptions,
-  NeedsToMeetOptions,
-} from "@/app/(menu)/(authenticated)/lips/[id]/DenForm";
 import {PaymentMethodsOptions} from "@/app/(menu)/(authenticated)/lips/[id]/PaymentForm";
 import {IdType} from "@/app/(menu)/(authenticated)/lips/[id]/selectsOptions";
 import {Documents} from "@/entities/document";
@@ -66,19 +56,6 @@ export interface TempLipData {
   idPictures?: {
     frontPictureUrl?: string; // Temp
     backPictureUrl?: string; // Temp
-  };
-  den?: {
-    education: EducationOptions;
-    job: JobOptions;
-    family: FamilyOptions;
-    dependentFamilyMembers: DependentFamilyMembersOptions;
-    otherInsuranceProducts: YesNoAnswer;
-    needsIntendToMeet: NeedsToMeetOptions[];
-    savings: string;
-    income: string;
-    economicCondition: EconomicConditionOptions;
-    expectations: ExpectationsOptions[];
-    duration: DurationOptions;
   };
   quote?: {
     birthDate: string;

@@ -1,7 +1,26 @@
 "use client";
 
+import {updateDen} from "@/app/(menu)/(authenticated)/lips/[id]/actions";
+import {
+  dependentFamilyMembersOptions,
+  DependentFamilyMembersOptions,
+  durationOptions,
+  DurationOptions,
+  economicConditionOptions,
+  EconomicConditionOptions,
+  educationOptions,
+  EducationOptions,
+  expectationsOptions,
+  ExpectationsOptions,
+  familyOptions,
+  FamilyOptions,
+  JobPosition,
+  jobPositionOptions,
+  needsToMeetOptions,
+  NeedsToMeetOptions,
+} from "@/app/(menu)/(authenticated)/lips/[id]/selectsOptions";
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
-import {YesNoAnswer} from "@/helpers/getOptionsLabel";
+import {getOptionsLabel, YesNoAnswer} from "@/helpers/getOptionsLabel";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {CheckGroup} from "@/ui/form/CheckGroup";
 import {FieldError} from "@/ui/form/FieldError";
@@ -14,6 +33,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {
   Button,
   Col,
+  FormControl,
   FormGroup,
   FormLabel,
   InputGroup,
@@ -22,134 +42,11 @@ import {
   Row,
 } from "react-bootstrap";
 import {useForm} from "react-hook-form";
-
-export const educationOptions = [
-  {label: "Nessun titolo di studio", value: "no_degree"},
-  {
-    label: "Licenza scuola primaria/media",
-    value: "primary_middle_school_license",
-  },
-  {
-    label: "Diploma di scuola superiore",
-    value: "high_school_diploma",
-  },
-  {label: "Laurea", value: "degree"},
-  {
-    label:
-      "Laurea o specializzazione post-universitaria in campo giuridico, economico o finanziario",
-    value: "degree_specialization",
-  },
-  {label: "Altro (specificare)", value: "other"},
-] as const;
-export type EducationOptions = (typeof educationOptions)[number]["value"];
-
-export const jobOptions = [
-  {
-    label: "Lavoratore subordinato a tempo indeterminato",
-    value: "permanent_employee",
-  },
-  {
-    label: "Lavoratore subordinato a tempo determinato",
-    value: "fixed_term_employee",
-  },
-  {
-    label: "Contratto temporaneo",
-    value: "temporary_contract",
-  },
-  {
-    label: "Autonomo o libero professionista",
-    value: "self_employed_or_freelancer",
-  },
-  {label: "Pensionato", value: "retired"},
-  {label: "Non occupato", value: "unemployed"},
-  {label: "Altro (specificare)", value: "other"},
-] as const;
-export type JobOptions = (typeof jobOptions)[number]["value"];
-
-export const familyOptions = [
-  {label: "Nessuno", value: "0"},
-  {label: "1", value: "1"},
-  {label: "2", value: "2"},
-  {label: "3", value: "3"},
-  {label: "4 o più", value: "4+"},
-] as const;
-export type FamilyOptions = (typeof familyOptions)[number]["value"];
-
-export const dependentFamilyMembersOptions = [
-  {label: "Nessuno", value: "0"},
-  {label: "1", value: "1"},
-  {label: "2", value: "2"},
-  {label: "3", value: "3"},
-  {label: "4 o più", value: "4+"},
-] as const;
-export type DependentFamilyMembersOptions =
-  (typeof dependentFamilyMembersOptions)[number]["value"];
-
-export const needsToMeetOptions = [
-  {
-    label: "Risparmio e conservazione del patrimonio",
-    value: "savings_and_wealth_preservation",
-  },
-  {
-    label: "Investimento",
-    value: "investment",
-  },
-  {
-    label:
-      "Protezione assicurativa della persona (morte, invalidità, malattie gravi)",
-    value: "personal_insurance_protection",
-  },
-  {
-    label: "Previdenza/pensione complementare",
-    value: "supplementary_pension",
-  },
-  {
-    label: "Altro (specificare)",
-    value: "other",
-  },
-] as const;
-export type NeedsToMeetOptions = (typeof needsToMeetOptions)[number]["value"];
-
-export const economicConditionOptions = [
-  {label: "In crescita", value: "growing"},
-  {label: "Stazionaria", value: "stationary"},
-  {label: "In diminuzione", value: "decreasing"},
-] as const;
-export type EconomicConditionOptions =
-  (typeof economicConditionOptions)[number]["value"];
-
-export const expectationsOptions = [
-  {
-    label:
-      "Proteggere la mia abitazione e i miei beni personali/familiari di valore",
-    value: "home_protection",
-  },
-  {
-    label:
-      "Prevedere un capitale assicurato ai miei eredi (o comunque a persone a me care), che intendo proteggere contro il rischio di decesso, e/o proteggermi dal rischio di infortunio e/o malattia",
-    value: "capital_and_personal_protection",
-  },
-  {
-    label: "Investimento unitamente a una protezione del capitale",
-    value: "investment_with_capital_protection",
-  },
-  {
-    label: "Investimento",
-    value: "investment",
-  },
-] as const;
-export type ExpectationsOptions = (typeof expectationsOptions)[number]["value"];
-
-export const durationOptions = [
-  {label: "Limitato (un anno)", value: "1_year"},
-  {label: "Breve (da uno a cinque anni)", value: "short_term"},
-  {label: "Lungo (maggiore di cinque anni)", value: "long_term"},
-] as const;
-export type DurationOptions = (typeof durationOptions)[number]["value"];
+import invariant from "tiny-invariant";
 
 const denDefaultValues = {
   education: "" as EducationOptions,
-  job: "" as JobOptions,
+  job: "" as JobPosition,
   family: "" as FamilyOptions,
   dependentFamilyMembers: "" as DependentFamilyMembersOptions,
   otherInsuranceProducts: "" as YesNoAnswer,
@@ -162,9 +59,13 @@ const denDefaultValues = {
 };
 
 export function DenForm() {
+  const job = useDrawerStore(
+    (state) => state.lip?.contractor.pep?.job.position.response,
+  );
+
   const formMethods = useForm({
     mode: "onChange",
-    defaultValues: denDefaultValues,
+    defaultValues: {...denDefaultValues, ...(job && {job})},
   });
 
   const dependentFamilyMembersValue = formMethods.watch(
@@ -174,16 +75,27 @@ export function DenForm() {
     "otherInsuranceProducts",
   );
 
+  const lipId = useDrawerStore((state) => state.lip?.id);
   const closeModal = useDrawerStore((state) => state.closeModal);
-  const updateDenData = useDrawerStore((state) => state.updateDenData);
 
   return (
     <>
       <ModalBody>
         <Form
           id="den-form"
-          onSubmit={(values) => {
-            updateDenData(values);
+          onSubmit={async (values) => {
+            invariant(lipId, "lipId is required");
+            const updateDenResponse = await updateDen(values, lipId);
+
+            if (updateDenResponse.status === "failed") {
+              throw {
+                root: {
+                  type: "server",
+                  message: updateDenResponse.message,
+                },
+              };
+            }
+
             closeModal();
           }}
           formMethods={formMethods}
@@ -208,12 +120,23 @@ export function DenForm() {
               <FormGroup controlId="job" as={BorderFeedback}>
                 <FormLabel>Attuale occupazione</FormLabel>
                 <FieldError />
-                <SelectField
+                <InputField
+                  type="hidden"
                   placeholder="Attuale occupazione del contraente"
-                  options={jobOptions}
-                  validation={{
-                    required: "Seleziona l'attuale occupazione del contraente",
-                  }}
+                  readOnly
+                  plainText
+                />
+                <FormControl
+                  type="text"
+                  placeholder="Attuale occupazione del contraente"
+                  readOnly
+                  plaintext
+                  name="jobValue"
+                  value={
+                    job && job !== "other"
+                      ? getOptionsLabel(jobPositionOptions, job)
+                      : job
+                  }
                 />
               </FormGroup>
             </Col>

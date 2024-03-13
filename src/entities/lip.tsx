@@ -4,6 +4,7 @@ import {faCircleHalf, faCircleTrash} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {ReactNode} from "react";
 import {z} from "zod";
+import {zu} from "zod_utilz";
 
 export const lipStatuses = ["softDeleted", "open"] as const;
 export type LipStatesKeys = (typeof lipStatuses)[number];
@@ -17,6 +18,47 @@ export const LipStatusesIcons: Record<LipStatesKeys, ReactNode> = {
   open: <FontAwesomeIcon icon={faCircleHalf} className="text-warning" />,
 } as const;
 
+const denSchema = z.object({
+  education: z.object({
+    options: z.array(z.object({label: z.string(), value: z.string()})),
+    response: z.string(),
+  }),
+  job: z.object({
+    options: z.array(z.object({label: z.string(), value: z.string()})),
+    response: z.string(),
+  }),
+  family: z.object({
+    options: z.array(z.object({label: z.string(), value: z.string()})),
+    response: z.string(),
+  }),
+  dependentFamilyMembers: z.object({
+    options: z.array(z.object({label: z.string(), value: z.string()})),
+    response: z.string(),
+  }),
+  otherInsuranceProducts: z.object({
+    options: z.array(z.object({value: z.string(), label: z.string()})),
+    response: z.string(),
+  }),
+  needsIntendToMeet: z.object({
+    options: z.array(z.object({label: z.string(), value: z.string()})),
+    response: z.array(z.string()),
+  }),
+  savings: z.string(),
+  income: z.string(),
+  economicCondition: z.object({
+    options: z.array(z.object({label: z.string(), value: z.string()})),
+    response: z.string(),
+  }),
+  expectations: z.object({
+    options: z.array(z.object({label: z.string(), value: z.string()})),
+    response: z.array(z.string()),
+  }),
+  duration: z.object({
+    options: z.array(z.object({label: z.string(), value: z.string()})),
+    response: z.string(),
+  }),
+});
+
 export const lipSchema = z
   .object({
     id: z.number(),
@@ -25,17 +67,19 @@ export const lipSchema = z
     agent: agentSchema,
     contractor: personalDataSchema,
     lip_number: z.coerce.string(),
-    json_den: z.string().nullable(),
+    json_den: zu.stringToJSON().pipe(denSchema).nullable(),
+    json_quotation: z.string().nullable(),
     status: z.union([z.literal(0), z.literal(1)]).transform((status) => {
       return lipStatuses[status];
     }),
   })
-  .transform(({created_at, insured_id, lip_number, ...data}) => {
+  .transform(({created_at, insured_id, lip_number, json_den, ...data}) => {
     return {
       ...data,
       createdAt: created_at,
       insuredId: insured_id,
       lipNumber: lip_number,
+      den: json_den,
     };
   });
 export type Lip = z.infer<typeof lipSchema>;
