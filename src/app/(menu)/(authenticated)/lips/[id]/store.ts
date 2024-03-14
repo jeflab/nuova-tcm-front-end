@@ -73,6 +73,7 @@ const updateLipData = (state: State, data: Partial<TempLipData>) => {
 function createDrawerState(state: State & Actions) {
   // Dati preliminari
   const isPreliminary = !state.lip;
+  state.drawerStates = {fatca: {variant: "active", ...presetButtons.compile}};
 
   if (isPreliminary) {
     // fatca
@@ -351,7 +352,7 @@ export const useDrawerStore = create<State & Actions>()((set) => ({
   updateLip: (lip) =>
     set(
       produce((state) => {
-        state.lip = {...lip};
+        state.lip = lip ? {...lip} : undefined;
         createDrawerState(state);
       }),
     ),

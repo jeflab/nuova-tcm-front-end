@@ -8,6 +8,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Button, Stack} from "react-bootstrap";
 
 export function ContractorPersonalAreaActivationSummary() {
+  console.log(useDrawerStore.getState());
   const lipId = useDrawerStore((state) => state.lip?.id);
   const agentId = useDrawerStore((state) => state.lip?.agent.id);
   const contractor = useDrawerStore((state) => state.lip?.contractor);

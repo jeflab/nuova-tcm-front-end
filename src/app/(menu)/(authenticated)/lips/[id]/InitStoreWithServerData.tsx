@@ -12,9 +12,12 @@ export function InitStoreWithServerData({lip}: InitStoreWithServerDataProps) {
   const updateLip = useDrawerStore((state) => state.updateLip);
 
   useEffect(() => {
-    if (lip) {
-      updateLip(lip);
-    }
+    console.log("ho ricevuto", lip);
+    updateLip(lip);
+
+    return () => {
+      updateLip(undefined);
+    };
   }, [lip, updateLip]);
 
   return null;
