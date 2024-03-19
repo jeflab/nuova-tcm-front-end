@@ -1,3 +1,5 @@
+import invariant from "tiny-invariant";
+
 export type Option = {label: string; value: string};
 
 export const yesNoOptions = [
@@ -22,5 +24,6 @@ export function getOptionsValues<TValue extends string>(
   const [firstValue, ...otherValues] = Array.from(inputOptions).map(
     (option) => option.value,
   );
+  invariant(firstValue, "Options should have at least one value");
   return [firstValue, ...otherValues];
 }

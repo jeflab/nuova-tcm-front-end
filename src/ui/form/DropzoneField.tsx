@@ -40,8 +40,6 @@ export function DropzoneField({
   const {isInvalid, isValid} = useValidationState(controlName);
 
   const handleDrop = (accepted: File[], fileRejections: FileRejection[]) => {
-    const newFile = accepted[0];
-
     if (accepted.length === 0 && fileRejections.length > 1) {
       setError(controlName, {
         type: "custom",
@@ -58,7 +56,8 @@ export function DropzoneField({
         type: "custom",
         message: errors[ErrorCodes.ID_FILE_TOO_BIG].message,
       });
-    } else {
+    } else if (accepted[0]) {
+      const newFile = accepted[0];
       setPicture(controlName + "Url", URL.createObjectURL(newFile));
       setThumbUrl(URL.createObjectURL(newFile));
       onChange(newFile);

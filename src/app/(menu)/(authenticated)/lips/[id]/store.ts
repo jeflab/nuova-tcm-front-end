@@ -418,13 +418,13 @@ export const useDrawerStore = create<State & Actions>()((set) => ({
         const file = state.lipData.documentation.files.find(
           (file) => file.fileName === fileName,
         );
-        if (!file) {
+        if (!file?.esigns[esignIndex]) {
           return;
         }
 
-        file.esigns[esignIndex].esignId = 1;
-        file.esigns[esignIndex].esignDate = new Date();
-        file.esigns[esignIndex].esignUser = {
+        file.esigns[esignIndex]!.esignId = 1;
+        file.esigns[esignIndex]!.esignDate = new Date();
+        file.esigns[esignIndex]!.esignUser = {
           cell: "0123456789",
           email: "mario@example.com",
           fiscalCode: "MRSRSS84H24E704I",

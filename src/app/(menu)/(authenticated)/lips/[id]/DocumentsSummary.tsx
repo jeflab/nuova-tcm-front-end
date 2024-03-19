@@ -1,7 +1,6 @@
 "use client";
 
 import styles from "@/app/(menu)/(authenticated)/lips/[id]/DocumentsManagement.module.scss";
-import {ESignsManagementModal} from "@/app/(menu)/(authenticated)/lips/[id]/DocumentsManagement/ESignsManagementModal";
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {FileEsign} from "@/entities/document";
 import {
@@ -10,13 +9,14 @@ import {
   faEye,
   faFileCheck,
   faFileContract,
-  faFileSignature,
-  faUser,
 } from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Button, Card, CardHeader, Stack} from "react-bootstrap";
 
-const eSignsCount = (eSigns: FileEsign[], filter?: string) => {
+const eSignsCount = (
+  eSigns: FileEsign[],
+  filter?: string,
+): [FileEsign[], FileEsign[]] => {
   let filteredESigns = eSigns.map((eSign, index) => ({
     ...eSign,
     esignIndex: index,
