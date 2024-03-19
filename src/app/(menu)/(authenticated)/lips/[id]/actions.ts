@@ -2,6 +2,7 @@
 
 import {ContractorGender} from "@/app/(menu)/(authenticated)/lips/[id]/ContractorFiscalCodeForm";
 import {fatcaQuestions} from "@/app/(menu)/(authenticated)/lips/[id]/FatcaForm";
+import {HealthQuestionnaireFormValues} from "@/app/(menu)/(authenticated)/lips/[id]/HealthQuestionnaireForm";
 import {
   dependentFamilyMembersOptions,
   DependentFamilyMembersOptions,
@@ -290,5 +291,16 @@ export async function updateQuotation(
     `/lips/${lipId}`,
     {},
     JSON.stringify({json_quotation: JSON.stringify(data)}),
+  );
+}
+export async function updateHealthQuestionnaire(
+  formData: HealthQuestionnaireFormValues,
+  lipId: number,
+) {
+  revalidateTag(`getLip-${lipId}`);
+  return patch(
+    `/lips/${lipId}`,
+    {},
+    JSON.stringify({json_survey_healthcare: JSON.stringify(formData)}),
   );
 }

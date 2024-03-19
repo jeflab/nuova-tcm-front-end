@@ -29,10 +29,6 @@ interface Actions {
   updateContractorData: (data: TempLipData["contractorData"]) => void;
   updateIdentificationData: (data: TempLipData["identification"]) => void;
   setPicture: (key: string, picture: string) => void;
-  updateQuoteData: (data: TempLipData["quote"]) => void;
-  updateHealthQuestionnaireData: (
-    data: TempLipData["healthQuestionnaire"],
-  ) => void;
   updateBeneficiariesData: (data: TempLipData["beneficiaries"]) => void;
   updateDocumentationData: (data: TempLipData["documentation"]) => void;
   esignDocument: (fileName: string, esignIndex: number) => void;
@@ -43,18 +39,6 @@ interface Actions {
 const updateLipData = (state: State, data: Partial<TempLipData>) => {
   const newState = state;
   newState.lipData = {...newState.lipData, ...data};
-
-  //
-  // // Beneficiari
-  // if (newState.drawerStates.healthQuestionnaire === "success") {
-  //   if (newState.lipData.beneficiaries === undefined) {
-  //     newState.drawerStates.beneficiaries = "active";
-  //   } else if (newState.lipData.beneficiaries) {
-  //     newState.drawerStates.beneficiaries = "success";
-  //   } else {
-  //     newState.drawerStates.beneficiaries = "danger";
-  //   }
-  // }
 
   // // Documentazione
   // if (newState.drawerStates.beneficiaries === "success") {
@@ -239,24 +223,27 @@ function createDrawerState(state: State & Actions) {
 
     // Questionario sanitario / non sanitario
     if (state.drawerStates.quote?.variant === "success") {
-      if (state.lipData.healthQuestionnaire === undefined) {
+      if (!state.lip?.healthcareQuestionnaire) {
         state.drawerStates.healthQuestionnaire = {
           variant: "active",
           ...presetButtons.compile,
         };
-      } else if (
-        calculateImc(
-          parseInt(state.lipData.healthQuestionnaire.weight, 10),
-          parseInt(state.lipData.healthQuestionnaire.height, 10),
-        ) < RANGE.max &&
-        calculateImc(
-          parseInt(state.lipData.healthQuestionnaire.weight, 10),
-          parseInt(state.lipData.healthQuestionnaire.height, 10),
-        ) > RANGE.min
-      ) {
-        state.drawerStates.healthQuestionnaire = {variant: "success"};
       } else {
-        state.drawerStates.healthQuestionnaire = {variant: "danger"};
+        state.drawerStates.healthQuestionnaire = {variant: "success"};
+      }
+    }
+
+    // Beneficiari
+    if (state.drawerStates.healthQuestionnaire?.variant === "success") {
+      if (state.lipData.beneficiaries === undefined) {
+        state.drawerStates.beneficiaries = {
+          variant: "active",
+          ...presetButtons.compile,
+        };
+      } else if (state.lipData.beneficiaries) {
+        state.drawerStates.beneficiaries = {variant: "success"};
+      } else {
+        state.drawerStates.beneficiaries = {variant: "danger"};
       }
     }
   }
@@ -385,18 +372,6 @@ export const useDrawerStore = create<State & Actions>()((set) => ({
           state.lipData.idPictures = {};
         }
         state.lipData.idPictures[key] = picture;
-      }),
-    ),
-  updateQuoteData: (data) =>
-    set(
-      produce((state) => {
-        updateLipData(state, {quote: data});
-      }),
-    ),
-  updateHealthQuestionnaireData: (data) =>
-    set(
-      produce((state) => {
-        updateLipData(state, {healthQuestionnaire: data});
       }),
     ),
   updateBeneficiariesData: (data) =>

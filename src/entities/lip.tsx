@@ -1,5 +1,6 @@
 import {agentSchema} from "@/entities/agent";
 import {personalDataSchema} from "@/entities/personalData";
+import {getOptionsValues, yesNoOptions} from "@/helpers/getOptionsLabel";
 import {faCircleHalf, faCircleTrash} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {ReactNode} from "react";
@@ -72,6 +73,51 @@ const quotationSchema = z.object({
   premium: z.number(),
 });
 
+const healthcareQuestionnaireSchema = z.object({
+  weight: z.string(),
+  height: z.string(),
+  hospitalization: z.object({
+    check: z.enum([...getOptionsValues(yesNoOptions)]),
+    details: z.string(),
+  }),
+  diseases: z.object({
+    check: z.enum([...getOptionsValues(yesNoOptions)]),
+    details: z.string(),
+  }),
+  drugTherapy: z.object({
+    check: z.enum([...getOptionsValues(yesNoOptions)]),
+    details: z.string(),
+  }),
+  symptomatology: z.object({
+    check: z.enum([...getOptionsValues(yesNoOptions)]),
+    details: z.string(),
+  }),
+  professionalRisk: z.object({
+    check: z.enum([...getOptionsValues(yesNoOptions)]),
+    details: z.string(),
+  }),
+  sportRisk: z.object({
+    check: z.enum([...getOptionsValues(yesNoOptions)]),
+    details: z.string(),
+  }),
+  cancer: z.object({
+    check: z.enum([...getOptionsValues(yesNoOptions), ""]),
+    details: z.string(),
+  }),
+  nervousSystemDiseases: z.object({
+    check: z.enum([...getOptionsValues(yesNoOptions), ""]),
+    details: z.string(),
+  }),
+  invalidityPension: z.object({
+    check: z.enum([...getOptionsValues(yesNoOptions), ""]),
+    details: z.string(),
+  }),
+  physicalImpairment: z.object({
+    check: z.enum([...getOptionsValues(yesNoOptions), ""]),
+    details: z.string(),
+  }),
+});
+
 export const lipSchema = z
   .object({
     id: z.number(),
@@ -86,6 +132,11 @@ export const lipSchema = z
       .pipe(quotationSchema)
       .nullable()
       .optional(),
+    json_survey_healthcare: zu
+      .stringToJSON()
+      .pipe(healthcareQuestionnaireSchema)
+      .nullable()
+      .optional(),
     status: z.union([z.literal(0), z.literal(1)]).transform((status) => {
       return lipStatuses[status];
     }),
@@ -97,6 +148,7 @@ export const lipSchema = z
       lip_number,
       json_den,
       json_quotation,
+      json_survey_healthcare,
       ...data
     }) => {
       return {
@@ -106,6 +158,7 @@ export const lipSchema = z
         lipNumber: lip_number,
         den: json_den,
         quotation: json_quotation,
+        healthcareQuestionnaire: json_survey_healthcare,
       };
     },
   );
