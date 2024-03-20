@@ -1,85 +1,14 @@
 import {
-  PepPerson,
-  PepRelation,
-} from "@/app/(menu)/(authenticated)/lips/[id]/ContractorDataForm";
-import {ContractorGender} from "@/app/(menu)/(authenticated)/lips/[id]/ContractorFiscalCodeForm";
-import {
-  DependentFamilyMembersOptions,
-  DurationOptions,
-  EconomicConditionOptions,
-  EducationOptions,
-  ExpectationsOptions,
-  FamilyOptions,
-  JobOptions,
-  NeedsToMeetOptions,
-} from "@/app/(menu)/(authenticated)/lips/[id]/DenForm";
-import {IdType} from "@/app/(menu)/(authenticated)/lips/[id]/IdentificationForm";
-import {PaymentMethodsOptions} from "@/app/(menu)/(authenticated)/lips/[id]/PaymentForm";
+  Gender,
+  IdType,
+  PaymentMethodsSimple,
+} from "@/app/(menu)/(authenticated)/lips/[id]/selectsOptions";
 import {Documents} from "@/entities/document";
-import {YesNoAnswer} from "@/helpers/TypesHelper";
-import {
-  faCheckCircle,
-  faCircleHalf,
-  faDollarCircle,
-} from "@fortawesome/pro-duotone-svg-icons";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {ReactNode} from "react";
-import {z} from "zod";
-
-export const lipStates = ["open", "payment_pending", "complete"] as const;
-export type LipStatesKeys = (typeof lipStates)[number];
-
-export const lipSchema = z.object({
-  id: z.number(),
-  surname: z.string(),
-  name: z.string(),
-  date: z.coerce.date(),
-  state: z.enum(lipStates),
-});
-
-export type Lip = z.infer<typeof lipSchema>;
-
-export const lipStatesLabels: Record<LipStatesKeys, string> = {
-  open: "Aperta",
-  payment_pending: "In attesa di pagamento",
-  complete: "Completata",
-} as const;
-
-export const LipStatesIcons: Record<LipStatesKeys, ReactNode> = {
-  open: <FontAwesomeIcon icon={faCircleHalf} className="text-warning" />,
-  payment_pending: (
-    <FontAwesomeIcon icon={faDollarCircle} className="text-warning" />
-  ),
-  complete: <FontAwesomeIcon icon={faCheckCircle} className="text-success" />,
-} as const;
-
-export type Pep =
-  | {
-      isPep: "yes";
-      person: PepPerson;
-      relation: PepRelation;
-    }
-  | {
-      isPep: "no";
-      person: "";
-      relation: "";
-    };
+import {YesNoAnswer} from "@/helpers/getOptionsLabel";
 
 // TODO: sistemare interfaccia
 export interface TempLipData {
   agentId?: number;
-  fatca?: boolean;
-  contractorFiscalCode?: {
-    birthDate: string;
-    birthPlace: {
-      city: string;
-      province: string;
-    };
-    fiscalCode: string;
-    gender: ContractorGender;
-    name: string;
-    surname: string;
-  };
   contractorPersonalAreaActivation?: boolean;
   contractorData?: {
     contractorPersonalData: {
@@ -89,7 +18,7 @@ export interface TempLipData {
         province: string;
       };
       fiscalCode: string;
-      gender: ContractorGender;
+      gender: Gender;
       name: string;
       surname: string;
     };
@@ -106,7 +35,6 @@ export interface TempLipData {
       streetNumber: string;
       zipCode: string;
     };
-    pep: Pep;
     aml: {
       job: string;
       sector: string;
@@ -130,19 +58,6 @@ export interface TempLipData {
   idPictures?: {
     frontPictureUrl?: string; // Temp
     backPictureUrl?: string; // Temp
-  };
-  den?: {
-    education: EducationOptions;
-    job: JobOptions;
-    family: FamilyOptions;
-    dependentFamilyMembers: DependentFamilyMembersOptions;
-    otherInsuranceProducts: YesNoAnswer;
-    needsIntendToMeet: NeedsToMeetOptions[];
-    savings: string;
-    income: string;
-    economicCondition: EconomicConditionOptions;
-    expectations: ExpectationsOptions[];
-    duration: DurationOptions;
   };
   quote?: {
     birthDate: string;
@@ -218,6 +133,22 @@ export interface TempLipData {
   payment?: {
     bank: string;
     iban: string;
-    paymentMethod: PaymentMethodsOptions;
+    paymentMethod: PaymentMethodsSimple;
+  };
+}
+
+export interface PreliminaryData {
+  fatca?: YesNoAnswer;
+  contractorAlreadyRegistered?: boolean;
+  contractorPersonalData?: {
+    birthDate: string;
+    birthPlace: {
+      city: string;
+      province: string;
+    };
+    fiscalCode: string;
+    gender: Gender;
+    name: string;
+    surname: string;
   };
 }

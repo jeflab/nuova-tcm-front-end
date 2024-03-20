@@ -1,6 +1,5 @@
 import CodiceFiscale from "codice-fiscale-js";
-import {PROVINCE} from "codice-fiscale-js/src/lista-province";
-import {COMUNI} from "codice-fiscale-js/src/lista-comuni";
+import invariant from "tiny-invariant";
 import {z} from "zod";
 
 const lastCharFiscalCode = (fc: string): boolean => {
@@ -11,7 +10,7 @@ const lastCharFiscalCode = (fc: string): boolean => {
   const map = [
     1, 0, 5, 7, 9, 13, 15, 17, 19, 21, 1, 0, 5, 7, 9, 13, 15, 17, 19, 21, 2, 4,
     18, 20, 11, 3, 6, 8, 12, 14, 16, 10, 22, 25, 24, 23,
-  ];
+  ] as const;
 
   let s = 0;
   for (let i = 0; i < 15; i++) {
@@ -22,7 +21,9 @@ const lastCharFiscalCode = (fc: string): boolean => {
       c = c - 55;
     }
     if (i % 2 === 0) {
-      s += map[c];
+      const mapValue = map[c];
+      invariant(mapValue !== undefined, "Invalid character");
+      s += mapValue;
     } else {
       s += c < 10 ? c : c - 10;
     }
@@ -66,11 +67,9 @@ export const fiscalCodeMatchDataSuperRefines = (
   }
   try {
     const fiscalCode = new CodiceFiscale(data);
-    console.log({fiscalCode, code});
     return fiscalCode.cf === code;
   } catch (e) {
-    console.log("Errore da gestire:");
-    console.log(e);
+    console.error(e);
     return false;
   }
 };
@@ -80,7 +79,6 @@ export const fiscalCodeMatchDataSuperRefine = (
   code: string,
   ctx: z.RefinementCtx,
 ) => {
-  console.log({data, ctx});
   if (
     !data.name ||
     !data.surname ||

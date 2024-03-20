@@ -3,16 +3,25 @@
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 
 export function ContractorFiscalCodeSummary() {
-  const contractorFiscalCodeData = useDrawerStore(
-    (state) => state.lipData.contractorFiscalCode,
+  const contractorAlreadyRegistered = useDrawerStore(
+    (state) => state.preliminaryData.contractorAlreadyRegistered,
   );
-  const agentId = useDrawerStore((state) => state.lipData.agentId);
 
-  if (!contractorFiscalCodeData) {
+  const contractorFiscalCodeDataPreliminary = useDrawerStore(
+    (state) => state.preliminaryData.contractorPersonalData,
+  );
+  const contractorFiscalCodeDataLip = useDrawerStore(
+    (state) => state.lip?.contractor?.fiscalCode,
+  );
+
+  const contractorFiscalCodeData =
+    contractorFiscalCodeDataLip ?? contractorFiscalCodeDataPreliminary;
+
+  if (!contractorFiscalCodeData && !contractorAlreadyRegistered) {
     return null;
   }
 
-  if (!!agentId && agentId !== 2) {
+  if (contractorAlreadyRegistered) {
     return (
       <p className="mb-0">
         Non è possibile continuare la consulenza poiché il contraente risulta

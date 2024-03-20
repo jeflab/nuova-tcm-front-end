@@ -1,15 +1,13 @@
 "use server";
 
-import {
-  contractorSchema,
-  lipSchema,
-} from "@/app/(menu)/(authenticated)/contractorLips/models";
+import {lipSchema} from "@/entities/lip";
 import {get} from "@/services/api";
 import {z} from "zod";
+import {personalDataSchema} from "@/entities/personalData";
 
 const getContractorLipsShape = {
   lips: z.array(lipSchema),
-  contractor: contractorSchema,
+  contractor: personalDataSchema,
 };
 
 export async function getContractorLips() {

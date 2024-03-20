@@ -1,11 +1,11 @@
 "use server";
 
 import {AUTH_COOKIE_NAME} from "@/app/(no-menu)/(auth)/const";
+import {accountSchema, profileSchema} from "@/entities/account";
 import {cookies, headers} from "next/headers";
 import {redirect} from "next/navigation";
 import {z} from "zod";
 import * as api from "@/services/api";
-import {accountSchema} from "./models";
 
 const LoginResponseRawShape = {
   access_token: z.string(),
@@ -55,4 +55,8 @@ export async function checkAuth() {
 
 export async function getAccount() {
   return await api.get("/me", accountSchema.shape);
+}
+
+export async function getProfile() {
+  return await api.get("/profile-me", profileSchema.shape);
 }

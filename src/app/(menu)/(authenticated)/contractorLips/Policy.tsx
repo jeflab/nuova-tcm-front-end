@@ -1,9 +1,7 @@
 "use client";
 
-import {
-  Contractor,
-  Lip,
-} from "@/app/(menu)/(authenticated)/contractorLips/models";
+import {PersonalData} from "@/entities/personalData";
+import {Lip} from "@/entities/lip";
 import {dateString} from "@/helpers/dates";
 import {CardCollapsable} from "@/ui/CardCollapsable";
 import {faEye} from "@fortawesome/pro-duotone-svg-icons";
@@ -12,7 +10,7 @@ import {Button, Placeholder, Stack} from "react-bootstrap";
 
 interface PolicyProps {
   lip: Lip;
-  contractor: Contractor;
+  contractor: PersonalData;
 }
 
 export function Policy({lip, contractor}: PolicyProps) {

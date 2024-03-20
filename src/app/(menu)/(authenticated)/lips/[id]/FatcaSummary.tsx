@@ -3,9 +3,16 @@
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 
 export function FatcaSummary() {
-  const fatcaData = useDrawerStore((state) => state.lipData.fatca);
+  const fatcaPreliminary = useDrawerStore(
+    (state) => state.preliminaryData.fatca,
+  );
+  const fatcaLip = useDrawerStore(
+    (state) => state.lip?.contractor?.fatca.fatcaCheck.response,
+  );
 
-  if (fatcaData === true) {
+  const fatcaData = fatcaLip ?? fatcaPreliminary;
+
+  if (fatcaData === "yes") {
     return (
       <p className="mb-0">
         Non è possibile continuare la consulenza poiché il contraente è
@@ -14,7 +21,7 @@ export function FatcaSummary() {
     );
   }
 
-  if (fatcaData === false) {
+  if (fatcaData === "no") {
     return (
       <p className="mb-0">
         Il contraente non è residente negli Stati Uniti d'America

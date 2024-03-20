@@ -5,7 +5,7 @@ import {ButtonLink} from "@/ui/ButtonLink";
 import CenterLogoContent from "@/ui/CenterLogoContent";
 import {Debug} from "@/ui/Debug";
 import {Providers} from "@/ui/Providers";
-import {getTheme} from "@/ui/Theme/actions";
+import {getThemeClientSide} from "@/ui/Theme/helpers";
 import {
   faArrowRotateBack,
   faHouseChimney,
@@ -15,7 +15,7 @@ import * as Sentry from "@sentry/nextjs";
 import {useEffect} from "react";
 import {Button} from "react-bootstrap";
 
-const containerStyle = {"--content-width": "450px"};
+const containerStyle = {"--content-width": "max-content"};
 
 export default function GlobalError({
   error,
@@ -24,7 +24,7 @@ export default function GlobalError({
   error: Error & {digest?: string};
   reset: () => void;
 }) {
-  const theme = getTheme();
+  const theme = getThemeClientSide();
 
   useEffect(() => {
     Sentry.captureException(error);

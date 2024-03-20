@@ -12,7 +12,7 @@ import styles from "./page.module.scss";
 export default async function NewLipPage() {
   return (
     <AppContainer className="vstack gap-3">
-      <PageTitle>Nuova polizza</PageTitle>
+      <PageTitle>Caricamento polizza</PageTitle>
       <Row className="flex-row-reverse">
         <Col md="auto">
           <Nav className={cns("flex-column", styles.connectedList)}>
@@ -24,14 +24,14 @@ export default async function NewLipPage() {
           </Nav>
         </Col>
         <Col className="d-flex flex-column gap-3">
-          <Alert variant="info">
+          <Alert variant="info" className="mb-0">
             <h3>
               <FontAwesomeIcon icon={faTriangleExclamation} className="me-2" />
-              Avviso Legale: Contraente e Assicurato devono Coincidere
+              Avviso legale: Contraente e Assicurato devono coincidere.
             </h3>
             <p>
-              Ti diamo il benvenuto nell'App di Calcolo Preventivo per Polizze
-              Vita. Ai fini legali, è obbligatorio che il contraente coincida
+              Ti diamo il benvenuto nell'app di calcolo preventivo per polizze
+              vita. Ai fini legali, è obbligatorio che il contraente coincida
               con l'assicurato durante la compilazione dei dati.
             </p>
             <p className="mb-0">

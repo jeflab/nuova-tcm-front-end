@@ -5,7 +5,7 @@ export const dataTableParamsSchema = z.object({
   query: z.string().optional().default(""),
   page: z.coerce.number().int().positive().catch(1),
   perPage: z.coerce.number().int().positive().catch(25),
-  sorting: z.string().optional().default("-date"),
+  sorting: z.string().optional().default("-createdAt"),
   columnFilters: z.string().optional().default(""),
 });
 export const defaultDataTableParams = dataTableParamsSchema.parse({});

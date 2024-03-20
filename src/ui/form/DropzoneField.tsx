@@ -3,7 +3,6 @@ import {cns} from "@/helpers/cns";
 import {ErrorCodes, errors} from "@/helpers/errors";
 import {useValidationState} from "@/ui/form/hooks";
 import {WithChildren} from "@/ui/types";
-import chalk from "chalk";
 import {useContext, useState} from "react";
 import FormContext from "react-bootstrap/FormContext";
 import Dropzone, {FileRejection} from "react-dropzone";
@@ -41,8 +40,6 @@ export function DropzoneField({
   const {isInvalid, isValid} = useValidationState(controlName);
 
   const handleDrop = (accepted: File[], fileRejections: FileRejection[]) => {
-    const newFile = accepted[0];
-
     if (accepted.length === 0 && fileRejections.length > 1) {
       setError(controlName, {
         type: "custom",
@@ -59,7 +56,8 @@ export function DropzoneField({
         type: "custom",
         message: errors[ErrorCodes.ID_FILE_TOO_BIG].message,
       });
-    } else {
+    } else if (accepted[0]) {
+      const newFile = accepted[0];
       setPicture(controlName + "Url", URL.createObjectURL(newFile));
       setThumbUrl(URL.createObjectURL(newFile));
       onChange(newFile);

@@ -1,55 +1,73 @@
 "use client";
 
-import {fakeActivateContractorPersonalArea} from "@/app/(menu)/(authenticated)/lips/[id]/actions";
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
-import useInterval from "beautiful-react-hooks/useInterval";
-import {useState} from "react";
+import {apiUrl} from "@/services/const";
+import {ButtonLink} from "@/ui/ButtonLink";
+import {faDownload} from "@fortawesome/pro-duotone-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {Button, Stack} from "react-bootstrap";
 
 export function ContractorPersonalAreaActivationSummary() {
-  const [countdown, setCountdown] = useState(10);
-  const drawerState = useDrawerStore(
-    (state) => state.drawerStates["contractorPersonalAreaActivation"],
-  );
-  const updateContractorPersonalAreaActivation = useDrawerStore(
-    (state) => state.updateContractorPersonalAreaActivation,
-  );
-  const contractorPersonalAreaActivation = useDrawerStore(
-    (state) => state.lipData.contractorPersonalAreaActivation,
-  );
+  const lipId = useDrawerStore((state) => state.lip?.id);
+  const agentId = useDrawerStore((state) => state.lip?.agent.id);
+  const contractor = useDrawerStore((state) => state.lip?.contractor);
 
-  const [, clearInterval] = useInterval(async () => {
-    if (drawerState === "waiting") {
-      if (countdown <= 0) {
-        clearInterval();
-        const isActive = await fakeActivateContractorPersonalArea();
-        if (isActive) {
-          updateContractorPersonalAreaActivation(true);
-        }
-      }
-      setCountdown(countdown - 1);
-    }
-  }, 1000);
-
-  if (
-    contractorPersonalAreaActivation === undefined &&
-    drawerState !== "waiting"
-  ) {
+  if (!contractor) {
     return null;
   }
 
-  if (drawerState === "waiting") {
+  if (contractor.lastPrivacyEsignId === null) {
     return (
       <p className="mb-0">
-        In attesa dell'attivazione area cliente {countdown}
+        In attesa che il Contraente accetti e firmi la privacy
       </p>
     );
   }
 
-  if (!contractorPersonalAreaActivation) {
-    return (
-      <p className="mb-0">Non è stato possibile attivare l'area cliente</p>
-    );
-  }
-
-  return <p className="mb-0">Area cliente attivata</p>;
+  return (
+    <Stack gap={4}>
+      <p className="mb-0">Area Contraente attivata</p>
+      <h4 className="w-100 text-primary">
+        <FontAwesomeIcon icon={faDownload} /> Documenti preliminari
+      </h4>
+      <Stack direction="horizontal" gap={2} className="flex-wrap">
+        <ButtonLink
+          href={`${apiUrl}/${lipId}/pdf-allegato3?lipId=${lipId}&agentId=${agentId}`}
+          download
+        >
+          <FontAwesomeIcon icon={faDownload} /> Allegato 3
+        </ButtonLink>
+        <ButtonLink
+          href={`${apiUrl}/${lipId}/pdf-allegato4?lipId=${lipId}&agentId=${agentId}`}
+          download
+        >
+          <FontAwesomeIcon icon={faDownload} /> Allegato 4
+        </ButtonLink>
+        <ButtonLink
+          href={`${apiUrl}/${lipId}/pdf-allegato4ter?lipId=${lipId}&agentId=${agentId}`}
+          download
+        >
+          <FontAwesomeIcon icon={faDownload} /> Allegato 4 TER
+        </ButtonLink>
+        <ButtonLink
+          href={`${apiUrl}/${lipId}/set-informativo?lipId=${lipId}&agentId=${agentId}`}
+          download
+        >
+          <FontAwesomeIcon icon={faDownload} /> Set informativo
+        </ButtonLink>
+        <ButtonLink
+          href={`${apiUrl}/${lipId}/pdf-elenco-compagnie?lipId=${lipId}&agentId=${agentId}`}
+          download
+        >
+          <FontAwesomeIcon icon={faDownload} /> Elenco compagnie
+        </ButtonLink>
+        <ButtonLink
+          href={`${apiUrl}/pdf-privacy?lipId=${lipId}&agentId=${agentId}&contractorId=${contractor.id}`}
+          download
+        >
+          <FontAwesomeIcon icon={faDownload} /> Pdf privacy firmato
+        </ButtonLink>
+      </Stack>
+    </Stack>
+  );
 }

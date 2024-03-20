@@ -1,6 +1,16 @@
 "use client";
 
+import {updateBeneficiaries} from "@/app/(menu)/(authenticated)/lips/[id]/actions";
+import {
+  Gender,
+  gendersOptions,
+  Nomination,
+  nominationOptions,
+  Relationship,
+  relationshipOptions,
+} from "@/app/(menu)/(authenticated)/lips/[id]/selectsOptions";
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {YesNoAnswer, yesNoOptions} from "@/helpers/getOptionsLabel";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {CheckboxField} from "@/ui/form/CheckboxField";
 import {CheckGroup} from "@/ui/form/CheckGroup";
@@ -13,6 +23,7 @@ import {
   onlyNumbersNormalizer,
   upperCaseNormalizer,
 } from "@/ui/form/normalizers";
+import {SelectField} from "@/ui/form/SelectField";
 import {email} from "@/ui/form/validators/email";
 import {fiscalCodeValidator} from "@/ui/form/validators/fiscalCode";
 import autoAnimate from "@formkit/auto-animate";
@@ -35,21 +46,10 @@ import {
   ModalBody,
   ModalFooter,
   Row,
+  Stack,
 } from "react-bootstrap";
 import {useFieldArray, useForm} from "react-hook-form";
-
-export const nominationOptions = [
-  {
-    label: "Il contraente designa i seguenti Beneficiari",
-    value: "beneficiaries",
-  },
-  {
-    label:
-      "Il contraente designa come Beneficiari gli eredi testamentari o, in assenza di testamento, gli eredi legittimi del contraente-assicurato in parti uguali fra loro",
-    value: "heirs",
-  },
-] as const;
-export type NominationOption = (typeof nominationOptions)[number]["value"];
+import invariant from "tiny-invariant";
 
 const beneficiaryDefaultValues = {
   name: "",
@@ -57,6 +57,7 @@ const beneficiaryDefaultValues = {
   birthDate: "",
   birthPlace: {city: "", province: ""},
   fiscalCode: "",
+  gender: "" as Gender,
   streetName: "",
   streetNumber: "",
   place: {city: "", province: ""},
@@ -64,30 +65,39 @@ const beneficiaryDefaultValues = {
   phone: "",
   email: "",
   share: "",
+  pep: {check: "" as YesNoAnswer, response: "" as Relationship, otherValue: ""},
+  relationship: {check: "" as YesNoAnswer, response: ""},
+};
+
+const thirdPartDefaultValues = {
+  name: "",
+  surname: "",
+  birthDate: "",
+  birthPlace: {city: "", province: ""},
+  fiscalCode: "",
+  gender: "" as Gender,
+  place: {
+    city: "",
+    province: "",
+  },
+  streetName: "",
+  streetNumber: "",
+  zipCode: "",
+  phone: "",
+  email: "",
 };
 
 const beneficiariesDefaultValues = {
-  nomination: "" as NominationOption,
+  nomination: "" as Nomination,
   thirdParty: false,
-  beneficiaries: [beneficiaryDefaultValues],
-  thirdPartyContactPerson: {
-    name: "",
-    surname: "",
-    birthDate: "",
-    birthPlace: {city: "", province: ""},
-    fiscalCode: "",
-    place: {
-      city: "",
-      province: "",
-    },
-    streetName: "",
-    streetNumber: "",
-    zipCode: "",
-    phone: "",
-    email: "",
-  },
+  beneficiaries: [beneficiaryDefaultValues] as
+    | undefined
+    | (typeof beneficiaryDefaultValues)[],
+  thirdPartyContactPerson: undefined as
+    | undefined
+    | typeof thirdPartDefaultValues,
 };
-type BeneficiariesValues = typeof beneficiariesDefaultValues;
+export type BeneficiariesFormValues = typeof beneficiariesDefaultValues;
 
 export function BeneficiariesForm() {
   const animateContainer = useRef(null);
@@ -107,20 +117,19 @@ export function BeneficiariesForm() {
     animateContainer.current && autoAnimate(animateContainer.current);
   }, []);
 
+  const lipId = useDrawerStore((state) => state.lip?.id);
   const closeModal = useDrawerStore((state) => state.closeModal);
-  const updateBeneficiaries = useDrawerStore(
-    (state) => state.updateBeneficiariesData,
-  );
 
   return (
     <>
       <ModalBody>
         <Form
           id="healt-questionnaire-form"
-          onSubmit={(values) => {
+          onSubmit={async (values) => {
+            invariant(lipId, "lipId is required");
             if (
               values.nomination === "beneficiaries" &&
-              values.beneficiaries.reduce(
+              values.beneficiaries?.reduce(
                 (acc, curr) => acc + parseInt(curr.share, 10),
                 0,
               ) !== 100
@@ -133,7 +142,18 @@ export function BeneficiariesForm() {
                 },
               };
             }
-            updateBeneficiaries(values);
+
+            const updatedContractor = await updateBeneficiaries(values, lipId);
+
+            if (updatedContractor.status === "failed") {
+              throw {
+                root: {
+                  type: "server",
+                  message: updatedContractor.message,
+                },
+              };
+            }
+
             closeModal();
           }}
           formMethods={formMethods}
@@ -146,6 +166,15 @@ export function BeneficiariesForm() {
                   <CheckGroup
                     type="radio"
                     options={nominationOptions}
+                    onChange={(value) => {
+                      if (value === "beneficiaries") {
+                        formMethods.setValue("beneficiaries", [
+                          beneficiaryDefaultValues,
+                        ]);
+                      } else {
+                        formMethods.setValue("beneficiaries", undefined);
+                      }
+                    }}
                     validation={{required: "Scegli i Beneficiari"}}
                   />
                 </FormGroup>
@@ -153,297 +182,471 @@ export function BeneficiariesForm() {
             </Row>
             {nominationValue === "beneficiaries" ? (
               <Row className="row-gap-3">
-                {fields.map((field, index) => (
-                  <Fragment key={field.id}>
-                    <div className="d-flex">
-                      <h4 className="w-100 me-auto">
-                        Beneficiario {index + 1}
-                      </h4>
-                      {fields.length > 1 && (
-                        <Button
-                          variant="danger"
-                          type="button"
-                          onClick={() => remove(index)}
-                          className="text-nowrap"
+                {fields.map((field, index) => {
+                  const pepCheckValue = formMethods.watch(
+                    `beneficiaries.${index}.pep.check`,
+                  );
+                  const pepResponseValue = formMethods.watch(
+                    `beneficiaries.${index}.pep.response`,
+                  );
+                  const relationshipCheckValue = formMethods.watch(
+                    `beneficiaries.${index}.relationship.check`,
+                  );
+
+                  return (
+                    <Fragment key={field.id}>
+                      <div className="d-flex">
+                        <h4 className="w-100 me-auto">
+                          Beneficiario {index + 1}
+                        </h4>
+                        {fields.length > 1 && (
+                          <Button
+                            variant="danger"
+                            type="button"
+                            onClick={() => remove(index)}
+                            className="text-nowrap"
+                          >
+                            <FontAwesomeIcon
+                              icon={faUserMinus}
+                              className="me-2"
+                            />{" "}
+                            Rimuovi Beneficiario {index + 1}
+                          </Button>
+                        )}
+                      </div>
+                      <Col className="d-flex" xs={12} md={4}>
+                        <FormGroup
+                          controlId={`beneficiaries.${index}.surname`}
+                          as={BorderFeedback}
                         >
-                          <FontAwesomeIcon
-                            icon={faUserMinus}
-                            className="me-2"
-                          />{" "}
-                          Rimuovi Beneficiario {index + 1}
-                        </Button>
-                      )}
-                    </div>
-                    <Col className="d-flex" xs={12} sm={6}>
-                      <FormGroup
-                        controlId={`beneficiaries.${index}.surname`}
-                        as={BorderFeedback}
-                      >
-                        <FormLabel>Cognome</FormLabel>
-                        <FieldError />
-                        <InputField
-                          type="text"
-                          placeholder="Cognome"
-                          validation={{
-                            required: "Inserisci il cognome del Beneficiario",
-                          }}
-                        />
-                      </FormGroup>
-                    </Col>
-                    <Col className="d-flex" xs={12} sm={6}>
-                      <FormGroup
-                        controlId={`beneficiaries.${index}.name`}
-                        as={BorderFeedback}
-                      >
-                        <FormLabel>Nome</FormLabel>
-                        <FieldError />
-                        <InputField
-                          type="text"
-                          placeholder="Nome"
-                          validation={{
-                            required: "Inserisci il nome del Beneficiario",
-                          }}
-                        />
-                      </FormGroup>
-                    </Col>
-                    <Col className="d-flex" xs={12} sm={6} md={4} lg={5}>
-                      <FormGroup
-                        controlId={`beneficiaries.${index}.birthDate`}
-                        as={BorderFeedback}
-                      >
-                        <FormLabel>Data di nascita</FormLabel>
-                        <FieldError />
-                        <InputField
-                          type="date"
-                          validation={{
-                            required:
-                              "Inserisci la data di nascita del Beneficiario",
-                          }}
-                        />
-                      </FormGroup>
-                    </Col>
-                    <Col className="d-flex" xs={12} md={5} lg={7}>
-                      <FormGroup
-                        controlId={`beneficiaries.${index}.birthPlace`}
-                        as={BorderFeedback}
-                      >
-                        <FormLabel>Luogo di nascita</FormLabel>
-                        <FieldError
-                          name={`beneficiaries.${index}.birthPlace.city`}
-                        />
-                        <FieldError
-                          name={`beneficiaries.${index}.birthPlace.province`}
-                          disableIf={[`beneficiaries.${index}.birthPlace.city`]}
-                        />
-                        <ComuneProvAutocompleteField
-                          placeholder="Luogo di nascita"
-                          validation={{
-                            required:
-                              "Inserisci il luogo di nascita del Beneficiario",
-                          }}
-                        />
-                      </FormGroup>
-                    </Col>
-                    <Col xs={12}>
-                      <FormGroup
-                        controlId={`beneficiaries.${index}.fiscalCode`}
-                        as={BorderFeedback}
-                      >
-                        <FormLabel>Codice Fiscale</FormLabel>
-                        <FieldError />
-                        <InputField<
-                          BeneficiariesValues,
-                          `beneficiaries.${number}.fiscalCode`
-                        >
-                          type="text"
-                          placeholder="Codice Fiscale"
-                          normalize={upperCaseNormalizer}
-                          validation={{
-                            validate: {
-                              required: (value) => {
-                                if (!value) {
-                                  return "Inserisci il codice fiscale del Beneficiario";
-                                }
-                              },
-                              custom: (value) => {
-                                if (!fiscalCodeValidator(value)) {
-                                  return "Il codice fiscale inserito non è valido";
-                                }
-                              },
-                            },
-                          }}
-                        />
-                      </FormGroup>
-                    </Col>
-                    <Col className="d-flex" xs={12} md={9}>
-                      <FormGroup
-                        controlId={`beneficiaries.${index}.streetName`}
-                        as={BorderFeedback}
-                      >
-                        <FormLabel>Indirizzo</FormLabel>
-                        <FieldError />
-                        <InputField
-                          type="text"
-                          placeholder="Indirizzo di residenza"
-                          validation={{
-                            required: "Inserisci l'indirizzo del contraente",
-                          }}
-                        />
-                      </FormGroup>
-                    </Col>
-                    <Col className="d-flex" xs={12} md={3}>
-                      <FormGroup
-                        controlId={`beneficiaries.${index}.streetNumber`}
-                        as={BorderFeedback}
-                      >
-                        <FormLabel>N° civico</FormLabel>
-                        <FieldError />
-                        <InputField
-                          type="text"
-                          placeholder="N° civico"
-                          validation={{
-                            required: "Inserisci il n° civico del contraente",
-                          }}
-                        />
-                      </FormGroup>
-                    </Col>
-                    <Col className="d-flex" xs={12} md={9}>
-                      <FormGroup
-                        controlId={`beneficiaries.${index}.place`}
-                        as={BorderFeedback}
-                      >
-                        <FormLabel>Città</FormLabel>
-                        <FieldError
-                          name={`beneficiaries.${index}.place.city`}
-                        />
-                        <FieldError
-                          name={`beneficiaries.${index}.place.province`}
-                          disableIf={[`beneficiaries.${index}.place.city`]}
-                        />
-                        <ComuneProvAutocompleteField
-                          placeholder="Città di residenza"
-                          onlyExisting
-                          validation={{
-                            required:
-                              "Inserisci la città di residenza del Beneficiario",
-                          }}
-                        />
-                      </FormGroup>
-                    </Col>
-                    <Col className="d-flex" xs={12} md={3}>
-                      <FormGroup
-                        controlId={`beneficiaries.${index}.zipCode`}
-                        as={BorderFeedback}
-                      >
-                        <FormLabel>CAP</FormLabel>
-                        <FieldError />
-                        <InputField
-                          type="text"
-                          placeholder="CAP"
-                          validation={{
-                            required: "Inserisci l'indirizzo del Beneficiario",
-                            minLength: {
-                              value: 5,
-                              message: "Il CAP deve essere di 5 caratteri",
-                            },
-                            maxLength: {
-                              value: 5,
-                              message: "Il CAP deve essere di 5 caratteri",
-                            },
-                          }}
-                          normalize={(value) => value.replace(/\D/g, "")}
-                        />
-                      </FormGroup>
-                    </Col>
-                    <Col className="d-flex" xs={12} md={4}>
-                      <FormGroup
-                        controlId={`beneficiaries.${index}.phone`}
-                        as={BorderFeedback}
-                      >
-                        <FormLabel>Telefono</FormLabel>
-                        <FieldError />
-                        <InputField
-                          type="tel"
-                          placeholder="Telefono"
-                          validation={{
-                            required: "Inserisci il telefono del Beneficiario",
-                          }}
-                          normalize={onlyNumbersNormalizer}
-                        />
-                      </FormGroup>
-                    </Col>
-                    <Col className="d-flex" xs={12} md={4}>
-                      <FormGroup
-                        controlId={`beneficiaries.${index}.email`}
-                        as={BorderFeedback}
-                      >
-                        <FormLabel>Email</FormLabel>
-                        <FieldError />
-                        <InputField<
-                          BeneficiariesValues,
-                          `beneficiaries.${number}.email`
-                        >
-                          type="email"
-                          placeholder="Email"
-                          validation={{
-                            validate: {
-                              required: (value) => {
-                                if (!value) {
-                                  return "Inserisci l'email del Beneficiario";
-                                }
-                              },
-                              pattern: (value) => {
-                                if (!email(value)) {
-                                  return "L'email inserita non è valida";
-                                }
-                              },
-                            },
-                          }}
-                          normalize={emailNormalizer}
-                        />
-                      </FormGroup>
-                    </Col>
-                    <Col className="d-flex" xs={12} md={4}>
-                      <FormGroup
-                        controlId={`beneficiaries.${index}.share`}
-                        as={BorderFeedback}
-                      >
-                        <FormLabel>Quota</FormLabel>
-                        <FieldError />
-                        <InputGroup>
+                          <FormLabel>Cognome</FormLabel>
+                          <FieldError />
                           <InputField
-                            type={"number"}
-                            min={0}
-                            max={100}
-                            step={1}
+                            type="text"
+                            placeholder="Cognome"
                             validation={{
-                              required: "Inserisci la quota",
-                              min: {
-                                value: 1,
-                                message: "La quota dev'erre maggiore di 0",
-                              },
-                              max: {
-                                value: 100,
-                                message: "La quota dev'erre minore di 100",
+                              required: "Inserisci il cognome del Beneficiario",
+                            }}
+                          />
+                        </FormGroup>
+                      </Col>
+                      <Col className="d-flex" xs={12} md={4}>
+                        <FormGroup
+                          controlId={`beneficiaries.${index}.name`}
+                          as={BorderFeedback}
+                        >
+                          <FormLabel>Nome</FormLabel>
+                          <FieldError />
+                          <InputField
+                            type="text"
+                            placeholder="Nome"
+                            validation={{
+                              required: "Inserisci il nome del Beneficiario",
+                            }}
+                          />
+                        </FormGroup>
+                      </Col>
+                      <Col className="d-flex" xs={12} md={4}>
+                        <FormGroup
+                          controlId={`beneficiaries.${index}.share`}
+                          as={BorderFeedback}
+                        >
+                          <FormLabel>Quota</FormLabel>
+                          <FieldError />
+                          <InputGroup>
+                            <InputField
+                              type={"number"}
+                              min={0}
+                              max={100}
+                              step={1}
+                              validation={{
+                                required: "Inserisci la quota",
+                                min: {
+                                  value: 1,
+                                  message: "La quota dev'erre maggiore di 0",
+                                },
+                                max: {
+                                  value: 100,
+                                  message: "La quota dev'erre minore di 100",
+                                },
+                              }}
+                            />
+                            <InputGroup.Text>%</InputGroup.Text>
+                          </InputGroup>
+                        </FormGroup>
+                      </Col>
+                      <Col className="d-flex" xs={12} md={4} lg={5}>
+                        <FormGroup
+                          controlId={`beneficiaries.${index}.birthDate`}
+                          as={BorderFeedback}
+                        >
+                          <FormLabel>Data di nascita</FormLabel>
+                          <FieldError />
+                          <InputField
+                            type="date"
+                            validation={{
+                              required:
+                                "Inserisci la data di nascita del Beneficiario",
+                            }}
+                          />
+                        </FormGroup>
+                      </Col>
+                      <Col className="d-flex" xs={12} md={8} lg={7}>
+                        <FormGroup
+                          controlId={`beneficiaries.${index}.birthPlace`}
+                          as={BorderFeedback}
+                        >
+                          <FormLabel>Luogo di nascita</FormLabel>
+                          <FieldError
+                            name={`beneficiaries.${index}.birthPlace.city`}
+                          />
+                          <FieldError
+                            name={`beneficiaries.${index}.birthPlace.province`}
+                            disableIf={[
+                              `beneficiaries.${index}.birthPlace.city`,
+                            ]}
+                          />
+                          <ComuneProvAutocompleteField
+                            placeholder="Luogo di nascita"
+                            validation={{
+                              required:
+                                "Inserisci il luogo di nascita del Beneficiario",
+                            }}
+                          />
+                        </FormGroup>
+                      </Col>
+                      <Col xs={12} sm={8} md={9}>
+                        <FormGroup
+                          controlId={`beneficiaries.${index}.fiscalCode`}
+                          as={BorderFeedback}
+                        >
+                          <FormLabel>Codice Fiscale</FormLabel>
+                          <FieldError />
+                          <InputField<
+                            BeneficiariesFormValues,
+                            `beneficiaries.${number}.fiscalCode`
+                          >
+                            type="text"
+                            placeholder="Codice Fiscale"
+                            normalize={upperCaseNormalizer}
+                            validation={{
+                              validate: {
+                                required: (value) => {
+                                  if (!value) {
+                                    return "Inserisci il codice fiscale del Beneficiario";
+                                  }
+                                },
+                                custom: (value) => {
+                                  if (!fiscalCodeValidator(value)) {
+                                    return "Il codice fiscale inserito non è valido";
+                                  }
+                                },
                               },
                             }}
                           />
-                          <InputGroup.Text>%</InputGroup.Text>
-                        </InputGroup>
-                      </FormGroup>
-                    </Col>
-                  </Fragment>
-                ))}
+                        </FormGroup>
+                      </Col>
+                      <Col className="d-flex" xs={12} sm={4} md={3}>
+                        <FormGroup
+                          controlId={`beneficiaries.${index}.gender`}
+                          as={BorderFeedback}
+                        >
+                          <FormLabel>Genere</FormLabel>
+                          <FieldError />
+                          <CheckGroup
+                            type="radio"
+                            options={gendersOptions}
+                            validation={{
+                              required: "Scegliere il genere del beneficiario",
+                            }}
+                          />
+                        </FormGroup>
+                      </Col>
+                      <Col className="d-flex" xs={12} sm={8} md={9}>
+                        <FormGroup
+                          controlId={`beneficiaries.${index}.streetName`}
+                          as={BorderFeedback}
+                        >
+                          <FormLabel>Indirizzo</FormLabel>
+                          <FieldError />
+                          <InputField
+                            type="text"
+                            placeholder="Indirizzo di residenza"
+                            validation={{
+                              required: "Inserisci l'indirizzo del contraente",
+                            }}
+                          />
+                        </FormGroup>
+                      </Col>
+                      <Col className="d-flex" xs={12} sm={4} md={3}>
+                        <FormGroup
+                          controlId={`beneficiaries.${index}.streetNumber`}
+                          as={BorderFeedback}
+                        >
+                          <FormLabel>N° civico</FormLabel>
+                          <FieldError />
+                          <InputField
+                            type="text"
+                            placeholder="N° civico"
+                            validation={{
+                              required: "Inserisci il n° civico del contraente",
+                            }}
+                          />
+                        </FormGroup>
+                      </Col>
+                      <Col className="d-flex" xs={12} md={9}>
+                        <FormGroup
+                          controlId={`beneficiaries.${index}.place`}
+                          as={BorderFeedback}
+                        >
+                          <FormLabel>Città</FormLabel>
+                          <FieldError
+                            name={`beneficiaries.${index}.place.city`}
+                          />
+                          <FieldError
+                            name={`beneficiaries.${index}.place.province`}
+                            disableIf={[`beneficiaries.${index}.place.city`]}
+                          />
+                          <ComuneProvAutocompleteField
+                            placeholder="Città di residenza"
+                            onlyExisting
+                            validation={{
+                              required:
+                                "Inserisci la città di residenza del Beneficiario",
+                            }}
+                          />
+                        </FormGroup>
+                      </Col>
+                      <Col className="d-flex" xs={12} md={3}>
+                        <FormGroup
+                          controlId={`beneficiaries.${index}.zipCode`}
+                          as={BorderFeedback}
+                        >
+                          <FormLabel>CAP</FormLabel>
+                          <FieldError />
+                          <InputField
+                            type="text"
+                            placeholder="CAP"
+                            validation={{
+                              required:
+                                "Inserisci l'indirizzo del Beneficiario",
+                              minLength: {
+                                value: 5,
+                                message: "Il CAP deve essere di 5 caratteri",
+                              },
+                              maxLength: {
+                                value: 5,
+                                message: "Il CAP deve essere di 5 caratteri",
+                              },
+                            }}
+                            normalize={(value) => value.replace(/\D/g, "")}
+                          />
+                        </FormGroup>
+                      </Col>
+                      <Col className="d-flex" xs={12} md={6}>
+                        <FormGroup
+                          controlId={`beneficiaries.${index}.phone`}
+                          as={BorderFeedback}
+                        >
+                          <FormLabel>Telefono</FormLabel>
+                          <FieldError />
+                          <InputField
+                            type="tel"
+                            placeholder="Telefono"
+                            validation={{
+                              required:
+                                "Inserisci il telefono del Beneficiario",
+                            }}
+                            normalize={onlyNumbersNormalizer}
+                          />
+                        </FormGroup>
+                      </Col>
+                      <Col className="d-flex" xs={12} md={6}>
+                        <FormGroup
+                          controlId={`beneficiaries.${index}.email`}
+                          as={BorderFeedback}
+                        >
+                          <FormLabel>Email</FormLabel>
+                          <FieldError />
+                          <InputField<
+                            BeneficiariesFormValues,
+                            `beneficiaries.${number}.email`
+                          >
+                            type="email"
+                            placeholder="Email"
+                            validation={{
+                              validate: {
+                                required: (value) => {
+                                  if (!value) {
+                                    return "Inserisci l'email del Beneficiario";
+                                  }
+                                },
+                                pattern: (value) => {
+                                  if (!email(value)) {
+                                    return "L'email inserita non è valida";
+                                  }
+                                },
+                              },
+                            }}
+                            normalize={emailNormalizer}
+                          />
+                        </FormGroup>
+                      </Col>
+                      <Col className="d-flex" xs={12} md={6}>
+                        <FormGroup
+                          controlId={`beneficiaries.${index}.pep.check`}
+                          as={BorderFeedback}
+                        >
+                          <FormLabel>È Persona Politicamente Esposta</FormLabel>
+                          <FieldError />
+                          <CheckGroup
+                            type="radio"
+                            onChange={(value) => {
+                              if (value === "no") {
+                                formMethods.setValue(
+                                  `beneficiaries.${index}.pep.response`,
+                                  "" as Relationship,
+                                );
+                              }
+                              formMethods.trigger(
+                                `beneficiaries.${index}.pep.response`,
+                              );
+                            }}
+                            inline
+                            options={yesNoOptions}
+                            validation={{
+                              required: "Seleziona un'opzione",
+                            }}
+                          />
+                        </FormGroup>
+                      </Col>
+                      <Col className="d-flex" xs={12} md={6}>
+                        <Stack gap={3}>
+                          <FormGroup
+                            controlId={`beneficiaries.${index}.pep.response`}
+                            disabled={pepCheckValue !== "yes"}
+                            as={BorderFeedback}
+                          >
+                            <FormLabel>Specificare la relazione</FormLabel>
+                            <FieldError />
+                            <SelectField
+                              placeholder="Seleziona la relazione"
+                              disabled={pepCheckValue !== "yes"}
+                              options={relationshipOptions}
+                              validation={{
+                                validate: {
+                                  required: (value, formValues) => {
+                                    if (
+                                      formValues.beneficiaries[index]?.pep
+                                        .check === "yes" &&
+                                      (!value || value.length === 0)
+                                    ) {
+                                      return "Seleziona la relazione";
+                                    }
+                                  },
+                                },
+                              }}
+                            />
+                          </FormGroup>
+                          {pepResponseValue === "other" && (
+                            <FormGroup
+                              controlId={`beneficiaries.${index}.pep.otherValue`}
+                              as={BorderFeedback}
+                            >
+                              <FormLabel>
+                                Specifica l'attività e professione esercitata
+                              </FormLabel>
+                              <InputField
+                                type="text"
+                                placeholder="Specifica l'attività e professione esercitata"
+                                validation={{
+                                  required:
+                                    "Inserisci l'attività e professione esercitata",
+                                }}
+                              />
+                            </FormGroup>
+                          )}
+                        </Stack>
+                      </Col>
+                      <Col className="d-flex" xs={12} md={6}>
+                        <FormGroup
+                          controlId={`beneficiaries.${index}.relationship.check`}
+                          as={BorderFeedback}
+                        >
+                          <FormLabel>Il beneficiario è un familiare</FormLabel>
+                          <FieldError />
+                          <CheckGroup
+                            type="radio"
+                            onChange={(value) => {
+                              if (value === "no") {
+                                formMethods.setValue(
+                                  `beneficiaries.${index}.relationship.response`,
+                                  "",
+                                );
+                              }
+                              formMethods.trigger(
+                                `beneficiaries.${index}.relationship.response`,
+                              );
+                            }}
+                            inline
+                            options={yesNoOptions}
+                            validation={{
+                              required: "Seleziona un'opzione",
+                            }}
+                          />
+                        </FormGroup>
+                      </Col>
+                      <Col className="d-flex" xs={12} md={6}>
+                        <FormGroup
+                          controlId={`beneficiaries.${index}.relationship.response`}
+                          disabled={relationshipCheckValue !== "yes"}
+                          as={BorderFeedback}
+                        >
+                          <FormLabel>Specificare la relazione</FormLabel>
+                          <FieldError />
+                          <InputField
+                            type="text"
+                            placeholder="Specifica la relazione"
+                            disabled={relationshipCheckValue !== "yes"}
+                            validation={{
+                              validate: {
+                                required: (value, formValues) => {
+                                  if (
+                                    formValues.beneficiaries[index]
+                                      ?.relationship.check === "yes" &&
+                                    (!value || value.length === 0)
+                                  ) {
+                                    return "Specifica la relazione";
+                                  }
+                                },
+                              },
+                            }}
+                          />
+                        </FormGroup>
+                      </Col>
+                    </Fragment>
+                  );
+                })}
                 <Col xs={12}>
-                  <Button
-                    type="button"
-                    variant="info"
-                    onClick={() => append(beneficiaryDefaultValues)}
-                    className="me-auto"
+                  <div
+                    className="d-inline-block"
+                    title={
+                      fields.length >= 5
+                        ? "Puoi aggiungere al massimo cinque beneficiari"
+                        : undefined
+                    }
                   >
-                    <FontAwesomeIcon icon={faUserPlus} className="me-2" />
-                    Aggiungi un Beneficiario
-                  </Button>
+                    <Button
+                      type="button"
+                      variant="info"
+                      disabled={fields.length >= 5}
+                      onClick={() => append(beneficiaryDefaultValues)}
+                      className="me-auto"
+                    >
+                      <FontAwesomeIcon icon={faUserPlus} className="me-2" />
+                      Aggiungi un Beneficiario
+                    </Button>
+                  </div>
                 </Col>
                 <Col xs={12}>
                   <Alert variant="info">
@@ -477,6 +680,16 @@ export function BeneficiariesForm() {
               <CheckboxField
                 type="checkbox"
                 label="Il Contraente-Assicurato dichiara di voler escludere l’invio di comunicazioni ai Beneficiari, prima dell’evento assicurato."
+                onChange={(value) => {
+                  if (value.target.checked) {
+                    formMethods.setValue(
+                      "thirdPartyContactPerson",
+                      thirdPartDefaultValues,
+                    );
+                  } else {
+                    formMethods.setValue("thirdPartyContactPerson", undefined);
+                  }
+                }}
               />
             </FormGroup>
             {thirdPartyValue && (
@@ -502,7 +715,7 @@ export function BeneficiariesForm() {
                       type="text"
                       placeholder="Cognome"
                       validation={{
-                        required: "Inserisci il cognome del Beneficiario",
+                        required: "Inserisci il cognome del referente terzo",
                       }}
                     />
                   </FormGroup>
@@ -518,12 +731,12 @@ export function BeneficiariesForm() {
                       type="text"
                       placeholder="Nome"
                       validation={{
-                        required: "Inserisci il nome del Beneficiario",
+                        required: "Inserisci il nome del referente terzo",
                       }}
                     />
                   </FormGroup>
                 </Col>
-                <Col className="d-flex" xs={12} sm={6} md={4} lg={5}>
+                <Col className="d-flex" xs={12} md={4} lg={5}>
                   <FormGroup
                     controlId={`thirdPartyContactPerson.birthDate`}
                     as={BorderFeedback}
@@ -534,12 +747,12 @@ export function BeneficiariesForm() {
                       type="date"
                       validation={{
                         required:
-                          "Inserisci la data di nascita del Beneficiario",
+                          "Inserisci la data di nascita del referente terzo",
                       }}
                     />
                   </FormGroup>
                 </Col>
-                <Col className="d-flex" xs={12} md={5} lg={7}>
+                <Col className="d-flex" xs={12} md={8} lg={7}>
                   <FormGroup
                     controlId={`thirdPartyContactPerson.birthPlace`}
                     as={BorderFeedback}
@@ -556,12 +769,12 @@ export function BeneficiariesForm() {
                       placeholder="Luogo di nascita"
                       validation={{
                         required:
-                          "Inserisci il luogo di nascita del Beneficiario",
+                          "Inserisci il luogo di nascita del referente terzo",
                       }}
                     />
                   </FormGroup>
                 </Col>
-                <Col xs={12}>
+                <Col xs={12} sm={8} md={9}>
                   <FormGroup
                     controlId={`thirdPartyContactPerson.fiscalCode`}
                     as={BorderFeedback}
@@ -569,7 +782,7 @@ export function BeneficiariesForm() {
                     <FormLabel>Codice Fiscale</FormLabel>
                     <FieldError />
                     <InputField<
-                      BeneficiariesValues,
+                      BeneficiariesFormValues,
                       `thirdPartyContactPerson.fiscalCode`
                     >
                       type="text"
@@ -579,7 +792,7 @@ export function BeneficiariesForm() {
                         validate: {
                           required: (value) => {
                             if (!value) {
-                              return "Inserisci il codice fiscale del Beneficiario";
+                              return "Inserisci il codice fiscale del referente terzo";
                             }
                           },
                           custom: (value) => {
@@ -588,6 +801,22 @@ export function BeneficiariesForm() {
                             }
                           },
                         },
+                      }}
+                    />
+                  </FormGroup>
+                </Col>
+                <Col className="d-flex" xs={12} sm={4} md={3}>
+                  <FormGroup
+                    controlId={`thirdPartyContactPerson.gender`}
+                    as={BorderFeedback}
+                  >
+                    <FormLabel>Genere</FormLabel>
+                    <FieldError />
+                    <CheckGroup
+                      type="radio"
+                      options={gendersOptions}
+                      validation={{
+                        required: "Scegliere il genere del referente terzo",
                       }}
                     />
                   </FormGroup>
@@ -603,7 +832,7 @@ export function BeneficiariesForm() {
                       type="text"
                       placeholder="Indirizzo di residenza"
                       validation={{
-                        required: "Inserisci l'indirizzo del contraente",
+                        required: "Inserisci l'indirizzo del referente terzo",
                       }}
                     />
                   </FormGroup>
@@ -619,7 +848,7 @@ export function BeneficiariesForm() {
                       type="text"
                       placeholder="N° civico"
                       validation={{
-                        required: "Inserisci il n° civico del contraente",
+                        required: "Inserisci il n° civico del referente terzo",
                       }}
                     />
                   </FormGroup>
@@ -640,7 +869,7 @@ export function BeneficiariesForm() {
                       onlyExisting
                       validation={{
                         required:
-                          "Inserisci la città di residenza del Beneficiario",
+                          "Inserisci la città di residenza del referente terzo",
                       }}
                     />
                   </FormGroup>
@@ -656,7 +885,7 @@ export function BeneficiariesForm() {
                       type="text"
                       placeholder="CAP"
                       validation={{
-                        required: "Inserisci l'indirizzo del Beneficiario",
+                        required: "Inserisci l'indirizzo del referente terzo",
                         minLength: {
                           value: 5,
                           message: "Il CAP deve essere di 5 caratteri",
@@ -681,7 +910,7 @@ export function BeneficiariesForm() {
                       type="tel"
                       placeholder="Telefono"
                       validation={{
-                        required: "Inserisci il telefono del Beneficiario",
+                        required: "Inserisci il telefono del referente terzo",
                       }}
                       normalize={onlyNumbersNormalizer}
                     />
@@ -695,7 +924,7 @@ export function BeneficiariesForm() {
                     <FormLabel>Email</FormLabel>
                     <FieldError />
                     <InputField<
-                      BeneficiariesValues,
+                      BeneficiariesFormValues,
                       `thirdPartyContactPerson.email`
                     >
                       type="email"
@@ -704,7 +933,7 @@ export function BeneficiariesForm() {
                         validate: {
                           required: (value) => {
                             if (!value) {
-                              return "Inserisci l'email del Beneficiario";
+                              return "Inserisci l'email del referente terzo";
                             }
                           },
                           pattern: (value) => {

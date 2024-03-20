@@ -4,10 +4,12 @@ import {DrawerName} from "@/app/(menu)/(authenticated)/lips/[id]/drawers";
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {cns} from "@/helpers/cns";
 import {DrawerIcon} from "@/ui/drawer/DrawerIcon";
+import {buttonMap} from "@/ui/drawer/types";
 import {upperCaseFirstNormalizer} from "@/ui/form/normalizers";
+import autoAnimate from "@formkit/auto-animate";
 import {faPenToSquare} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {ReactNode, useEffect, useRef} from "react";
+import {ReactNode, Suspense, useEffect, useRef} from "react";
 import {
   Button,
   Card,
@@ -17,7 +19,6 @@ import {
   ModalHeader,
 } from "react-bootstrap";
 import styles from "./Drawer.module.scss";
-import autoAnimate from "@formkit/auto-animate";
 
 interface DrawerProps {
   children?: ReactNode;
@@ -32,7 +33,9 @@ export function Drawer({children, modalContent, name, title}: DrawerProps) {
   const modalOpen = useDrawerStore((state) => state.modalOpen);
   const openModal = useDrawerStore((state) => state.openModal);
   const closeModal = useDrawerStore((state) => state.closeModal);
-  const drawerState = useDrawerStore((state) => state.drawerStates[name]);
+  const {variant, buttonLabel, buttonIcon} =
+    useDrawerStore((state) => state.drawerStates[name]) ?? {};
+  const test = useDrawerStore((state) => state.drawerStates[name]) ?? {};
 
   const parent = useRef(null);
   useEffect(() => {
@@ -44,28 +47,28 @@ export function Drawer({children, modalContent, name, title}: DrawerProps) {
       <Card
         className={cns(
           styles.drawer,
-          drawerState && styles[`is${upperCaseFirstNormalizer(drawerState)}`],
+          variant && styles[`is${upperCaseFirstNormalizer(variant)}`],
         )}
       >
         <CardHeader className="d-flex align-items-center justify-content-between py-3">
           <div id={name} className={styles.anchor} />
           <h4 className="mb-0 d-flex align-items-center">
-            <DrawerIcon state={drawerState} className="me-3" />
+            <DrawerIcon variant={variant} className="me-3" />
             {title}
           </h4>
-          <Button
-            className={cns(
-              styles.actionButton,
-              "ms-3",
-              drawerState !== "active" && "d-none",
-            )}
-            onClick={() => openModal(name)}
-          >
-            <FontAwesomeIcon icon={faPenToSquare} />
-            <span className={styles.actionButtonLabel}>
-              {drawerState === "success" ? "Modifica" : "Compila"}
-            </span>
-          </Button>
+          {buttonLabel && (
+            <Button
+              className={cns(styles.actionButton, "ms-3")}
+              onClick={() => {
+                openModal(name);
+              }}
+            >
+              <FontAwesomeIcon
+                icon={buttonIcon ? buttonMap[buttonIcon] : faPenToSquare}
+              />
+              <span className={styles.actionButtonLabel}>{buttonLabel}</span>
+            </Button>
+          )}
         </CardHeader>
         <CardBody ref={parent}>{children}</CardBody>
       </Card>
@@ -94,13 +97,12 @@ interface DrawerSkeletonProps {
 export function DrawerSkeleton({title}: DrawerSkeletonProps) {
   return (
     <>
-      <Card>
+      <Card className={styles.drawer}>
         <CardHeader className="d-flex align-items-center justify-content-between py-3">
           <h4 className="mb-0">
-            <DrawerIcon state="loading" className="me-2" />
+            <DrawerIcon variant="loading" className="me-3" />
             {title}
           </h4>
-          <Button className="invisible">Compila</Button>
         </CardHeader>
       </Card>
     </>

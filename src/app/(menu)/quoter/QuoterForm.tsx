@@ -1,7 +1,7 @@
 "use client";
 
 import {
-  PaymentMethodsOptions,
+  PaymentMethods,
   paymentMethodsOptions,
 } from "@/app/(menu)/(authenticated)/lips/[id]/PaymentForm";
 import {getQuote} from "@/app/(menu)/quoter/actions";
@@ -55,7 +55,7 @@ export type QuoterFormValues = typeof quoterFormDefaultValues;
 export function QuoterForm() {
   const [premium, setPremium] = useState<number>();
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethodsOptions>();
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethods>();
   const [firstTry, setFirstTry] = useState(true);
 
   const formMethods = useForm({
@@ -94,7 +94,6 @@ export function QuoterForm() {
       className="vstack gap-3"
       onChange={(e) => {
         if (formMethods.formState.isSubmitted) {
-          console.log(e);
           if (
             (e as unknown as ChangeEvent<HTMLInputElement>).target.name !==
             "non-quote-form"
@@ -172,27 +171,20 @@ export function QuoterForm() {
             </div>
           </div>
           <div>
-            <OverlayTrigger
-              overlay={
-                <Tooltip>
-                  {isDetailsOpen ? "Chiudi dettagli" : "Dettagli"}
-                </Tooltip>
-              }
+            <Button
+              type="button"
+              variant="info"
+              disabled={!premium}
+              onClick={() => {
+                setIsDetailsOpen(!isDetailsOpen);
+              }}
             >
-              <Button
-                type="button"
-                variant="link"
-                disabled={!premium}
-                onClick={() => {
-                  setIsDetailsOpen(!isDetailsOpen);
-                }}
-              >
-                <FontAwesomeIcon
-                  icon={isDetailsOpen ? faClose : faInfoCircle}
-                  fixedWidth
-                />
-              </Button>
-            </OverlayTrigger>
+              <FontAwesomeIcon
+                icon={isDetailsOpen ? faClose : faInfoCircle}
+                fixedWidth
+              />{" "}
+              {isDetailsOpen ? "Meno" : "Maggiori"} dettagli
+            </Button>
           </div>
         </AppContainer>
         <Collapse in={isDetailsOpen}>

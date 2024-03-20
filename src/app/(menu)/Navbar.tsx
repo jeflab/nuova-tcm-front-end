@@ -18,7 +18,7 @@ import styles from "./layout.module.scss";
 import {LogoutButton} from "./LogoutButton";
 
 export async function Navbar() {
-  const serverTheme = getTheme();
+  const serverTheme = await getTheme();
   const loggedIn = await isLoggedIn();
 
   return (

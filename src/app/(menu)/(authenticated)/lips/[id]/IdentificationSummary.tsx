@@ -1,8 +1,11 @@
 "use client";
 
-import {getTypeLabel} from "@/app/(menu)/(authenticated)/lips/[id]/IdentificationForm";
+import {IdImage} from "@/app/(menu)/(authenticated)/lips/[id]/IdImage";
+import {idTypeOptions} from "@/app/(menu)/(authenticated)/lips/[id]/selectsOptions";
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {dateString} from "@/helpers/dates";
+import {getOptionsLabel} from "@/helpers/getOptionsLabel";
+import {apiUrl} from "@/services/const";
 import {
   faAddressCard,
   faClipboardListCheck,
@@ -12,10 +15,11 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Col, Row} from "react-bootstrap";
 
 export function IdentificationDataSummary() {
+  const agentId = useDrawerStore((state) => state.lip?.agent.id);
+  const contractorId = useDrawerStore((state) => state.lip?.contractor.id);
   const identification = useDrawerStore(
-    (state) => state.lipData.identification,
+    (state) => state.lip?.contractor.identitydocument?.[0],
   );
-  const idPictures = useDrawerStore((state) => state.lipData.idPictures);
 
   if (!identification) {
     return null;
@@ -29,59 +33,55 @@ export function IdentificationDataSummary() {
           Documento di identità
         </h4>
         <p className="mb-0">
-          <strong>Documento:</strong> {getTypeLabel(identification.idType)}
+          <strong>Documento:</strong>{" "}
+          {getOptionsLabel(idTypeOptions, identification.idType)}
         </p>
         <p className="mb-0">
           <strong>Numero documento:</strong> {identification.number}
         </p>
         <p className="mb-0">
-          <strong>Rilasciato da:</strong> {identification.issuedBy}
+          <strong>Rilasciato da:</strong> {identification.issuedByOrg}
         </p>
         <p className="mb-0">
-          <strong>In data:</strong>{" "}
-          {dateString(new Date(identification.issuedDate))}
+          <strong>Luogo di rilascio:</strong> {identification.issuedBy}
         </p>
         <p className="mb-0">
-          <strong>Scadenza:</strong>{" "}
-          {dateString(new Date(identification.expiringDate))}
+          <strong>In data:</strong> {dateString(identification.issuedDate)}
+        </p>
+        <p className="mb-0">
+          <strong>Scadenza:</strong> {dateString(identification.expiringDate)}
         </p>
       </Col>
       <Col xs={6} sm={3} md={6} lg={3}>
         <div className="ratio ratio-1x1">
-          <div
-            className="bg-primary-subtle d-flex justify-content-center align-items-md-center"
-            style={{
-              backgroundImage: `url(${idPictures?.frontPictureUrl})`,
-              borderRadius: "0.5rem",
-              padding: "1rem",
-              backgroundOrigin: "content-box",
-              backgroundPosition: "center center",
-              backgroundRepeat: "no-repeat",
-              backgroundSize: "contain",
-            }}
-          ></div>
+          {agentId &&
+            contractorId &&
+            identification.identification?.fileIdFrontName && (
+              <IdImage
+                agentId={agentId}
+                contractorId={contractorId}
+                filename={identification.identification?.fileIdFrontName}
+              />
+            )}
         </div>
       </Col>
       <Col xs={6} sm={3} md={6} lg={3}>
         <div className="ratio ratio-1x1">
-          <div
-            className="bg-primary-subtle d-flex justify-content-center align-items-md-center"
-            style={{
-              backgroundImage: `url(${idPictures?.backPictureUrl})`,
-              borderRadius: "0.5rem",
-              padding: "1rem",
-              backgroundOrigin: "content-box",
-              backgroundPosition: "center center",
-              backgroundRepeat: "no-repeat",
-              backgroundSize: "contain",
-            }}
-          ></div>
+          {agentId &&
+            contractorId &&
+            identification.identification?.fileIdBackName && (
+              <IdImage
+                agentId={agentId}
+                contractorId={contractorId}
+                filename={identification.identification?.fileIdBackName}
+              />
+            )}
         </div>
       </Col>
       <Col xs={12}>
         <h4 className="text-primary">
           <FontAwesomeIcon icon={faClipboardListCheck} className="me-2" />
-          Il contraente dichiara:
+          L'Agente dichiara:
         </h4>
         <p className="mb-0">
           <FontAwesomeIcon icon={faSquareCheck} className="me-2" />

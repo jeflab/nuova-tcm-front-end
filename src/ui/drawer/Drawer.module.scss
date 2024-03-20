@@ -10,12 +10,15 @@
     top: -70px;
     visibility: hidden;
   }
+  :global(.card-header) {
+    min-height: 70px;
+  }
 
   :global(.card-body):empty {
     display: none;
   }
 
-  &:not(.isSuccess, .isDanger) {
+  &:not(.isSuccess, .isDanger, .isWaiting) {
     > :global(.card-header) {
       border-bottom: none;
       border-radius: var(--bs-card-inner-border-radius);

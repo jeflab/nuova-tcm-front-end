@@ -23,7 +23,8 @@ type InputTypes =
   | "text"
   | "date"
   | "number"
-  | "tel";
+  | "tel"
+  | "textarea";
 
 interface InputFieldProps<
   TFieldValues extends FieldValues,
@@ -73,6 +74,7 @@ export function InputField<
   return (
     <FormControl
       type={type}
+      as={type === "textarea" ? "textarea" : undefined}
       {...register(controlName, {
         onChange,
         ...validation,

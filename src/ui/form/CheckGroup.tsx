@@ -13,12 +13,10 @@ type GroupTypes = "checkbox" | "radio" | "switch";
 
 interface SingleValue<TValue> {
   type: "radio" | "radio-switch";
-  defaultValue?: TValue;
   onChange?: (value: TValue) => void;
 }
 interface MultipleValues<TValue> {
   type: "checkbox" | "switch";
-  defaultValue?: TValue[];
   onChange?: (value: TValue[]) => void;
 }
 
@@ -38,7 +36,6 @@ export function CheckGroup<
   TFieldValues extends FieldValues,
   TValue extends string | number = string,
 >({
-  defaultValue,
   disabled,
   inline,
   name,
@@ -57,15 +54,13 @@ export function CheckGroup<
   return (
     <div>
       {options.map(({label, value}) => {
-        const readOnlyDisabled = readOnly && defaultValue !== value;
         return (
           <CheckboxField
             key={`${controlName}-${value}`}
             onChange={() => {
               onChange?.(getValues(controlName));
             }}
-            defaultChecked={defaultValue === value}
-            disabled={disabled || readOnlyDisabled}
+            disabled={disabled || readOnly}
             id={`${controlName}-${value}`}
             inline={inline}
             label={label}
