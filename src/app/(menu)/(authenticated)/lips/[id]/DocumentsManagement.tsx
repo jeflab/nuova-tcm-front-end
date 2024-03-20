@@ -208,7 +208,7 @@ export function DocumentsManagement() {
                               partialContractorESign.length ? (
                                 <>
                                   <FontAwesomeIcon icon={faFileSignature} />{" "}
-                                  Firma tu per il cliente
+                                  Firma del cliente
                                 </>
                               ) : (
                                 <>
