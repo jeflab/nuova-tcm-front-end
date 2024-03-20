@@ -83,6 +83,7 @@ export function DenForm() {
     "otherInsuranceProducts",
   );
   const educationValue = formMethods.watch("education");
+  const needsIntendToMeetValue = formMethods.watch("needsIntendToMeet");
 
   return (
     <>
@@ -145,7 +146,7 @@ export function DenForm() {
                   type="hidden"
                   placeholder="Attuale occupazione del contraente"
                   readOnly
-                  plainText
+                  plaintext
                 />
                 <FormControl
                   type="text"
@@ -245,39 +246,60 @@ export function DenForm() {
               </FormGroup>
             </Col>
             <Col className="d-flex" xs={12} sm={6}>
-              <FormGroup
-                controlId="needsIntendToMeet"
-                as={BorderFeedback}
-                disabled={otherInsuranceProductsValue !== "yes"}
-              >
-                <FormLabel>
-                  Se sì, quali esigenze intendono soddisfare?
-                </FormLabel>
-                <FieldError />
-                <CheckGroup
+              <Stack gap={3}>
+                <FormGroup
+                  controlId="needsIntendToMeet"
+                  as={BorderFeedback}
                   disabled={otherInsuranceProductsValue !== "yes"}
-                  type="checkbox"
-                  onChange={() => {
-                    formMethods.clearErrors("needsIntendToMeet");
-                  }}
-                  options={needsToMeetOptions}
-                  validation={{
-                    validate: {
-                      required: (
-                        value,
-                        formValues: typeof denDefaultValues,
-                      ) => {
-                        if (
-                          formValues.otherInsuranceProducts === "yes" &&
-                          (!value || value.length === 0)
-                        ) {
-                          return "Seleziona almeno un'opzione";
-                        }
+                >
+                  <FormLabel>
+                    Se sì, quali esigenze intendono soddisfare?
+                  </FormLabel>
+                  <FieldError />
+                  <CheckGroup
+                    disabled={otherInsuranceProductsValue !== "yes"}
+                    type="checkbox"
+                    onChange={() => {
+                      formMethods.clearErrors("needsIntendToMeet");
+                    }}
+                    options={needsToMeetOptions}
+                    validation={{
+                      validate: {
+                        required: (
+                          value,
+                          formValues: typeof denDefaultValues,
+                        ) => {
+                          if (
+                            formValues.otherInsuranceProducts === "yes" &&
+                            (!value || value.length === 0)
+                          ) {
+                            return "Seleziona almeno un'opzione";
+                          }
+                        },
                       },
-                    },
-                  }}
-                />
-              </FormGroup>
+                    }}
+                  />
+                </FormGroup>
+                {needsIntendToMeetValue.includes("other") && (
+                  <FormGroup
+                    controlId="needsIntendToMeetOther"
+                    as={BorderFeedback}
+                  >
+                    <FormLabel>
+                      Specifica quali esigenze intendono soddisfare?
+                    </FormLabel>
+                    <FieldError />
+                    <InputField
+                      type="text"
+                      placeholder="Specifica quali esigenze intendono soddisfare"
+                      validation={{
+                        required:
+                          "Inserisci quali esigenze intendono soddisfare",
+                      }}
+                    />
+                  </FormGroup>
+                )}
+              </Stack>
             </Col>
             <h4>Situazione finanziaria</h4>
             <Col className="d-flex" xs={12} sm={4}>

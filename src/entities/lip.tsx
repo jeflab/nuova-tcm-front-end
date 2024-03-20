@@ -29,6 +29,7 @@ const denSchema = z.object({
     options: z.array(z.object({label: z.string(), value: z.string()})),
     response: z.string(),
   }),
+  educationOther: z.string().optional(),
   job: z.object({
     options: z.array(z.object({label: z.string(), value: z.string()})),
     response: z.string(),
@@ -49,6 +50,7 @@ const denSchema = z.object({
     options: z.array(z.object({label: z.string(), value: z.string()})),
     response: z.array(z.string()),
   }),
+  needsIntendToMeetOther: z.string().optional(),
   savings: z.string(),
   income: z.string(),
   economicCondition: z.object({
