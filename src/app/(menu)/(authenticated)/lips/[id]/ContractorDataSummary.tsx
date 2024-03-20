@@ -1,8 +1,8 @@
 "use client";
 
-import {contractorGenders} from "@/app/(menu)/(authenticated)/lips/[id]/ContractorFiscalCodeForm";
 import {
   fundSourceOptions,
+  gendersOptions,
   jobPositionOptions,
   publicOfficesOptions,
   tAECodeOptions,
@@ -45,7 +45,7 @@ export function ContractorDataSummary() {
         </p>
         <p className="mb-0">
           <strong>Genere:</strong>{" "}
-          {getOptionsLabel(contractorGenders, contractor.gender)}
+          {getOptionsLabel(gendersOptions, contractor.gender)}
         </p>
         <p className="mb-0">
           <strong>Codice Fiscale:</strong> {contractor.fiscalCode}

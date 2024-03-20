@@ -50,8 +50,6 @@ export function HealthQuestionnaireForm() {
     defaultValues: healthQuestionnaireDefaultValues,
   });
 
-  console.log(formMethods.formState.errors);
-
   const lipId = useDrawerStore((state) => state.lip?.id);
   const closeModal = useDrawerStore((state) => state.closeModal);
 

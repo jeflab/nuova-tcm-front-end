@@ -84,7 +84,6 @@ export function IdentificationForm() {
 
             const identificationContractorResponse =
               await identificationContractor(formData, lipId);
-            console.log("risposta", identificationContractorResponse);
 
             if (identificationContractorResponse.status === "failed") {
               throw {

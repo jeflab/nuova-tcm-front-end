@@ -1,9 +1,14 @@
 "use client";
 
 import {checkIfFiscalCodeExists} from "@/app/(menu)/(authenticated)/lips/[id]/actions";
+import {
+  Gender,
+  gendersOptions,
+} from "@/app/(menu)/(authenticated)/lips/[id]/selectsOptions";
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {cns} from "@/helpers/cns";
 import {dbDateString} from "@/helpers/dates";
+import {getOptionsValues} from "@/helpers/getOptionsLabel";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {CheckGroup} from "@/ui/form/CheckGroup";
 import {ComuneProvAutocompleteField} from "@/ui/form/ComuneProvAutocompleteField";
@@ -41,16 +46,6 @@ import {
 import {useForm} from "react-hook-form";
 import {z} from "zod";
 
-// TODO: spostare nel file del modello
-export const contractorGenders = [
-  {label: "Maschio", value: "male"},
-  {label: "Femmina", value: "female"},
-] as const;
-export type ContractorGender = (typeof contractorGenders)[number]["value"];
-const contractorGenderValues = contractorGenders
-  .map((g) => g.value)
-  .concat("" as ContractorGender) as [ContractorGender, ...ContractorGender[]];
-
 // Usiamo uno schema come validazione vista la complessità del form e la dipendenza del cf con gli altri campi
 const ContractorFormSchema = z
   .object({
@@ -83,7 +78,7 @@ const ContractorFormSchema = z
       .string()
       .refine(required, "Inserisci il genere del contraente")
       .and(
-        z.enum(contractorGenderValues, {
+        z.enum(getOptionsValues(gendersOptions), {
           errorMap: () => ({
             message: "Il genere del contraente non è valido",
           }),
@@ -116,7 +111,7 @@ const contractorFiscalCodeDefaultValues = {
     province: "",
   },
   fiscalCode: "",
-  gender: "" as ContractorGender,
+  gender: "" as Gender,
   name: "",
   surname: "",
 };
@@ -241,7 +236,7 @@ export function ContractorFiscalCodeForm() {
               <FormGroup controlId="gender" as={BorderFeedback}>
                 <FormLabel>Genere</FormLabel>
                 <FieldError />
-                <CheckGroup type="radio" options={contractorGenders} />
+                <CheckGroup type="radio" options={gendersOptions} />
               </FormGroup>
             </Col>
             <Col className="d-flex" xs={12} sm={6} md={4} lg={5}>

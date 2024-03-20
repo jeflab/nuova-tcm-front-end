@@ -22,7 +22,6 @@ const lastCharFiscalCode = (fc: string): boolean => {
     }
     if (i % 2 === 0) {
       const mapValue = map[c];
-      console.log(mapValue, map, c, fc.charAt(i));
       invariant(mapValue !== undefined, "Invalid character");
       s += mapValue;
     } else {
@@ -68,11 +67,9 @@ export const fiscalCodeMatchDataSuperRefines = (
   }
   try {
     const fiscalCode = new CodiceFiscale(data);
-    console.log({fiscalCode, code});
     return fiscalCode.cf === code;
   } catch (e) {
-    console.log("Errore da gestire:");
-    console.log(e);
+    console.error(e);
     return false;
   }
 };

@@ -1,3 +1,8 @@
+import {
+  gendersOptions,
+  nominationOptions,
+  relationshipOptions,
+} from "@/app/(menu)/(authenticated)/lips/[id]/selectsOptions";
 import {agentSchema} from "@/entities/agent";
 import {personalDataSchema} from "@/entities/personalData";
 import {getOptionsValues, yesNoOptions} from "@/helpers/getOptionsLabel";
@@ -77,27 +82,27 @@ const healthcareQuestionnaireSchema = z.object({
   weight: z.string(),
   height: z.string(),
   hospitalization: z.object({
-    check: z.enum([...getOptionsValues(yesNoOptions)]),
+    check: z.enum(getOptionsValues(yesNoOptions)),
     details: z.string(),
   }),
   diseases: z.object({
-    check: z.enum([...getOptionsValues(yesNoOptions)]),
+    check: z.enum(getOptionsValues(yesNoOptions)),
     details: z.string(),
   }),
   drugTherapy: z.object({
-    check: z.enum([...getOptionsValues(yesNoOptions)]),
+    check: z.enum(getOptionsValues(yesNoOptions)),
     details: z.string(),
   }),
   symptomatology: z.object({
-    check: z.enum([...getOptionsValues(yesNoOptions)]),
+    check: z.enum(getOptionsValues(yesNoOptions)),
     details: z.string(),
   }),
   professionalRisk: z.object({
-    check: z.enum([...getOptionsValues(yesNoOptions)]),
+    check: z.enum(getOptionsValues(yesNoOptions)),
     details: z.string(),
   }),
   sportRisk: z.object({
-    check: z.enum([...getOptionsValues(yesNoOptions)]),
+    check: z.enum(getOptionsValues(yesNoOptions)),
     details: z.string(),
   }),
   cancer: z.object({
@@ -116,6 +121,65 @@ const healthcareQuestionnaireSchema = z.object({
     check: z.enum([...getOptionsValues(yesNoOptions), ""]),
     details: z.string(),
   }),
+});
+
+const beneficiarySchema = z.object({
+  name: z.string(),
+  surname: z.string(),
+  share: z.string(),
+  birthDate: z.string(),
+  birthPlace: z.object({
+    city: z.string(),
+    province: z.string(),
+  }),
+  fiscalCode: z.string(),
+  gender: z.enum(getOptionsValues(gendersOptions)),
+  place: z.object({
+    city: z.string(),
+    province: z.string(),
+  }),
+  streetName: z.string(),
+  streetNumber: z.string(),
+  zipCode: z.string(),
+  phone: z.string(),
+  email: z.string(),
+  pep: z.object({
+    check: z.enum(getOptionsValues(yesNoOptions)),
+    response: z.enum([...getOptionsValues(relationshipOptions), ""]),
+    otherValue: z.string(),
+  }),
+  relationship: z.object({
+    check: z.enum(getOptionsValues(yesNoOptions)),
+    response: z.enum([...getOptionsValues(relationshipOptions), ""]),
+  }),
+});
+
+const thirdPartySchema = z.object({
+  name: z.string(),
+  surname: z.string(),
+  birthDate: z.string(),
+  birthPlace: z.object({
+    city: z.string(),
+    province: z.string(),
+  }),
+  fiscalCode: z.string(),
+  gender: z.enum(getOptionsValues(gendersOptions)),
+  place: z.object({
+    city: z.string(),
+    province: z.string(),
+  }),
+  streetName: z.string(),
+  streetNumber: z.string(),
+  zipCode: z.string(),
+  phone: z.string(),
+  email: z.string(),
+});
+
+const beneficiariesSchema = z.object({
+  nomination: z.enum(getOptionsValues(nominationOptions)),
+  thirdParty: z.boolean(),
+  beneficiaries: z.array(beneficiarySchema).optional(),
+  thirdPartyContactPerson: thirdPartySchema.optional(),
 });
 
 export const lipSchema = z
@@ -137,6 +201,11 @@ export const lipSchema = z
       .pipe(healthcareQuestionnaireSchema)
       .nullable()
       .optional(),
+    json_beneficiary: zu
+      .stringToJSON()
+      .pipe(beneficiariesSchema)
+      .nullable()
+      .optional(),
     status: z.union([z.literal(0), z.literal(1)]).transform((status) => {
       return lipStatuses[status];
     }),
@@ -149,6 +218,7 @@ export const lipSchema = z
       json_den,
       json_quotation,
       json_survey_healthcare,
+      json_beneficiary,
       ...data
     }) => {
       return {
@@ -159,6 +229,7 @@ export const lipSchema = z
         den: json_den,
         quotation: json_quotation,
         healthcareQuestionnaire: json_survey_healthcare,
+        beneficiaries: json_beneficiary,
       };
     },
   );

@@ -2,12 +2,10 @@
 
 import {updateContractorData} from "@/app/(menu)/(authenticated)/lips/[id]/actions";
 import {
-  ContractorGender,
-  contractorGenders,
-} from "@/app/(menu)/(authenticated)/lips/[id]/ContractorFiscalCodeForm";
-import {
   FundSource,
   fundSourceOptions,
+  Gender,
+  gendersOptions,
   JobPosition,
   jobPositionOptions,
   PublicOffices,
@@ -51,7 +49,7 @@ const contractorDataDefaultValues = {
       province: "",
     },
     fiscalCode: "",
-    gender: "" as ContractorGender,
+    gender: "" as Gender,
     name: "",
     surname: "",
   },
@@ -179,7 +177,7 @@ export function ContractorDataForm() {
                 as={BorderFeedback}
               >
                 <FormLabel>Genere</FormLabel>
-                <CheckGroup type="radio" options={contractorGenders} readOnly />
+                <CheckGroup type="radio" options={gendersOptions} readOnly />
               </FormGroup>
             </Col>
             <Col className="d-flex" xs={12} sm={6} md={4} lg={5}>

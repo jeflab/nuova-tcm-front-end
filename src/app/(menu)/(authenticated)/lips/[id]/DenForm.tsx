@@ -186,10 +186,6 @@ export function DenForm() {
                         if (formValues.family === "4+") {
                           return;
                         }
-                        console.log(
-                          "vero?",
-                          `${parseInt(value, 10)} > ${parseInt(formValues.family, 10)}`,
-                        );
                         if (
                           parseInt(value, 10) > parseInt(formValues.family, 10)
                         ) {

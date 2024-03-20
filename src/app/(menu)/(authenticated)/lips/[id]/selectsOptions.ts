@@ -1,3 +1,20 @@
+// Generic
+export const gendersOptions = [
+  {label: "Maschio", value: "male"},
+  {label: "Femmina", value: "female"},
+] as const;
+export type Gender = (typeof gendersOptions)[number]["value"];
+
+export const relationshipOptions = [
+  {label: "Parente", value: "relative"},
+  {label: "Affinità", value: "affinity"},
+  {label: "Coniugio", value: "marriage"},
+  {label: "Unione civile", value: "civil_union"},
+  {label: "Convivenza di fatto", value: "de_facto"},
+  {label: "Altro", value: "other"},
+] as const;
+export type Relationship = (typeof relationshipOptions)[number]["value"];
+
 // Contractor data
 
 export const publicOfficesOptions = [
@@ -316,3 +333,18 @@ export const durationOptions = [
   {label: "Lungo (maggiore di cinque anni)", value: "long_term"},
 ] as const;
 export type DurationOptions = (typeof durationOptions)[number]["value"];
+
+// Beneficiaries
+
+export const nominationOptions = [
+  {
+    label: "Il contraente designa i seguenti Beneficiari",
+    value: "beneficiaries",
+  },
+  {
+    label:
+      "Il contraente designa come Beneficiari gli eredi testamentari o, in assenza di testamento, gli eredi legittimi del contraente-assicurato in parti uguali fra loro",
+    value: "heirs",
+  },
+] as const;
+export type Nomination = (typeof nominationOptions)[number]["value"];

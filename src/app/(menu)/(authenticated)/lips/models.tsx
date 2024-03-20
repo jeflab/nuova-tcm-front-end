@@ -1,6 +1,8 @@
-import {ContractorGender} from "@/app/(menu)/(authenticated)/lips/[id]/ContractorFiscalCodeForm";
 import {PaymentMethodsOptions} from "@/app/(menu)/(authenticated)/lips/[id]/PaymentForm";
-import {IdType} from "@/app/(menu)/(authenticated)/lips/[id]/selectsOptions";
+import {
+  Gender,
+  IdType,
+} from "@/app/(menu)/(authenticated)/lips/[id]/selectsOptions";
 import {Documents} from "@/entities/document";
 import {YesNoAnswer} from "@/helpers/getOptionsLabel";
 
@@ -16,7 +18,7 @@ export interface TempLipData {
         province: string;
       };
       fiscalCode: string;
-      gender: ContractorGender;
+      gender: Gender;
       name: string;
       surname: string;
     };
@@ -145,7 +147,7 @@ export interface PreliminaryData {
       province: string;
     };
     fiscalCode: string;
-    gender: ContractorGender;
+    gender: Gender;
     name: string;
     surname: string;
   };

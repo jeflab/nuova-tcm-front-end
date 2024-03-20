@@ -1,6 +1,6 @@
 "use server";
 
-import {ContractorGender} from "@/app/(menu)/(authenticated)/lips/[id]/ContractorFiscalCodeForm";
+import {BeneficiariesValues} from "@/app/(menu)/(authenticated)/lips/[id]/BeneficiariesForm";
 import {fatcaQuestions} from "@/app/(menu)/(authenticated)/lips/[id]/FatcaForm";
 import {HealthQuestionnaireFormValues} from "@/app/(menu)/(authenticated)/lips/[id]/HealthQuestionnaireForm";
 import {
@@ -17,6 +17,7 @@ import {
   familyOptions,
   FamilyOptions,
   FundSource,
+  Gender,
   IdType,
   JobPosition,
   jobPositionOptions,
@@ -57,7 +58,7 @@ interface ActivateContractorParams {
     province: string;
   };
   fiscalCode: string;
-  gender: ContractorGender;
+  gender: Gender;
   name: string;
   surname: string;
   email: string;
@@ -302,5 +303,17 @@ export async function updateHealthQuestionnaire(
     `/lips/${lipId}`,
     {},
     JSON.stringify({json_survey_healthcare: JSON.stringify(formData)}),
+  );
+}
+
+export async function updateBeneficiaries(
+  beneficiaries: BeneficiariesValues,
+  lipId: number,
+) {
+  revalidateTag(`getLip-${lipId}`);
+  return patch(
+    `/lips/${lipId}`,
+    {},
+    JSON.stringify({json_beneficiary: JSON.stringify(beneficiaries)}),
   );
 }

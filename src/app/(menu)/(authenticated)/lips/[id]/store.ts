@@ -29,7 +29,6 @@ interface Actions {
   updateContractorData: (data: TempLipData["contractorData"]) => void;
   updateIdentificationData: (data: TempLipData["identification"]) => void;
   setPicture: (key: string, picture: string) => void;
-  updateBeneficiariesData: (data: TempLipData["beneficiaries"]) => void;
   updateDocumentationData: (data: TempLipData["documentation"]) => void;
   esignDocument: (fileName: string, esignIndex: number) => void;
   updatePaymentData: (data: TempLipData["payment"]) => void;
@@ -39,17 +38,6 @@ interface Actions {
 const updateLipData = (state: State, data: Partial<TempLipData>) => {
   const newState = state;
   newState.lipData = {...newState.lipData, ...data};
-
-  // // Documentazione
-  // if (newState.drawerStates.beneficiaries === "success") {
-  //   if (newState.lipData.documentation === undefined) {
-  //     newState.drawerStates.documentation = "active";
-  //   } else if (newState.lipData.documentation) {
-  //     newState.drawerStates.documentation = "success";
-  //   } else {
-  //     newState.drawerStates.documentation = "danger";
-  //   }
-  // }
 
   return newState;
 };
@@ -235,15 +223,27 @@ function createDrawerState(state: State & Actions) {
 
     // Beneficiari
     if (state.drawerStates.healthQuestionnaire?.variant === "success") {
-      if (state.lipData.beneficiaries === undefined) {
+      if (!state.lip?.beneficiaries) {
         state.drawerStates.beneficiaries = {
           variant: "active",
           ...presetButtons.compile,
         };
-      } else if (state.lipData.beneficiaries) {
-        state.drawerStates.beneficiaries = {variant: "success"};
       } else {
-        state.drawerStates.beneficiaries = {variant: "danger"};
+        state.drawerStates.beneficiaries = {variant: "success"};
+      }
+    }
+
+    // Documentazione
+    if (state.drawerStates.beneficiaries?.variant === "success") {
+      if (state.lipData.documentation === undefined) {
+        state.drawerStates.documentation = {
+          variant: "active",
+          ...presetButtons.compile,
+        };
+      } else if (state.lipData.documentation) {
+        state.drawerStates.documentation = {variant: "success"};
+      } else {
+        state.drawerStates.documentation = {variant: "danger"};
       }
     }
   }
@@ -372,12 +372,6 @@ export const useDrawerStore = create<State & Actions>()((set) => ({
           state.lipData.idPictures = {};
         }
         state.lipData.idPictures[key] = picture;
-      }),
-    ),
-  updateBeneficiariesData: (data) =>
-    set(
-      produce((state) => {
-        updateLipData(state, {beneficiaries: data});
       }),
     ),
   updateDocumentationData: (data) =>
