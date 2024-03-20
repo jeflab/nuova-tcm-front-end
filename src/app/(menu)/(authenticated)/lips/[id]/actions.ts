@@ -24,6 +24,7 @@ import {
   jobPositionOptions,
   needsToMeetOptions,
   NeedsToMeetOptions,
+  OngoingRelationship,
   PublicOffices,
   publicOfficesOptions,
   TAECode,
@@ -142,6 +143,7 @@ interface updateContractorDataParams {
     province: string;
     country: string;
   };
+  ongoingRelationship: OngoingRelationship;
   fundSource: FundSource;
   fundSourceOther: string;
 }
@@ -173,6 +175,7 @@ export async function updateContractorData(
         province: formData.job.province,
         country: formData.job.country,
       },
+      ongoingRelationship: formData.ongoingRelationship,
       fundSource: formData.fundSource,
       fundSourceOther: formData.fundSourceOther,
     }),

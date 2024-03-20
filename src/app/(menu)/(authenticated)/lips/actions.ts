@@ -15,10 +15,10 @@ const getLipsShape = {
   lips: z
     .object({
       data: z.array(lipSchema),
-      from: z.number(),
+      from: z.number().nullable(),
       last_page: z.number(),
       links: z.any(),
-      to: z.number(),
+      to: z.number().nullable(),
       total: z.number(),
     })
     .transform(({last_page, ...data}) => {
