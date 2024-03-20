@@ -4,6 +4,7 @@ import {
   fundSourceOptions,
   gendersOptions,
   jobPositionOptions,
+  ongoingRelationshipOptions,
   publicOfficesOptions,
   tAECodeOptions,
 } from "@/app/(menu)/(authenticated)/lips/[id]/selectsOptions";
@@ -15,6 +16,7 @@ import {
   faBriefcase,
   faHandHoldingDollar,
   faLandmarkMagnifyingGlass,
+  faMoneyBillTransfer,
   faUser,
   faWashingMachine,
 } from "@fortawesome/pro-duotone-svg-icons";
@@ -94,11 +96,22 @@ export function ContractorDataSummary() {
           <FontAwesomeIcon icon={faHandHoldingDollar} /> Origine prevalente dei
           fondi
         </h4>
-        <p className="mb-0">
+        <p className="mb-4">
           <strong>Origine prevalente dei fondi:</strong>{" "}
           {contractor.pep.fundSource !== "other"
             ? getOptionsLabel(fundSourceOptions, contractor.pep.fundSource)
             : contractor.pep.fundSourceOther}
+        </p>
+        <h4 className="w-100 text-primary">
+          <FontAwesomeIcon icon={faMoneyBillTransfer} /> Informazioni sul
+          rapporto continuativo
+        </h4>
+        <p className="mb-0">
+          <strong>Natura / scopo del rapporto continuativo:</strong>{" "}
+          {getOptionsLabel(
+            ongoingRelationshipOptions,
+            contractor.pep.ongoingRelationship,
+          )}
         </p>
       </Col>
       <Col className="w-100">

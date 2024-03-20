@@ -1,8 +1,9 @@
 "use server";
 
-import {BeneficiariesValues} from "@/app/(menu)/(authenticated)/lips/[id]/BeneficiariesForm";
+import {BeneficiariesFormValues} from "@/app/(menu)/(authenticated)/lips/[id]/BeneficiariesForm";
 import {fatcaQuestions} from "@/app/(menu)/(authenticated)/lips/[id]/FatcaForm";
 import {HealthQuestionnaireFormValues} from "@/app/(menu)/(authenticated)/lips/[id]/HealthQuestionnaireForm";
+import {PaymentFormValues} from "@/app/(menu)/(authenticated)/lips/[id]/PaymentForm";
 import {
   dependentFamilyMembersOptions,
   DependentFamilyMembersOptions,
@@ -307,7 +308,7 @@ export async function updateHealthQuestionnaire(
 }
 
 export async function updateBeneficiaries(
-  beneficiaries: BeneficiariesValues,
+  beneficiaries: BeneficiariesFormValues,
   lipId: number,
 ) {
   revalidateTag(`getLip-${lipId}`);
@@ -315,5 +316,17 @@ export async function updateBeneficiaries(
     `/lips/${lipId}`,
     {},
     JSON.stringify({json_beneficiary: JSON.stringify(beneficiaries)}),
+  );
+}
+
+export async function updatePaymentData(
+  payment: PaymentFormValues,
+  lipId: number,
+) {
+  revalidateTag(`getLip-${lipId}`);
+  return patch(
+    `/lips/${lipId}`,
+    {},
+    JSON.stringify({json_payment: JSON.stringify(payment)}),
   );
 }

@@ -1,5 +1,6 @@
 import {
   jobPositionOptions,
+  ongoingRelationshipOptions,
   publicOfficesOptions,
   tAECodeOptions,
 } from "@/app/(menu)/(authenticated)/lips/[id]/selectsOptions";
@@ -73,6 +74,7 @@ const pepSchema = z.object({
     response: z.enum(getOptionsValues(yesNoOptions)),
   }),
   job: jobSchema,
+  ongoingRelationship: z.enum(getOptionsValues(ongoingRelationshipOptions)),
   fundSource: z.string(),
   fundSourceOther: z.string().optional(),
 });

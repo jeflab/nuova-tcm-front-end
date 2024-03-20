@@ -1,6 +1,10 @@
 "use client";
 
+import {updatePaymentData} from "@/app/(menu)/(authenticated)/lips/[id]/actions";
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {getCoverageDuration} from "@/app/(menu)/quoter/helpers";
+import {dbDateString} from "@/helpers/dates";
+import {YesNoAnswer, yesNoOptions} from "@/helpers/getOptionsLabel";
 import {Currency} from "@/ui/Currency";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {CheckGroup} from "@/ui/form/CheckGroup";
@@ -10,18 +14,22 @@ import {InputField} from "@/ui/form/InputField";
 import {validateIBAN} from "@/ui/form/validators/iban";
 import {faSave, faSpinner, faXmark} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {addYears} from "date-fns/addYears";
+import {endOfYear} from "date-fns/endOfYear";
 import {
   Button,
   Col,
-  Collapse,
   FormGroup,
   FormLabel,
   ModalBody,
   ModalFooter,
   Row,
+  Collapse,
 } from "react-bootstrap";
 import {useForm} from "react-hook-form";
+import invariant from "tiny-invariant";
 
+// Payments
 export function paymentMethodsOptions<T>(
   premium: number,
   paymentMethodValue: T,
@@ -76,25 +84,45 @@ export function paymentMethodsOptions<T>(
     },
   ] as const;
 }
-export type PaymentMethodsOptions = ReturnType<
+export type PaymentMethods = ReturnType<
   typeof paymentMethodsOptions
 >[number]["value"];
 
 const paymentDefaultValues = {
+  effectiveDate: "",
+  duration: "",
+  expirationDate: "",
+  medicalExam: "" as YesNoAnswer,
+  paymentMethod: "" as PaymentMethods,
+  contractorFullName: "",
   bank: "",
+  bicSwift: "",
   iban: "",
-  paymentMethod: "" as PaymentMethodsOptions,
 };
+export type PaymentFormValues = typeof paymentDefaultValues;
 
 export function PaymentForm() {
+  const lipId = useDrawerStore((state) => state.lip?.id);
+  const birthDate = useDrawerStore((state) => state.lipData.quote?.birthDate)!;
+  const contractorName = useDrawerStore((state) => state.lip?.contractor.name);
+  const contractorSurname = useDrawerStore(
+    (state) => state.lip?.contractor.surname,
+  );
+
   const formMethods = useForm({
     mode: "onChange",
-    defaultValues: paymentDefaultValues,
+    defaultValues: {
+      ...paymentDefaultValues,
+      contractorFullName: `${contractorName} ${contractorSurname}`,
+      duration: getCoverageDuration(birthDate).toString(),
+      expirationDate: addYears(new Date(), getCoverageDuration(birthDate))
+        .getFullYear()
+        .toString(),
+    },
   });
 
-  const updatePaymentData = useDrawerStore((state) => state.updatePaymentData);
   const closeModal = useDrawerStore((state) => state.closeModal);
-  const premium = useDrawerStore((state) => state.lipData.quote?.premium)!;
+  const premium = useDrawerStore((state) => state.lip?.quotation?.premium)!;
 
   const paymentMethodValue = formMethods.watch("paymentMethod");
 
@@ -103,15 +131,103 @@ export function PaymentForm() {
       <ModalBody>
         <Form
           id="payment-form"
-          onSubmit={(values) => {
-            updatePaymentData(values);
+          onSubmit={async (values) => {
+            invariant(lipId, "lipId is required");
+
+            const updatedContractor = await updatePaymentData(values, lipId);
+
+            if (updatedContractor.status === "failed") {
+              throw {
+                root: {
+                  type: "server",
+                  message: updatedContractor.message,
+                },
+              };
+            }
+
             closeModal();
           }}
           formMethods={formMethods}
           className="vstack gap-3"
         >
           <Row className="row-gap-3">
+            <h4>Decorrenza assicurazione e premio</h4>
+            <Col className="d-flex" xs={12} sm={4}>
+              <FormGroup controlId="effectiveDate" as={BorderFeedback}>
+                <FormLabel>Data di decorrenza del contratto</FormLabel>
+                <FieldError />
+                <InputField
+                  type="date"
+                  placeholder="Data decorrenza contratto"
+                  max={dbDateString(endOfYear(new Date()))}
+                  min={dbDateString()}
+                  validation={{
+                    required: "Inserisci la data di decorrenza del contratto",
+                    max: {
+                      value: dbDateString(endOfYear(new Date())),
+                      message:
+                        "La data di decorrenza dev'essere entro la fine dell'anno",
+                    },
+                    min: {
+                      value: dbDateString(),
+                      message:
+                        "La data di decorrenza non può essere antecedente a oggi",
+                    },
+                  }}
+                />
+              </FormGroup>
+            </Col>
+            <Col className="d-flex" xs={12} sm={4}>
+              <FormGroup controlId="duration" as={BorderFeedback}>
+                <FormLabel>Durata in anni</FormLabel>
+                <FieldError />
+                <InputField type="text" readOnly plaintext />
+              </FormGroup>
+            </Col>
+            <Col className="d-flex" xs={12} sm={4}>
+              <FormGroup controlId="expirationDate" as={BorderFeedback}>
+                <FormLabel>Anno di scadenza</FormLabel>
+                <FieldError />
+                <InputField type="text" readOnly plaintext />
+              </FormGroup>
+            </Col>
+            <Col className="d-flex" xs={12}>
+              <FormGroup controlId="medicalExam" as={BorderFeedback}>
+                <FormLabel>Visita medica</FormLabel>
+                <FieldError />
+                <CheckGroup
+                  type="radio"
+                  inline
+                  options={yesNoOptions}
+                  validation={{
+                    required: "Seleziona un'opzione",
+                  }}
+                />
+              </FormGroup>
+            </Col>
+            <Col className="d-flex">
+              <FormGroup controlId="paymentMethod" as={BorderFeedback}>
+                <FormLabel>Frazionamento del premio</FormLabel>
+                <FieldError />
+                <CheckGroup
+                  type="radio-switch"
+                  options={paymentMethodsOptions(premium, paymentMethodValue)}
+                />
+              </FormGroup>
+            </Col>
             <h4>Dati bancari del contraente</h4>
+            <Col className="d-flex" xs={12} sm={6}>
+              <FormGroup controlId="contractorFullName" as={BorderFeedback}>
+                <FormLabel>Intestatario c/c</FormLabel>
+                <FieldError />
+                <InputField
+                  type="text"
+                  placeholder="Intestatario c/c"
+                  readOnly
+                  plaintext
+                />
+              </FormGroup>
+            </Col>
             <Col className="d-flex" xs={12} sm={6}>
               <FormGroup controlId="bank" as={BorderFeedback}>
                 <FormLabel>Banca</FormLabel>
@@ -121,6 +237,19 @@ export function PaymentForm() {
                   placeholder="Banca"
                   validation={{
                     required: "Inserisci il nome della tua banca",
+                  }}
+                />
+              </FormGroup>
+            </Col>
+            <Col className="d-flex" xs={12} sm={6}>
+              <FormGroup controlId="bicSwift" as={BorderFeedback}>
+                <FormLabel>BIC/SWIFT</FormLabel>
+                <FieldError />
+                <InputField
+                  type="text"
+                  placeholder="BIC/SWIFT"
+                  validation={{
+                    required: "Inserisci il BIC/SWIFT",
                   }}
                 />
               </FormGroup>
@@ -146,17 +275,6 @@ export function PaymentForm() {
                       },
                     },
                   }}
-                />
-              </FormGroup>
-            </Col>
-            <h4>Modalità di pagamento</h4>
-            <Col className="d-flex">
-              <FormGroup controlId="paymentMethod" as={BorderFeedback}>
-                <FormLabel>Modalità di pagamento</FormLabel>
-                <FieldError />
-                <CheckGroup
-                  type="radio-switch"
-                  options={paymentMethodsOptions(premium, paymentMethodValue)}
                 />
               </FormGroup>
             </Col>

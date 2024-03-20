@@ -1,5 +1,4 @@
 import {DrawerName} from "@/app/(menu)/(authenticated)/lips/[id]/drawers";
-import {calculateImc, RANGE} from "@/app/(menu)/(authenticated)/lips/[id]/imc";
 import {PreliminaryData} from "@/app/(menu)/(authenticated)/lips/models";
 import {Documents, DocumentsSchema} from "@/entities/document";
 import {Lip} from "@/entities/lip";
@@ -31,7 +30,6 @@ interface Actions {
   setPicture: (key: string, picture: string) => void;
   updateDocumentationData: (data: TempLipData["documentation"]) => void;
   esignDocument: (fileName: string, esignIndex: number) => void;
-  updatePaymentData: (data: TempLipData["payment"]) => void;
   resetLipData: () => void;
 }
 
@@ -233,12 +231,24 @@ function createDrawerState(state: State & Actions) {
       }
     }
 
-    // Documentazione
+    // Pagamento
     if (state.drawerStates.beneficiaries?.variant === "success") {
+      if (state.lip?.payment === null) {
+        state.drawerStates.payment = {
+          variant: "active",
+          ...presetButtons.compile,
+        };
+      } else {
+        state.drawerStates.payment = {variant: "success"};
+      }
+    }
+
+    // Documentazione
+    if (state.drawerStates.payment?.variant === "success") {
       if (state.lipData.documentation === undefined) {
         state.drawerStates.documentation = {
           variant: "active",
-          ...presetButtons.compile,
+          ...presetButtons.documentEsign,
         };
       } else if (state.lipData.documentation) {
         state.drawerStates.documentation = {variant: "success"};
@@ -400,12 +410,6 @@ export const useDrawerStore = create<State & Actions>()((set) => ({
           name: "Mario",
           surname: "Rossi",
         };
-      }),
-    ),
-  updatePaymentData: (data) =>
-    set(
-      produce((state) => {
-        updateLipData(state, {payment: data});
       }),
     ),
   resetLipData: () =>

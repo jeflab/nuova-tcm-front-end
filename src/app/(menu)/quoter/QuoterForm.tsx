@@ -1,7 +1,7 @@
 "use client";
 
 import {
-  PaymentMethodsOptions,
+  PaymentMethods,
   paymentMethodsOptions,
 } from "@/app/(menu)/(authenticated)/lips/[id]/PaymentForm";
 import {getQuote} from "@/app/(menu)/quoter/actions";
@@ -55,7 +55,7 @@ export type QuoterFormValues = typeof quoterFormDefaultValues;
 export function QuoterForm() {
   const [premium, setPremium] = useState<number>();
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethodsOptions>();
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethods>();
   const [firstTry, setFirstTry] = useState(true);
 
   const formMethods = useForm({

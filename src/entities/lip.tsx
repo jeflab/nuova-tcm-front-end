@@ -1,6 +1,7 @@
 import {
   gendersOptions,
   nominationOptions,
+  paymentMethodsSimpleOptions,
   relationshipOptions,
 } from "@/app/(menu)/(authenticated)/lips/[id]/selectsOptions";
 import {agentSchema} from "@/entities/agent";
@@ -184,6 +185,18 @@ const beneficiariesSchema = z.object({
   thirdPartyContactPerson: thirdPartySchema.optional(),
 });
 
+const paymentSchema = z.object({
+  effectiveDate: z.string(),
+  duration: z.string(),
+  expirationDate: z.string(),
+  medicalExam: z.enum(getOptionsValues(yesNoOptions)),
+  paymentMethod: z.enum(getOptionsValues(paymentMethodsSimpleOptions)),
+  contractorFullName: z.string(),
+  bank: z.string(),
+  bicSwift: z.string(),
+  iban: z.string(),
+});
+
 export const lipSchema = z
   .object({
     id: z.number(),
@@ -208,6 +221,7 @@ export const lipSchema = z
       .pipe(beneficiariesSchema)
       .nullable()
       .optional(),
+    json_payment: zu.stringToJSON().pipe(paymentSchema).nullable().optional(),
     status: z.union([z.literal(0), z.literal(1)]).transform((status) => {
       return lipStatuses[status];
     }),
@@ -221,6 +235,7 @@ export const lipSchema = z
       json_quotation,
       json_survey_healthcare,
       json_beneficiary,
+      json_payment,
       ...data
     }) => {
       return {
@@ -232,6 +247,7 @@ export const lipSchema = z
         quotation: json_quotation,
         healthcareQuestionnaire: json_survey_healthcare,
         beneficiaries: json_beneficiary,
+        payment: json_payment,
       };
     },
   );

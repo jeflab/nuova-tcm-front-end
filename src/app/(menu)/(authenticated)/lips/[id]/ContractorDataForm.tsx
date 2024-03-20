@@ -8,6 +8,8 @@ import {
   gendersOptions,
   JobPosition,
   jobPositionOptions,
+  OngoingRelationship,
+  ongoingRelationshipOptions,
   PublicOffices,
   publicOfficesOptions,
   TAECode,
@@ -78,6 +80,7 @@ const contractorDataDefaultValues = {
     province: "",
     country: "",
   },
+  ongoingRelationship: "" as OngoingRelationship,
   fundSource: "" as FundSource,
   fundSourceOther: "",
 };
@@ -423,6 +426,21 @@ export function ContractorDataForm() {
                     },
                   ]}
                   validation={{required: "Seleziona una risposta"}}
+                />
+              </FormGroup>
+            </Col>
+            <h4 className="w-100">Informazioni sul rapporto continuativo</h4>
+            <Col className="d-flex" xs={12}>
+              <FormGroup controlId="ongoingRelationship" as={BorderFeedback}>
+                <FormLabel>Natura / scopo del rapporto continuativo</FormLabel>
+                <FieldError />
+                <SelectField
+                  placeholder="Seleziona natura / scopo del rapporto continuativo..."
+                  options={ongoingRelationshipOptions}
+                  validation={{
+                    required:
+                      "Specificare natura / scopo del rapporto continuativo",
+                  }}
                 />
               </FormGroup>
             </Col>

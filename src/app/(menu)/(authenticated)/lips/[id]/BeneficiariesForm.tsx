@@ -97,7 +97,7 @@ const beneficiariesDefaultValues = {
     | undefined
     | typeof thirdPartDefaultValues,
 };
-export type BeneficiariesValues = typeof beneficiariesDefaultValues;
+export type BeneficiariesFormValues = typeof beneficiariesDefaultValues;
 
 export function BeneficiariesForm() {
   const animateContainer = useRef(null);
@@ -323,7 +323,7 @@ export function BeneficiariesForm() {
                           <FormLabel>Codice Fiscale</FormLabel>
                           <FieldError />
                           <InputField<
-                            BeneficiariesValues,
+                            BeneficiariesFormValues,
                             `beneficiaries.${number}.fiscalCode`
                           >
                             type="text"
@@ -469,7 +469,7 @@ export function BeneficiariesForm() {
                           <FormLabel>Email</FormLabel>
                           <FieldError />
                           <InputField<
-                            BeneficiariesValues,
+                            BeneficiariesFormValues,
                             `beneficiaries.${number}.email`
                           >
                             type="email"
@@ -782,7 +782,7 @@ export function BeneficiariesForm() {
                     <FormLabel>Codice Fiscale</FormLabel>
                     <FieldError />
                     <InputField<
-                      BeneficiariesValues,
+                      BeneficiariesFormValues,
                       `thirdPartyContactPerson.fiscalCode`
                     >
                       type="text"
@@ -924,7 +924,7 @@ export function BeneficiariesForm() {
                     <FormLabel>Email</FormLabel>
                     <FieldError />
                     <InputField<
-                      BeneficiariesValues,
+                      BeneficiariesFormValues,
                       `thirdPartyContactPerson.email`
                     >
                       type="email"

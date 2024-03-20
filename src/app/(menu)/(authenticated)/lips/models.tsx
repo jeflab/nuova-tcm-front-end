@@ -1,7 +1,7 @@
-import {PaymentMethodsOptions} from "@/app/(menu)/(authenticated)/lips/[id]/PaymentForm";
 import {
   Gender,
   IdType,
+  PaymentMethodsSimple,
 } from "@/app/(menu)/(authenticated)/lips/[id]/selectsOptions";
 import {Documents} from "@/entities/document";
 import {YesNoAnswer} from "@/helpers/getOptionsLabel";
@@ -133,7 +133,7 @@ export interface TempLipData {
   payment?: {
     bank: string;
     iban: string;
-    paymentMethod: PaymentMethodsOptions;
+    paymentMethod: PaymentMethodsSimple;
   };
 }
 

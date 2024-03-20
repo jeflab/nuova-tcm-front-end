@@ -22,6 +22,10 @@ export const presetButtons = {
     buttonIcon: "faPenToSquare",
     buttonLabel: "Leggi e firma",
   },
+  documentEsign: {
+    buttonIcon: "faPenToSquare",
+    buttonLabel: "Firma",
+  },
 } as const;
 
 export const buttonMap = {
