@@ -258,7 +258,8 @@ export const familyOptions = [
   {label: "1", value: "1"},
   {label: "2", value: "2"},
   {label: "3", value: "3"},
-  {label: "4 o più", value: "4+"},
+  {label: "4", value: "4"},
+  {label: "5 o più", value: "5+"},
 ] as const;
 export type FamilyOptions = (typeof familyOptions)[number]["value"];
 
@@ -267,7 +268,8 @@ export const dependentFamilyMembersOptions = [
   {label: "1", value: "1"},
   {label: "2", value: "2"},
   {label: "3", value: "3"},
-  {label: "4 o più", value: "4+"},
+  {label: "4", value: "4"},
+  {label: "5 o più", value: "5+"},
 ] as const;
 export type DependentFamilyMembersOptions =
   (typeof dependentFamilyMembersOptions)[number]["value"];

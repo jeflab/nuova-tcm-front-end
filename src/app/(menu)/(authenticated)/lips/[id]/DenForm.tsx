@@ -40,12 +40,14 @@ import {
   ModalBody,
   ModalFooter,
   Row,
+  Stack,
 } from "react-bootstrap";
 import {useForm} from "react-hook-form";
 import invariant from "tiny-invariant";
 
 const denDefaultValues = {
   education: "" as EducationOptions,
+  educationOther: "",
   job: "" as JobPosition,
   family: "" as FamilyOptions,
   dependentFamilyMembers: "" as DependentFamilyMembersOptions,
@@ -62,11 +64,17 @@ export function DenForm() {
   const job = useDrawerStore(
     (state) => state.lip?.contractor.pep?.job.position.response,
   );
+  const jobOther = useDrawerStore(
+    (state) => state.lip?.contractor.pep?.job.positionOther,
+  );
 
   const formMethods = useForm({
     mode: "onChange",
     defaultValues: {...denDefaultValues, ...(job && {job})},
   });
+
+  const lipId = useDrawerStore((state) => state.lip?.id);
+  const closeModal = useDrawerStore((state) => state.closeModal);
 
   const dependentFamilyMembersValue = formMethods.watch(
     "dependentFamilyMembers",
@@ -74,9 +82,7 @@ export function DenForm() {
   const otherInsuranceProductsValue = formMethods.watch(
     "otherInsuranceProducts",
   );
-
-  const lipId = useDrawerStore((state) => state.lip?.id);
-  const closeModal = useDrawerStore((state) => state.closeModal);
+  const educationValue = formMethods.watch("education");
 
   return (
     <>
@@ -104,17 +110,32 @@ export function DenForm() {
           <Row className="row-gap-3">
             <h4>Situazione personale e familiare</h4>
             <Col className="d-flex" xs={12} sm={6}>
-              <FormGroup controlId="education" as={BorderFeedback}>
-                <FormLabel>Titolo di studio</FormLabel>
-                <FieldError />
-                <SelectField
-                  placeholder="Titolo di studio del contraente"
-                  options={educationOptions}
-                  validation={{
-                    required: "Seleziona il titolo di studio del contraente",
-                  }}
-                />
-              </FormGroup>
+              <Stack gap={3}>
+                <FormGroup controlId="education" as={BorderFeedback}>
+                  <FormLabel>Titolo di studio</FormLabel>
+                  <FieldError />
+                  <SelectField
+                    placeholder="Titolo di studio del contraente"
+                    options={educationOptions}
+                    validation={{
+                      required: "Seleziona il titolo di studio del contraente",
+                    }}
+                  />
+                </FormGroup>
+                {educationValue === "other" && (
+                  <FormGroup controlId="educationOther" as={BorderFeedback}>
+                    <FormLabel>Specifica il titolo di studio</FormLabel>
+                    <FieldError />
+                    <InputField
+                      type="text"
+                      placeholder="Specifica il titolo di studio"
+                      validation={{
+                        required: "Inserisci il titolo di studio",
+                      }}
+                    />
+                  </FormGroup>
+                )}
+              </Stack>
             </Col>
             <Col className="d-flex" xs={12} sm={6}>
               <FormGroup controlId="job" as={BorderFeedback}>
@@ -135,7 +156,7 @@ export function DenForm() {
                   value={
                     job && job !== "other"
                       ? getOptionsLabel(jobPositionOptions, job)
-                      : job
+                      : jobOther
                   }
                 />
               </FormGroup>
