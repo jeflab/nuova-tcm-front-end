@@ -1,15 +1,16 @@
-import {DebugState} from "@/app/(menu)/(authenticated)/lips/[id]/DebugState";
-import {drawers} from "@/app/(menu)/(authenticated)/lips/[id]/drawers";
-import {Lip} from "@/app/(menu)/(authenticated)/lips/model";
+import {Lip} from "@/entities/lip";
 import {cns} from "@/helpers/cns";
 import {AppContainer} from "@/ui/AppContainer";
-import {ButtonLink} from "@/ui/ButtonLink";
 import {Drawer} from "@/ui/drawer/Drawer";
 import {NavDrawer} from "@/ui/drawer/NavDrawer";
 import {PageTitle} from "@/ui/PageTitle";
 import {faTriangleExclamation} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {Alert, ButtonGroup, Col, Nav, Row} from "react-bootstrap";
+import {notFound} from "next/navigation";
+import {Alert, Col, Nav, Row} from "react-bootstrap";
+import {getLip} from "./actions";
+import {drawers} from "./drawers";
+import {InitStoreWithServerData} from "./InitStoreWithServerData";
 import styles from "./page.module.scss";
 
 // TODO: abbassare il fetch dei dati, o in un sotto-componente client o addirittura nel drawer (fetch è cachata)
@@ -17,22 +18,29 @@ import styles from "./page.module.scss";
 
 interface NewLipPageProps {
   params: {id: string};
-  searchParams: {step?: string};
 }
 
 const minWidthHack = {minWidth: "1px"};
 
-export default async function NewLipPage({
-  params,
-  searchParams,
-}: NewLipPageProps) {
-  const updateLip = async (data: Partial<Lip>) => {
-    console.log("Update LIP", data);
-  };
+export default async function NewLipPage({params}: NewLipPageProps) {
+  let lip: Lip | undefined = undefined;
+  if (params.id !== "new" && params.id !== "debug") {
+    const lipResponse = await getLip(parseInt(params.id, 10));
+    if (lipResponse.status === "failed") {
+      if (lipResponse.responseStatus === 404) {
+        notFound();
+      }
+      throw new Error(lipResponse.message);
+    }
+    lip = lipResponse.lip;
+  }
 
   return (
     <AppContainer className="vstack gap-3">
-      <PageTitle>Nuova polizza</PageTitle>
+      <PageTitle>
+        {lip?.lipNumber ? `Polizza n° ${lip?.lipNumber}` : "Nuova polizza"}
+      </PageTitle>
+      <InitStoreWithServerData lip={lip} />
       <Row className="flex-row-reverse">
         <Col md="auto">
           <Nav className={cns("flex-column", styles.connectedList)}>
@@ -47,7 +55,7 @@ export default async function NewLipPage({
           <Alert variant="info" className="mb-0">
             <h3>
               <FontAwesomeIcon icon={faTriangleExclamation} className="me-2" />
-              Avviso legale: contraente e assicurato devono coincidere.
+              Avviso legale: Contraente e Assicurato devono coincidere.
             </h3>
             <p>
               Ti diamo il benvenuto nell'app di calcolo preventivo per polizze
@@ -62,7 +70,6 @@ export default async function NewLipPage({
               corrispondere.
             </p>
           </Alert>
-          {params.id === "debug" && <DebugState step={searchParams.step} />}
           {drawers.map(({name, title, modalContent, summaryContent}) => (
             <Drawer
               key={name}

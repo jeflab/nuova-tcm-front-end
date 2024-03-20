@@ -36,8 +36,8 @@ export function SelectField<TValue extends string | number>({
         onChange,
         ...validation,
       })}
-      isInvalid={validationStyle && isInvalid}
-      isValid={validationStyle && isValid}
+      isInvalid={validationStyle && !inputProps.disabled && isInvalid}
+      isValid={validationStyle && !inputProps.disabled && isValid}
       aria-invalid={isInvalid}
       aria-errormessage={isInvalid ? `${controlName}-error` : undefined}
       aria-describedby={`${controlName}-help`}

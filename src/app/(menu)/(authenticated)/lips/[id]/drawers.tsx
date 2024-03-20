@@ -4,6 +4,7 @@ import {ContractorDataForm} from "@/app/(menu)/(authenticated)/lips/[id]/Contrac
 import {ContractorDataSummary} from "@/app/(menu)/(authenticated)/lips/[id]/ContractorDataSummary";
 import {ContractorFiscalCodeForm} from "@/app/(menu)/(authenticated)/lips/[id]/ContractorFiscalCodeForm";
 import {ContractorFiscalCodeSummary} from "@/app/(menu)/(authenticated)/lips/[id]/ContractorFiscalCodeSummary";
+import {ContractorPersonalAreaActivationModalContent} from "@/app/(menu)/(authenticated)/lips/[id]/ContractorPersonalAreaActivationModalContent";
 import {ContractorPersonalAreaActivationSummary} from "@/app/(menu)/(authenticated)/lips/[id]/ContractorPersonalAreaActivationSummary";
 import {DenForm} from "@/app/(menu)/(authenticated)/lips/[id]/DenForm";
 import {DenSummary} from "@/app/(menu)/(authenticated)/lips/[id]/DenSummary";
@@ -20,6 +21,7 @@ import {PaymentSummary} from "@/app/(menu)/(authenticated)/lips/[id]/PaymentSumm
 import {QuoteForm} from "@/app/(menu)/(authenticated)/lips/[id]/QuoteForm";
 import {QuoteSummary} from "@/app/(menu)/(authenticated)/lips/[id]/QuoteSummary";
 import {ReactNode} from "react";
+import {ContractorPersonalAreaActivationLastPrivacy} from "./ContractorPersonalAreaActivationLastPrivacy";
 
 export type DrawerName =
   | "fatca"
@@ -56,6 +58,11 @@ export const drawers: Drawer[] = [
   {
     name: "contractorPersonalAreaActivation",
     title: "Attivazione area contraente",
+    modalContent: (
+      <ContractorPersonalAreaActivationModalContent
+        lastPrivacy={<ContractorPersonalAreaActivationLastPrivacy />}
+      />
+    ),
     summaryContent: <ContractorPersonalAreaActivationSummary />,
   },
   {
@@ -98,15 +105,15 @@ export const drawers: Drawer[] = [
     summaryContent: <BeneficiariesSummary />,
   },
   {
-    name: "documentation",
-    title: "Documentazione",
-    modalContent: <DocumentsManagement />,
-    summaryContent: <DocumentsSummary />,
-  },
-  {
     name: "payment",
     title: "Pagamento",
     modalContent: <PaymentForm />,
     summaryContent: <PaymentSummary />,
+  },
+  {
+    name: "documentation",
+    title: "Documentazione",
+    modalContent: <DocumentsManagement />,
+    summaryContent: <DocumentsSummary />,
   },
 ];

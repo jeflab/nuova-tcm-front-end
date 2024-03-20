@@ -22,7 +22,10 @@ import {
 } from "react-bootstrap";
 import styles from "./DocumentsManagement.module.scss";
 
-const eSignsCount = (eSigns: FileEsign[], filter?: string) => {
+const eSignsCount = (
+  eSigns: FileEsign[],
+  filter?: string,
+): [FileEsign[], FileEsign[]] => {
   let filteredESigns = eSigns.map((eSign, index) => ({
     ...eSign,
     esignIndex: index,

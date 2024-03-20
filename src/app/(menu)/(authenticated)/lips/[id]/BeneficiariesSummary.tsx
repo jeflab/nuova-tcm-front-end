@@ -1,6 +1,6 @@
 "use client";
 
-import {nominationOptions} from "@/app/(menu)/(authenticated)/lips/[id]/BeneficiariesForm";
+import {nominationOptions} from "@/app/(menu)/(authenticated)/lips/[id]/selectsOptions";
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {dateString} from "@/helpers/dates";
 import {getOptionsLabel} from "@/helpers/getOptionsLabel";
@@ -16,9 +16,7 @@ import {Fragment} from "react";
 import {Col, Row, Stack} from "react-bootstrap";
 
 export function BeneficiariesSummary() {
-  const beneficiariesData = useDrawerStore(
-    (state) => state.lipData.beneficiaries,
-  );
+  const beneficiariesData = useDrawerStore((state) => state.lip?.beneficiaries);
 
   if (!beneficiariesData) {
     return null;
@@ -37,7 +35,7 @@ export function BeneficiariesSummary() {
             <FontAwesomeIcon icon={faCheckSquare} />{" "}
             {getOptionsLabel(nominationOptions, beneficiariesData.nomination)}
           </p>
-          {beneficiariesData.beneficiaries.map((beneficiary, index) => (
+          {beneficiariesData.beneficiaries?.map((beneficiary, index) => (
             <Fragment key={beneficiary.fiscalCode}>
               <Row xs={1} sm={2} md={1} lg={2}>
                 <Col>
@@ -75,71 +73,80 @@ export function BeneficiariesSummary() {
                   </p>
                 </Col>
               </Row>
-              {index < beneficiariesData.beneficiaries.length - 1 && (
-                <hr className="w-100 m-0" />
-              )}
+              {beneficiariesData.beneficiaries &&
+                index < beneficiariesData.beneficiaries.length - 1 && (
+                  <hr className="w-100 m-0" />
+                )}
             </Fragment>
           ))}
         </>
       )}
-      {beneficiariesData.thirdParty && (
-        <>
-          <hr className="w-100 m-0" />
-          <Row xs={1} sm={2} md={1} lg={2}>
-            <Col>
-              <h4 className="w-100 text-primary">
-                <IconStack className="me-2">
-                  <FontAwesomeIcon
-                    icon={faUser}
-                    className="fa-stack-2x"
-                    opacity={0.4}
-                  />
-                  <FontAwesomeIcon
-                    icon={faMessage}
-                    className="fa-stack-1x"
-                    transform="up-7 right-18"
-                  />
-                </IconStack>
-                Referente terzo
-              </h4>
-              <p className="mb-0">
-                {beneficiariesData.thirdPartyContactPerson.name}{" "}
-                {beneficiariesData.thirdPartyContactPerson.surname}, nato il{" "}
-                {dateString(
-                  new Date(beneficiariesData.thirdPartyContactPerson.birthDate),
-                )}{" "}
-                a {beneficiariesData.thirdPartyContactPerson.birthPlace.city} (
-                {beneficiariesData.thirdPartyContactPerson.birthPlace.province})
-              </p>
-              <p>
-                Residente in{" "}
-                {beneficiariesData.thirdPartyContactPerson.streetName}{" "}
-                {beneficiariesData.thirdPartyContactPerson.streetNumber},{" "}
-                {beneficiariesData.thirdPartyContactPerson.zipCode}{" "}
-                {beneficiariesData.thirdPartyContactPerson.place.city} (
-                {beneficiariesData.thirdPartyContactPerson.place.province})
-              </p>
-              <p className="mb-0">
-                <strong>Codice Fiscale:</strong>{" "}
-                {beneficiariesData.thirdPartyContactPerson.fiscalCode}
-              </p>
-            </Col>
-            <Col>
-              <h4 className="w-100 text-primary">
-                <FontAwesomeIcon icon={faAddressBook} /> Contatti
-              </h4>
-              <p className="mb-0">
-                <strong>Telefono:</strong>{" "}
-                {beneficiariesData.thirdPartyContactPerson.phone}
-              </p>
-              <p className="mb-0">
-                <strong>Email:</strong>{" "}
-                {beneficiariesData.thirdPartyContactPerson.email}
-              </p>
-            </Col>
-          </Row>
-        </>
-      )}
+      {beneficiariesData.thirdParty &&
+        beneficiariesData.thirdPartyContactPerson && (
+          <>
+            <hr className="w-100 m-0" />
+            <Row xs={1} sm={2} md={1} lg={2}>
+              <Col>
+                <h4 className="w-100 text-primary">
+                  <IconStack className="me-2">
+                    <FontAwesomeIcon
+                      icon={faUser}
+                      className="fa-stack-2x"
+                      opacity={0.4}
+                    />
+                    <FontAwesomeIcon
+                      icon={faMessage}
+                      className="fa-stack-1x"
+                      transform="up-7 right-18"
+                    />
+                  </IconStack>
+                  Referente terzo
+                </h4>
+                <p className="mb-0">
+                  {beneficiariesData.thirdPartyContactPerson.name}{" "}
+                  {beneficiariesData.thirdPartyContactPerson.surname}, nato il{" "}
+                  {dateString(
+                    new Date(
+                      beneficiariesData.thirdPartyContactPerson.birthDate,
+                    ),
+                  )}{" "}
+                  a {beneficiariesData.thirdPartyContactPerson.birthPlace.city}{" "}
+                  (
+                  {
+                    beneficiariesData.thirdPartyContactPerson.birthPlace
+                      .province
+                  }
+                  )
+                </p>
+                <p>
+                  Residente in{" "}
+                  {beneficiariesData.thirdPartyContactPerson.streetName}{" "}
+                  {beneficiariesData.thirdPartyContactPerson.streetNumber},{" "}
+                  {beneficiariesData.thirdPartyContactPerson.zipCode}{" "}
+                  {beneficiariesData.thirdPartyContactPerson.place.city} (
+                  {beneficiariesData.thirdPartyContactPerson.place.province})
+                </p>
+                <p className="mb-0">
+                  <strong>Codice Fiscale:</strong>{" "}
+                  {beneficiariesData.thirdPartyContactPerson.fiscalCode}
+                </p>
+              </Col>
+              <Col>
+                <h4 className="w-100 text-primary">
+                  <FontAwesomeIcon icon={faAddressBook} /> Contatti
+                </h4>
+                <p className="mb-0">
+                  <strong>Telefono:</strong>{" "}
+                  {beneficiariesData.thirdPartyContactPerson.phone}
+                </p>
+                <p className="mb-0">
+                  <strong>Email:</strong>{" "}
+                  {beneficiariesData.thirdPartyContactPerson.email}
+                </p>
+              </Col>
+            </Row>
+          </>
+        )}
     </Stack>
   );
 }

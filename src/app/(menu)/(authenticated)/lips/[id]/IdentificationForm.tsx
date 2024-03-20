@@ -1,5 +1,10 @@
 "use client";
 
+import {identificationContractor} from "@/app/(menu)/(authenticated)/lips/[id]/actions";
+import {
+  IdType,
+  idTypeOptions,
+} from "@/app/(menu)/(authenticated)/lips/[id]/selectsOptions";
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {dbDateString} from "@/helpers/dates";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
@@ -18,6 +23,7 @@ import {
 } from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {
+  Alert,
   Button,
   Col,
   FormGroup,
@@ -27,25 +33,17 @@ import {
   Row,
 } from "react-bootstrap";
 import {useForm} from "react-hook-form";
-
-const idTypeOptions = [
-  {label: "Passaporto", value: "passport"},
-  {label: "Carta d'identità", value: "identity_card"},
-  {label: "Patente", value: "driving_license"},
-  {label: "Altro", value: "other"},
-] as const;
-export const getTypeLabel = (type: IdType) =>
-  idTypeOptions.find((t) => t.value === type)?.label;
-export type IdType = (typeof idTypeOptions)[number]["value"];
+import invariant from "tiny-invariant";
 
 const identificationDefaultValues = {
   idType: "" as IdType,
   number: "",
   issuedBy: "",
+  issuedByOrg: "",
   issuedDate: "",
   expiringDate: "",
-  frontPicture: "",
-  backPicture: "",
+  frontPicture: null as unknown as File,
+  backPicture: null as unknown as File,
   metContractorInPerson: false,
   documentIsCopyShownByContractor: false,
   photoIsOfContractor: false,
@@ -58,18 +56,44 @@ export function IdentificationForm() {
     defaultValues: identificationDefaultValues,
   });
 
-  const closeModal = useDrawerStore((state) => state.closeModal);
-  const updateIdentification = useDrawerStore(
-    (state) => state.updateIdentificationData,
+  const fiscalCode = useDrawerStore(
+    (state) => state.lip?.contractor?.fiscalCode,
   );
+  const lipId = useDrawerStore((state) => state.lip?.id);
+  const closeModal = useDrawerStore((state) => state.closeModal);
 
   return (
     <>
       <ModalBody>
         <Form
           id="identification-form"
-          onSubmit={(values) => {
-            updateIdentification(values);
+          onSubmit={async (values) => {
+            invariant(fiscalCode, "Fiscal code is required");
+            invariant(lipId, "lipId is required");
+            // TODO: Sistemare stammerda
+            const formData = new FormData();
+            formData.append("idFront", values.frontPicture);
+            formData.append("idBack", values.backPicture);
+            formData.append("type", values.idType);
+            formData.append("number", values.number);
+            formData.append("issued_by", values.issuedBy);
+            formData.append("issued_by_org", values.issuedByOrg);
+            formData.append("issuing_date", values.issuedDate);
+            formData.append("expiring_date", values.expiringDate);
+            formData.append("fiscal_code", fiscalCode);
+
+            const identificationContractorResponse =
+              await identificationContractor(formData, lipId);
+
+            if (identificationContractorResponse.status === "failed") {
+              throw {
+                root: {
+                  type: "server",
+                  message: identificationContractorResponse.message,
+                },
+              };
+            }
+
             closeModal();
           }}
           formMethods={formMethods}
@@ -90,7 +114,7 @@ export function IdentificationForm() {
                 />
               </FormGroup>
             </Col>
-            <Col className="d-flex" xs={12} sm={6}>
+            <Col className="d-flex" xs={12} sm={4}>
               <FormGroup controlId="number" as={BorderFeedback}>
                 <FormLabel>Numero documento</FormLabel>
                 <FieldError />
@@ -103,8 +127,8 @@ export function IdentificationForm() {
                 />
               </FormGroup>
             </Col>
-            <Col className="d-flex" xs={12} sm={6}>
-              <FormGroup controlId="issuedBy" as={BorderFeedback}>
+            <Col className="d-flex" xs={12} sm={4}>
+              <FormGroup controlId="issuedByOrg" as={BorderFeedback}>
                 <FormLabel>Rilasciato da</FormLabel>
                 <FieldError />
                 <InputField
@@ -112,6 +136,19 @@ export function IdentificationForm() {
                   placeholder="Rilasciato da"
                   validation={{
                     required: "Inserisci l'ente di rilascio",
+                  }}
+                />
+              </FormGroup>
+            </Col>
+            <Col className="d-flex" xs={12} sm={4}>
+              <FormGroup controlId="issuedBy" as={BorderFeedback}>
+                <FormLabel>Luogo di rilascio</FormLabel>
+                <FieldError />
+                <InputField
+                  type="text"
+                  placeholder="Luogo di rilascio"
+                  validation={{
+                    required: "Inserisci il luogo di rilascio",
                   }}
                 />
               </FormGroup>
@@ -171,7 +208,7 @@ export function IdentificationForm() {
             </Col>
             <Col className="d-flex" xs={12} sm={6}>
               <FormGroup controlId="backPicture" as={BorderFeedback}>
-                <FormLabel>Documento fronte</FormLabel>
+                <FormLabel>Documento retro</FormLabel>
                 <FieldError />
                 <DropzoneField
                   validation={{
@@ -260,6 +297,14 @@ export function IdentificationForm() {
               </FormGroup>
             </Col>
           </Row>
+          <Col>
+            <FieldError
+              name="root"
+              as={Alert}
+              variant="danger"
+              className="mb-0 w-100 px-3"
+            />
+          </Col>
         </Form>
       </ModalBody>
       <ModalFooter>

@@ -1,7 +1,10 @@
 import {cns} from "@/helpers/cns";
-import {Card, Col, Table} from "react-bootstrap";
+import {Currency} from "@/ui/Currency";
+import {faInfoCircle} from "@fortawesome/pro-duotone-svg-icons";
+import {faAsterisk} from "@fortawesome/pro-solid-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {Card, Col, OverlayTrigger, Table, Tooltip} from "react-bootstrap";
 import styles from "./Advantages.module.scss";
-import {Currency, Percent} from "@/ui/Currency";
 
 interface AdvantagesProps {
   duration: number;
@@ -20,14 +23,6 @@ export function Advantages({
         {showTitle && <h3 className="mb-0 p-2 border-bottom">I vantaggi</h3>}
         <Table size="small" className={cns(["mb-0", styles.table])}>
           <tbody>
-            <tr>
-              <td>Premio totale</td>
-              <td></td>
-              <td></td>
-              <td>
-                {premium ? <Currency>{duration * premium}</Currency> : "? €"}
-              </td>
-            </tr>
             <tr className={cns(duration < 30 && "d-none")}>
               <td>Bonus a scadenza</td>
               <td>100%</td>
@@ -58,8 +53,23 @@ export function Advantages({
                 {premium ? <Currency>{15 * premium * 0.5}</Currency> : "? €"}
               </td>
             </tr>
-            <tr>
-              <td>Detrazione fiscale</td>
+            <tr style={{borderBottom: "transparent"}}>
+              <td>
+                Rata mensile
+                <br />
+                <small>Detraibile fino al 19% a norma di legge</small>{" "}
+                <OverlayTrigger
+                  overlay={
+                    <Tooltip id="advantages-info">
+                      La cifra mostrata è una stima indicativa. Chiediamo di
+                      rivolgervi al vostro consulente fiscale o commercialista
+                      di fiducia per ottenere la cifra esatta
+                    </Tooltip>
+                  }
+                >
+                  <FontAwesomeIcon icon={faAsterisk} className="text-primary" />
+                </OverlayTrigger>
+              </td>
               <td>19%</td>
               <td>Importo</td>
               <td>
@@ -67,18 +77,6 @@ export function Advantages({
                   <Currency>{Math.min(101, premium * 0.19)}</Currency>
                 ) : (
                   "? €"
-                )}
-              </td>
-            </tr>
-            <tr style={{borderBottom: "transparent"}}>
-              <td></td>
-              <td></td>
-              <td>Percentuale</td>
-              <td>
-                {premium ? (
-                  <Percent>{Math.min(101, premium * 0.19) / premium}</Percent>
-                ) : (
-                  "? %"
                 )}
               </td>
             </tr>

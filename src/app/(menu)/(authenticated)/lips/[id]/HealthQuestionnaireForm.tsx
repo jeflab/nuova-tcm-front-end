@@ -1,7 +1,9 @@
 "use client";
 
+import {updateHealthQuestionnaire} from "@/app/(menu)/(authenticated)/lips/[id]/actions";
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
-import {YesNoAnswer} from "@/helpers/TypesHelper";
+import {YesNoAnswer} from "@/helpers/getOptionsLabel";
+import {Debug} from "@/ui/Debug";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {CheckGroup} from "@/ui/form/CheckGroup";
 import {FieldError} from "@/ui/form/FieldError";
@@ -14,6 +16,7 @@ import {
   Alert,
   Button,
   Col,
+  Collapse,
   FormGroup,
   FormLabel,
   InputGroup,
@@ -22,39 +25,60 @@ import {
   Row,
 } from "react-bootstrap";
 import {useForm} from "react-hook-form";
+import invariant from "tiny-invariant";
 
 const healthQuestionnaireDefaultValues = {
   weight: "",
   height: "",
-  hospitalization: "" as YesNoAnswer,
-  diseases: "" as YesNoAnswer,
-  drugTherapy: "" as YesNoAnswer,
-  symptomatology: "" as YesNoAnswer,
-  professionalRisk: "" as YesNoAnswer,
-  sportRisk: "" as YesNoAnswer,
-  cancer: "" as YesNoAnswer,
-  nervousSystemDiseases: "" as YesNoAnswer,
-  invalidityPension: "" as YesNoAnswer,
-  physicalImpairment: "" as YesNoAnswer,
+  hospitalization: {check: "" as YesNoAnswer, details: ""},
+  diseases: {check: "" as YesNoAnswer, details: ""},
+  drugTherapy: {check: "" as YesNoAnswer, details: ""},
+  symptomatology: {check: "" as YesNoAnswer, details: ""},
+  professionalRisk: {check: "" as YesNoAnswer, details: ""},
+  sportRisk: {check: "" as YesNoAnswer, details: ""},
+  cancer: {check: "" as YesNoAnswer, details: ""},
+  nervousSystemDiseases: {check: "" as YesNoAnswer, details: ""},
+  invalidityPension: {check: "" as YesNoAnswer, details: ""},
+  physicalImpairment: {check: "" as YesNoAnswer, details: ""},
 };
+export type HealthQuestionnaireFormValues =
+  typeof healthQuestionnaireDefaultValues;
+
 export function HealthQuestionnaireForm() {
   const formMethods = useForm({
     mode: "onChange",
     defaultValues: healthQuestionnaireDefaultValues,
   });
 
+  const lipId = useDrawerStore((state) => state.lip?.id);
   const closeModal = useDrawerStore((state) => state.closeModal);
-  const updateHealthQuestionnaire = useDrawerStore(
-    (state) => state.updateHealthQuestionnaireData,
-  );
 
   const hasCancerCoverage = useDrawerStore(
-    (state) => state.lipData.quote?.cancer.enabled,
+    (state) => state.lip?.quotation?.cancer.enabled,
   );
 
   const hasTpiOrTpdCoverage = useDrawerStore(
     (state) =>
-      state.lipData.quote?.tpd.enabled || state.lipData.quote?.tpi.enabled,
+      state.lip?.quotation?.tpd.enabled || state.lip?.quotation?.tpi.enabled,
+  );
+
+  const hospitalizationCheckValue = formMethods.watch("hospitalization.check");
+  const diseasesCheckValue = formMethods.watch("diseases.check");
+  const drugTherapyCheckValue = formMethods.watch("drugTherapy.check");
+  const symptomatologyCheckValue = formMethods.watch("symptomatology.check");
+  const professionalRiskCheckValue = formMethods.watch(
+    "professionalRisk.check",
+  );
+  const sportRiskCheckValue = formMethods.watch("sportRisk.check");
+  const cancerCheckValue = formMethods.watch("cancer.check");
+  const nervousSystemDiseasesCheckValue = formMethods.watch(
+    "nervousSystemDiseases.check",
+  );
+  const invalidityPensionCheckValue = formMethods.watch(
+    "invalidityPension.check",
+  );
+  const physicalImpairmentCheckValue = formMethods.watch(
+    "physicalImpairment.check",
   );
 
   return (
@@ -108,8 +132,22 @@ export function HealthQuestionnaireForm() {
         </Alert>
         <Form
           id="healt-questionnaire-form"
-          onSubmit={(values) => {
-            updateHealthQuestionnaire(values);
+          onSubmit={async (values) => {
+            invariant(lipId, "lipId is required");
+            const updatedContractor = await updateHealthQuestionnaire(
+              values,
+              lipId,
+            );
+
+            if (updatedContractor.status === "failed") {
+              throw {
+                root: {
+                  type: "server",
+                  message: updatedContractor.message,
+                },
+              };
+            }
+
             closeModal();
           }}
           formMethods={formMethods}
@@ -160,7 +198,7 @@ export function HealthQuestionnaireForm() {
               </FormGroup>
             </Col>
             <Col className="d-flex" xs={12}>
-              <FormGroup controlId="hospitalization" as={BorderFeedback}>
+              <FormGroup controlId="hospitalization.check" as={BorderFeedback}>
                 <p className="mb-2 input-heading">
                   Negli ultimi 5 anni ha subito ricoveri o interventi chirurgici
                   oppure è attualmente in attesa di ricovero, di intervento, di
@@ -198,8 +236,32 @@ export function HealthQuestionnaireForm() {
                 />
               </FormGroup>
             </Col>
+            <Collapse in={hospitalizationCheckValue === "yes"}>
+              <div>
+                <Col className="d-flex" xs={12}>
+                  <FormGroup
+                    controlId="hospitalization.details"
+                    as={BorderFeedback}
+                  >
+                    <FormLabel>
+                      Fornire dettagli relativi alla risposta affermativa
+                      precedente
+                    </FormLabel>
+                    <FieldError />
+                    <InputField
+                      type="textarea"
+                      validation={{
+                        required:
+                          hospitalizationCheckValue === "yes" &&
+                          "Fornire dettagli relativi alla risposta affermativa precedente",
+                      }}
+                    />
+                  </FormGroup>
+                </Col>
+              </div>
+            </Collapse>
             <Col className="d-flex" xs={12}>
-              <FormGroup controlId="diseases" as={BorderFeedback}>
+              <FormGroup controlId="diseases.check" as={BorderFeedback}>
                 <p className="mb-2 input-heading">
                   Negli ultimi 10 anni ha sofferto di una delle seguenti
                   patologie:
@@ -228,8 +290,29 @@ export function HealthQuestionnaireForm() {
                 />
               </FormGroup>
             </Col>
+            <Collapse in={diseasesCheckValue === "yes"}>
+              <div>
+                <Col className="d-flex" xs={12}>
+                  <FormGroup controlId="diseases.details" as={BorderFeedback}>
+                    <FormLabel>
+                      Fornire dettagli relativi alla risposta affermativa
+                      precedente
+                    </FormLabel>
+                    <FieldError />
+                    <InputField
+                      type="textarea"
+                      validation={{
+                        required:
+                          diseasesCheckValue === "yes" &&
+                          "Fornire dettagli relativi alla risposta affermativa precedente",
+                      }}
+                    />
+                  </FormGroup>
+                </Col>
+              </div>
+            </Collapse>
             <Col className="d-flex" xs={12}>
-              <FormGroup controlId="drugTherapy" as={BorderFeedback}>
+              <FormGroup controlId="drugTherapy.check" as={BorderFeedback}>
                 <p className="mb-2 input-heading">
                   Negli ultimi 5 anni ha sofferto di malattie per cui le è stata
                   necessaria una terapia farmacologica per un periodo
@@ -255,8 +338,32 @@ export function HealthQuestionnaireForm() {
                 />
               </FormGroup>
             </Col>
+            <Collapse in={drugTherapyCheckValue === "yes"}>
+              <div>
+                <Col className="d-flex" xs={12}>
+                  <FormGroup
+                    controlId="drugTherapy.details"
+                    as={BorderFeedback}
+                  >
+                    <FormLabel>
+                      Fornire dettagli relativi alla risposta affermativa
+                      precedente
+                    </FormLabel>
+                    <FieldError />
+                    <InputField
+                      type="textarea"
+                      validation={{
+                        required:
+                          drugTherapyCheckValue === "yes" &&
+                          "Fornire dettagli relativi alla risposta affermativa precedente",
+                      }}
+                    />
+                  </FormGroup>
+                </Col>
+              </div>
+            </Collapse>
             <Col className="d-flex" xs={12}>
-              <FormGroup controlId="symptomatology" as={BorderFeedback}>
+              <FormGroup controlId="symptomatology.check" as={BorderFeedback}>
                 <p className="mb-2 input-heading">
                   Soffre di una sintomatologia persistente per la quale intende
                   sottoporsi a degli accertamenti sanitari?
@@ -281,8 +388,32 @@ export function HealthQuestionnaireForm() {
                 />
               </FormGroup>
             </Col>
+            <Collapse in={symptomatologyCheckValue === "yes"}>
+              <div>
+                <Col className="d-flex" xs={12}>
+                  <FormGroup
+                    controlId="symptomatology.details"
+                    as={BorderFeedback}
+                  >
+                    <FormLabel>
+                      Fornire dettagli relativi alla risposta affermativa
+                      precedente
+                    </FormLabel>
+                    <FieldError />
+                    <InputField
+                      type="textarea"
+                      validation={{
+                        required:
+                          symptomatologyCheckValue === "yes" &&
+                          "Fornire dettagli relativi alla risposta affermativa precedente",
+                      }}
+                    />
+                  </FormGroup>
+                </Col>
+              </div>
+            </Collapse>
             <Col className="d-flex" xs={12}>
-              <FormGroup controlId="professionalRisk" as={BorderFeedback}>
+              <FormGroup controlId="professionalRisk.check" as={BorderFeedback}>
                 <p className="mb-2 input-heading">
                   Pratica un’attività professionale che la espone ad un rischio
                   particolare?
@@ -311,8 +442,32 @@ export function HealthQuestionnaireForm() {
                 />
               </FormGroup>
             </Col>
+            <Collapse in={professionalRiskCheckValue === "yes"}>
+              <div>
+                <Col className="d-flex" xs={12}>
+                  <FormGroup
+                    controlId="professionalRisk.details"
+                    as={BorderFeedback}
+                  >
+                    <FormLabel>
+                      Fornire dettagli relativi alla risposta affermativa
+                      precedente
+                    </FormLabel>
+                    <FieldError />
+                    <InputField
+                      type="textarea"
+                      validation={{
+                        required:
+                          professionalRiskCheckValue === "yes" &&
+                          "Fornire dettagli relativi alla risposta affermativa precedente",
+                      }}
+                    />
+                  </FormGroup>
+                </Col>
+              </div>
+            </Collapse>
             <Col className="d-flex" xs={12}>
-              <FormGroup controlId="sportRisk" as={BorderFeedback}>
+              <FormGroup controlId="sportRisk.check" as={BorderFeedback}>
                 <p className="mb-2 input-heading">
                   Pratica attività sportive esposte a particolari rischi?
                 </p>
@@ -342,35 +497,79 @@ export function HealthQuestionnaireForm() {
                 />
               </FormGroup>
             </Col>
+            <Collapse in={sportRiskCheckValue === "yes"}>
+              <div>
+                <Col className="d-flex" xs={12}>
+                  <FormGroup controlId="sportRisk.details" as={BorderFeedback}>
+                    <FormLabel>
+                      Fornire dettagli relativi alla risposta affermativa
+                      precedente
+                    </FormLabel>
+                    <FieldError />
+                    <InputField
+                      type="textarea"
+                      validation={{
+                        required:
+                          sportRiskCheckValue === "yes" &&
+                          "Fornire dettagli relativi alla risposta affermativa precedente",
+                      }}
+                    />
+                  </FormGroup>
+                </Col>
+              </div>
+            </Collapse>
             {hasCancerCoverage && (
-              <Col className="d-flex" xs={12}>
-                <FormGroup controlId="cancer" as={BorderFeedback}>
-                  <p className="mb-2 input-heading">
-                    Nella sua parentela consanguinea (genitori, fratelli,
-                    sorelle, nonni) ci sono stati almeno due casi con la stessa
-                    diagnosi di cancro o di tumore maligno diagnosticato prima
-                    dell'età di 50 anni.
-                  </p>
-                  <FieldError />
-                  <CheckGroup
-                    type="radio"
-                    inline
-                    options={[
-                      {label: "Sì", value: "yes"},
-                      {label: "No", value: "no"},
-                    ]}
-                    validation={{
-                      required: "Seleziona un'opzione",
-                    }}
-                  />
-                </FormGroup>
-              </Col>
+              <>
+                <Col className="d-flex" xs={12}>
+                  <FormGroup controlId="cancer.check" as={BorderFeedback}>
+                    <p className="mb-2 input-heading">
+                      Nella sua parentela consanguinea (genitori, fratelli,
+                      sorelle, nonni) ci sono stati almeno due casi con la
+                      stessa diagnosi di cancro o di tumore maligno
+                      diagnosticato prima dell'età di 50 anni.
+                    </p>
+                    <FieldError />
+                    <CheckGroup
+                      type="radio"
+                      inline
+                      options={[
+                        {label: "Sì", value: "yes"},
+                        {label: "No", value: "no"},
+                      ]}
+                      validation={{
+                        required: "Seleziona un'opzione",
+                      }}
+                    />
+                  </FormGroup>
+                </Col>
+                <Collapse in={cancerCheckValue === "yes"}>
+                  <div>
+                    <Col className="d-flex" xs={12}>
+                      <FormGroup controlId="cancer.details" as={BorderFeedback}>
+                        <FormLabel>
+                          Fornire dettagli relativi alla risposta affermativa
+                          precedente
+                        </FormLabel>
+                        <FieldError />
+                        <InputField
+                          type="textarea"
+                          validation={{
+                            required:
+                              cancerCheckValue === "yes" &&
+                              "Fornire dettagli relativi alla risposta affermativa precedente",
+                          }}
+                        />
+                      </FormGroup>
+                    </Col>
+                  </div>
+                </Collapse>
+              </>
             )}
             {hasTpiOrTpdCoverage && (
               <>
                 <Col className="d-flex" xs={12}>
                   <FormGroup
-                    controlId="nervousSystemDiseases"
+                    controlId="nervousSystemDiseases.check"
                     as={BorderFeedback}
                   >
                     <p className="mb-2 input-heading">
@@ -399,8 +598,35 @@ export function HealthQuestionnaireForm() {
                     />
                   </FormGroup>
                 </Col>
+                <Collapse in={nervousSystemDiseasesCheckValue === "yes"}>
+                  <div>
+                    <Col className="d-flex" xs={12}>
+                      <FormGroup
+                        controlId="nervousSystemDiseases.details"
+                        as={BorderFeedback}
+                      >
+                        <FormLabel>
+                          Fornire dettagli relativi alla risposta affermativa
+                          precedente
+                        </FormLabel>
+                        <FieldError />
+                        <InputField
+                          type="textarea"
+                          validation={{
+                            required:
+                              nervousSystemDiseasesCheckValue === "yes" &&
+                              "Fornire dettagli relativi alla risposta affermativa precedente",
+                          }}
+                        />
+                      </FormGroup>
+                    </Col>
+                  </div>
+                </Collapse>
                 <Col className="d-flex" xs={12}>
-                  <FormGroup controlId="invalidityPension" as={BorderFeedback}>
+                  <FormGroup
+                    controlId="invalidityPension.check"
+                    as={BorderFeedback}
+                  >
                     <p className="mb-2 input-heading">
                       Le è stata riconosciuta o ha fatto richiesta di una
                       pensione di invalidità e/o di una pensione per incapacità
@@ -420,8 +646,35 @@ export function HealthQuestionnaireForm() {
                     />
                   </FormGroup>
                 </Col>
+                <Collapse in={invalidityPensionCheckValue === "yes"}>
+                  <div>
+                    <Col className="d-flex" xs={12}>
+                      <FormGroup
+                        controlId="invalidityPension.details"
+                        as={BorderFeedback}
+                      >
+                        <FormLabel>
+                          Fornire dettagli relativi alla risposta affermativa
+                          precedente
+                        </FormLabel>
+                        <FieldError />
+                        <InputField
+                          type="textarea"
+                          validation={{
+                            required:
+                              invalidityPensionCheckValue === "yes" &&
+                              "Fornire dettagli relativi alla risposta affermativa precedente",
+                          }}
+                        />
+                      </FormGroup>
+                    </Col>
+                  </div>
+                </Collapse>
                 <Col className="d-flex" xs={12}>
-                  <FormGroup controlId="physicalImpairment" as={BorderFeedback}>
+                  <FormGroup
+                    controlId="physicalImpairment.check"
+                    as={BorderFeedback}
+                  >
                     <p className="mb-2 input-heading">
                       È affetto da difetti fisici, malformazioni, disturbi
                       funzionali o cognitivi?
@@ -447,6 +700,30 @@ export function HealthQuestionnaireForm() {
                     />
                   </FormGroup>
                 </Col>
+                <Collapse in={physicalImpairmentCheckValue === "yes"}>
+                  <div>
+                    <Col className="d-flex" xs={12}>
+                      <FormGroup
+                        controlId="physicalImpairment.details"
+                        as={BorderFeedback}
+                      >
+                        <FormLabel>
+                          Fornire dettagli relativi alla risposta affermativa
+                          precedente
+                        </FormLabel>
+                        <FieldError />
+                        <InputField
+                          type="textarea"
+                          validation={{
+                            required:
+                              physicalImpairmentCheckValue === "yes" &&
+                              "Fornire dettagli relativi alla risposta affermativa precedente",
+                          }}
+                        />
+                      </FormGroup>
+                    </Col>
+                  </div>
+                </Collapse>
                 <Col className="d-flex" xs={12}>
                   <Alert variant="info" className="mb-0">
                     Fornire dettagli per ciascuna delle domande a cui ha

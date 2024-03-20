@@ -5,7 +5,7 @@ import {calculateImc, RANGE} from "./imc";
 
 export function HealthQuestionnaireSummary() {
   const healthQuestionnaireData = useDrawerStore(
-    (state) => state.lipData.healthQuestionnaire,
+    (state) => state.lip?.healthcareQuestionnaire,
   );
 
   if (!healthQuestionnaireData) {
@@ -16,15 +16,6 @@ export function HealthQuestionnaireSummary() {
     parseInt(healthQuestionnaireData?.weight, 10),
     parseInt(healthQuestionnaireData?.height, 10),
   );
-
-  if (imc > RANGE.max || imc < RANGE.min) {
-    return (
-      <p className="mb-0">
-        Non è possibile continuare la consulenza poiché l'indice di massa
-        corporea dell'assicurato è al di fuori dei limiti accettabili.
-      </p>
-    );
-  }
 
   return (
     <p className="mb-0">

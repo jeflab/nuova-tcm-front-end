@@ -9,13 +9,17 @@ interface LipsTableProps {
 
 export async function LipsTable({searchParams}: LipsTableProps) {
   const parsedSearchParams = dataTableParamsSchema.parse(searchParams);
-  const {lips, pageCount} = await getLipsList(parsedSearchParams);
+  const lips = await getLipsList(parsedSearchParams);
+
+  if (lips.status === "failed") {
+    throw new Error("Impossibile caricare le polizze, riprovare più tardi");
+  }
 
   return (
     <DataTable
       columns={columns}
-      data={lips}
-      pageCount={pageCount}
+      data={lips.lips.data}
+      pageCount={lips.lips.lastPage}
       searchParams={parsedSearchParams}
     />
   );

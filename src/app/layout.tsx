@@ -17,8 +17,8 @@ interface RootLayoutProps {
   children: ReactNode;
 }
 
-export default function RootLayout({children}: RootLayoutProps) {
-  const theme = getTheme();
+export default async function RootLayout({children}: RootLayoutProps) {
+  const theme = await getTheme();
 
   return (
     <html lang="it" data-bs-theme={theme}>

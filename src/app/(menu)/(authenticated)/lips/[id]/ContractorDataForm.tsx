@@ -1,18 +1,30 @@
 "use client";
 
+import {updateContractorData} from "@/app/(menu)/(authenticated)/lips/[id]/actions";
 import {
-  ContractorGender,
-  contractorGenders,
-} from "@/app/(menu)/(authenticated)/lips/[id]/ContractorFiscalCodeForm";
+  FundSource,
+  fundSourceOptions,
+  Gender,
+  gendersOptions,
+  JobPosition,
+  jobPositionOptions,
+  OngoingRelationship,
+  ongoingRelationshipOptions,
+  PublicOffices,
+  publicOfficesOptions,
+  TAECode,
+  tAECodeOptions,
+} from "@/app/(menu)/(authenticated)/lips/[id]/selectsOptions";
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
-import {Pep} from "@/app/(menu)/(authenticated)/lips/model";
 import {cns} from "@/helpers/cns";
-import {YesNoAnswer} from "@/helpers/TypesHelper";
+import {dbDateString} from "@/helpers/dates";
+import {YesNoAnswer} from "@/helpers/getOptionsLabel";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {CheckGroup} from "@/ui/form/CheckGroup";
 import {ComuneProvAutocompleteField} from "@/ui/form/ComuneProvAutocompleteField";
 import {FieldError} from "@/ui/form/FieldError";
 import {Form} from "@/ui/form/Form";
+import {HelpText} from "@/ui/form/HelpText";
 import {InputField} from "@/ui/form/InputField";
 import {SelectField} from "@/ui/form/SelectField";
 import {faSave, faSpinner, faXmark} from "@fortawesome/pro-duotone-svg-icons";
@@ -26,112 +38,10 @@ import {
   ModalBody,
   ModalFooter,
   Row,
+  Stack,
 } from "react-bootstrap";
 import {useForm} from "react-hook-form";
-
-export const pepObject = [
-  {label: "Presidente della Repubblica", value: "PRESIDENT_OF_THE_REPUBLIC"},
-  {label: "Presidente del Consiglio", value: "PRIME_MINISTER"},
-  {label: "Ministro", value: "MINISTER"},
-  {
-    label: "Vice-Ministro o Sottosegretario",
-    value: "VICE_MINISTER_UNDERSECRETARY",
-  },
-  {label: "Presidente di Regione", value: "REGIONAL_PRESIDENT"},
-  {label: "Assessore regionale", value: "REGIONAL_COUNCILLOR"},
-  {
-    label: "Sindaco di capoluogo di provincia o città metropolitana",
-    value: "MAYOR_CAPITAL_PROVINCE",
-  },
-  {
-    label: "Sindaco di comune con popolazione non inferiore a 15.000 abitanti",
-    value: "MAYOR_POPULATION_OVER_15000",
-  },
-  {label: "Deputato", value: "DEPUTY"},
-  {label: "Senatore", value: "SENATOR"},
-  {label: "Parlamentare europeo", value: "EUROPEAN_PARLIAMENT_MEMBER"},
-  {label: "Consigliere regionale", value: "REGIONAL_COUNCIL_MEMBER"},
-  {
-    label: "Membro degli organi direttivi centrali di partiti politici",
-    value: "CENTRAL_DIRECTOR_OF_POLITICAL_PARTIES",
-  },
-  {
-    label: "Giudice della Corte Costituzionale",
-    value: "JUDGE_OF_THE_CONSTITUTIONAL_COURT",
-  },
-  {
-    label: "Magistrato della Corte di Cassazione o della Corte dei conti",
-    value: "JUDGE_OF_THE_CASSATION_COURT_OR_COURT_OF_AUDITORS",
-  },
-  {
-    label:
-      "Consigliere di Stato o altri componenti del Consiglio di Giustizia Amministrativa per la Regione siciliana",
-    value:
-      "COUNCILOR_OF_STATE_AND_OTHER_MEMBERS_OF_THE_ADMINISTRATIVE_JUSTICE_COUNCIL_FOR_THE_SICILIAN_REGION",
-  },
-  {
-    label:
-      "Membro degli organi direttivi delle banche centrali o delle autorità indipendenti",
-    value:
-      "MEMBER_OF_THE_DIRECTIVE_BODIES_OF_CENTRAL_BANKS_AND_INDEPENDENT_AUTHORITIES",
-  },
-  {
-    label:
-      "Ambasciatore, incaricato d’affari ovvero cariche equivalenti in Stati esteri",
-    value:
-      "AMBASSADOR_CHARGÉ_D'AFFAIRES_OR_EQUIVALENT_POSITIONS_IN_FOREIGN_STATES",
-  },
-  {
-    label:
-      "Ufficiale di grado apicale delle forze armate ovvero cariche analoghe in Stati esteri",
-    value:
-      "HIGH_RANKING_OFFICER_OF_THE_ARMED_FORCES_OR_SIMILAR_POSITIONS_IN_FOREIGN_STATES",
-  },
-  {
-    label:
-      "Componente degli organi di amministrazione, direzione o controllo delle imprese controllate",
-    value:
-      "MEMBER_OF_THE_ADMINISTRATIVE_DIRECTIVE_OR_CONTROL_BODIES_OF_CONTROLLED_COMPANIES",
-  },
-  {
-    label: "Direttore generale di ASL o di azienda ospedaliera",
-    value: "GENERAL_DIRECTOR_OF_LOCAL_HEALTH_AGENCY_AND_HOSPITAL_COMPANY",
-  },
-  {
-    label:
-      "Direttore, Vicedirettore o Membro dell’organo di gestione o soggetto svolgenti funzioni equivalenti in organizzazioni internazionali",
-    value:
-      "DIRECTOR_DEPUTY_DIRECTOR_AND_MEMBER_OF_THE_MANAGEMENT_BODY_OR_EQUIVALENT_FUNCTION_PERFORMERS_IN_INTERNATIONAL_ORGANIZATIONS",
-  },
-] as const;
-export type PepPerson = (typeof pepObject)[number]["value"];
-
-export const pepRelations = [
-  {label: "Genitori", value: "PARENTS"},
-  {
-    label: "Coniuge o persona legata in unione civile",
-    value: "SPOUSE",
-  },
-  {
-    label: "Convivente di fatto o istituti assimilabili",
-    value: "COMMON_LAW_PARTNER",
-  },
-  {label: "Figli", value: "CHILDREN"},
-  {label: "Coniugi dei figli", value: "CHILDREN_SPOUSES"},
-  {
-    label: "Persone legate ai figli in unione civile",
-    value: "PERSONS_LINKED_TO_CHILDREN_CIVIL_UNION",
-  },
-  {
-    label: "Persone legate ai figli in convivenza di fatto",
-    value: "PERSONS_LINKED_TO_CHILDREN_COMMON_LAW",
-  },
-  {
-    label: "Persone legate ai figli in istituti assimilabili",
-    value: "PERSONS_LINKED_TO_CHILDREN_SIMILAR_INSTITUTES",
-  },
-] as const;
-export type PepRelation = (typeof pepRelations)[number]["value"];
+import invariant from "tiny-invariant";
 
 const contractorDataDefaultValues = {
   contractorPersonalData: {
@@ -141,13 +51,13 @@ const contractorDataDefaultValues = {
       province: "",
     },
     fiscalCode: "",
-    gender: "" as ContractorGender,
+    gender: "" as Gender,
     name: "",
     surname: "",
   },
   contact: {
-    phone: "0123456789",
-    email: "mail@example.com",
+    phone: "",
+    email: "",
   },
   residence: {
     place: {
@@ -160,45 +70,76 @@ const contractorDataDefaultValues = {
   },
   pep: {
     isPep: "" as YesNoAnswer,
-    person: "",
-    relation: "",
-  } as Pep,
-  aml: {
-    job: "",
-    sector: "",
-    netIncome: "",
-    fundSource: "",
+    publicOffice: "" as PublicOffices,
+    otherPep: "" as YesNoAnswer,
   },
+  job: {
+    position: "" as JobPosition,
+    positionOther: "",
+    tAECode: "" as TAECode,
+    province: "",
+    country: "",
+  },
+  ongoingRelationship: "" as OngoingRelationship,
+  fundSource: "" as FundSource,
+  fundSourceOther: "",
 };
 
 export function ContractorDataForm() {
-  const contractorFiscalCodeData = useDrawerStore(
-    (state) => state.lipData.contractorFiscalCode,
-  );
+  const lipId = useDrawerStore((state) => state.lip?.id);
+  const contractor = useDrawerStore((state) => state.lip?.contractor);
 
   const formMethods = useForm({
     mode: "onChange",
     defaultValues: {
       ...contractorDataDefaultValues,
-      ...(contractorFiscalCodeData && {
-        contractorPersonalData: contractorFiscalCodeData,
+      ...(contractor && {
+        contractorPersonalData: {
+          birthDate: dbDateString(contractor.birthDate),
+          birthPlace: {
+            city: contractor.birthPlace,
+            province: contractor.birthProvince,
+          },
+          fiscalCode: contractor.fiscalCode,
+          gender: contractor.gender,
+          name: contractor.name,
+          surname: contractor.surname,
+        },
+        contact: {
+          phone: contractor.phone,
+          email: contractor.email,
+        },
       }),
     },
   });
 
   const closeModal = useDrawerStore((state) => state.closeModal);
-  const updateContractorData = useDrawerStore(
-    (state) => state.updateContractorData,
-  );
 
-  const showPepFields = formMethods.watch("pep.isPep");
+  const jobPositionValue = formMethods.watch("job.position");
+  const fundSourceValue = formMethods.watch("fundSource");
 
   return (
     <>
       <ModalBody>
         <Form
-          onSubmit={(values) => {
-            updateContractorData(values);
+          onSubmit={async (values) => {
+            invariant(contractor, "Contractor must be defined");
+            invariant(lipId, "Lip ID must be defined");
+            const updatedContractor = await updateContractorData(
+              contractor.id,
+              lipId,
+              values,
+            );
+
+            if (updatedContractor.status === "failed") {
+              throw {
+                root: {
+                  type: "server",
+                  message: updatedContractor.message,
+                },
+              };
+            }
+
             closeModal();
           }}
           id="contractor-fiscal-code-form"
@@ -221,12 +162,7 @@ export function ContractorDataForm() {
                 as={BorderFeedback}
               >
                 <FormLabel>Cognome</FormLabel>
-                <InputField
-                  type="text"
-                  plaintext
-                  readOnly
-                  defaultValue={contractorFiscalCodeData?.surname}
-                />
+                <InputField type="text" plaintext readOnly />
               </FormGroup>
             </Col>
             <Col className="d-flex" xs={12} sm={6} lg={5}>
@@ -235,12 +171,7 @@ export function ContractorDataForm() {
                 as={BorderFeedback}
               >
                 <FormLabel>Nome</FormLabel>
-                <InputField
-                  type="text"
-                  plaintext
-                  readOnly
-                  defaultValue={contractorFiscalCodeData?.name}
-                />
+                <InputField type="text" plaintext readOnly />
               </FormGroup>
             </Col>
             <Col className="d-flex" xs={12} sm={6} md={3} lg={2}>
@@ -249,12 +180,7 @@ export function ContractorDataForm() {
                 as={BorderFeedback}
               >
                 <FormLabel>Genere</FormLabel>
-                <CheckGroup
-                  type="radio"
-                  options={contractorGenders}
-                  readOnly
-                  defaultValue={contractorFiscalCodeData?.gender}
-                />
+                <CheckGroup type="radio" options={gendersOptions} readOnly />
               </FormGroup>
             </Col>
             <Col className="d-flex" xs={12} sm={6} md={4} lg={5}>
@@ -263,12 +189,7 @@ export function ContractorDataForm() {
                 as={BorderFeedback}
               >
                 <FormLabel>Data di nascita</FormLabel>
-                <InputField
-                  type="date"
-                  plaintext
-                  readOnly
-                  defaultValue={contractorFiscalCodeData?.birthDate}
-                />
+                <InputField type="date" plaintext readOnly />
               </FormGroup>
             </Col>
             <Col className="d-flex" xs={12} md={5} lg={7}>
@@ -281,7 +202,6 @@ export function ContractorDataForm() {
                   placeholder="Luogo di nascita"
                   plaintext
                   readOnly
-                  defaultValue={contractorFiscalCodeData?.birthPlace}
                 />
               </FormGroup>
             </Col>
@@ -364,11 +284,132 @@ export function ContractorDataForm() {
                 />
               </FormGroup>
             </Col>
+            <h4 className="w-100">Situazione professionale</h4>
+            <Col className="d-flex" xs={12} sm={6}>
+              <Stack gap={3}>
+                <FormGroup controlId="job.position" as={BorderFeedback}>
+                  <FormLabel>Attività e professione esercitata</FormLabel>
+                  <FieldError />
+                  <SelectField
+                    placeholder="Seleziona l'attività e professione esercitata"
+                    options={jobPositionOptions}
+                    validation={{
+                      required: "Seleziona l'attività e professione esercitata",
+                    }}
+                  />
+                </FormGroup>
+                {jobPositionValue === "other" && (
+                  <FormGroup controlId="job.positionOther" as={BorderFeedback}>
+                    <FormLabel>
+                      Specifica l'attività e professione esercitata
+                    </FormLabel>
+                    <InputField
+                      type="text"
+                      placeholder="Specifica l'attività e professione esercitata"
+                      validation={{
+                        required:
+                          "Inserisci l'attività e professione esercitata",
+                      }}
+                    />
+                  </FormGroup>
+                )}
+              </Stack>
+            </Col>
+            <Col className="d-flex" xs={12} sm={6}>
+              <FormGroup controlId="job.tAECode" as={BorderFeedback}>
+                <FormLabel>Codice TAE attività</FormLabel>
+                <HelpText>
+                  obbligatorio per dipendente, dirigente, imprenditore, libero
+                  professionista, lavoratore autonomo
+                </HelpText>
+                <FieldError />
+                <SelectField
+                  placeholder="Seleziona codice TAE attività..."
+                  options={tAECodeOptions}
+                  validation={{
+                    required: "Seleziona codice TAE attività",
+                  }}
+                />
+              </FormGroup>
+            </Col>
+            <Col className="d-flex" xs={12} sm={6}>
+              <FormGroup controlId="job.provice" as={BorderFeedback}>
+                <FormLabel>Provincia di attività prevalente</FormLabel>
+                <HelpText>(se diversa da residenza)</HelpText>
+                <InputField
+                  type="text"
+                  placeholder="Provincia di attività prevalente"
+                />
+              </FormGroup>
+            </Col>
+            <Col className="d-flex" xs={12} sm={6}>
+              <FormGroup controlId="job.country" as={BorderFeedback}>
+                <FormLabel>Paese di attività prevalente</FormLabel>
+                <HelpText>(se diversa da Italia)</HelpText>
+                <InputField
+                  type="text"
+                  placeholder="Paese di attività prevalente"
+                />
+              </FormGroup>
+            </Col>
             <h4 className="w-100">Persona esposta politicamente</h4>
             <Col className="d-flex" xs={12}>
               <FormGroup controlId="pep.isPep" as={BorderFeedback}>
                 <FormLabel>
                   Il contraente è una persona esposta politicamente?
+                </FormLabel>
+                <HelpText>
+                  Si considerano Persone Politicamente Esposte le persone
+                  fisiche residenti in Italia o in altri Stati esteri, che
+                  occupano o hanno occupato importanti cariche pubbliche nonché
+                  i loro familiari diretti o coloro con i quali tali persone
+                  intrattengono notoriamente stretti legami, individuate sulla
+                  base dei criteri di cui all’art. 1 del D.Lgs. 231/2007.
+                </HelpText>
+                <FieldError />
+                <CheckGroup
+                  inline
+                  type="radio"
+                  options={[
+                    {
+                      label: "Sì",
+                      value: "yes",
+                    },
+                    {
+                      label: "No",
+                      value: "no",
+                    },
+                  ]}
+                  validation={{required: "Seleziona una risposta"}}
+                />
+              </FormGroup>
+            </Col>
+            <Col className="d-flex" xs={12} sm={6}>
+              <FormGroup controlId="pep.publicOffice" as={BorderFeedback}>
+                <FormLabel>
+                  Ricopre cariche pubbliche diverse da P.E.P.
+                </FormLabel>
+                <HelpText>
+                  Es. amministratori locali, ruoli apicali in pubbliche
+                  amministrazioni, consorzi o associazioni di natura
+                  pubblicistica
+                </HelpText>
+                <FieldError />
+                <SelectField
+                  placeholder="Seleziona una risposta..."
+                  options={publicOfficesOptions}
+                  validation={{
+                    required: "Seleziona una risposta",
+                  }}
+                />
+              </FormGroup>
+            </Col>
+            <Col className="d-flex" xs={12} sm={6}>
+              <FormGroup controlId="pep.otherPep" as={BorderFeedback}>
+                <FormLabel>
+                  È stato qualificato come P.E.P. nell’ambito di altri rapporti
+                  contrattuali stipulati con altri soggetti destinatari del
+                  Decreto 231/2007 negli ultimi 2 anni?
                 </FormLabel>
                 <FieldError />
                 <CheckGroup
@@ -388,88 +429,66 @@ export function ContractorDataForm() {
                 />
               </FormGroup>
             </Col>
-            {showPepFields === "yes" && (
-              <>
-                <Col className="d-flex" xs={12} sm={6}>
-                  <FormGroup controlId="pep.person" as={BorderFeedback}>
-                    <FormLabel>Persona</FormLabel>
-                    <FieldError />
-                    <SelectField
-                      placeholder="Seleziona la tipologia di persona..."
-                      options={pepObject}
+            <h4 className="w-100">Informazioni sul rapporto continuativo</h4>
+            <Col className="d-flex" xs={12}>
+              <FormGroup controlId="ongoingRelationship" as={BorderFeedback}>
+                <FormLabel>Natura / scopo del rapporto continuativo</FormLabel>
+                <FieldError />
+                <SelectField
+                  placeholder="Seleziona natura / scopo del rapporto continuativo..."
+                  options={ongoingRelationshipOptions}
+                  validation={{
+                    required:
+                      "Specificare natura / scopo del rapporto continuativo",
+                  }}
+                />
+              </FormGroup>
+            </Col>
+            <h4 className="w-100">Origine prevalente dei fondi</h4>
+            <Col className="d-flex" xs={12}>
+              <Stack gap={3}>
+                <FormGroup controlId="fundSource" as={BorderFeedback}>
+                  <FormLabel>
+                    Specificare l'origine prevalente dei fondi
+                  </FormLabel>
+                  <HelpText>
+                    Il Contraente dichiara che:
+                    <ul>
+                      <li>
+                        i fondi impiegati per il pagamento del premio
+                        assicurativo non provengono da una attività criminosa o
+                        dalla partecipazione a tale attività;
+                      </li>
+                      <li>
+                        i fondi impiegati per il pagamento del premio
+                        assicurativo sono stati oggetto delle comunicazioni e
+                        dichiarazioni richieste a fini fiscali dalle Autorità
+                        competenti in base alla normativa applicabile.
+                      </li>
+                    </ul>
+                  </HelpText>
+                  <FieldError />
+                  <SelectField
+                    placeholder="Seleziona origine prevalente dei fondi..."
+                    options={fundSourceOptions}
+                    validation={{
+                      required: "Specificare l'origine prevalente dei fondi",
+                    }}
+                  />
+                </FormGroup>
+                {fundSourceValue === "other" && (
+                  <FormGroup controlId="fundSourceOther" as={BorderFeedback}>
+                    <FormLabel></FormLabel>
+                    <InputField
+                      type="text"
+                      placeholder="Specificare l'origine prevalente dei fondi"
                       validation={{
-                        required: "Seleziona la tipologia di persona",
+                        required: "Inserisci l'origine prevalente dei fondi",
                       }}
                     />
                   </FormGroup>
-                </Col>
-                <Col className="d-flex" xs={12} sm={6}>
-                  <FormGroup controlId="pep.relation" as={BorderFeedback}>
-                    <FormLabel>Tipo di rapporto</FormLabel>
-                    <FieldError />
-                    <SelectField
-                      placeholder="Seleziona il tipo di rapporto..."
-                      options={pepRelations}
-                      validation={{
-                        required: "Seleziona il tipo di rapporto",
-                      }}
-                    />
-                  </FormGroup>
-                </Col>
-              </>
-            )}
-            <h4 className="w-100">Antiriciclaggio</h4>
-            <Col className="d-flex" xs={12} sm={6}>
-              <FormGroup controlId="aml.job" as={BorderFeedback}>
-                <FormLabel>Attività o professione esercitata</FormLabel>
-                <FieldError />
-                <InputField
-                  type="text"
-                  placeholder="Attività o professione esercitata"
-                  validation={{
-                    required: "Inserisci l'attività o professione esercitata",
-                  }}
-                />
-              </FormGroup>
-            </Col>
-            <Col className="d-flex" xs={12} sm={6}>
-              <FormGroup controlId="aml.sector" as={BorderFeedback}>
-                <FormLabel>Settore di attività prevalente</FormLabel>
-                <FieldError />
-                <InputField
-                  type="text"
-                  placeholder="Settore di attività prevalente"
-                  validation={{
-                    required: "Inserisci il settore di attività prevalente",
-                  }}
-                />
-              </FormGroup>
-            </Col>
-            <Col className="d-flex" xs={12} sm={6}>
-              <FormGroup controlId="aml.netIncome" as={BorderFeedback}>
-                <FormLabel>Reddito netto annuo netto</FormLabel>
-                <FieldError />
-                <InputField
-                  type="text"
-                  placeholder="Reddito netto annuo netto"
-                  validation={{
-                    required: "Inserisci il reddito netto annuo netto",
-                  }}
-                />
-              </FormGroup>
-            </Col>
-            <Col className="d-flex" xs={12} sm={6}>
-              <FormGroup controlId="aml.fundSource" as={BorderFeedback}>
-                <FormLabel>Origine prevalente dei fondi</FormLabel>
-                <FieldError />
-                <InputField
-                  type="text"
-                  placeholder="Origine prevalente dei fondi"
-                  validation={{
-                    required: "Inserisci l'origine prevalente dei fondi",
-                  }}
-                />
-              </FormGroup>
+                )}
+              </Stack>
             </Col>
             <Col>
               <FieldError

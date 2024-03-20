@@ -1,5 +1,5 @@
 import {cns} from "@/helpers/cns";
-import {DrawerState} from "@/ui/drawer/const";
+import {DrawerState} from "@/ui/drawer/types";
 import {
   faCheckCircle,
   faCircle,
@@ -15,15 +15,15 @@ import {CSSProperties} from "react";
 
 interface DrawerIconProps extends Omit<FontAwesomeIconProps, "icon"> {
   className?: string;
-  state?: DrawerState;
+  variant?: DrawerState["variant"];
 }
 
 export function DrawerIcon({
   className,
-  state,
+  variant,
   ...fontawesomeProps
 }: DrawerIconProps) {
-  if (state === "danger") {
+  if (variant === "danger") {
     return (
       <FontAwesomeIcon
         {...fontawesomeProps}
@@ -33,7 +33,7 @@ export function DrawerIcon({
     );
   }
 
-  if (state === "success") {
+  if (variant === "success") {
     return (
       <FontAwesomeIcon
         {...fontawesomeProps}
@@ -43,7 +43,7 @@ export function DrawerIcon({
     );
   }
 
-  if (state === "active") {
+  if (variant === "active") {
     return (
       <FontAwesomeIcon
         {...fontawesomeProps}
@@ -53,7 +53,7 @@ export function DrawerIcon({
     );
   }
 
-  if (state === "waiting") {
+  if (variant === "waiting") {
     return (
       <FontAwesomeIcon
         {...fontawesomeProps}
@@ -63,7 +63,7 @@ export function DrawerIcon({
     );
   }
 
-  if (state === "loading") {
+  if (variant === "loading") {
     return (
       <>
         <FontAwesomeIcon
