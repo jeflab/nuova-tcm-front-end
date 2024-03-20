@@ -86,6 +86,12 @@ export async function get<T extends ZodRawShape>(
     console.error(
       chalk.red.inverse("Errore di parsing del JSON della risposta del server"),
     );
+    console.error(
+      chalk.italic.bold("Chiamata API:"),
+      chalk.cyanBright("GET"),
+      chalk.greenBright(response.url),
+      chalk.yellowBright(response.status),
+    );
     console.error(chalk.redBright(e));
     const text = await response.clone().text();
     if (text.length > 50000) {
@@ -111,6 +117,12 @@ export async function get<T extends ZodRawShape>(
       chalk.red.inverse(
         "Errore di parsing dello schema della risposta del server",
       ),
+    );
+    console.error(
+      chalk.italic.bold("Chiamata API:"),
+      chalk.cyanBright("GET"),
+      chalk.greenBright(response.url),
+      chalk.yellowBright(response.status),
     );
     console.error(chalk.redBright(e));
     console.error(await response.text());
@@ -149,6 +161,15 @@ export async function post<T extends ZodRawShape>(
     console.error(
       chalk.red.inverse("Errore di parsing del JSON della risposta del server"),
     );
+    console.error(
+      chalk.italic.bold("Chiamata API:"),
+      chalk.cyanBright("POST"),
+      chalk.greenBright(response.url),
+      chalk.yellowBright(response.status),
+    );
+    console.error(
+      body ? (typeof body === "string" ? JSON.parse(body) : body) : "no data",
+    );
     console.error(chalk.redBright(e));
     const text = await response.clone().text();
     if (text.length > 50000) {
@@ -174,6 +195,15 @@ export async function post<T extends ZodRawShape>(
       chalk.red.inverse(
         "Errore di parsing dello schema della risposta del server",
       ),
+    );
+    console.error(
+      chalk.italic.bold("Chiamata API:"),
+      chalk.cyanBright("POST"),
+      chalk.greenBright(response.url),
+      chalk.yellowBright(response.status),
+    );
+    console.error(
+      body ? (typeof body === "string" ? JSON.parse(body) : body) : "no data",
     );
     console.error(chalk.redBright(e));
     console.error(await response.text());
@@ -194,6 +224,8 @@ export async function postFormData<T extends ZodRawShape>(
 
   const response = await fetch(apiUrl + url, {
     headers: {
+      // ...contentMultipartHeader,
+      Accept: "application/json",
       ...authorizationHeader(),
     },
     method: "POST",
@@ -210,6 +242,15 @@ export async function postFormData<T extends ZodRawShape>(
   } catch (e) {
     console.error(
       chalk.red.inverse("Errore di parsing del JSON della risposta del server"),
+    );
+    console.error(
+      chalk.italic.bold("Chiamata API:"),
+      chalk.cyanBright("POST"),
+      chalk.greenBright(response.url),
+      chalk.yellowBright(response.status),
+    );
+    console.error(
+      formData ? Object.fromEntries([...formData.entries()]) : "no data",
     );
     console.error(chalk.redBright(e));
     const text = await response.clone().text();
@@ -236,6 +277,15 @@ export async function postFormData<T extends ZodRawShape>(
       chalk.red.inverse(
         "Errore di parsing dello schema della risposta del server",
       ),
+    );
+    console.error(
+      chalk.italic.bold("Chiamata API:"),
+      chalk.cyanBright("POST"),
+      chalk.greenBright(response.url),
+      chalk.yellowBright(response.status),
+    );
+    console.error(
+      formData ? Object.fromEntries([...formData.entries()]) : "no data",
     );
     console.error(chalk.redBright(e));
     console.error(await response.text());
@@ -273,6 +323,15 @@ export async function put<T extends ZodRawShape>(
     console.error(
       chalk.red.inverse("Errore di parsing del JSON della risposta del server"),
     );
+    console.error(
+      chalk.italic.bold("Chiamata API:"),
+      chalk.cyanBright("PUT"),
+      chalk.greenBright(response.url),
+      chalk.yellowBright(response.status),
+    );
+    console.error(
+      body ? (typeof body === "string" ? JSON.parse(body) : body) : "no data",
+    );
     console.error(chalk.redBright(e));
     const text = await response.clone().text();
     if (text.length > 50000) {
@@ -298,6 +357,15 @@ export async function put<T extends ZodRawShape>(
       chalk.red.inverse(
         "Errore di parsing dello schema della risposta del server",
       ),
+    );
+    console.error(
+      chalk.italic.bold("Chiamata API:"),
+      chalk.cyanBright("PUT"),
+      chalk.greenBright(response.url),
+      chalk.yellowBright(response.status),
+    );
+    console.error(
+      body ? (typeof body === "string" ? JSON.parse(body) : body) : "no data",
     );
     console.error(chalk.redBright(e));
     console.error(await response.text());
@@ -336,6 +404,15 @@ export async function patch<T extends ZodRawShape>(
     console.error(
       chalk.red.inverse("Errore di parsing del JSON della risposta del server"),
     );
+    console.error(
+      chalk.italic.bold("Chiamata API:"),
+      chalk.cyanBright("PATCH"),
+      chalk.greenBright(response.url),
+      chalk.yellowBright(response.status),
+    );
+    console.error(
+      body ? (typeof body === "string" ? JSON.parse(body) : body) : "no data",
+    );
     console.error(chalk.redBright(e));
     const text = await response.clone().text();
     if (text.length > 50000) {
@@ -361,6 +438,15 @@ export async function patch<T extends ZodRawShape>(
       chalk.red.inverse(
         "Errore di parsing dello schema della risposta del server",
       ),
+    );
+    console.error(
+      chalk.italic.bold("Chiamata API:"),
+      chalk.cyanBright("PATCH"),
+      chalk.greenBright(response.url),
+      chalk.yellowBright(response.status),
+    );
+    console.error(
+      body ? (typeof body === "string" ? JSON.parse(body) : body) : "no data",
     );
     console.error(chalk.redBright(e));
     console.error(await response.text());
