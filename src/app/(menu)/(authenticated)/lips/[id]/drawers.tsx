@@ -105,15 +105,15 @@ export const drawers: Drawer[] = [
     summaryContent: <BeneficiariesSummary />,
   },
   {
-    name: "documentation",
-    title: "Documentazione",
-    modalContent: <DocumentsManagement />,
-    summaryContent: <DocumentsSummary />,
-  },
-  {
     name: "payment",
     title: "Pagamento",
     modalContent: <PaymentForm />,
     summaryContent: <PaymentSummary />,
+  },
+  {
+    name: "documentation",
+    title: "Documentazione",
+    modalContent: <DocumentsManagement />,
+    summaryContent: <DocumentsSummary />,
   },
 ];
