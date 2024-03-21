@@ -224,7 +224,6 @@ export async function postFormData<T extends ZodRawShape>(
 
   const response = await fetch(apiUrl + url, {
     headers: {
-      Accept: "application/json", // TODO: così non vanno le immagini: da fixare!
       ...authorizationHeader(),
     },
     method: "POST",
