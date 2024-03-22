@@ -1,4 +1,4 @@
-import {Profile} from "@/entities/account";
+import {PDFType} from "@/entities/esign";
 import {PersonalData} from "@/entities/personalData";
 import {signFEADoc} from "@/ui/eSign/actions";
 import {RequestOTPModalContent} from "@/ui/eSign/RequestOTPModalContent";
@@ -13,9 +13,9 @@ interface RequestOTPModalProps<TPayload> {
     >,
   ) => void;
   onHide: () => void;
-  payload: TPayload;
+  payload?: TPayload;
+  pdfType: PDFType;
   personalData?: PersonalData;
-  profile: Profile;
   show: boolean;
   tagToRevalidate?: string;
 }
@@ -25,8 +25,8 @@ export function RequestOTPModal<TPayload>({
   onEsignComplete,
   onHide,
   payload,
+  pdfType,
   personalData,
-  profile,
   show,
   tagToRevalidate,
 }: RequestOTPModalProps<TPayload>) {
@@ -36,8 +36,8 @@ export function RequestOTPModal<TPayload>({
         <RequestOTPModalContent
           onCancel={onHide}
           personalData={personalData}
-          profile={profile}
           payload={payload}
+          pdfType={pdfType}
           lipId={lipId}
           onEsignComplete={onEsignComplete}
           tagToRevalidate={tagToRevalidate}

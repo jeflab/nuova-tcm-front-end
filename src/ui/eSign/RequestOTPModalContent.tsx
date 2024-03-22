@@ -1,4 +1,3 @@
-import {Profile} from "@/entities/account";
 import {PDFType} from "@/entities/esign";
 import {PersonalData} from "@/entities/personalData";
 import {createFEATransaction, signFEADoc} from "@/ui/eSign/actions";
@@ -21,16 +20,16 @@ interface RequestOTPModalContentProps<TPayload> {
   ) => void;
   payload: TPayload;
   personalData?: PersonalData;
-  profile: Profile;
   tagToRevalidate?: string;
+  pdfType: PDFType;
 }
 export function RequestOTPModalContent<TPayload>({
   lipId,
   onCancel,
   onEsignComplete,
   payload,
+  pdfType,
   personalData,
-  profile,
   tagToRevalidate,
 }: RequestOTPModalContentProps<TPayload>) {
   const callingServer = useRef(false);
@@ -50,8 +49,13 @@ export function RequestOTPModalContent<TPayload>({
         lipId: lipId,
       });
 
-      if (response.status === "failed") {
-        setRequestOTPError(response.message);
+      if (response.featTransaction.status === "failed") {
+        setRequestOTPError(response.featTransaction.message);
+        setIsRequestOTPLoading(false);
+        callingServer.current = false;
+        return;
+      } else if (response.profile.status === "failed") {
+        setRequestOTPError(response.profile.message);
         setIsRequestOTPLoading(false);
         callingServer.current = false;
         return;
@@ -87,7 +91,8 @@ export function RequestOTPModalContent<TPayload>({
     );
   } else if (
     !createdFEATransaction ||
-    createdFEATransaction.status === "failed"
+    createdFEATransaction.featTransaction.status === "failed" ||
+    createdFEATransaction.profile.status === "failed"
   ) {
     // TODO: Togliere quando messo tanstack o rtk
     return (
@@ -111,10 +116,10 @@ export function RequestOTPModalContent<TPayload>({
         setUpdatePhoneOpen(true);
       }}
       personalData={personalData}
-      profile={profile}
+      profile={createdFEATransaction.profile}
       lipId={lipId}
-      pdfType={PDFType.Privacy}
-      transactionId={createdFEATransaction.esign.transactionId}
+      pdfType={pdfType}
+      transactionId={createdFEATransaction.featTransaction.esign.transactionId}
       onEsignComplete={onEsignComplete}
       payload={payload}
       resendOTP={requestOTP}
@@ -125,10 +130,10 @@ export function RequestOTPModalContent<TPayload>({
       closeEditNumberForm={() => {
         setUpdatePhoneOpen(false);
       }}
-      defaultValues={{phone: profile.user.phone ?? ""}}
+      defaultValues={{phone: createdFEATransaction.profile.user.phone ?? ""}}
       onCancel={onCancel}
       personalData={personalData}
-      profile={profile}
+      profile={createdFEATransaction.profile}
     />
   );
 }

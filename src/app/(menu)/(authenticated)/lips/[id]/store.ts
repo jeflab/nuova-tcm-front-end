@@ -1,6 +1,5 @@
 import {DrawerName} from "@/app/(menu)/(authenticated)/lips/[id]/drawers";
 import {PreliminaryData} from "@/app/(menu)/(authenticated)/lips/models";
-import {Documents, DocumentsSchema} from "@/entities/document";
 import {Lip} from "@/entities/lip";
 import {DrawerState, presetButtons} from "@/ui/drawer/types";
 import {produce} from "immer";
@@ -11,7 +10,6 @@ interface State {
   preliminaryData: PreliminaryData;
   lip?: Lip;
   lipData: TempLipData;
-  defaultDocuments: Documents;
   modalOpen: DrawerName | null;
   drawerStates: Partial<Record<DrawerName, DrawerState>>;
 }
@@ -29,7 +27,6 @@ interface Actions {
   updateIdentificationData: (data: TempLipData["identification"]) => void;
   setPicture: (key: string, picture: string) => void;
   updateDocumentationData: (data: TempLipData["documentation"]) => void;
-  esignDocument: (fileName: string, esignIndex: number) => void;
   resetLipData: () => void;
 }
 
@@ -245,94 +242,23 @@ function createDrawerState(state: State & Actions) {
 
     // Documentazione
     if (state.drawerStates.payment?.variant === "success") {
-      if (state.lipData.documentation === undefined) {
+      if (
+        state.lip?.eSigns?.polizza &&
+        Object.keys(state.lip?.eSigns?.polizza).length === 3 &&
+        state.lip.eSigns.identificazione
+      ) {
+        state.drawerStates.documentation = {variant: "success"};
+      } else {
         state.drawerStates.documentation = {
           variant: "active",
           ...presetButtons.documentEsign,
         };
-      } else if (state.lipData.documentation) {
-        state.drawerStates.documentation = {variant: "success"};
-      } else {
-        state.drawerStates.documentation = {variant: "danger"};
       }
     }
   }
 }
 
-const defaultDocuments = DocumentsSchema.parse({
-  totalEsigns: 2,
-  files: [
-    {
-      fileName: "altro_file_altra_firma.pdf",
-      requiredFile: true,
-      esigns: [
-        {
-          whoEsign: "contractor",
-          required: true,
-          description:
-            "<p>Con la presente firma verranno accettati i contenuti dei seguenti capitoli:</p><ul><li>PG 4/13 - PREMIO UNICO LORDO</li><li>PG 4/13 - CARATTERISTICHE DEL INVESTIMENTO</li><li>PG 4/13 - DICHIARAZIONI</li><li>PG 5/13 - DICHIARAZIONI</li><li>PG 5/13 - COPERTURA COMPLEMENTARE FACOLTATIVA PER IL CASO MORTE</li><li>PG 6/13 - CONSENSO PER DATI PERSONALI  - COMUNICAZIONE ELETTRONICA</li><li>PG 6/13 - DICHIARAZIONE DI RESIDENZA AI FINI FISCALI</li><li>PG 7/13 - ATTESTAZIONE DI CONSEGNA</li><li>PG 8/13 - INFORMAZIONI SULLA OPERAZIONE</li></ul>",
-          page: "14",
-          leftX: "30",
-          leftY: "110",
-          rightX: "450",
-          rightY: "40",
-        },
-        {
-          whoEsign: "advisor",
-          required: true,
-          description:
-            "<p>Con la presente firma verranno accettati i contenuti dei seguenti capitoli:</p><ul><li>PG 6/13 - SPAZIO RISERVATO AL SOGGETTO INCARICATO DELL ADEGUATA VERIFICA</li></ul>",
-          page: "14",
-          leftX: "320",
-          leftY: "110",
-          rightX: "740",
-          rightY: "40",
-        },
-        {
-          whoEsign: "contractor",
-          required: true,
-          description:
-            "<p>seconda firma per il contractor:</p><ul><li>PG 4/13 - PREMIO UNICO LORDO</li><li>PG 4/13 - CARATTERISTICHE DEL INVESTIMENTO</li><li>PG 4/13 - DICHIARAZIONI</li><li>PG 5/13 - DICHIARAZIONI</li><li>PG 5/13 - COPERTURA COMPLEMENTARE FACOLTATIVA PER IL CASO MORTE</li><li>PG 6/13 - CONSENSO PER DATI PERSONALI  - COMUNICAZIONE ELETTRONICA</li><li>PG 6/13 - DICHIARAZIONE DI RESIDENZA AI FINI FISCALI</li><li>PG 7/13 - ATTESTAZIONE DI CONSEGNA</li><li>PG 8/13 - INFORMAZIONI SULLA OPERAZIONE</li></ul>",
-          page: "14",
-          leftX: "30",
-          leftY: "110",
-          rightX: "450",
-          rightY: "40",
-        },
-      ],
-      uploaded: true,
-      uploadedFileName:
-        "allianz_darta_saving_periodical_solution_0703260006.pdf",
-      uploadDate: "2022-03-08 15:46:16",
-    },
-    {
-      fileName: "allianz_darta_saving_periodical_solution.pdf",
-      requiredFile: true,
-      esigns: [
-        {
-          whoEsign: "advisor",
-          required: true,
-          description:
-            "<p>Con la presente firma verranno accettati i contenuti dei seguenti capitoli:</p><ul><li>PG 6/13 - SPAZIO RISERVATO AL SOGGETTO INCARICATO DELL ADEGUATA VERIFICA</li></ul>",
-          page: "14",
-          leftX: "320",
-          leftY: "110",
-          rightX: "740",
-          rightY: "40",
-        },
-      ],
-      uploaded: true,
-      uploadedFileName:
-        "allianz_darta_saving_periodical_solution_0703260006.pdf",
-      uploadDate: "2022-03-08 15:46:16",
-    },
-  ],
-  allFilesUploaded: true,
-  allRequiredFilesUploaded: true,
-});
-
 export const useDrawerStore = create<State & Actions>()((set) => ({
-  defaultDocuments,
   lipData: {},
   preliminaryData: {},
   modalOpen: null,
@@ -388,28 +314,6 @@ export const useDrawerStore = create<State & Actions>()((set) => ({
     set(
       produce((state) => {
         updateLipData(state, {documentation: data});
-      }),
-    ),
-  esignDocument: (fileName, esignIndex) =>
-    set(
-      produce((state: State) => {
-        state.lipData.documentation ??= state.defaultDocuments;
-        const file = state.lipData.documentation.files.find(
-          (file) => file.fileName === fileName,
-        );
-        if (!file?.esigns[esignIndex]) {
-          return;
-        }
-
-        file.esigns[esignIndex]!.esignId = 1;
-        file.esigns[esignIndex]!.esignDate = new Date();
-        file.esigns[esignIndex]!.esignUser = {
-          cell: "0123456789",
-          email: "mario@example.com",
-          fiscalCode: "MRSRSS84H24E704I",
-          name: "Mario",
-          surname: "Rossi",
-        };
       }),
     ),
   resetLipData: () =>

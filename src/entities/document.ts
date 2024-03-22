@@ -1,15 +1,10 @@
+import {PDFType} from "@/entities/esign";
 import {z} from "zod";
 
 const FileEsignSchema = z.object({
   whoEsign: z.string(),
   required: z.boolean(),
   description: z.string(),
-  page: z.string(),
-  leftX: z.string(),
-  leftY: z.string(),
-  rightX: z.string(),
-  rightY: z.string(),
-  esignIndex: z.number().optional(), // me lo sto ricavando io da FE. Ha senso farlo gestire da BE?
   esignId: z.coerce.number().optional(),
   esignDate: z.coerce.date().optional(),
   esignUser: z
@@ -26,17 +21,11 @@ export type FileEsign = z.infer<typeof FileEsignSchema>;
 
 const DocumentSchema = z.object({
   fileName: z.string(),
-  requiredFile: z.boolean(),
+  urlPreview: z.string(),
+  type: z.nativeEnum(PDFType),
   esigns: z.array(FileEsignSchema),
-  allRequiredEsigned: z.boolean().optional(),
-  allEsigned: z.boolean().optional(),
 });
 export type Document = z.infer<typeof DocumentSchema>;
 
-export const DocumentsSchema = z.object({
-  totalEsigns: z.number(),
-  files: z.array(DocumentSchema),
-  allFilesUploaded: z.boolean(),
-  allRequiredFilesUploaded: z.boolean(),
-});
+export const DocumentsSchema = z.array(DocumentSchema);
 export type Documents = z.infer<typeof DocumentsSchema>;

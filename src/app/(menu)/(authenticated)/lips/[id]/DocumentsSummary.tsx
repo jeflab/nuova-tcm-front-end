@@ -1,25 +1,78 @@
 "use client";
 
-import styles from "@/app/(menu)/(authenticated)/lips/[id]/DocumentsManagement.module.scss";
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
-import {FileEsign} from "@/entities/document";
+import {PDFType} from "@/entities/esign";
 import {
   faCheckCircle,
   faDownload,
-  faEye,
-  faFileCheck,
-  faFileContract,
+  faFileSignature,
+  faSave,
+  faXmark,
 } from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {Button, Card, CardHeader, Stack} from "react-bootstrap";
+import {Fragment} from "react";
+import {
+  Badge,
+  Button,
+  Card,
+  CardHeader,
+  ModalBody,
+  ModalFooter,
+  Stack,
+} from "react-bootstrap";
+import styles from "./DocumentsManagement.module.scss";
+
+interface Esign {
+  key: string;
+  whoEsign: "advisor" | "contractor";
+  esignIndex: number;
+  signed: boolean;
+}
+interface Document {
+  key: string;
+  fileName: string;
+  urlPreview: string;
+  urlDownload: string;
+  type: PDFType;
+  eSigns: Esign[];
+}
+const documents: Document[] = [
+  {
+    key: "identificazione",
+    fileName: "File di identificazione",
+    urlPreview: "pdf-identificazione-preview",
+    urlDownload: "pdf-identificazione",
+    type: PDFType.Identification,
+    eSigns: [
+      {
+        key: "onlyOne",
+        whoEsign: "advisor",
+      } as Esign,
+    ],
+  },
+  {
+    key: "polizza",
+    fileName: "File di Proposta",
+    urlPreview: "pdf-proposta-preview",
+    urlDownload: "pdf-proposta",
+    type: PDFType.Proposal,
+    eSigns: [
+      {key: "esign_agente", whoEsign: "advisor"} as Esign,
+      {key: "esign_contraente", whoEsign: "contractor"} as Esign,
+      {key: "esign_contraente_sepa", whoEsign: "contractor"} as Esign,
+    ],
+  },
+];
 
 const eSignsCount = (
-  eSigns: FileEsign[],
+  documentESigns: Esign[],
+  lipESigns: Record<string, {esign_id: number}>,
   filter?: string,
-): [FileEsign[], FileEsign[]] => {
-  let filteredESigns = eSigns.map((eSign, index) => ({
+): [Esign[], Esign[]] => {
+  let filteredESigns = documentESigns.map((eSign, index) => ({
     ...eSign,
     esignIndex: index,
+    signed: !!lipESigns[eSign.key]?.esign_id,
   }));
   if (filter) {
     filteredESigns = filteredESigns.filter(
@@ -28,64 +81,70 @@ const eSignsCount = (
   }
 
   const total = filteredESigns;
-  const partial = filteredESigns.filter((eSign) => eSign.esignId);
+  const partial = filteredESigns.filter((eSign) => eSign.signed);
   return [partial, total];
 };
 
 export function DocumentsSummary() {
-  const documentationData = useDrawerStore(
-    (state) => state.lipData.documentation,
-  );
+  const lip = useDrawerStore((state) => state.lip);
 
-  if (!documentationData) {
+  if (!lip) {
+    return null;
+  }
+
+  const allESigns = documents.every((document) => {
+    const [partialESign, totalESign] = eSignsCount(
+      document.eSigns,
+      document.key === "identificazione"
+        ? lip.eSigns?.identificazione
+          ? {onlyOne: lip.eSigns.identificazione}
+          : {}
+        : lip.eSigns?.polizza ?? {},
+    );
+
+    return partialESign.length === totalESign.length;
+  });
+
+  if (!allESigns) {
     return null;
   }
 
   return (
     <Stack gap={3}>
-      <h4 className="w-100 text-primary">
-        <FontAwesomeIcon icon={faFileContract} /> Documentazione
-      </h4>
-      {documentationData.files.map((document) => {
+      {documents.map((document) => {
         const [partialAdvisorESign, totalAdvisorESign] = eSignsCount(
-          document.esigns,
+          document.eSigns,
+          document.key === "identificazione"
+            ? lip.eSigns?.identificazione
+              ? {onlyOne: lip.eSigns.identificazione}
+              : {}
+            : lip.eSigns?.polizza ?? {},
           "advisor",
         );
         const [partialContractorESign, totalContractorESign] = eSignsCount(
-          document.esigns,
+          document.eSigns,
+          document.key === "identificazione"
+            ? lip.eSigns?.identificazione
+              ? {onlyOne: lip.eSigns.identificazione}
+              : {}
+            : lip.eSigns?.polizza ?? {},
           "contractor",
         );
 
         return (
           <Card key={document.fileName}>
             <CardHeader className={styles.documentHeader}>
-              <strong>
-                <FontAwesomeIcon icon={faFileCheck} /> {document.fileName}
-              </strong>
-              <span>{document.requiredFile && "(Obbligatorio)"}</span>
-              {document.allRequiredEsigned ? (
-                <Button
-                  as="a"
-                  size="sm"
-                  download
-                  className="ms-sm-auto"
-                  href={`${process.env.API_URL}proposals/${"TODO"}/download-file-esign?fileName=${document.fileName}`}
-                >
-                  <FontAwesomeIcon icon={faDownload} /> Scarica il documento
-                  firmato
-                </Button>
-              ) : (
-                <Button
-                  as="a"
-                  size="sm"
-                  download
-                  className="ms-sm-auto"
-                  href={`${process.env.API_URL}proposals/${"TODO"}/download-file?fileName=${document.fileName}`}
-                >
-                  <FontAwesomeIcon icon={faEye} /> Visualizza anteprima del
-                  documento
-                </Button>
-              )}
+              <strong>{document.fileName}</strong>
+              <Button
+                as="a"
+                size="sm"
+                download
+                className="ms-sm-auto"
+                href={`${process.env.NEXT_PUBLIC_API_URL}/${document.urlDownload}/?lipId=${lip.id}&agentId=${lip.agent.id}&contractorId=${lip.contractor.id}`}
+              >
+                <FontAwesomeIcon icon={faDownload} /> Scarica il documento
+                firmato
+              </Button>
             </CardHeader>
             <div className={styles.docTableActions}>
               <>
@@ -118,6 +177,19 @@ export function DocumentsSummary() {
                           />
                         )}
                       </span>
+                      {totalAdvisorESign.map((eSign) => (
+                        <Badge
+                          key={eSign.key}
+                          bg="success"
+                          className="text-nowrap"
+                        >
+                          <FontAwesomeIcon
+                            icon={faCheckCircle}
+                            className="me-2"
+                          />
+                          Firmato
+                        </Badge>
+                      ))}
                     </>
                   ) : (
                     <>Nessuna firma richiesta</>
@@ -155,6 +227,19 @@ export function DocumentsSummary() {
                           />
                         )}
                       </span>
+                      {totalContractorESign.map((eSign) => (
+                        <Badge
+                          key={eSign.key}
+                          bg="success"
+                          className="text-nowrap"
+                        >
+                          <FontAwesomeIcon
+                            icon={faFileSignature}
+                            className="me-2"
+                          />
+                          Firmato
+                        </Badge>
+                      ))}
                     </>
                   ) : (
                     <>Nessuna firma richiesta</>

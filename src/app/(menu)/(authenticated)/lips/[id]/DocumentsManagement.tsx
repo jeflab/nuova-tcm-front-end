@@ -1,8 +1,8 @@
 "use client";
 
-import {ESignsManagementModal} from "@/app/(menu)/(authenticated)/lips/[id]/DocumentsManagement/ESignsManagementModal";
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
-import {FileEsign} from "@/entities/document";
+import {PDFType} from "@/entities/esign";
+import RequestOTPModal from "@/ui/eSign/RequestOTPModal";
 import {
   faCheckCircle,
   faDownload,
@@ -12,7 +12,7 @@ import {
   faXmark,
 } from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {useState} from "react";
+import {Fragment, startTransition, useState} from "react";
 import {
   Button,
   Card,
@@ -22,13 +22,57 @@ import {
 } from "react-bootstrap";
 import styles from "./DocumentsManagement.module.scss";
 
+interface Esign {
+  key: string;
+  whoEsign: "advisor" | "contractor";
+  esignIndex: number;
+  signed: boolean;
+}
+interface Document {
+  key: string;
+  fileName: string;
+  urlPreview: string;
+  urlDownload: string;
+  type: PDFType;
+  eSigns: Esign[];
+}
+const documents: Document[] = [
+  {
+    key: "identificazione",
+    fileName: "File di identificazione",
+    urlPreview: "pdf-identificazione-preview",
+    urlDownload: "pdf-identificazione",
+    type: PDFType.Identification,
+    eSigns: [
+      {
+        key: "onlyOne",
+        whoEsign: "advisor",
+      } as Esign,
+    ],
+  },
+  {
+    key: "polizza",
+    fileName: "File di Proposta",
+    urlPreview: "pdf-proposta-preview",
+    urlDownload: "pdf-proposta",
+    type: PDFType.Proposal,
+    eSigns: [
+      {key: "esign_agente", whoEsign: "advisor"} as Esign,
+      {key: "esign_contraente", whoEsign: "contractor"} as Esign,
+      {key: "esign_contraente_sepa", whoEsign: "contractor"} as Esign,
+    ],
+  },
+];
+
 const eSignsCount = (
-  eSigns: FileEsign[],
+  documentESigns: Esign[],
+  lipESigns: Record<string, {esign_id: number}>,
   filter?: string,
-): [FileEsign[], FileEsign[]] => {
-  let filteredESigns = eSigns.map((eSign, index) => ({
+): [Esign[], Esign[]] => {
+  let filteredESigns = documentESigns.map((eSign, index) => ({
     ...eSign,
     esignIndex: index,
+    signed: !!lipESigns[eSign.key]?.esign_id,
   }));
   if (filter) {
     filteredESigns = filteredESigns.filter(
@@ -37,36 +81,68 @@ const eSignsCount = (
   }
 
   const total = filteredESigns;
-  const partial = filteredESigns.filter((eSign) => eSign.esignId);
+  const partial = filteredESigns.filter((eSign) => eSign.signed);
   return [partial, total];
 };
 
 export function DocumentsManagement() {
   const [esignModalOpen, setEsignModalOpen] =
     useState<`${"advisor" | "contractor"}-${string}`>();
-  const defaultDocuments = useDrawerStore((state) => state.defaultDocuments);
-  const lipsDocuments = useDrawerStore((state) => state.lipData.documentation);
+
+  const lip = useDrawerStore((state) => state.lip);
   const closeModal = useDrawerStore((state) => state.closeModal);
-  const lipId = 1;
 
-  const documents = lipsDocuments ?? defaultDocuments;
+  if (!lip) {
+    return null;
+  }
 
-  const allAdvisorESigns = documents.files.every((file) =>
-    file.esigns
-      .filter((eSign) => eSign.whoEsign === "advisor")
-      .every((eSign) => !!eSign.esignId),
-  );
+  const allAdvisorESigns = documents.every((document) => {
+    const [partialAdvisorESign, totalAdvisorESign] = eSignsCount(
+      document.eSigns,
+      document.key === "identificazione"
+        ? lip.eSigns?.identificazione
+          ? {onlyOne: lip.eSigns.identificazione}
+          : {}
+        : lip.eSigns?.polizza ?? {},
+      "advisor",
+    );
+
+    return partialAdvisorESign.length === totalAdvisorESign.length;
+  });
+
+  const lastESign = documents.every((document) => {
+    const [partialESign, totalESign] = eSignsCount(
+      document.eSigns,
+      document.key === "identificazione"
+        ? lip.eSigns?.identificazione
+          ? {onlyOne: lip.eSigns.identificazione}
+          : {}
+        : lip.eSigns?.polizza ?? {},
+    );
+
+    return partialESign.length === totalESign.length - 1;
+  });
 
   return (
     <>
       <ModalBody className="vstack gap-3">
-        {documents.files.map((document) => {
+        {documents.map((document) => {
           const [partialAdvisorESign, totalAdvisorESign] = eSignsCount(
-            document.esigns,
+            document.eSigns,
+            document.key === "identificazione"
+              ? lip.eSigns?.identificazione
+                ? {onlyOne: lip.eSigns.identificazione}
+                : {}
+              : lip.eSigns?.polizza ?? {},
             "advisor",
           );
           const [partialContractorESign, totalContractorESign] = eSignsCount(
-            document.esigns,
+            document.eSigns,
+            document.key === "identificazione"
+              ? lip.eSigns?.identificazione
+                ? {onlyOne: lip.eSigns.identificazione}
+                : {}
+              : lip.eSigns?.polizza ?? {},
             "contractor",
           );
 
@@ -74,14 +150,15 @@ export function DocumentsManagement() {
             <Card key={document.fileName}>
               <CardHeader className={styles.documentHeader}>
                 <strong>{document.fileName}</strong>
-                <span>{document.requiredFile && "(Obbligatorio)"}</span>
-                {document.allRequiredEsigned ? (
+                {partialAdvisorESign.length === totalAdvisorESign.length &&
+                partialContractorESign.length ===
+                  totalContractorESign.length ? (
                   <Button
                     as="a"
                     size="sm"
                     download
                     className="ms-sm-auto"
-                    href={`${process.env.API_URL}proposals/${lipId}/download-file-esign?fileName=${document.fileName}`}
+                    href={`${process.env.NEXT_PUBLIC_API_URL}/${document.urlDownload}/?lipId=${lip.id}&agentId=${lip.agent.id}&contractorId=${lip.contractor.id}`}
                   >
                     <FontAwesomeIcon icon={faDownload} /> Scarica il documento
                     firmato
@@ -92,7 +169,7 @@ export function DocumentsManagement() {
                     size="sm"
                     download
                     className="ms-sm-auto"
-                    href={`${process.env.API_URL}proposals/${lipId}/download-file?fileName=${document.fileName}`}
+                    href={`${process.env.NEXT_PUBLIC_API_URL}/${document.urlPreview}/?lipId=${lip.id}&agentId=${lip.agent.id}&contractorId=${lip.contractor.id}`}
                   >
                     <FontAwesomeIcon icon={faEye} /> Visualizza anteprima del
                     documento
@@ -130,32 +207,48 @@ export function DocumentsManagement() {
                             />
                           )}
                         </span>
-                        <Button
-                          size="sm"
-                          className="text-nowrap"
-                          onClick={() => {
-                            setEsignModalOpen(`advisor-${document.fileName}`);
-                          }}
-                        >
-                          {totalAdvisorESign.length >
-                          partialAdvisorESign.length ? (
-                            <>
-                              <FontAwesomeIcon icon={faFileSignature} /> Firma
-                            </>
-                          ) : (
-                            <>
-                              <FontAwesomeIcon icon={faEye} /> Visualizza
-                            </>
-                          )}
-                        </Button>
-                        <ESignsManagementModal
-                          document={document}
-                          eSigns={totalAdvisorESign}
-                          show={
-                            esignModalOpen === `advisor-${document.fileName}`
-                          }
-                          onHide={() => setEsignModalOpen(undefined)}
-                        />
+                        {totalAdvisorESign.map((eSign) => (
+                          <Fragment key={eSign.key}>
+                            <Button
+                              size="sm"
+                              className="text-nowrap"
+                              onClick={() => {
+                                setEsignModalOpen(
+                                  `advisor-${document.fileName}-${eSign.esignIndex}`,
+                                );
+                              }}
+                              disabled={eSign.signed}
+                            >
+                              <FontAwesomeIcon
+                                icon={faFileSignature}
+                                className="me-2"
+                              />
+                              Firma
+                            </Button>
+                            <RequestOTPModal
+                              onHide={() => {
+                                startTransition(() => {
+                                  setEsignModalOpen(undefined);
+                                });
+                              }}
+                              onEsignComplete={async (response) => {
+                                setEsignModalOpen(undefined);
+                                if (lastESign) {
+                                  closeModal();
+                                }
+                              }}
+                              personalData={lip.contractor}
+                              pdfType={document.type}
+                              payload={{esignIndex: eSign.esignIndex}}
+                              show={
+                                esignModalOpen ===
+                                `advisor-${document.fileName}-${eSign.esignIndex}`
+                              }
+                              lipId={lip.id}
+                              tagToRevalidate={`getLip-${lip.id}`}
+                            />
+                          </Fragment>
+                        ))}
                       </>
                     ) : (
                       <>Nessuna firma richiesta</>
@@ -193,39 +286,51 @@ export function DocumentsManagement() {
                             />
                           )}
                         </span>
-                        {allAdvisorESigns && (
-                          <>
-                            <Button
-                              size="sm"
-                              className="text-nowrap"
-                              onClick={() => {
-                                setEsignModalOpen(
-                                  `contractor-${document.fileName}`,
-                                );
-                              }}
-                            >
-                              {totalContractorESign.length >
-                              partialContractorESign.length ? (
-                                <>
-                                  <FontAwesomeIcon icon={faFileSignature} />{" "}
-                                  Firma del cliente
-                                </>
-                              ) : (
-                                <>
-                                  <FontAwesomeIcon icon={faEye} /> Visualizza
-                                </>
-                              )}
-                            </Button>
-                            <ESignsManagementModal
-                              document={document}
-                              eSigns={totalContractorESign}
-                              show={
-                                esignModalOpen ===
-                                `contractor-${document.fileName}`
-                              }
-                              onHide={() => setEsignModalOpen(undefined)}
-                            />
-                          </>
+                        {allAdvisorESigns ? (
+                          totalContractorESign.map((eSign) => (
+                            <Fragment key={eSign.key}>
+                              <Button
+                                size="sm"
+                                className="text-nowrap"
+                                onClick={() => {
+                                  setEsignModalOpen(
+                                    `contractor-${document.fileName}-${eSign.esignIndex}`,
+                                  );
+                                }}
+                                disabled={eSign.signed}
+                              >
+                                <FontAwesomeIcon
+                                  icon={faFileSignature}
+                                  className="me-2"
+                                />
+                                Firma del cliente
+                              </Button>
+                              <RequestOTPModal
+                                onHide={() => {
+                                  startTransition(() => {
+                                    setEsignModalOpen(undefined);
+                                  });
+                                }}
+                                onEsignComplete={async (response) => {
+                                  setEsignModalOpen(undefined);
+                                  if (lastESign) {
+                                    closeModal();
+                                  }
+                                }}
+                                personalData={lip.contractor}
+                                pdfType={document.type}
+                                payload={{esignIndex: eSign.esignIndex}}
+                                show={
+                                  esignModalOpen ===
+                                  `contractor-${document.fileName}-${eSign.esignIndex}`
+                                }
+                                lipId={lip.id}
+                                tagToRevalidate={`getLip-${lip.id}`}
+                              />
+                            </Fragment>
+                          ))
+                        ) : (
+                          <>In attesa delle firme del Consulente</>
                         )}
                       </>
                     ) : (
