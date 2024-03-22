@@ -18,11 +18,11 @@ import {z} from "zod";
  */
 export enum PDFType {
   Privacy = "templatePrivacy",
+  Identification = "templateIdentificazione",
+  Proposal = "templateProposta",
   // PrivacyContractor = "templatePrivacyContractor",
   // PrivacySubscription = "templatePrivacySubscription",
-  // Identification = "templateIdentificazione",
   // Cap = "templateAnalisi",
-  // Proposal = "templateProposta",
   // Recommendation = "templateRaccomandazione",
   // BeneConsistency = "templateDichiarazioneCoerenzaBene",
   // Consistency = "templateDichiarazioneCoerenza",

@@ -2,6 +2,7 @@
 
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {Profile} from "@/entities/account";
+import {PDFType} from "@/entities/esign";
 import {Privacy} from "@/entities/privacy";
 import {cns} from "@/helpers/cns";
 import RequestOTPModal from "@/ui/eSign/RequestOTPModal";
@@ -100,7 +101,7 @@ export function ContractorPersonalAreaActivationLastPrivacyForm({
               closeModal();
             }}
             personalData={lip.contractor}
-            profile={profile}
+            pdfType={PDFType.Privacy}
             show={esignModalOpen}
             payload={{values: formMethods.watch()}}
             lipId={lip.id}

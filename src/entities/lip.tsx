@@ -197,6 +197,26 @@ const paymentSchema = z.object({
   iban: z.string(),
 });
 
+export const eSignSchema = z.object({
+  identificazione: z
+    .object({
+      file: z.string(),
+      esign_id: z.number(),
+      data: z.string(),
+    })
+    .optional(),
+  polizza: z
+    .record(
+      z.enum(["esign_agente", "esign_contraente", "esign_contraente_sepa"]),
+      z.object({
+        file: z.string(),
+        esign_id: z.number(),
+        data: z.string(),
+      }),
+    )
+    .optional(),
+});
+
 export const lipSchema = z
   .object({
     id: z.number(),
@@ -222,6 +242,7 @@ export const lipSchema = z
       .nullable()
       .optional(),
     json_payment: zu.stringToJSON().pipe(paymentSchema).nullable().optional(),
+    json_esign: zu.stringToJSON().pipe(eSignSchema).nullable().optional(),
     status: z.union([z.literal(0), z.literal(1)]).transform((status) => {
       return lipStatuses[status];
     }),
@@ -236,6 +257,7 @@ export const lipSchema = z
       json_survey_healthcare,
       json_beneficiary,
       json_payment,
+      json_esign,
       ...data
     }) => {
       return {
@@ -248,6 +270,7 @@ export const lipSchema = z
         healthcareQuestionnaire: json_survey_healthcare,
         beneficiaries: json_beneficiary,
         payment: json_payment,
+        eSigns: json_esign,
       };
     },
   );

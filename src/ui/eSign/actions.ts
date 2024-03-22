@@ -1,5 +1,6 @@
 "use server";
 
+import {getProfile} from "@/app/(no-menu)/(auth)/actions";
 import {esignSchema, PDFType} from "@/entities/esign";
 import {lipSchema} from "@/entities/lip";
 import {post, put} from "@/services/api";
@@ -17,7 +18,7 @@ export async function createFEATransaction({
   contractorId,
   lipId,
 }: CreateFEATransactionParams) {
-  return post(
+  const featTransaction = post(
     "/esigns/create-featransaction",
     createFEATransactionSchema,
     JSON.stringify({
@@ -25,6 +26,11 @@ export async function createFEATransaction({
       lipId,
     }),
   );
+  const profile = getProfile();
+  return {
+    featTransaction: await featTransaction,
+    profile: await profile,
+  };
 }
 
 const signFEADocSchema = {
