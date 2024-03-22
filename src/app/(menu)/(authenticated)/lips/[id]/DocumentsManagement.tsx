@@ -110,22 +110,28 @@ export function DocumentsManagement() {
     return partialAdvisorESign.length === totalAdvisorESign.length;
   });
 
-  const lastESign = documents.every((document) => {
-    const [partialESign, totalESign] = eSignsCount(
-      document.eSigns,
-      document.key === "identificazione"
-        ? lip.eSigns?.identificazione
-          ? {onlyOne: lip.eSigns.identificazione}
-          : {}
-        : lip.eSigns?.polizza ?? {},
-    );
+  const [partialESign, totalESign] = documents.reduce(
+    ([prevPartial, prevTotal], document) => {
+      const [partialESign, totalESign] = eSignsCount(
+        document.eSigns,
+        document.key === "identificazione"
+          ? lip.eSigns?.identificazione
+            ? {onlyOne: lip.eSigns.identificazione}
+            : {}
+          : lip.eSigns?.polizza ?? {},
+      );
 
-    return partialESign.length === totalESign.length - 1;
-  });
+      return [prevPartial.concat(partialESign), prevTotal.concat(totalESign)];
+    },
+    [[], []] as [Esign[], Esign[]],
+  );
+
+  const lastESign = partialESign.length === totalESign.length - 1;
 
   return (
     <>
       <ModalBody className="vstack gap-3">
+        last? {lastESign ? "sì" : "no"}
         {documents.map((document) => {
           const [partialAdvisorESign, totalAdvisorESign] = eSignsCount(
             document.eSigns,
@@ -231,7 +237,7 @@ export function DocumentsManagement() {
                                   setEsignModalOpen(undefined);
                                 });
                               }}
-                              onEsignComplete={async (response) => {
+                              onEsignComplete={async () => {
                                 setEsignModalOpen(undefined);
                                 if (lastESign) {
                                   closeModal();
@@ -311,7 +317,7 @@ export function DocumentsManagement() {
                                     setEsignModalOpen(undefined);
                                   });
                                 }}
-                                onEsignComplete={async (response) => {
+                                onEsignComplete={async () => {
                                   setEsignModalOpen(undefined);
                                   if (lastESign) {
                                     closeModal();

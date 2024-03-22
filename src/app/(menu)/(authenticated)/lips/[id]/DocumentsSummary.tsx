@@ -2,24 +2,10 @@
 
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {PDFType} from "@/entities/esign";
-import {
-  faCheckCircle,
-  faDownload,
-  faFileSignature,
-  faSave,
-  faXmark,
-} from "@fortawesome/pro-duotone-svg-icons";
+import {faCheckCircle, faDownload} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Fragment} from "react";
-import {
-  Badge,
-  Button,
-  Card,
-  CardHeader,
-  ModalBody,
-  ModalFooter,
-  Stack,
-} from "react-bootstrap";
+import {Badge, Button, Card, CardHeader, Stack} from "react-bootstrap";
 import styles from "./DocumentsManagement.module.scss";
 
 interface Esign {
@@ -234,7 +220,7 @@ export function DocumentsSummary() {
                           className="text-nowrap"
                         >
                           <FontAwesomeIcon
-                            icon={faFileSignature}
+                            icon={faCheckCircle}
                             className="me-2"
                           />
                           Firmato
