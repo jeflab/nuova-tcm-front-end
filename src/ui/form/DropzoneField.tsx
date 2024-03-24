@@ -1,4 +1,3 @@
-import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {cns} from "@/helpers/cns";
 import {ErrorCodes, errors} from "@/helpers/errors";
 import {useValidationState} from "@/ui/form/hooks";
@@ -30,8 +29,6 @@ export function DropzoneField({
   invariant(controlName, "name or controlId is required");
   const [thumbUrl, setThumbUrl] = useState<string>();
 
-  const setPicture = useDrawerStore((state) => state.setPicture);
-
   const {setError} = useFormContext();
   const {
     field: {onBlur, onChange, value},
@@ -58,7 +55,6 @@ export function DropzoneField({
       });
     } else if (accepted[0]) {
       const newFile = accepted[0];
-      setPicture(controlName + "Url", URL.createObjectURL(newFile));
       setThumbUrl(URL.createObjectURL(newFile));
       onChange(newFile);
       onBlur();

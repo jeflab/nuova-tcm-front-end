@@ -103,7 +103,7 @@ export type PaymentFormValues = typeof paymentDefaultValues;
 
 export function PaymentForm() {
   const lipId = useDrawerStore((state) => state.lip?.id);
-  const birthDate = useDrawerStore((state) => state.lipData.quote?.birthDate)!;
+  const birthDate = useDrawerStore((state) => state.lip?.contractor.birthDate)!;
   const contractorName = useDrawerStore((state) => state.lip?.contractor.name);
   const contractorSurname = useDrawerStore(
     (state) => state.lip?.contractor.surname,

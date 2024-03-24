@@ -13,7 +13,6 @@ import {Form} from "@/ui/form/Form";
 import {SubmitButton} from "@/ui/form/SubmitButton";
 import {faFileSignature, faSpinner} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {useRouter} from "next/navigation";
 import {startTransition, useState} from "react";
 import {Alert, FormGroup} from "react-bootstrap";
 import {useForm} from "react-hook-form";
@@ -25,13 +24,11 @@ interface ContractorPersonalAreaActivationLastPrivacyFormProps {
 }
 
 export function ContractorPersonalAreaActivationLastPrivacyForm({
-  profile,
   lastPrivacy,
 }: ContractorPersonalAreaActivationLastPrivacyFormProps) {
   const formMethods = useForm({
     mode: "onChange",
   });
-  const router = useRouter();
   const [esignModalOpen, setEsignModalOpen] = useState(false);
   const lip = useDrawerStore((state) => state.lip);
   const closeModal = useDrawerStore((state) => state.closeModal);
@@ -96,7 +93,7 @@ export function ContractorPersonalAreaActivationLastPrivacyForm({
                 setEsignModalOpen(false);
               });
             }}
-            onEsignComplete={async (response) => {
+            onEsignComplete={async () => {
               setEsignModalOpen(false);
               closeModal();
             }}

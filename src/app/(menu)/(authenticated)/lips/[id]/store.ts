@@ -2,45 +2,34 @@ import {DrawerName} from "@/app/(menu)/(authenticated)/lips/[id]/drawers";
 import {PreliminaryData} from "@/app/(menu)/(authenticated)/lips/models";
 import {Lip} from "@/entities/lip";
 import {DrawerState, presetButtons} from "@/ui/drawer/types";
-import {produce} from "immer";
 import {create} from "zustand";
-import {TempLipData} from "../models";
+import {immer} from "zustand/middleware/immer";
 
 interface State {
-  preliminaryData: PreliminaryData;
-  lip?: Lip;
-  lipData: TempLipData;
-  modalOpen: DrawerName | null;
   drawerStates: Partial<Record<DrawerName, DrawerState>>;
+  lip: Lip | null;
+  modalOpen: DrawerName | null;
+  preliminaryData: PreliminaryData;
 }
-
 interface Actions {
-  openModal: (id: DrawerName) => void;
   closeModal: () => void;
+  openModal: (id: DrawerName) => void;
+  resetState: () => void;
+  updateLip: (lip: Lip | null) => void;
   updatePreliminaryData: (data: Partial<PreliminaryData>) => void;
-  updateLip: (lip?: Partial<Lip>) => void;
-  updateLipData: (data: Partial<TempLipData>) => void;
-  updateContractorPersonalAreaActivation: (
-    data: TempLipData["contractorPersonalAreaActivation"],
-  ) => void;
-  updateContractorData: (data: TempLipData["contractorData"]) => void;
-  updateIdentificationData: (data: TempLipData["identification"]) => void;
-  setPicture: (key: string, picture: string) => void;
-  updateDocumentationData: (data: TempLipData["documentation"]) => void;
-  resetLipData: () => void;
 }
 
-const updateLipData = (state: State, data: Partial<TempLipData>) => {
-  const newState = state;
-  newState.lipData = {...newState.lipData, ...data};
-
-  return newState;
+const initialState: State = {
+  drawerStates: {fatca: {variant: "active", ...presetButtons.compile}},
+  lip: null,
+  modalOpen: null,
+  preliminaryData: {},
 };
 
 function createDrawerState(state: State & Actions) {
   // Dati preliminari
   const isPreliminary = !state.lip;
-  state.drawerStates = {fatca: {variant: "active", ...presetButtons.compile}};
+  state.drawerStates = {...initialState.drawerStates};
 
   if (isPreliminary) {
     // fatca
@@ -258,68 +247,29 @@ function createDrawerState(state: State & Actions) {
   }
 }
 
-export const useDrawerStore = create<State & Actions>()((set) => ({
-  lipData: {},
-  preliminaryData: {},
-  modalOpen: null,
-  drawerStates: {fatca: {variant: "active", ...presetButtons.compile}},
-  openModal: (id) => set(() => ({modalOpen: id})),
-  closeModal: () => set(() => ({modalOpen: null})),
-  updatePreliminaryData: (data: Partial<PreliminaryData>) =>
-    set(
-      produce((state: State & Actions) => {
-        state.preliminaryData = {...state.preliminaryData, ...data};
+export const useDrawerStore = create<State & Actions>()(
+  immer((set) => ({
+    ...initialState,
+    openModal: (id) =>
+      set((state) => {
+        state.modalOpen = id;
+      }),
+    closeModal: () =>
+      set((state) => {
+        state.modalOpen = null;
+      }),
+    updatePreliminaryData: (preliminaryData) =>
+      set((state) => {
+        state.preliminaryData = {...state.preliminaryData, ...preliminaryData};
         createDrawerState(state);
       }),
-    ),
-  updateLip: (lip) =>
-    set(
-      produce((state) => {
-        state.lip = lip ? {...lip} : undefined;
+    updateLip: (lip) =>
+      set((state) => {
+        state.lip = lip;
         createDrawerState(state);
       }),
-    ),
-  updateLipData: (data: Partial<TempLipData>) =>
-    set(produce((state) => updateLipData(state, data))),
-  updateContractorPersonalAreaActivation: (data) =>
-    set(
-      produce((state) => {
-        updateLipData(state, {contractorPersonalAreaActivation: data});
-        state.lipData.contractorFiscalCode.phone = "1234567890";
-        state.lipData.contractorFiscalCode.email = "email@example.com";
-      }),
-    ),
-  updateContractorData: (data) =>
-    set(
-      produce((state) => {
-        updateLipData(state, {contractorData: data});
-      }),
-    ),
-  updateIdentificationData: (data) =>
-    set(
-      produce((state) => {
-        updateLipData(state, {identification: data});
-      }),
-    ),
-  setPicture: (key, picture) =>
-    set(
-      produce((state) => {
-        if (!state.lipData.idPictures) {
-          state.lipData.idPictures = {};
-        }
-        state.lipData.idPictures[key] = picture;
-      }),
-    ),
-  updateDocumentationData: (data) =>
-    set(
-      produce((state) => {
-        updateLipData(state, {documentation: data});
-      }),
-    ),
-  resetLipData: () =>
-    set(() => ({
-      lipData: {},
-      modalOpen: null,
-      drawerStates: {fatca: {variant: "active", ...presetButtons.compile}},
-    })),
-}));
+    resetState: () => {
+      set(initialState);
+    },
+  })),
+);

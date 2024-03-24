@@ -31,10 +31,9 @@ import {
   tAECodeOptions,
 } from "@/app/(menu)/(authenticated)/lips/[id]/selectsOptions";
 import {lipSchema} from "@/entities/lip";
-import {personalDataSchema} from "@/entities/personalData";
 import {privacySchema} from "@/entities/privacy";
 import {Option, YesNoAnswer, yesNoOptions} from "@/helpers/getOptionsLabel";
-import {get, patch, post, postFormData, put} from "@/services/api";
+import {get, patch, post, postFormData} from "@/services/api";
 import {revalidateTag} from "next/cache";
 
 const getLipShape = {
@@ -45,7 +44,7 @@ export async function getLip(id: number) {
 }
 
 const checkContractorShape = {
-  lip: lipSchema.optional(),
+  lip: lipSchema,
 };
 interface ActivateContractorParams {
   fatca: {
@@ -99,8 +98,7 @@ export async function activateContractor(
 }
 
 const checkIfFiscalCodeExistsShape = {
-  lip: lipSchema.optional(),
-  contractor: personalDataSchema.optional(),
+  lip: lipSchema,
 };
 export async function checkIfFiscalCodeExists(fiscalCode: string) {
   const data = {
@@ -109,7 +107,7 @@ export async function checkIfFiscalCodeExists(fiscalCode: string) {
 
   return await post(
     "/lips/check-contractor",
-    checkContractorShape,
+    checkIfFiscalCodeExistsShape,
     JSON.stringify(data),
   );
 }

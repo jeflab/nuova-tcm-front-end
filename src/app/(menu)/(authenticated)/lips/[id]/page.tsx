@@ -23,7 +23,7 @@ interface NewLipPageProps {
 const minWidthHack = {minWidth: "1px"};
 
 export default async function NewLipPage({params}: NewLipPageProps) {
-  let lip: Lip | undefined = undefined;
+  let lip: Lip | null = null;
   if (params.id !== "new" && params.id !== "debug") {
     const lipResponse = await getLip(parseInt(params.id, 10));
     if (lipResponse.status === "failed") {

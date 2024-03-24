@@ -5,7 +5,7 @@ import {Lip} from "@/entities/lip";
 import {useEffect} from "react";
 
 interface InitStoreWithServerDataProps {
-  lip: Lip | undefined;
+  lip: Lip | null;
 }
 
 export function InitStoreWithServerData({lip}: InitStoreWithServerDataProps) {
@@ -15,7 +15,7 @@ export function InitStoreWithServerData({lip}: InitStoreWithServerDataProps) {
     updateLip(lip);
 
     return () => {
-      updateLip(undefined);
+      updateLip(null);
     };
   }, [lip, updateLip]);
 
