@@ -3,6 +3,7 @@
 import {PersonalData} from "@/entities/personalData";
 import {Lip} from "@/entities/lip";
 import {dateString} from "@/helpers/dates";
+import {ButtonLink} from "@/ui/ButtonLink";
 import {CardCollapsable} from "@/ui/CardCollapsable";
 import {faEye} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
@@ -20,7 +21,7 @@ export function Policy({lip, contractor}: PolicyProps) {
         <Stack direction="horizontal" gap={3}>
           <div className="flex-grow-1">
             <p className="mb-0">
-              <strong>Polizza n°:</strong> {lip.id}
+              <strong>Polizza n°:</strong> {lip.lipNumber}
             </p>
             <p className="mb-0">
               <strong>Stipulata il:</strong> {dateString(lip.createdAt)}
@@ -30,15 +31,16 @@ export function Policy({lip, contractor}: PolicyProps) {
             </p>
           </div>
           <div>
-            <Button
+            <ButtonLink
               variant="primary"
               onClick={(e) => {
                 e.stopPropagation();
               }}
+              href={`/contractorLips/${lip.id}`}
             >
               <FontAwesomeIcon icon={faEye} className="me-2" />
               Dettagli
-            </Button>
+            </ButtonLink>
           </div>
         </Stack>
       }
@@ -68,7 +70,7 @@ export function PolicySkeleton() {
           <Placeholder as="div" className="flex-grow-1" animation="glow">
             <p className="mb-0">
               <Placeholder style={{width: "70px"}}></Placeholder>{" "}
-              <Placeholder style={{width: "20px"}}></Placeholder>
+              <Placeholder style={{width: "100px"}}></Placeholder>
             </p>
             <p className="mb-0">
               <Placeholder style={{width: "80px"}}></Placeholder>{" "}

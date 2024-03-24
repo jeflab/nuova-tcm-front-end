@@ -3,7 +3,7 @@ import {
   ongoingRelationshipOptions,
   publicOfficesOptions,
   tAECodeOptions,
-} from "@/app/(menu)/(authenticated)/lips/[id]/selectsOptions";
+} from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
 import {identityDocumentSchema} from "@/entities/identityDocument";
 import {getOptionsValues, yesNoOptions} from "@/helpers/getOptionsLabel";
 import {Prettify} from "@/helpers/TypesHelper";

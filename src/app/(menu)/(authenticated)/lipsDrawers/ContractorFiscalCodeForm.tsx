@@ -4,7 +4,7 @@ import {checkIfFiscalCodeExists} from "@/app/(menu)/(authenticated)/lips/[id]/ac
 import {
   Gender,
   gendersOptions,
-} from "@/app/(menu)/(authenticated)/lips/[id]/selectsOptions";
+} from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {cns} from "@/helpers/cns";
 import {dbDateString} from "@/helpers/dates";

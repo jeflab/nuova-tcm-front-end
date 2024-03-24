@@ -9,7 +9,7 @@ import {
   familyOptions,
   jobPositionOptions,
   needsToMeetOptions,
-} from "@/app/(menu)/(authenticated)/lips/[id]/selectsOptions";
+} from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {getOptionsLabel} from "@/helpers/getOptionsLabel";
 import {Currency} from "@/ui/Currency";

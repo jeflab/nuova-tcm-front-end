@@ -18,7 +18,7 @@ import {
   jobPositionOptions,
   needsToMeetOptions,
   NeedsToMeetOptions,
-} from "@/app/(menu)/(authenticated)/lips/[id]/selectsOptions";
+} from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {getOptionsLabel, YesNoAnswer} from "@/helpers/getOptionsLabel";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";

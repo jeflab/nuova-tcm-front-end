@@ -1,5 +1,5 @@
 import {getLastPrivacy} from "@/app/(menu)/(authenticated)/lips/[id]/actions";
-import {ContractorPersonalAreaActivationLastPrivacyForm} from "@/app/(menu)/(authenticated)/lips/[id]/ContractorPersonalAreaActivationLastPrivacyForm";
+import {ContractorPersonalAreaActivationLastPrivacyForm} from "@/app/(menu)/(authenticated)/lipsDrawers/ContractorPersonalAreaActivationLastPrivacyForm";
 import {getProfile} from "@/app/(no-menu)/(auth)/actions";
 import {Alert} from "react-bootstrap";
 

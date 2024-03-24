@@ -1,7 +1,7 @@
 "use client";
 
 import {activateContractor} from "@/app/(menu)/(authenticated)/lips/[id]/actions";
-import {fatcaQuestions} from "@/app/(menu)/(authenticated)/lips/[id]/FatcaForm";
+import {fatcaQuestions} from "@/app/(menu)/(authenticated)/lipsDrawers/FatcaForm";
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {cns} from "@/helpers/cns";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";

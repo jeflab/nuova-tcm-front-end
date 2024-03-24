@@ -2,7 +2,7 @@ import {
   Gender,
   IdType,
   PaymentMethodsSimple,
-} from "@/app/(menu)/(authenticated)/lips/[id]/selectsOptions";
+} from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
 import {Documents} from "@/entities/document";
 import {YesNoAnswer} from "@/helpers/getOptionsLabel";
 

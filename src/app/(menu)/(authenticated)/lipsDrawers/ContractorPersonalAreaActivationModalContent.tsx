@@ -1,6 +1,6 @@
 "use client";
 
-import {ContractorPersonalAreaActivationForm} from "@/app/(menu)/(authenticated)/lips/[id]/ContractorPersonalAreaActivationForm";
+import {ContractorPersonalAreaActivationForm} from "@/app/(menu)/(authenticated)/lipsDrawers/ContractorPersonalAreaActivationForm";
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {ReactNode, Suspense} from "react";
 import {ModalBody} from "react-bootstrap";

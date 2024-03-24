@@ -3,7 +3,7 @@ import {
   nominationOptions,
   paymentMethodsSimpleOptions,
   relationshipOptions,
-} from "@/app/(menu)/(authenticated)/lips/[id]/selectsOptions";
+} from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
 import {agentSchema} from "@/entities/agent";
 import {personalDataSchema} from "@/entities/personalData";
 import {getOptionsValues, yesNoOptions} from "@/helpers/getOptionsLabel";

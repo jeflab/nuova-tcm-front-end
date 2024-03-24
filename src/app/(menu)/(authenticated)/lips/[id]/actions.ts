@@ -1,9 +1,9 @@
 "use server";
 
-import {BeneficiariesFormValues} from "@/app/(menu)/(authenticated)/lips/[id]/BeneficiariesForm";
-import {fatcaQuestions} from "@/app/(menu)/(authenticated)/lips/[id]/FatcaForm";
-import {HealthQuestionnaireFormValues} from "@/app/(menu)/(authenticated)/lips/[id]/HealthQuestionnaireForm";
-import {PaymentFormValues} from "@/app/(menu)/(authenticated)/lips/[id]/PaymentForm";
+import {BeneficiariesFormValues} from "@/app/(menu)/(authenticated)/lipsDrawers/BeneficiariesForm";
+import {fatcaQuestions} from "@/app/(menu)/(authenticated)/lipsDrawers/FatcaForm";
+import {HealthQuestionnaireFormValues} from "@/app/(menu)/(authenticated)/lipsDrawers/HealthQuestionnaireForm";
+import {PaymentFormValues} from "@/app/(menu)/(authenticated)/lipsDrawers/PaymentForm";
 import {
   dependentFamilyMembersOptions,
   DependentFamilyMembersOptions,
@@ -29,7 +29,7 @@ import {
   publicOfficesOptions,
   TAECode,
   tAECodeOptions,
-} from "@/app/(menu)/(authenticated)/lips/[id]/selectsOptions";
+} from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
 import {lipSchema} from "@/entities/lip";
 import {privacySchema} from "@/entities/privacy";
 import {Option, YesNoAnswer, yesNoOptions} from "@/helpers/getOptionsLabel";

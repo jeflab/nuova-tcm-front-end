@@ -3,7 +3,7 @@
 import {
   PaymentMethods,
   paymentMethodsOptions,
-} from "@/app/(menu)/(authenticated)/lips/[id]/PaymentForm";
+} from "@/app/(menu)/(authenticated)/lipsDrawers/PaymentForm";
 import {getQuote} from "@/app/(menu)/quoter/actions";
 import {Advantages} from "@/app/(menu)/quoter/Advantages";
 import {getCoverageDuration} from "@/app/(menu)/quoter/helpers";
