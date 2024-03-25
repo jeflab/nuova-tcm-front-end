@@ -4,13 +4,13 @@ import {
   publicOfficesOptions,
   tAECodeOptions,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
-import {identityDocumentSchema} from "@/entities/identityDocument";
+import {identityDocumentSchema} from "@/models/entities/identityDocument";
 import {getOptionsValues, yesNoOptions} from "@/helpers/getOptionsLabel";
 import {Prettify} from "@/helpers/TypesHelper";
 import {z} from "zod";
 import {zu} from "zod_utilz";
 
-const factaSchema = z.object({
+const fatcaSchema = z.object({
   fatcaCheck: z.object({
     label: z.string(),
     text: z.string(),
@@ -92,7 +92,7 @@ export const personalDataSchema = z
     fiscal_code: z.string(),
     gender: z.enum(["male", "female", "other"]),
     last_privacy_esign_id: z.number().nullable(),
-    json_fatca: zu.stringToJSON().pipe(factaSchema),
+    json_fatca: zu.stringToJSON().pipe(fatcaSchema),
     address: z.string().nullable(),
     street_number: z.string().nullable(),
     zip_code: z.string().nullable(),
@@ -130,34 +130,3 @@ export const personalDataSchema = z
     },
   );
 export type PersonalData = Prettify<z.infer<typeof personalDataSchema>>;
-
-/**************************************************************/
-
-export const contractorSchemaFromTransform = z.object({
-  id: z.number(),
-  user_id: z.number(),
-  name: z.string(),
-  surname: z.string(),
-  gender: z.null(),
-  date_birth: z.null(),
-  place_birth: z.null(),
-  country_birth: z.null(),
-  fiscal_code: z.string(),
-  address: z.null(),
-  street_number: z.null(),
-  city: z.null(),
-  zip_code: z.null(),
-  region: z.null(),
-  citizenship: z.null(),
-  email: z.string(),
-  phone: z.string(),
-  json_fatca: z.null(),
-  json_pep: z.null(),
-  json_privacy: z.null(),
-  privacy_id: z.null(),
-  last_privacy_esign_id: z.null(),
-  status: z.number(),
-  created_at: z.string(),
-  updated_at: z.string(),
-  deleted_at: z.null(),
-});

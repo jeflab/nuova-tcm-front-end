@@ -1,6 +1,6 @@
 import {DrawerName} from "@/app/(menu)/(authenticated)/lips/[id]/drawers";
-import {PreliminaryData} from "@/app/(menu)/(authenticated)/lips/models";
-import {Lip} from "@/entities/lip";
+import {PreliminaryData} from "@/models/preliminaryData";
+import {Lip} from "@/models/entities/lip";
 import {DrawerState, presetButtons} from "@/ui/drawer/types";
 import {create} from "zustand";
 import {immer} from "zustand/middleware/immer";

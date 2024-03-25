@@ -1,7 +1,7 @@
 "use client";
 
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
-import {Lip} from "@/entities/lip";
+import {Lip} from "@/models/entities/lip";
 import {useEffect} from "react";
 
 interface InitStoreWithServerDataProps {

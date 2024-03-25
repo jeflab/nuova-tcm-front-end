@@ -10,7 +10,6 @@ import {
 } from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {useCallback, useContext, useState} from "react";
-import {FormControl} from "react-bootstrap";
 import {AsyncTypeahead, Highlighter} from "react-bootstrap-typeahead";
 import FormContext from "react-bootstrap/FormContext";
 import {RegisterOptions, useController, useFormContext} from "react-hook-form";

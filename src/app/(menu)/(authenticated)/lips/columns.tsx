@@ -5,7 +5,7 @@ import {
   lipStatuses,
   LipStatusesIcons,
   lipStatusesLabels,
-} from "@/entities/lip";
+} from "@/models/entities/lip";
 import {cns} from "@/helpers/cns";
 import {dateString, dbDateString} from "@/helpers/dates";
 import {ButtonLink} from "@/ui/ButtonLink";

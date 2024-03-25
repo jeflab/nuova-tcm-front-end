@@ -3,7 +3,6 @@
 import {updateHealthQuestionnaire} from "@/app/(menu)/(authenticated)/lips/[id]/actions";
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {YesNoAnswer} from "@/helpers/getOptionsLabel";
-import {Debug} from "@/ui/Debug";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {CheckGroup} from "@/ui/form/CheckGroup";
 import {FieldError} from "@/ui/form/FieldError";

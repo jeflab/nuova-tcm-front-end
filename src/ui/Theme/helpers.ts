@@ -1,4 +1,4 @@
-import {DEFAULT_THEME, THEME_COOKIE_NAME, themeSchema} from "@/ui/Theme/consts";
+import {THEME_COOKIE_NAME, themeSchema} from "@/ui/Theme/consts";
 import Cookies from "js-cookie";
 
 export const getThemeClientSide = () => {

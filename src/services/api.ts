@@ -3,11 +3,7 @@
 import {AUTH_COOKIE_NAME} from "@/app/(no-menu)/(auth)/const";
 import {ErrorCodes, errors} from "@/helpers/errors";
 import {logFetchInfo} from "@/helpers/fetchDebug";
-import {
-  apiUrl,
-  contentJsonHeader,
-  contentMultipartHeader,
-} from "@/services/const";
+import {apiUrl, contentJsonHeader} from "@/services/const";
 import {createServerSuccessSchema, serverErrorSchema} from "@/services/helpers";
 import chalk from "chalk";
 import {cookies} from "next/headers";
@@ -167,9 +163,7 @@ export async function post<T extends ZodRawShape>(
       chalk.greenBright(response.url),
       chalk.yellowBright(response.status),
     );
-    console.error(
-      body ? (typeof body === "string" ? JSON.parse(body) : body) : "no data",
-    );
+    console.error(body ? JSON.parse(body) : "no data");
     console.error(chalk.redBright(e));
     const text = await response.clone().text();
     if (text.length > 50000) {
@@ -202,9 +196,7 @@ export async function post<T extends ZodRawShape>(
       chalk.greenBright(response.url),
       chalk.yellowBright(response.status),
     );
-    console.error(
-      body ? (typeof body === "string" ? JSON.parse(body) : body) : "no data",
-    );
+    console.error(body ? JSON.parse(body) : "no data");
     console.error(chalk.redBright(e));
     console.error(await response.text());
     return errors[ErrorCodes.INVALID_SCHEMA] as z.infer<
@@ -327,9 +319,8 @@ export async function put<T extends ZodRawShape>(
       chalk.greenBright(response.url),
       chalk.yellowBright(response.status),
     );
-    console.error(
-      body ? (typeof body === "string" ? JSON.parse(body) : body) : "no data",
-    );
+    console.error(body ? JSON.parse(body) : "no data");
+
     console.error(chalk.redBright(e));
     const text = await response.clone().text();
     if (text.length > 50000) {
@@ -362,9 +353,8 @@ export async function put<T extends ZodRawShape>(
       chalk.greenBright(response.url),
       chalk.yellowBright(response.status),
     );
-    console.error(
-      body ? (typeof body === "string" ? JSON.parse(body) : body) : "no data",
-    );
+    console.error(body ? JSON.parse(body) : "no data");
+
     console.error(chalk.redBright(e));
     console.error(await response.text());
     return errors[ErrorCodes.INVALID_SCHEMA] as z.infer<
@@ -408,9 +398,8 @@ export async function patch<T extends ZodRawShape>(
       chalk.greenBright(response.url),
       chalk.yellowBright(response.status),
     );
-    console.error(
-      body ? (typeof body === "string" ? JSON.parse(body) : body) : "no data",
-    );
+    console.error(body ? JSON.parse(body) : "no data");
+
     console.error(chalk.redBright(e));
     const text = await response.clone().text();
     if (text.length > 50000) {
@@ -443,9 +432,8 @@ export async function patch<T extends ZodRawShape>(
       chalk.greenBright(response.url),
       chalk.yellowBright(response.status),
     );
-    console.error(
-      body ? (typeof body === "string" ? JSON.parse(body) : body) : "no data",
-    );
+    console.error(body ? JSON.parse(body) : "no data");
+
     console.error(chalk.redBright(e));
     console.error(await response.text());
     return errors[ErrorCodes.INVALID_SCHEMA] as z.infer<

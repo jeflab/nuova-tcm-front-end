@@ -1,4 +1,4 @@
-import {ReactNode, useEffect} from "react";
+import {ReactNode} from "react";
 import {Button} from "react-bootstrap";
 import {ButtonProps} from "react-bootstrap/Button";
 import {useFormContext} from "react-hook-form";
@@ -9,7 +9,7 @@ interface SubmitButtonProps extends Omit<ButtonProps, "children" | "type"> {
 
 export function SubmitButton({children, ...props}: SubmitButtonProps) {
   const {
-    formState: {isSubmitting, errors},
+    formState: {isSubmitting},
   } = useFormContext();
 
   const realChildren =

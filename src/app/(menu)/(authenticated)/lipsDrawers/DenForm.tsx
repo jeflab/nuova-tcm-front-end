@@ -237,7 +237,7 @@ export function DenForm() {
                     if (value === "no") {
                       formMethods.setValue("needsIntendToMeet", []);
                     }
-                    formMethods.trigger("needsIntendToMeet");
+                    void formMethods.trigger("needsIntendToMeet");
                   }}
                   validation={{
                     required: "Seleziona un'opzione",

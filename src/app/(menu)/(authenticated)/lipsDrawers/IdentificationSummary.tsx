@@ -5,7 +5,6 @@ import {idTypeOptions} from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOpt
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {dateString} from "@/helpers/dates";
 import {getOptionsLabel} from "@/helpers/getOptionsLabel";
-import {apiUrl} from "@/services/const";
 import {
   faAddressCard,
   faClipboardListCheck,

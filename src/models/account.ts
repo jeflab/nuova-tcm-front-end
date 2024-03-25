@@ -1,8 +1,7 @@
-import {personalDataSchema} from "@/entities/personalData";
-import {userSchema} from "@/entities/user";
-import * as api from "@/services/api";
+import {personalDataSchema} from "@/models/entities/personalData";
+import {userSchema} from "@/models/entities/user";
 import {z} from "zod";
-import {agentSchema} from "./agent";
+import {agentSchema} from "./entities/agent";
 
 const roleSchema = z.object({
   id: z.number(),
@@ -19,7 +18,6 @@ export const accountSchema = z.object({
   roles: z.array(roleSchema),
   permissions: z.array(permissionSchema),
 });
-export type Account = z.infer<typeof accountSchema>;
 
 export const profileSchema = z.object({
   user: userSchema,

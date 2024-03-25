@@ -508,7 +508,7 @@ export function BeneficiariesForm() {
                                   "" as Relationship,
                                 );
                               }
-                              formMethods.trigger(
+                              void formMethods.trigger(
                                 `beneficiaries.${index}.pep.response`,
                               );
                             }}
@@ -584,7 +584,7 @@ export function BeneficiariesForm() {
                                   "",
                                 );
                               }
-                              formMethods.trigger(
+                              void formMethods.trigger(
                                 `beneficiaries.${index}.relationship.response`,
                               );
                             }}

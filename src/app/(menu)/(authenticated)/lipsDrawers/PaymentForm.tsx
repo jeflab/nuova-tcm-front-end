@@ -4,7 +4,6 @@ import {updatePaymentData} from "@/app/(menu)/(authenticated)/lips/[id]/actions"
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {getCoverageDuration} from "@/app/(menu)/quoter/helpers";
 import {dbDateString} from "@/helpers/dates";
-import {YesNoAnswer, yesNoOptions} from "@/helpers/getOptionsLabel";
 import {Currency} from "@/ui/Currency";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {CheckGroup} from "@/ui/form/CheckGroup";

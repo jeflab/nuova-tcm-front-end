@@ -45,4 +45,3 @@ export const identityDocumentSchema = z
       };
     },
   );
-export type IdentityDocument = z.infer<typeof identityDocumentSchema>;

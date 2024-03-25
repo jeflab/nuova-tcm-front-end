@@ -1,4 +1,4 @@
-import {Lip} from "@/entities/lip";
+import {Lip} from "@/models/entities/lip";
 import {cns} from "@/helpers/cns";
 import {AppContainer} from "@/ui/AppContainer";
 import {Drawer} from "@/ui/drawer/Drawer";

@@ -1,7 +1,7 @@
 "use client";
 
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
-import {calculateImc, RANGE} from "./imc";
+import {calculateImc} from "./imc";
 
 export function HealthQuestionnaireSummary() {
   const healthQuestionnaireData = useDrawerStore(

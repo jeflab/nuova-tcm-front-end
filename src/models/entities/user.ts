@@ -13,4 +13,3 @@ export const userSchema = z
     fiscalCode: fiscal_code,
     isEmailVerified: email_verified_at !== null,
   }));
-export type User = z.infer<typeof userSchema>;

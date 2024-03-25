@@ -30,8 +30,8 @@ import {
   TAECode,
   tAECodeOptions,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
-import {lipSchema} from "@/entities/lip";
-import {privacySchema} from "@/entities/privacy";
+import {lipSchema} from "@/models/entities/lip";
+import {privacySchema} from "@/models/entities/privacy";
 import {Option, YesNoAnswer, yesNoOptions} from "@/helpers/getOptionsLabel";
 import {get, patch, post, postFormData} from "@/services/api";
 import {revalidateTag} from "next/cache";

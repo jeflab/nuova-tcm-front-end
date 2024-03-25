@@ -1,9 +1,9 @@
 "use client";
 
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
-import {Profile} from "@/entities/account";
-import {PDFType} from "@/entities/esign";
-import {Privacy} from "@/entities/privacy";
+import {Profile} from "@/models/account";
+import {PDFType} from "@/models/entities/esign";
+import {Privacy} from "@/models/entities/privacy";
 import {cns} from "@/helpers/cns";
 import RequestOTPModal from "@/ui/eSign/RequestOTPModal";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";

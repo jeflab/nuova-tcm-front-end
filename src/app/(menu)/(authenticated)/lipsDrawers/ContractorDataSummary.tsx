@@ -18,7 +18,6 @@ import {
   faLandmarkMagnifyingGlass,
   faMoneyBillTransfer,
   faUser,
-  faWashingMachine,
 } from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Col, Row} from "react-bootstrap";

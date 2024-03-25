@@ -5,7 +5,7 @@ import {apiUrl} from "@/services/const";
 import {ButtonLink} from "@/ui/ButtonLink";
 import {faDownload} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {Button, Stack} from "react-bootstrap";
+import {Stack} from "react-bootstrap";
 
 export function ContractorPersonalAreaActivationSummary() {
   const lipId = useDrawerStore((state) => state.lip?.id);

@@ -29,9 +29,7 @@ import {
   Collapse,
   FormCheck,
   FormGroup,
-  OverlayTrigger,
   Row,
-  Tooltip,
 } from "react-bootstrap";
 import {useForm} from "react-hook-form";
 import {ComplementaryCoverages} from "./ComplementaryCoverages";

@@ -1,4 +1,3 @@
-import {Lip} from "@/entities/lip";
 import {cns} from "@/helpers/cns";
 import {AppContainer} from "@/ui/AppContainer";
 import {Drawer} from "@/ui/drawer/Drawer";
@@ -67,7 +66,7 @@ export default async function NewLipPage({params}: NewLipPageProps) {
               corrispondere.
             </p>
           </Alert>
-          {drawers.map(({name, title, modalContent, summaryContent}) => (
+          {drawers.map(({name, title, summaryContent}) => (
             <Drawer key={name} name={name} title={title} readonly>
               {summaryContent}
             </Drawer>

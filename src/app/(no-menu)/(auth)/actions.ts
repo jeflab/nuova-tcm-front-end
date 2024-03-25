@@ -1,7 +1,7 @@
 "use server";
 
 import {AUTH_COOKIE_NAME} from "@/app/(no-menu)/(auth)/const";
-import {accountSchema, profileSchema} from "@/entities/account";
+import {accountSchema, profileSchema} from "@/models/account";
 import {cookies, headers} from "next/headers";
 import {redirect} from "next/navigation";
 import {z} from "zod";

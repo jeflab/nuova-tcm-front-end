@@ -42,4 +42,3 @@ export const esignSchema = z
       transactionId: transaction_id,
     };
   });
-export type ESign = z.infer<typeof esignSchema>;

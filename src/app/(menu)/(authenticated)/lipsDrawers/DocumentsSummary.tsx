@@ -1,12 +1,9 @@
 "use client";
 
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
-import {PDFType} from "@/entities/esign";
-import {apiUrl} from "@/services/const";
-import {ButtonLink} from "@/ui/ButtonLink";
+import {PDFType} from "@/models/entities/esign";
 import {faCheckCircle, faDownload} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {Fragment} from "react";
 import {Badge, Button, Card, CardHeader, Stack} from "react-bootstrap";
 import styles from "./DocumentsManagement.module.scss";
 

@@ -1,7 +1,7 @@
 "use client";
 
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
-import {PDFType} from "@/entities/esign";
+import {PDFType} from "@/models/entities/esign";
 import RequestOTPModal from "@/ui/eSign/RequestOTPModal";
 import {
   faCheckCircle,

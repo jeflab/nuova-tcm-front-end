@@ -1,7 +1,7 @@
 "use client";
 
-import {PersonalData} from "@/entities/personalData";
-import {Lip} from "@/entities/lip";
+import {PersonalData} from "@/models/entities/personalData";
+import {Lip} from "@/models/entities/lip";
 import {dateString} from "@/helpers/dates";
 import {ButtonLink} from "@/ui/ButtonLink";
 import {CardCollapsable} from "@/ui/CardCollapsable";
