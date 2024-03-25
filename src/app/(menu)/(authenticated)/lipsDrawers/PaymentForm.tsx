@@ -92,7 +92,6 @@ const paymentDefaultValues = {
   effectiveDate: "",
   duration: "",
   expirationDate: "",
-  medicalExam: "" as YesNoAnswer,
   paymentMethod: "" as PaymentMethods,
   contractorFullName: "",
   bank: "",
@@ -189,20 +188,6 @@ export function PaymentForm() {
                 <FormLabel>Anno di scadenza</FormLabel>
                 <FieldError />
                 <InputField type="text" readOnly plaintext />
-              </FormGroup>
-            </Col>
-            <Col className="d-flex" xs={12}>
-              <FormGroup controlId="medicalExam" as={BorderFeedback}>
-                <FormLabel>Visita medica</FormLabel>
-                <FieldError />
-                <CheckGroup
-                  type="radio"
-                  inline
-                  options={yesNoOptions}
-                  validation={{
-                    required: "Seleziona un'opzione",
-                  }}
-                />
               </FormGroup>
             </Col>
             <Col className="d-flex">

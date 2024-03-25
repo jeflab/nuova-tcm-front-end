@@ -8,11 +8,7 @@ import {
   faCalendar,
   faCirclePlay,
 } from "@fortawesome/pro-duotone-svg-icons";
-import {
-  faDollarSign,
-  faMessage,
-  faUser,
-} from "@fortawesome/pro-solid-svg-icons";
+import {faDollarSign} from "@fortawesome/pro-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Stack} from "react-bootstrap";
 
@@ -30,14 +26,10 @@ export function PaymentSummary() {
         <h4 className="w-100 text-primary">
           <FontAwesomeIcon icon={faCirclePlay} /> Decorrenza assicurazione
         </h4>
-        <p>
+        <p className="mb-0">
           Data di decorrenza sel contratto: {paymentData.effectiveDate}, durata{" "}
           {paymentData.duration} anni, anno di scadenza:{" "}
           {paymentData.expirationDate}
-        </p>
-        <p className="mb-0">
-          Visita medica{" "}
-          {paymentData.medicalExam ? "effettuata" : "non effettuata"}
         </p>
       </div>
       <div>

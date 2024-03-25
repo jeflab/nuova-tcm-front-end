@@ -189,7 +189,6 @@ const paymentSchema = z.object({
   effectiveDate: z.string(),
   duration: z.string(),
   expirationDate: z.string(),
-  medicalExam: z.enum(getOptionsValues(yesNoOptions)),
   paymentMethod: z.enum(getOptionsValues(paymentMethodsSimpleOptions)),
   contractorFullName: z.string(),
   bank: z.string(),
