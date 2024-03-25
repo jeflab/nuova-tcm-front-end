@@ -95,11 +95,11 @@ export function ContractorPersonalAreaActivationForm() {
           <Row className="row-gap-3">
             <Col className="d-flex" xs={12} sm={6}>
               <FormGroup controlId="phone" as={BorderFeedback}>
-                <FormLabel>Cellulare</FormLabel>
+                <FormLabel>Cellulare del Contraente</FormLabel>
                 <FieldError />
                 <InputField
                   type="tel"
-                  placeholder="Cellulare"
+                  placeholder="Cellulare del Contraente"
                   validation={{
                     required: "Inserisci il Cellulare del Contraente",
                   }}
@@ -109,11 +109,11 @@ export function ContractorPersonalAreaActivationForm() {
             </Col>
             <Col className="d-flex" xs={12} sm={6}>
               <FormGroup controlId="email" as={BorderFeedback}>
-                <FormLabel>Email</FormLabel>
+                <FormLabel>Email del Contraente</FormLabel>
                 <FieldError />
                 <InputField
                   type="email"
-                  placeholder="Email"
+                  placeholder="Email del Contraente"
                   validation={{
                     validate: {
                       required: (value) => {
