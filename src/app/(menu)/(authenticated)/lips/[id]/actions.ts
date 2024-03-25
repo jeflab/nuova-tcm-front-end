@@ -44,7 +44,7 @@ export async function getLip(id: number) {
 }
 
 const checkContractorShape = {
-  lip: lipSchema,
+  lip: lipSchema.optional(),
 };
 interface ActivateContractorParams {
   fatca: {
@@ -98,7 +98,7 @@ export async function activateContractor(
 }
 
 const checkIfFiscalCodeExistsShape = {
-  lip: lipSchema,
+  lip: lipSchema.optional(),
 };
 export async function checkIfFiscalCodeExists(fiscalCode: string) {
   const data = {
