@@ -10,6 +10,7 @@ import {CheckGroup} from "@/ui/form/CheckGroup";
 import {FieldError} from "@/ui/form/FieldError";
 import {Form} from "@/ui/form/Form";
 import {InputField} from "@/ui/form/InputField";
+import {upperCaseNormalizer} from "@/ui/form/normalizers";
 import {validateIBAN} from "@/ui/form/validators/iban";
 import {faSave, faSpinner, faXmark} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
@@ -244,7 +245,7 @@ export function PaymentForm() {
                 <FieldError />
                 <InputField
                   type="text"
-                  placeholder="IBAN"
+                  placeholder="IT60X0542811101000000123456"
                   validation={{
                     validate: {
                       required: (value) => {
@@ -259,6 +260,7 @@ export function PaymentForm() {
                       },
                     },
                   }}
+                  normalize={upperCaseNormalizer}
                 />
               </FormGroup>
             </Col>
