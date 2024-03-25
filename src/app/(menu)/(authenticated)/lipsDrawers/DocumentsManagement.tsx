@@ -1,8 +1,8 @@
 "use client";
 
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {DocumentsChapterDetails} from "@/app/(menu)/(authenticated)/lipsDrawers/DocumentsChapterDetails";
 import {PDFType} from "@/models/entities/esign";
-import RequestOTPModal from "@/ui/eSign/RequestOTPModal";
 import {
   faCheckCircle,
   faDownload,
@@ -22,13 +22,15 @@ import {
 } from "react-bootstrap";
 import styles from "./DocumentsManagement.module.scss";
 
-interface Esign {
+export interface Esign {
   key: string;
   whoEsign: "advisor" | "contractor";
   esignIndex: number;
   signed: boolean;
+  date?: string;
+  chapters: string[];
 }
-interface Document {
+export interface Document {
   key: string;
   fileName: string;
   urlPreview: string;
@@ -47,6 +49,9 @@ const documents: Document[] = [
       {
         key: "onlyOne",
         whoEsign: "advisor",
+        chapters: [
+          "L'intermediario dichiara di avere incontrato di persona e di avere identificato attraverso il suo documento d'identità il contraente.",
+        ],
       } as Esign,
     ],
   },
@@ -57,22 +62,45 @@ const documents: Document[] = [
     urlDownload: "pdf-proposta",
     type: PDFType.Proposal,
     eSigns: [
-      {key: "esign_agente", whoEsign: "advisor"} as Esign,
-      {key: "esign_contraente", whoEsign: "contractor"} as Esign,
-      {key: "esign_contraente_sepa", whoEsign: "contractor"} as Esign,
+      {
+        key: "esign_agente",
+        whoEsign: "advisor",
+        chapters: [
+          "PG 9/9 - Dichiarazione dell'intermediario.",
+          "PG 9/9 - Firma del soggetto incaricato dell'adeguata verifica.",
+        ],
+      } as Esign,
+      {
+        key: "esign_contraente",
+        whoEsign: "contractor",
+        chapters: [
+          "PG 5/9 - Dichiarazioni rese dall'assicurato in relazione al proprio stato di salute e abitudini di vita.",
+          "PG 6/9 - Autorizzazione alla comunicazione elettronica.",
+          "PG 6/9 - Dichiarazioni del contraente e dell'assicurato.",
+          "PG 9/9 - Firma della proposta.",
+        ],
+      } as Esign,
+      {
+        key: "esign_contraente_sepa",
+        whoEsign: "contractor",
+        chapters: [
+          "PG 5/9 - Firma del contraente per l'addebito diretto SEPA - S.D.D.",
+        ],
+      } as Esign,
     ],
   },
 ];
 
 const eSignsCount = (
   documentESigns: Esign[],
-  lipESigns: Record<string, {esign_id: number}>,
+  lipESigns: Record<string, {esign_id: number; data: string}>,
   filter?: string,
 ): [Esign[], Esign[]] => {
   let filteredESigns = documentESigns.map((eSign, index) => ({
     ...eSign,
     esignIndex: index,
     signed: !!lipESigns[eSign.key]?.esign_id,
+    date: lipESigns[eSign.key]?.data,
   }));
   if (filter) {
     filteredESigns = filteredESigns.filter(
@@ -86,7 +114,7 @@ const eSignsCount = (
 };
 
 export function DocumentsManagement() {
-  const [esignModalOpen, setEsignModalOpen] =
+  const [chapterModalOpen, setChapterModalOpen] =
     useState<`${"advisor" | "contractor"}-${string}`>();
 
   const lip = useDrawerStore((state) => state.lip);
@@ -126,6 +154,7 @@ export function DocumentsManagement() {
     [[], []] as [Esign[], Esign[]],
   );
 
+  // Ripensare all'autochiusura
   const lastESign = partialESign.length === totalESign.length - 1;
 
   return (
@@ -212,48 +241,34 @@ export function DocumentsManagement() {
                             />
                           )}
                         </span>
-                        {totalAdvisorESign.map((eSign) => (
-                          <Fragment key={eSign.key}>
-                            <Button
-                              size="sm"
-                              className="text-nowrap"
-                              onClick={() => {
-                                setEsignModalOpen(
-                                  `advisor-${document.fileName}-${eSign.esignIndex}`,
-                                );
-                              }}
-                              disabled={eSign.signed}
-                            >
-                              <FontAwesomeIcon
-                                icon={faFileSignature}
-                                className="me-2"
-                              />
-                              Firma
-                            </Button>
-                            <RequestOTPModal
-                              onHide={() => {
-                                startTransition(() => {
-                                  setEsignModalOpen(undefined);
-                                });
-                              }}
-                              onEsignComplete={async () => {
-                                setEsignModalOpen(undefined);
-                                if (lastESign) {
-                                  closeModal();
-                                }
-                              }}
-                              personalData={lip.contractor}
-                              pdfType={document.type}
-                              payload={{esignIndex: eSign.esignIndex}}
-                              show={
-                                esignModalOpen ===
-                                `advisor-${document.fileName}-${eSign.esignIndex}`
-                              }
-                              lipId={lip.id}
-                              tagToRevalidate={`getLip-${lip.id}`}
-                            />
-                          </Fragment>
-                        ))}
+                        <Button
+                          size="sm"
+                          onClick={() => {
+                            setChapterModalOpen(`advisor-${document.fileName}`);
+                          }}
+                          disabled={totalAdvisorESign.every(
+                            (eSign) => eSign.signed,
+                          )}
+                        >
+                          <FontAwesomeIcon
+                            icon={faFileSignature}
+                            className="me-2"
+                          />
+                          Firma
+                        </Button>
+                        <DocumentsChapterDetails
+                          eSigns={totalAdvisorESign}
+                          show={
+                            chapterModalOpen === `advisor-${document.fileName}`
+                          }
+                          document={document}
+                          lip={lip}
+                          onHide={() => {
+                            startTransition(() => {
+                              setChapterModalOpen(undefined);
+                            });
+                          }}
+                        />
                       </>
                     ) : (
                       <>Nessuna firma richiesta</>
@@ -292,48 +307,39 @@ export function DocumentsManagement() {
                           )}
                         </span>
                         {allAdvisorESigns ? (
-                          totalContractorESign.map((eSign) => (
-                            <Fragment key={eSign.key}>
-                              <Button
-                                size="sm"
-                                className="text-nowrap"
-                                onClick={() => {
-                                  setEsignModalOpen(
-                                    `contractor-${document.fileName}-${eSign.esignIndex}`,
-                                  );
-                                }}
-                                disabled={eSign.signed}
-                              >
-                                <FontAwesomeIcon
-                                  icon={faFileSignature}
-                                  className="me-2"
-                                />
-                                Firma del cliente
-                              </Button>
-                              <RequestOTPModal
-                                onHide={() => {
-                                  startTransition(() => {
-                                    setEsignModalOpen(undefined);
-                                  });
-                                }}
-                                onEsignComplete={async () => {
-                                  setEsignModalOpen(undefined);
-                                  if (lastESign) {
-                                    closeModal();
-                                  }
-                                }}
-                                personalData={lip.contractor}
-                                pdfType={document.type}
-                                payload={{esignIndex: eSign.esignIndex}}
-                                show={
-                                  esignModalOpen ===
-                                  `contractor-${document.fileName}-${eSign.esignIndex}`
-                                }
-                                lipId={lip.id}
-                                tagToRevalidate={`getLip-${lip.id}`}
+                          <>
+                            <Button
+                              size="sm"
+                              onClick={() => {
+                                setChapterModalOpen(
+                                  `contractor-${document.fileName}`,
+                                );
+                              }}
+                              disabled={totalContractorESign.every(
+                                (eSign) => eSign.signed,
+                              )}
+                            >
+                              <FontAwesomeIcon
+                                icon={faFileSignature}
+                                className="me-2"
                               />
-                            </Fragment>
-                          ))
+                              Firma del cliente
+                            </Button>
+                            <DocumentsChapterDetails
+                              eSigns={totalContractorESign}
+                              show={
+                                chapterModalOpen ===
+                                `contractor-${document.fileName}`
+                              }
+                              document={document}
+                              lip={lip}
+                              onHide={() => {
+                                startTransition(() => {
+                                  setChapterModalOpen(undefined);
+                                });
+                              }}
+                            />
+                          </>
                         ) : (
                           <>In attesa delle firme del Consulente</>
                         )}
