@@ -35,7 +35,7 @@ export function ContractorPersonalAreaActivationSummary() {
           href={`${apiUrl}/pdf-privacy?lipId=${lipId}&agentId=${agentId}&contractorId=${contractor.id}`}
           download
         >
-          <FontAwesomeIcon icon={faDownload} /> Pdf privacy firmato
+          <FontAwesomeIcon icon={faDownload} /> Privacy e consensi
         </ButtonLink>
         <ButtonLink
           href={`${apiUrl}/${lipId}/pdf-allegato3?lipId=${lipId}&agentId=${agentId}`}

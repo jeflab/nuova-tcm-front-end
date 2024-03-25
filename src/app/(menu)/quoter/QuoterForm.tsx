@@ -176,12 +176,16 @@ export function QuoterForm() {
               onClick={() => {
                 setIsDetailsOpen(!isDetailsOpen);
               }}
+              className="text-nowrap"
             >
               <FontAwesomeIcon
                 icon={isDetailsOpen ? faClose : faInfoCircle}
+                className="me-sm-2"
                 fixedWidth
-              />{" "}
-              {isDetailsOpen ? "Meno" : "Maggiori"} dettagli
+              />
+              <span className="d-none d-sm-inline">
+                {isDetailsOpen ? "Meno" : "Maggiori"} dettagli
+              </span>
             </Button>
           </div>
         </AppContainer>
