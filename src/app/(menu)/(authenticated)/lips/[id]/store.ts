@@ -245,7 +245,7 @@ function createDrawerState(state: State & Actions) {
       }
     }
 
-    // state.drawerStates.payment = {
+    // state.drawerStates.beneficiaries = {
     //   variant: "success",
     //   buttonLabel: "Test",
     // };

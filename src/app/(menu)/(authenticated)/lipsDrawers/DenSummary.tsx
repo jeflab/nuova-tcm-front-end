@@ -132,12 +132,13 @@ export function DenSummary() {
           </strong>
         </p>
         <ul className="list-unstyled mb-0">
-          {denData.expectations.response.map((value) => (
-            <li key={value} className="d-flex">
-              <FontAwesomeIcon icon={faSquareCheck} className="me-2 mt-1" />
-              {getOptionsLabel(expectationsOptions, value)}
-            </li>
-          ))}
+          <li className="d-flex">
+            <FontAwesomeIcon icon={faSquareCheck} className="me-2 mt-1" />
+            {getOptionsLabel(
+              expectationsOptions,
+              denData.expectations.response,
+            )}
+          </li>
         </ul>
       </Col>
       <Col xs={12} sm={4} md={12} lg={4}>

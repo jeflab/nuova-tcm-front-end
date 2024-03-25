@@ -367,7 +367,7 @@ export function DenForm() {
                   assicurazione?
                 </FormLabel>
                 <CheckGroup
-                  type="checkbox"
+                  type="radio"
                   options={expectationsOptions}
                   validation={{
                     validate: {

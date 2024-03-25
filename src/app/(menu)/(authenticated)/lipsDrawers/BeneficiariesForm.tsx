@@ -553,12 +553,10 @@ export function BeneficiariesForm() {
                               controlId={`beneficiaries.${index}.pep.otherValue`}
                               as={BorderFeedback}
                             >
-                              <FormLabel>
-                                Specifica l'attività e professione esercitata
-                              </FormLabel>
+                              <FormLabel>Specificare la relazione</FormLabel>
                               <InputField
                                 type="text"
-                                placeholder="Specifica l'attività e professione esercitata"
+                                placeholder="Specificare la relazione"
                                 validation={{
                                   required:
                                     "Inserisci l'attività e professione esercitata",
@@ -578,7 +576,7 @@ export function BeneficiariesForm() {
                           <CheckGroup
                             type="radio"
                             onChange={(value) => {
-                              if (value === "no") {
+                              if (value === "yes") {
                                 formMethods.setValue(
                                   `beneficiaries.${index}.relationship.response`,
                                   "",
@@ -599,7 +597,7 @@ export function BeneficiariesForm() {
                       <Col className="d-flex" xs={12} md={6}>
                         <FormGroup
                           controlId={`beneficiaries.${index}.relationship.response`}
-                          disabled={relationshipCheckValue !== "yes"}
+                          disabled={relationshipCheckValue !== "no"}
                           as={BorderFeedback}
                         >
                           <FormLabel>Specificare la relazione</FormLabel>
@@ -607,13 +605,13 @@ export function BeneficiariesForm() {
                           <InputField
                             type="text"
                             placeholder="Specifica la relazione"
-                            disabled={relationshipCheckValue !== "yes"}
+                            disabled={relationshipCheckValue !== "no"}
                             validation={{
                               validate: {
                                 required: (value, formValues) => {
                                   if (
                                     formValues.beneficiaries[index]
-                                      ?.relationship.check === "yes" &&
+                                      ?.relationship.check === "no" &&
                                     (!value || value.length === 0)
                                   ) {
                                     return "Specifica la relazione";

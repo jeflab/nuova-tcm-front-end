@@ -60,7 +60,7 @@ const denSchema = z.object({
   }),
   expectations: z.object({
     options: z.array(z.object({label: z.string(), value: z.string()})),
-    response: z.array(z.string()),
+    response: z.string(),
   }),
   duration: z.object({
     options: z.array(z.object({label: z.string(), value: z.string()})),
@@ -153,7 +153,7 @@ const beneficiarySchema = z.object({
   }),
   relationship: z.object({
     check: z.enum(getOptionsValues(yesNoOptions)),
-    response: z.enum([...getOptionsValues(relationshipOptions), ""]),
+    response: z.string(),
   }),
 });
 
