@@ -5,7 +5,7 @@ import {
   lipStatuses,
   LipStatusesIcons,
   lipStatusesLabels,
-} from "@/entities/lip";
+} from "@/models/entities/lip";
 import {cns} from "@/helpers/cns";
 import {dateString, dbDateString} from "@/helpers/dates";
 import {ButtonLink} from "@/ui/ButtonLink";
@@ -109,11 +109,11 @@ export const columns = [
     header: ({table}) => (
       <Button
         size="sm"
-        className="w-100"
+        className="w-100 d-none" // TODO: filtri disabilitati temporaneamente aspettando il backend
         onClick={() => table.resetColumnFilters()}
       >
         <FontAwesomeIcon icon={faFilterCircleXmark} />
-        Reset filtri
+        Reset filtri3
       </Button>
     ),
     cell: ({row}) => (
@@ -134,7 +134,7 @@ export const columns = [
 // TODO: Facciamo in modo che in skeletonColumns ci siano solo le proprietà che cambiano da columns
 export const skeletonColumns = [
   columnHelper.accessor("lipNumber", {
-    header: "Numero",
+    header: "Numero polizza",
     cell: () => (
       <Placeholder as="span" animation="glow">
         <Placeholder as="span" style={{width: `84px`}} />
@@ -250,7 +250,8 @@ export const skeletonColumns = [
   columnHelper.display({
     id: "actions",
     header: () => (
-      <Placeholder as="div" animation="glow">
+      <Placeholder as="div" animation="glow" className="d-none">
+        {/*TODO: filtri disabilitati temporaneamente aspettando il backend*/}
         <Button size="sm" className="w-100 disabled placeholder">
           <FontAwesomeIcon icon={faFilterCircleXmark} />
           Reset filtri

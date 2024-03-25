@@ -3,7 +3,7 @@
 import {
   PaymentMethods,
   paymentMethodsOptions,
-} from "@/app/(menu)/(authenticated)/lips/[id]/PaymentForm";
+} from "@/app/(menu)/(authenticated)/lipsDrawers/PaymentForm";
 import {getQuote} from "@/app/(menu)/quoter/actions";
 import {Advantages} from "@/app/(menu)/quoter/Advantages";
 import {getCoverageDuration} from "@/app/(menu)/quoter/helpers";
@@ -29,9 +29,7 @@ import {
   Collapse,
   FormCheck,
   FormGroup,
-  OverlayTrigger,
   Row,
-  Tooltip,
 } from "react-bootstrap";
 import {useForm} from "react-hook-form";
 import {ComplementaryCoverages} from "./ComplementaryCoverages";
@@ -178,12 +176,16 @@ export function QuoterForm() {
               onClick={() => {
                 setIsDetailsOpen(!isDetailsOpen);
               }}
+              className="text-nowrap"
             >
               <FontAwesomeIcon
                 icon={isDetailsOpen ? faClose : faInfoCircle}
+                className="me-sm-2"
                 fixedWidth
-              />{" "}
-              {isDetailsOpen ? "Meno" : "Maggiori"} dettagli
+              />
+              <span className="d-none d-sm-inline">
+                {isDetailsOpen ? "Meno" : "Maggiori"} dettagli
+              </span>
             </Button>
           </div>
         </AppContainer>

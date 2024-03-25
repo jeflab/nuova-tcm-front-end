@@ -1,6 +1,7 @@
 import {LoginButton} from "@/app/(menu)/LoginButton";
-import {isLoggedIn} from "@/app/(no-menu)/(auth)/actions";
+import {getAccount, isLoggedIn} from "@/app/(no-menu)/(auth)/actions";
 import logo from "@/images/logo.png";
+import {Account} from "@/models/account";
 import {AppContainer} from "@/ui/AppContainer";
 import {getTheme} from "@/ui/Theme/actions";
 import {ThemeButton} from "@/ui/Theme/ThemeButton";
@@ -20,6 +21,16 @@ import {LogoutButton} from "./LogoutButton";
 export async function Navbar() {
   const serverTheme = await getTheme();
   const loggedIn = await isLoggedIn();
+
+  let permissions = [] as Account["permissions"];
+
+  if (loggedIn) {
+    const account = await getAccount();
+
+    if (account.status === "success") {
+      permissions = account.permissions;
+    }
+  }
 
   return (
     <BSNavbar
@@ -46,12 +57,20 @@ export async function Navbar() {
             </NavLink>
             {loggedIn ? (
               <>
-                <NavLink as={Link} href="/lips">
-                  Elenco clienti
-                </NavLink>
-                <NavLink as={Link} href="/contractorLips">
-                  Le tue polizze
-                </NavLink>
+                {permissions.some(
+                  (permission) => permission.name === "create-lip",
+                ) && (
+                  <NavLink as={Link} href="/lips">
+                    Elenco clienti
+                  </NavLink>
+                )}
+                {permissions.some(
+                  (permission) => permission.name === "contractor-read-lip",
+                ) && (
+                  <NavLink as={Link} href="/contractorLips">
+                    Le tue polizze
+                  </NavLink>
+                )}
                 <NavLink as={Link} href="/profile">
                   Il tuo profilo
                 </NavLink>

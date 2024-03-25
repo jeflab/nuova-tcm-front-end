@@ -1,6 +1,7 @@
 import {isLoggedIn} from "@/app/(no-menu)/(auth)/actions";
+import {ButtonLink} from "@/ui/ButtonLink";
 import {redirect} from "next/navigation";
-import {Button, Card, CardBody} from "react-bootstrap";
+import {Card, CardBody} from "react-bootstrap";
 import {LoginForm} from "./LoginForm";
 import styles from "./page.module.scss";
 import CenterLogoContent from "@/ui/CenterLogoContent";
@@ -25,9 +26,9 @@ export default async function LoginPage({searchParams}: LoginPageProps) {
       <Card className={styles.formCard}>
         <CardBody>
           <LoginForm />
-          <Button variant="link" type="button" className="w-100">
+          <ButtonLink variant="link" href="/forgotPassword" className="w-100">
             Forgot Password?
-          </Button>
+          </ButtonLink>
         </CardBody>
       </Card>
     </CenterLogoContent>

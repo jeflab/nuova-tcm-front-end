@@ -1,9 +1,9 @@
 "use server";
 
-import {BeneficiariesFormValues} from "@/app/(menu)/(authenticated)/lips/[id]/BeneficiariesForm";
-import {fatcaQuestions} from "@/app/(menu)/(authenticated)/lips/[id]/FatcaForm";
-import {HealthQuestionnaireFormValues} from "@/app/(menu)/(authenticated)/lips/[id]/HealthQuestionnaireForm";
-import {PaymentFormValues} from "@/app/(menu)/(authenticated)/lips/[id]/PaymentForm";
+import {BeneficiariesFormValues} from "@/app/(menu)/(authenticated)/lipsDrawers/BeneficiariesForm";
+import {fatcaQuestions} from "@/app/(menu)/(authenticated)/lipsDrawers/FatcaForm";
+import {HealthQuestionnaireFormValues} from "@/app/(menu)/(authenticated)/lipsDrawers/HealthQuestionnaireForm";
+import {PaymentFormValues} from "@/app/(menu)/(authenticated)/lipsDrawers/PaymentForm";
 import {
   dependentFamilyMembersOptions,
   DependentFamilyMembersOptions,
@@ -29,12 +29,11 @@ import {
   publicOfficesOptions,
   TAECode,
   tAECodeOptions,
-} from "@/app/(menu)/(authenticated)/lips/[id]/selectsOptions";
-import {lipSchema} from "@/entities/lip";
-import {personalDataSchema} from "@/entities/personalData";
-import {privacySchema} from "@/entities/privacy";
+} from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
+import {lipSchema} from "@/models/entities/lip";
+import {privacySchema} from "@/models/entities/privacy";
 import {Option, YesNoAnswer, yesNoOptions} from "@/helpers/getOptionsLabel";
-import {get, patch, post, postFormData, put} from "@/services/api";
+import {get, patch, post, postFormData} from "@/services/api";
 import {revalidateTag} from "next/cache";
 
 const getLipShape = {
@@ -100,7 +99,6 @@ export async function activateContractor(
 
 const checkIfFiscalCodeExistsShape = {
   lip: lipSchema.optional(),
-  contractor: personalDataSchema.optional(),
 };
 export async function checkIfFiscalCodeExists(fiscalCode: string) {
   const data = {
@@ -109,7 +107,7 @@ export async function checkIfFiscalCodeExists(fiscalCode: string) {
 
   return await post(
     "/lips/check-contractor",
-    checkContractorShape,
+    checkIfFiscalCodeExistsShape,
     JSON.stringify(data),
   );
 }

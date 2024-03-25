@@ -1,8 +1,8 @@
 "use server";
 
 import {getProfile} from "@/app/(no-menu)/(auth)/actions";
-import {esignSchema, PDFType} from "@/entities/esign";
-import {lipSchema} from "@/entities/lip";
+import {esignSchema, PDFType} from "@/models/entities/esign";
+import {lipSchema} from "@/models/entities/lip";
 import {post, put} from "@/services/api";
 import {revalidateTag} from "next/cache";
 

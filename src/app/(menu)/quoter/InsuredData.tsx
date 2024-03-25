@@ -33,7 +33,7 @@ export function InsuredData({blockBirthDate}: InsuredDataProps) {
             readOnly={blockBirthDate}
             plaintext={blockBirthDate}
             onChange={(event) => {
-              trigger("tpi.coverage");
+              void trigger("tpi.coverage");
               if (
                 calendarYearAge(event.currentTarget.value) >= 55 &&
                 calendarYearAge(event.currentTarget.value) < 85

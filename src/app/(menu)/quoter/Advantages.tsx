@@ -1,6 +1,5 @@
 import {cns} from "@/helpers/cns";
 import {Currency} from "@/ui/Currency";
-import {faInfoCircle} from "@fortawesome/pro-duotone-svg-icons";
 import {faAsterisk} from "@fortawesome/pro-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Card, Col, OverlayTrigger, Table, Tooltip} from "react-bootstrap";

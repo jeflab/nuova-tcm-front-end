@@ -27,7 +27,9 @@ export default function GlobalError({
   const theme = getThemeClientSide();
 
   useEffect(() => {
-    Sentry.captureException(error);
+    if (process.env.NODE_ENV === "production") {
+      Sentry.captureException(error);
+    }
   }, [error]);
 
   return (

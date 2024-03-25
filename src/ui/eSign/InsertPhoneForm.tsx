@@ -1,5 +1,5 @@
-import {Profile} from "@/entities/account";
-import {PersonalData} from "@/entities/personalData";
+import {Profile} from "@/models/account";
+import {PersonalData} from "@/models/entities/personalData";
 import {cns} from "@/helpers/cns";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {FieldError} from "@/ui/form/FieldError";

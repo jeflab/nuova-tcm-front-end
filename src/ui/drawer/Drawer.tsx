@@ -9,7 +9,7 @@ import {upperCaseFirstNormalizer} from "@/ui/form/normalizers";
 import autoAnimate from "@formkit/auto-animate";
 import {faPenToSquare} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {ReactNode, Suspense, useEffect, useRef} from "react";
+import {ReactNode, useEffect, useRef} from "react";
 import {
   Button,
   Card,
@@ -22,14 +22,19 @@ import styles from "./Drawer.module.scss";
 
 interface DrawerProps {
   children?: ReactNode;
-  isComplete?: boolean;
-  isLoading?: boolean;
   modalContent?: ReactNode;
   name: DrawerName;
+  readonly?: boolean;
   title: string;
 }
 
-export function Drawer({children, modalContent, name, title}: DrawerProps) {
+export function Drawer({
+  children,
+  modalContent,
+  name,
+  readonly,
+  title,
+}: DrawerProps) {
   const modalOpen = useDrawerStore((state) => state.modalOpen);
   const openModal = useDrawerStore((state) => state.openModal);
   const closeModal = useDrawerStore((state) => state.closeModal);
@@ -56,7 +61,7 @@ export function Drawer({children, modalContent, name, title}: DrawerProps) {
             <DrawerIcon variant={variant} className="me-3" />
             {title}
           </h4>
-          {buttonLabel && (
+          {buttonLabel && !readonly && (
             <Button
               className={cns(styles.actionButton, "ms-3")}
               onClick={() => {
@@ -72,20 +77,22 @@ export function Drawer({children, modalContent, name, title}: DrawerProps) {
         </CardHeader>
         <CardBody ref={parent}>{children}</CardBody>
       </Card>
-      <Modal
-        backdrop="static"
-        className={styles.modal}
-        fullscreen="xl-down"
-        size="xl"
-        onHide={() => closeModal()}
-        keyboard={false}
-        show={modalOpen === name}
-      >
-        <ModalHeader closeButton>
-          <Modal.Title>{title}</Modal.Title>
-        </ModalHeader>
-        {modalContent}
-      </Modal>
+      {!readonly && (
+        <Modal
+          backdrop="static"
+          className={styles.modal}
+          fullscreen="xl-down"
+          size="xl"
+          onHide={() => closeModal()}
+          keyboard={false}
+          show={modalOpen === name}
+        >
+          <ModalHeader closeButton>
+            <Modal.Title>{title}</Modal.Title>
+          </ModalHeader>
+          {modalContent}
+        </Modal>
+      )}
     </>
   );
 }

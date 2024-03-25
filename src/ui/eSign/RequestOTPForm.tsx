@@ -1,6 +1,6 @@
-import {Profile} from "@/entities/account";
-import {PDFType} from "@/entities/esign";
-import {PersonalData} from "@/entities/personalData";
+import {Profile} from "@/models/account";
+import {PDFType} from "@/models/entities/esign";
+import {PersonalData} from "@/models/entities/personalData";
 import {cns} from "@/helpers/cns";
 import {signFEADoc} from "@/ui/eSign/actions";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
@@ -96,10 +96,10 @@ export function RequestOTPForm<TPayload>({
         <HelpText>
           <div className="mb-2">
             Abbiamo inviato il codice OTP a{" "}
-            {profile.agent?.name ?? profile.contractor?.name}{" "}
-            {profile.agent?.surname ?? profile.contractor?.surname}
+            {personalData?.name ?? profile.agent?.name}{" "}
+            {personalData?.surname ?? profile.agent?.surname}
             <br />
-            al seguente numero {profile.user.phone}
+            al seguente numero {personalData?.phone ?? profile.user.phone}
           </div>
           {personalData ? (
             <div>

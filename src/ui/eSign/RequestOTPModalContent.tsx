@@ -1,5 +1,5 @@
-import {PDFType} from "@/entities/esign";
-import {PersonalData} from "@/entities/personalData";
+import {PDFType} from "@/models/entities/esign";
+import {PersonalData} from "@/models/entities/personalData";
 import {createFEATransaction, signFEADoc} from "@/ui/eSign/actions";
 import {InsertPhoneForm} from "@/ui/eSign/InsertPhoneForm";
 import {RequestOTPForm} from "@/ui/eSign/RequestOTPForm";

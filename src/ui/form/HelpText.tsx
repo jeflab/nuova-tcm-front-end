@@ -4,7 +4,6 @@ import {FormText, FormTextProps} from "react-bootstrap";
 import FormContext from "react-bootstrap/FormContext";
 import {get, useFormContext} from "react-hook-form";
 import invariant from "tiny-invariant";
-import {WithChildren} from "@/ui/types";
 
 interface HelpTextProps extends Omit<FormTextProps, "as"> {
   hideOnError?: boolean | string | string[];

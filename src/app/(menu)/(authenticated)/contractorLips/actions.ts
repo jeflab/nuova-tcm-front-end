@@ -1,9 +1,9 @@
 "use server";
 
-import {lipSchema} from "@/entities/lip";
+import {lipSchema} from "@/models/entities/lip";
 import {get} from "@/services/api";
 import {z} from "zod";
-import {personalDataSchema} from "@/entities/personalData";
+import {personalDataSchema} from "@/models/entities/personalData";
 
 const getContractorLipsShape = {
   lips: z.array(lipSchema),

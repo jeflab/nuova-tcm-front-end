@@ -82,6 +82,8 @@ export function DataTable<Row>({
     manualSorting: true,
     manualPagination: true,
     manualFiltering: true,
+    enableColumnFilters: false, // TODO: filtri disabilitati temporaneamente aspettando il backend
+    enableSorting: false, // TODO: ordinamento disabilitati temporaneamente aspettando il backend
     getCoreRowModel: getCoreRowModel(),
     onSortingChange: (updaterFn) => {
       const oldSorting = table.getState().sorting;
@@ -163,7 +165,7 @@ export function DataTable<Row>({
   return (
     <>
       <CardCollapsable
-        className={responsiveStyles.filterPanel}
+        className={cns("d-none", responsiveStyles.filterPanel)} // TODO: filtri disabilitati temporaneamente aspettando il backend
         header={
           <div className="d-flex justify-content-between align-items-center">
             <span>
@@ -238,7 +240,6 @@ export function DataTable<Row>({
         })}
         <Button
           size="sm"
-          className="w-100"
           onClick={() => {
             mobileReset();
           }}
