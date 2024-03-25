@@ -244,6 +244,11 @@ function createDrawerState(state: State & Actions) {
         };
       }
     }
+
+    // state.drawerStates.payment = {
+    //   variant: "success",
+    //   buttonLabel: "Test",
+    // };
   }
 }
 

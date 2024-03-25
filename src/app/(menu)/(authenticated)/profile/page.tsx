@@ -3,7 +3,6 @@ import {AgentProfile} from "@/app/(menu)/(authenticated)/profile/AgentProfile";
 import {ContractorProfile} from "@/app/(menu)/(authenticated)/profile/ContractorProfile";
 import {getProfile} from "@/app/(no-menu)/(auth)/actions";
 import {AppContainer} from "@/ui/AppContainer";
-import {Debug} from "@/ui/Debug";
 import {PageTitle} from "@/ui/PageTitle";
 
 export default async function ProfilePage() {
@@ -18,7 +17,6 @@ export default async function ProfilePage() {
   return (
     <AppContainer className="vstack gap-3">
       <PageTitle>Profilo utente</PageTitle>
-      <Debug>{userProfile}</Debug>
       <AccountProfile user={user} />
       {agent ? <AgentProfile agent={agent} /> : null}
       {contractor ? <ContractorProfile contractor={contractor} /> : null}

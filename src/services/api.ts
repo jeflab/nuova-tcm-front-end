@@ -49,6 +49,8 @@ function isServerSuccess<T extends ZodRawShape>(
   );
 }
 
+// TODO: se ottendo un 405 ma risulto loggato facciamo logout automatico oppure dobbiamo fare una pagina per scalare i permessi
+
 export async function get<T extends ZodRawShape>(
   url: `/${string}`,
   zodRowShape: T,

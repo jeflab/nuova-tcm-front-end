@@ -5,7 +5,7 @@ export const userSchema = z
     id: z.number(),
     fiscal_code: z.string(),
     email: z.string(),
-    phone: z.string(),
+    phone: z.string().nullable(),
     email_verified_at: z.string(),
   })
   .transform(({email_verified_at, fiscal_code, ...data}) => ({
