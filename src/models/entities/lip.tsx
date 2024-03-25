@@ -198,11 +198,14 @@ const paymentSchema = z.object({
 
 export const eSignSchema = z.object({
   identificazione: z
-    .object({
-      file: z.string(),
-      esign_id: z.number(),
-      data: z.string(),
-    })
+    .record(
+      z.enum(["esign_agente"]),
+      z.object({
+        file: z.string(),
+        esign_id: z.number(),
+        data: z.string(),
+      }),
+    )
     .optional(),
   polizza: z
     .record(
@@ -214,6 +217,8 @@ export const eSignSchema = z.object({
       }),
     )
     .optional(),
+  allegato4: z.any().optional(),
+  setInformativo: z.any().optional(),
 });
 
 export const lipSchema = z

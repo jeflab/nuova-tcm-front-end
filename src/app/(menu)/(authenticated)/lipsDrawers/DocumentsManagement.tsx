@@ -31,7 +31,7 @@ export interface Esign {
   chapters: string[];
 }
 export interface Document {
-  key: string;
+  key: "allegato4" | "setInformativo" | "identificazione" | "polizza";
   fileName: string;
   urlPreview: string;
   urlDownload: string;
@@ -47,7 +47,7 @@ const documents: Document[] = [
     type: PDFType.Identification,
     eSigns: [
       {
-        key: "onlyOne",
+        key: "esign_agente",
         whoEsign: "advisor",
         chapters: [
           "L'intermediario dichiara di avere incontrato di persona e di avere identificato attraverso il suo documento d'identità il contraente.",
@@ -127,11 +127,7 @@ export function DocumentsManagement() {
   const allAdvisorESigns = documents.every((document) => {
     const [partialAdvisorESign, totalAdvisorESign] = eSignsCount(
       document.eSigns,
-      document.key === "identificazione"
-        ? lip.eSigns?.identificazione
-          ? {onlyOne: lip.eSigns.identificazione}
-          : {}
-        : lip.eSigns?.polizza ?? {},
+      lip.eSigns?.[document.key] ?? {},
       "advisor",
     );
 
@@ -142,11 +138,7 @@ export function DocumentsManagement() {
     ([prevPartial, prevTotal], document) => {
       const [partialESign, totalESign] = eSignsCount(
         document.eSigns,
-        document.key === "identificazione"
-          ? lip.eSigns?.identificazione
-            ? {onlyOne: lip.eSigns.identificazione}
-            : {}
-          : lip.eSigns?.polizza ?? {},
+        lip.eSigns?.[document.key] ?? {},
       );
 
       return [prevPartial.concat(partialESign), prevTotal.concat(totalESign)];
@@ -154,7 +146,7 @@ export function DocumentsManagement() {
     [[], []] as [Esign[], Esign[]],
   );
 
-  // Ripensare all'autochiusura
+  // Ripensare all'auto-chiusura
   const lastESign = partialESign.length === totalESign.length - 1;
 
   return (
@@ -163,20 +155,12 @@ export function DocumentsManagement() {
         {documents.map((document) => {
           const [partialAdvisorESign, totalAdvisorESign] = eSignsCount(
             document.eSigns,
-            document.key === "identificazione"
-              ? lip.eSigns?.identificazione
-                ? {onlyOne: lip.eSigns.identificazione}
-                : {}
-              : lip.eSigns?.polizza ?? {},
+            lip.eSigns?.[document.key] ?? {},
             "advisor",
           );
           const [partialContractorESign, totalContractorESign] = eSignsCount(
             document.eSigns,
-            document.key === "identificazione"
-              ? lip.eSigns?.identificazione
-                ? {onlyOne: lip.eSigns.identificazione}
-                : {}
-              : lip.eSigns?.polizza ?? {},
+            lip.eSigns?.[document.key] ?? {},
             "contractor",
           );
 

@@ -14,7 +14,7 @@ interface Esign {
   signed: boolean;
 }
 interface Document {
-  key: string;
+  key: "allegato4" | "setInformativo" | "identificazione" | "polizza";
   fileName: string;
   urlPreview: string;
   urlDownload: string;
@@ -22,31 +22,6 @@ interface Document {
   eSigns: Esign[];
 }
 const documents: Document[] = [
-  {
-    key: "identificazione",
-    fileName: "File di identificazione",
-    urlPreview: "pdf-identificazione-preview",
-    urlDownload: "pdf-identificazione",
-    type: PDFType.Identification,
-    eSigns: [
-      {
-        key: "onlyOne",
-        whoEsign: "advisor",
-      } as Esign,
-    ],
-  },
-  {
-    key: "polizza",
-    fileName: "File di Proposta",
-    urlPreview: "pdf-proposta-preview",
-    urlDownload: "pdf-proposta",
-    type: PDFType.Proposal,
-    eSigns: [
-      {key: "esign_agente", whoEsign: "advisor"} as Esign,
-      {key: "esign_contraente", whoEsign: "contractor"} as Esign,
-      {key: "esign_contraente_sepa", whoEsign: "contractor"} as Esign,
-    ],
-  },
   {
     key: "allegato4",
     fileName: "Allegato 4",
@@ -62,6 +37,31 @@ const documents: Document[] = [
     urlDownload: "set-informativo",
     type: PDFType.SetInformativo,
     eSigns: [],
+  },
+  {
+    key: "identificazione",
+    fileName: "File di identificazione",
+    urlPreview: "pdf-identificazione-preview",
+    urlDownload: "pdf-identificazione",
+    type: PDFType.Identification,
+    eSigns: [
+      {
+        key: "esign_agente",
+        whoEsign: "advisor",
+      } as Esign,
+    ],
+  },
+  {
+    key: "polizza",
+    fileName: "File di Proposta",
+    urlPreview: "pdf-proposta-preview",
+    urlDownload: "pdf-proposta",
+    type: PDFType.Proposal,
+    eSigns: [
+      {key: "esign_agente", whoEsign: "advisor"} as Esign,
+      {key: "esign_contraente", whoEsign: "contractor"} as Esign,
+      {key: "esign_contraente_sepa", whoEsign: "contractor"} as Esign,
+    ],
   },
 ];
 
@@ -87,6 +87,8 @@ const eSignsCount = (
 };
 
 export function DocumentsSummary() {
+  const paymentData = useDrawerStore((state) => state.lip?.payment);
+  const premium = useDrawerStore((state) => state.lip?.quotation?.premium);
   const lip = useDrawerStore((state) => state.lip);
 
   if (!lip) {
@@ -96,17 +98,13 @@ export function DocumentsSummary() {
   const allESigns = documents.every((document) => {
     const [partialESign, totalESign] = eSignsCount(
       document.eSigns,
-      document.key === "identificazione"
-        ? lip.eSigns?.identificazione
-          ? {onlyOne: lip.eSigns.identificazione}
-          : {}
-        : lip.eSigns?.polizza ?? {},
+      lip.eSigns?.[document.key] ?? {},
     );
 
     return partialESign.length === totalESign.length;
   });
 
-  if (!allESigns) {
+  if (!paymentData || !premium) {
     return null;
   }
 
@@ -115,22 +113,21 @@ export function DocumentsSummary() {
       {documents.map((document) => {
         const [partialAdvisorESign, totalAdvisorESign] = eSignsCount(
           document.eSigns,
-          document.key === "identificazione"
-            ? lip.eSigns?.identificazione
-              ? {onlyOne: lip.eSigns.identificazione}
-              : {}
-            : lip.eSigns?.polizza ?? {},
+          lip.eSigns?.[document.key] ?? {},
           "advisor",
         );
         const [partialContractorESign, totalContractorESign] = eSignsCount(
           document.eSigns,
-          document.key === "identificazione"
-            ? lip.eSigns?.identificazione
-              ? {onlyOne: lip.eSigns.identificazione}
-              : {}
-            : lip.eSigns?.polizza ?? {},
+          lip.eSigns?.[document.key] ?? {},
           "contractor",
         );
+
+        if (
+          partialContractorESign < totalContractorESign ||
+          partialAdvisorESign < totalAdvisorESign
+        ) {
+          return null;
+        }
 
         return (
           <Card key={document.fileName}>
