@@ -2,6 +2,8 @@
 
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {PDFType} from "@/entities/esign";
+import {apiUrl} from "@/services/const";
+import {ButtonLink} from "@/ui/ButtonLink";
 import {faCheckCircle, faDownload} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Fragment} from "react";
@@ -47,6 +49,22 @@ const documents: Document[] = [
       {key: "esign_contraente", whoEsign: "contractor"} as Esign,
       {key: "esign_contraente_sepa", whoEsign: "contractor"} as Esign,
     ],
+  },
+  {
+    key: "allegato4",
+    fileName: "Allegato 4",
+    urlPreview: "pdf-allegato4",
+    urlDownload: "pdf-allegato4",
+    type: PDFType.Allegato4,
+    eSigns: [],
+  },
+  {
+    key: "setInformativo",
+    fileName: "Set informativo",
+    urlPreview: "set-informativo",
+    urlDownload: "set-informativo",
+    type: PDFType.SetInformativo,
+    eSigns: [],
   },
 ];
 
@@ -129,7 +147,7 @@ export function DocumentsSummary() {
                 href={`${process.env.NEXT_PUBLIC_API_URL}/${document.urlDownload}/?lipId=${lip.id}&agentId=${lip.agent.id}&contractorId=${lip.contractor.id}`}
               >
                 <FontAwesomeIcon icon={faDownload} /> Scarica il documento
-                firmato
+                {document.eSigns.length > 0 ? " firmato" : ""}
               </Button>
             </CardHeader>
             <div className={styles.docTableActions}>
@@ -236,6 +254,18 @@ export function DocumentsSummary() {
           </Card>
         );
       })}
+      {/*<ButtonLink*/}
+      {/*  href={`${apiUrl}/${lipId}/pdf-allegato4?lipId=${lipId}&agentId=${agentId}`}*/}
+      {/*  download*/}
+      {/*>*/}
+      {/*  <FontAwesomeIcon icon={faDownload} /> Allegato 4*/}
+      {/*</ButtonLink>*/}
+      {/*<ButtonLink*/}
+      {/*  href={`${apiUrl}/${lipId}/set-informativo?lipId=${lipId}&agentId=${agentId}`}*/}
+      {/*  download*/}
+      {/*>*/}
+      {/*  <FontAwesomeIcon icon={faDownload} /> Set informativo*/}
+      {/*</ButtonLink>*/}
     </Stack>
   );
 }

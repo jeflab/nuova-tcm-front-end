@@ -32,16 +32,16 @@ export function ContractorPersonalAreaActivationSummary() {
       </h4>
       <Stack direction="horizontal" gap={2} className="flex-wrap">
         <ButtonLink
+          href={`${apiUrl}/pdf-privacy?lipId=${lipId}&agentId=${agentId}&contractorId=${contractor.id}`}
+          download
+        >
+          <FontAwesomeIcon icon={faDownload} /> Pdf privacy firmato
+        </ButtonLink>
+        <ButtonLink
           href={`${apiUrl}/${lipId}/pdf-allegato3?lipId=${lipId}&agentId=${agentId}`}
           download
         >
           <FontAwesomeIcon icon={faDownload} /> Allegato 3
-        </ButtonLink>
-        <ButtonLink
-          href={`${apiUrl}/${lipId}/pdf-allegato4?lipId=${lipId}&agentId=${agentId}`}
-          download
-        >
-          <FontAwesomeIcon icon={faDownload} /> Allegato 4
         </ButtonLink>
         <ButtonLink
           href={`${apiUrl}/${lipId}/pdf-allegato4ter?lipId=${lipId}&agentId=${agentId}`}
@@ -50,22 +50,10 @@ export function ContractorPersonalAreaActivationSummary() {
           <FontAwesomeIcon icon={faDownload} /> Allegato 4 TER
         </ButtonLink>
         <ButtonLink
-          href={`${apiUrl}/${lipId}/set-informativo?lipId=${lipId}&agentId=${agentId}`}
-          download
-        >
-          <FontAwesomeIcon icon={faDownload} /> Set informativo
-        </ButtonLink>
-        <ButtonLink
           href={`${apiUrl}/${lipId}/pdf-elenco-compagnie?lipId=${lipId}&agentId=${agentId}`}
           download
         >
           <FontAwesomeIcon icon={faDownload} /> Elenco compagnie
-        </ButtonLink>
-        <ButtonLink
-          href={`${apiUrl}/pdf-privacy?lipId=${lipId}&agentId=${agentId}&contractorId=${contractor.id}`}
-          download
-        >
-          <FontAwesomeIcon icon={faDownload} /> Pdf privacy firmato
         </ButtonLink>
       </Stack>
     </Stack>

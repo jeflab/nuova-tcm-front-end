@@ -20,6 +20,8 @@ export enum PDFType {
   Privacy = "templatePrivacy",
   Identification = "templateIdentificazione",
   Proposal = "templateProposta",
+  Allegato4 = "templateAllegato4",
+  SetInformativo = "templateSetInformativo",
   // PrivacyContractor = "templatePrivacyContractor",
   // PrivacySubscription = "templatePrivacySubscription",
   // Cap = "templateAnalisi",
