@@ -16,7 +16,7 @@ interface Actions {
   openModal: (id: DrawerName) => void;
   resetState: () => void;
   updateLip: (lip: Lip | null) => void;
-  updatePreliminaryData: (data: Partial<PreliminaryData>) => void;
+  updatePreliminaryData: (data: Partial<PreliminaryData> | null) => void;
 }
 
 const initialState: State = {
@@ -260,7 +260,14 @@ export const useDrawerStore = create<State & Actions>()(
       }),
     updatePreliminaryData: (preliminaryData) =>
       set((state) => {
-        state.preliminaryData = {...state.preliminaryData, ...preliminaryData};
+        if (preliminaryData) {
+          state.preliminaryData = {
+            ...state.preliminaryData,
+            ...preliminaryData,
+          };
+        } else {
+          state.preliminaryData = initialState.preliminaryData;
+        }
         createDrawerState(state);
       }),
     updateLip: (lip) =>
