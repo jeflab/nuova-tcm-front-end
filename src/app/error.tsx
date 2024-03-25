@@ -23,7 +23,9 @@ export default function Error({
   reset: () => void;
 }) {
   useEffect(() => {
-    Sentry.captureException(error);
+    if (process.env.NODE_ENV === "production") {
+      Sentry.captureException(error);
+    }
   }, [error]);
 
   return (
