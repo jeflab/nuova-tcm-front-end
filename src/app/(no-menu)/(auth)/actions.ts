@@ -32,6 +32,25 @@ export async function login(data: {fiscalCode: string; password: string}) {
   return loginResponse;
 }
 
+export async function forgotPassword(data: {}) {
+  const body = JSON.stringify(data);
+
+  const forgotPasswordResponse = await api.post(
+    "/forgotPassword",
+    LoginResponseRawShape,
+    body,
+  );
+  if (forgotPasswordResponse.status === "success") {
+    cookies().set(AUTH_COOKIE_NAME, forgotPasswordResponse.access_token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "strict",
+    });
+  }
+
+  return forgotPasswordResponse;
+}
+
 export async function isLoggedIn() {
   const cookie = cookies().get(AUTH_COOKIE_NAME)?.value;
   return !!cookie;
