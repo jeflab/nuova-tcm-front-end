@@ -3,7 +3,7 @@
 import {checkIfFiscalCodeExists} from "@/app/(menu)/(authenticated)/lips/[id]/actions";
 import {
   Gender,
-  gendersOptions,
+  genderOptions,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {cns} from "@/helpers/cns";
@@ -78,7 +78,7 @@ const ContractorFormSchema = z
       .string()
       .refine(required, "Inserisci il genere del contraente")
       .and(
-        z.enum(getOptionsValues(gendersOptions), {
+        z.enum(getOptionsValues(genderOptions), {
           errorMap: () => ({
             message: "Il genere del contraente non è valido",
           }),
@@ -236,7 +236,7 @@ export function ContractorFiscalCodeForm() {
               <FormGroup controlId="gender" as={BorderFeedback}>
                 <FormLabel>Genere</FormLabel>
                 <FieldError />
-                <CheckGroup type="radio" options={gendersOptions} />
+                <CheckGroup type="radio" options={genderOptions} />
               </FormGroup>
             </Col>
             <Col className="d-flex" xs={12} sm={6} md={4} lg={5}>

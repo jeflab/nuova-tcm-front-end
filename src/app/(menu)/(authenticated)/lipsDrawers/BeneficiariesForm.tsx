@@ -3,7 +3,7 @@
 import {updateBeneficiaries} from "@/app/(menu)/(authenticated)/lips/[id]/actions";
 import {
   Gender,
-  gendersOptions,
+  genderOptions,
   Nomination,
   nominationOptions,
   Relationship,
@@ -355,7 +355,7 @@ export function BeneficiariesForm() {
                           <FieldError />
                           <CheckGroup
                             type="radio"
-                            options={gendersOptions}
+                            options={genderOptions}
                             validation={{
                               required: "Scegliere il genere del beneficiario",
                             }}
@@ -814,7 +814,7 @@ export function BeneficiariesForm() {
                     <FieldError />
                     <CheckGroup
                       type="radio"
-                      options={gendersOptions}
+                      options={genderOptions}
                       validation={{
                         required: "Scegliere il genere del referente terzo",
                       }}

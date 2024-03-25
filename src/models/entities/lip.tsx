@@ -1,5 +1,5 @@
 import {
-  gendersOptions,
+  genderOptions,
   nominationOptions,
   paymentMethodsSimpleOptions,
   relationshipOptions,
@@ -136,7 +136,7 @@ const beneficiarySchema = z.object({
     province: z.string(),
   }),
   fiscalCode: z.string(),
-  gender: z.enum(getOptionsValues(gendersOptions)),
+  gender: z.enum(getOptionsValues(genderOptions)),
   place: z.object({
     city: z.string(),
     province: z.string(),
@@ -166,7 +166,7 @@ const thirdPartySchema = z.object({
     province: z.string(),
   }),
   fiscalCode: z.string(),
-  gender: z.enum(getOptionsValues(gendersOptions)),
+  gender: z.enum(getOptionsValues(genderOptions)),
   place: z.object({
     city: z.string(),
     province: z.string(),

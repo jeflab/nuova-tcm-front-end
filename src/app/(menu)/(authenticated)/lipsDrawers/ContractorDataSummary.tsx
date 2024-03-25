@@ -2,7 +2,7 @@
 
 import {
   fundSourceOptions,
-  gendersOptions,
+  genderOptions,
   jobPositionOptions,
   ongoingRelationshipOptions,
   publicOfficesOptions,
@@ -46,7 +46,7 @@ export function ContractorDataSummary() {
         </p>
         <p className="mb-0">
           <strong>Genere:</strong>{" "}
-          {getOptionsLabel(gendersOptions, contractor.gender)}
+          {getOptionsLabel(genderOptions, contractor.gender)}
         </p>
         <p className="mb-0">
           <strong>Codice Fiscale:</strong> {contractor.fiscalCode}

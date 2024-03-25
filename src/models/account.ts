@@ -21,8 +21,6 @@ export const accountSchema = z.object({
 
 export const profileSchema = z.object({
   user: userSchema,
-  roles: z.array(roleSchema),
-  permissions: z.array(permissionSchema),
   agent: agentSchema.nullable(),
   contractor: personalDataSchema.nullable(),
 });

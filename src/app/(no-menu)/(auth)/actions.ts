@@ -2,6 +2,9 @@
 
 import {AUTH_COOKIE_NAME} from "@/app/(no-menu)/(auth)/const";
 import {accountSchema, profileSchema} from "@/models/account";
+import {agentSchema} from "@/models/entities/agent";
+import {personalDataSchema} from "@/models/entities/personalData";
+import {userSchema} from "@/models/entities/user";
 import {cookies, headers} from "next/headers";
 import {redirect} from "next/navigation";
 import {z} from "zod";
@@ -57,6 +60,11 @@ export async function getAccount() {
   return await api.get("/me", accountSchema.shape);
 }
 
+const getProfileShape = {
+  user: userSchema,
+  agent: agentSchema.nullable(),
+  contractor: personalDataSchema.nullable(),
+};
 export async function getProfile() {
-  return await api.get("/profile-me", profileSchema.shape);
+  return await api.get("/profile-me", getProfileShape);
 }

@@ -1,9 +1,9 @@
 // Generic
-export const gendersOptions = [
+export const genderOptions = [
   {label: "Maschio", value: "male"},
   {label: "Femmina", value: "female"},
 ] as const;
-export type Gender = (typeof gendersOptions)[number]["value"];
+export type Gender = (typeof genderOptions)[number]["value"];
 
 export const relationshipOptions = [
   {label: "Parente", value: "relative"},

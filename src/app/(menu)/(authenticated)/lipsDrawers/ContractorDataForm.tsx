@@ -5,7 +5,7 @@ import {
   FundSource,
   fundSourceOptions,
   Gender,
-  gendersOptions,
+  genderOptions,
   JobPosition,
   jobPositionOptions,
   OngoingRelationship,
@@ -180,7 +180,7 @@ export function ContractorDataForm() {
                 as={BorderFeedback}
               >
                 <FormLabel>Genere</FormLabel>
-                <CheckGroup type="radio" options={gendersOptions} readOnly />
+                <CheckGroup type="radio" options={genderOptions} readOnly />
               </FormGroup>
             </Col>
             <Col className="d-flex" xs={12} sm={6} md={4} lg={5}>
