@@ -131,7 +131,6 @@ export function DocumentsManagement() {
   return (
     <>
       <ModalBody className="vstack gap-3">
-        last? {lastESign ? "sì" : "no"}
         {documents.map((document) => {
           const [partialAdvisorESign, totalAdvisorESign] = eSignsCount(
             document.eSigns,
