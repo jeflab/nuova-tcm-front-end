@@ -50,6 +50,8 @@ export function DataTableSkeleton({
     dataTableParamsSchema.parse(searchParams);
   const table = useReactTable({
     columns,
+    enableColumnFilters: false, // TODO: filtri disabilitati temporaneamente aspettando il backend
+    enableSorting: false, // TODO: ordinamento disabilitato temporaneamente aspettando il backend
     data: Array.from({length: perPage}, () => ({})),
     state: {
       pagination: {
@@ -72,7 +74,8 @@ export function DataTableSkeleton({
 
   return (
     <>
-      <Card className={responsiveStyles.filterPanel}>
+      {/*TODO: filtri disabilitati temporaneamente aspettando il backend*/}
+      <Card className={cns("d-none", responsiveStyles.filterPanel)}>
         <CardHeader className="d-flex justify-content-between align-items-center">
           <span>
             Filtri {getActiveFilterCount() > 0 && `(${getActiveFilterCount()})`}{" "}
