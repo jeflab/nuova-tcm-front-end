@@ -12,7 +12,7 @@ export function AccountProfile({user}: AccountProfileProps) {
     <>
       <h3>Account</h3>
       <Card body>
-        <Row as="dl" className="last-dd-m-0" xs={3}>
+        <Row as="dl" xs={1} sm={3}>
           <Col>
             <dt>Codice fiscale:</dt>
             <dd>{user.fiscalCode}</dd>
