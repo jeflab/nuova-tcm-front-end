@@ -38,19 +38,19 @@ export function ContractorPersonalAreaActivationSummary() {
           <FontAwesomeIcon icon={faDownload} /> Privacy e consensi
         </ButtonLink>
         <ButtonLink
-          href={`${apiUrl}/${lipId}/pdf-allegato3?lipId=${lipId}&agentId=${agentId}`}
+          href={`${apiUrl}/pdf-allegato3?lipId=${lipId}&agentId=${agentId}`}
           download
         >
           <FontAwesomeIcon icon={faDownload} /> Allegato 3
         </ButtonLink>
         <ButtonLink
-          href={`${apiUrl}/${lipId}/pdf-allegato4ter?lipId=${lipId}&agentId=${agentId}`}
+          href={`${apiUrl}/pdf-allegato4ter?lipId=${lipId}&agentId=${agentId}`}
           download
         >
           <FontAwesomeIcon icon={faDownload} /> Allegato 4 TER
         </ButtonLink>
         <ButtonLink
-          href={`${apiUrl}/${lipId}/pdf-elenco-compagnie?lipId=${lipId}&agentId=${agentId}`}
+          href={`${apiUrl}/pdf-elenco-compagnie?lipId=${lipId}&agentId=${agentId}`}
           download
         >
           <FontAwesomeIcon icon={faDownload} /> Elenco compagnie
