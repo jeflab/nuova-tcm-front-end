@@ -298,7 +298,7 @@ export function DataTable<Row>({
         </thead>
         <tbody>
           {table.getRowModel().rows.map((row) => (
-            <tr key={row.id} className="position-relative">
+            <tr key={row.id} className={styles.rowStopStretching}>
               {row.getVisibleCells().map((cell) => (
                 <td
                   key={cell.id}

@@ -113,7 +113,7 @@ export const columns = [
         onClick={() => table.resetColumnFilters()}
       >
         <FontAwesomeIcon icon={faFilterCircleXmark} />
-        Reset filtri3
+        Reset filtri
       </Button>
     ),
     cell: ({row}) => (
