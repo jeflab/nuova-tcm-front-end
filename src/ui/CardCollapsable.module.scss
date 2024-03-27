@@ -4,8 +4,8 @@
   cursor: pointer;
 
   .caret {
-    rotate: 0deg;
-    transition: rotate 0.3s;
+    transform: rotate(0deg);
+    transition: transform 0.3s;
   }
 
   :global(.card-header) {
@@ -26,7 +26,7 @@
     border-bottom-width: 1px;
 
     .caret {
-      rotate: -180deg;
+      transform: rotate(-180deg);
     }
 
     :global(.card-header) {

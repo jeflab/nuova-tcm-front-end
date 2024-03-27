@@ -52,6 +52,11 @@
   }
 }
 
+.rowStopStretching {
+  position: relative;
+  transform: rotate(0);
+}
+
 .rowDefaultLink {
   // BS stretched link
   &::after {

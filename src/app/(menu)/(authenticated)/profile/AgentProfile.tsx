@@ -11,7 +11,7 @@ export function AgentProfile({agent}: AgentProfileProps) {
     <>
       <h3>Agente</h3>
       <Card body>
-        <Row as="dl" xs={3} className="mb-0">
+        <Row as="dl" xs={1} sm={3} className="mb-0">
           <Col>
             <dt>Nome:</dt>
             <dd>{agent.name}</dd>

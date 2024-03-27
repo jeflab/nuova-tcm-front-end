@@ -345,7 +345,7 @@ export function DocumentsManagement() {
         </Button>
         <Button type="submit" variant="primary" onClick={() => closeModal()}>
           <FontAwesomeIcon icon={faSave} className="me-2" />
-          Salva e prosegui
+          Salva e concludi
         </Button>
       </ModalFooter>
     </>
