@@ -16,7 +16,7 @@ import {fiscalCodeValidator} from "@/ui/form/validators/fiscalCode";
 import {faSave, faSpinner, faXmark} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {useState} from "react";
-import {Button, Row, Card, Col, Alert, FormGroup} from "react-bootstrap";
+import {Button, Row, Card, Col, Alert} from "react-bootstrap";
 import {useForm} from "react-hook-form";
 
 interface AccountProfileProps {
