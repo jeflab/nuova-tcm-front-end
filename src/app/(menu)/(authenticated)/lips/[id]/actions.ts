@@ -152,7 +152,7 @@ export async function updateContractorData(
 ) {
   const data = {
     city: formData.residence.place.city,
-    province: formData.residence.place.province,
+    region: formData.residence.place.province,
     address: formData.residence.streetName,
     street_number: formData.residence.streetNumber,
     zip_code: formData.residence.zipCode,
