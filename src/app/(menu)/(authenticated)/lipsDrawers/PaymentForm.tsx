@@ -278,7 +278,7 @@ export function PaymentForm() {
           ) : (
             <FontAwesomeIcon icon={faSave} className="me-2" />
           )}
-          Salva e Concludi
+          Salva e Prosegui
         </Button>
       </ModalFooter>
     </>

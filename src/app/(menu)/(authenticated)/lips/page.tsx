@@ -19,7 +19,7 @@ export default function LipsPage({searchParams}: LipsPageProps) {
       <PageTitle>
         Elenco clienti
         <ButtonLink href="lips/new">
-          <FontAwesomeIcon icon={faPlus} /> Nuova polizza
+          <FontAwesomeIcon icon={faPlus} /> Nuova proposta di polizza
         </ButtonLink>
       </PageTitle>
       <Suspense

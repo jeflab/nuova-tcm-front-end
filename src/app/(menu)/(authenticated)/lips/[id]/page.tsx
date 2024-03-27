@@ -1,10 +1,14 @@
 import {Lip} from "@/models/entities/lip";
 import {cns} from "@/helpers/cns";
 import {AppContainer} from "@/ui/AppContainer";
+import {ButtonLink} from "@/ui/ButtonLink";
 import {Drawer} from "@/ui/drawer/Drawer";
 import {NavDrawer} from "@/ui/drawer/NavDrawer";
 import {PageTitle} from "@/ui/PageTitle";
-import {faTriangleExclamation} from "@fortawesome/pro-duotone-svg-icons";
+import {
+  faArrowLeft,
+  faTriangleExclamation,
+} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {notFound} from "next/navigation";
 import {Alert, Col, Nav, Row} from "react-bootstrap";
@@ -38,7 +42,12 @@ export default async function NewLipPage({params}: NewLipPageProps) {
   return (
     <AppContainer className="vstack gap-3">
       <PageTitle>
-        {lip?.lipNumber ? `Polizza n° ${lip?.lipNumber}` : "Nuova polizza"}
+        {lip?.lipNumber
+          ? `Polizza n° ${lip?.lipNumber}`
+          : "Nuova proposta di polizza"}
+        <ButtonLink href="/lips">
+          <FontAwesomeIcon icon={faArrowLeft} /> Torna all'elenco
+        </ButtonLink>
       </PageTitle>
       <InitStoreWithServerData lip={lip} />
       <Row className="flex-row-reverse">
