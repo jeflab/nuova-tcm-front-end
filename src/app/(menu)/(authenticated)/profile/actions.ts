@@ -19,3 +19,12 @@ export async function updateAccount(formData: UpdateAccountData) {
   revalidateTag("me");
   return patch("/me", accountSchema.shape, JSON.stringify(data));
 }
+
+interface UpdatePassword {
+  oldPassword: string;
+  newPassword: string;
+  repeatNewPassword: string;
+}
+export async function updatePassword(formData: UpdatePassword) {
+  return patch("/me/password", accountSchema.shape, JSON.stringify(formData));
+}
