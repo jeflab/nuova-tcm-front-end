@@ -1,7 +1,7 @@
 "use server";
 
 import {accountSchema} from "@/models/account";
-import {patch} from "@/services/api";
+import {patch, post} from "@/services/api";
 import {revalidateTag} from "next/cache";
 
 interface UpdateAccountData {
@@ -26,9 +26,5 @@ interface UpdatePassword {
   repeatNewPassword: string;
 }
 export async function updatePassword(formData: UpdatePassword) {
-  return patch(
-    "/reset-my-password",
-    accountSchema.shape,
-    JSON.stringify(formData),
-  );
+  return post("/reset-my-password", {}, JSON.stringify(formData));
 }
