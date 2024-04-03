@@ -156,6 +156,7 @@ const beneficiarySchema = z.object({
     response: z.string(),
   }),
 });
+export type Beneficiary = z.infer<typeof beneficiarySchema>;
 
 const thirdPartySchema = z.object({
   name: z.string(),
@@ -177,6 +178,7 @@ const thirdPartySchema = z.object({
   phone: z.string(),
   email: z.string(),
 });
+export type ThirdParty = z.infer<typeof thirdPartySchema>;
 
 const beneficiariesSchema = z.object({
   nomination: z.enum(getOptionsValues(nominationOptions)),

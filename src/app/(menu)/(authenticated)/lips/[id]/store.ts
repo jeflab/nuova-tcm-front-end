@@ -229,7 +229,10 @@ function createDrawerState(state: State & Actions) {
           ...presetButtons.compile,
         };
       } else {
-        state.drawerStates.beneficiaries = {variant: "success"};
+        state.drawerStates.beneficiaries = {
+          variant: "success",
+          ...(!atLeastOneESign && presetButtons.update),
+        };
       }
     }
 
