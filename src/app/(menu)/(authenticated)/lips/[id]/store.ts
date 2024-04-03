@@ -37,6 +37,7 @@ function createDrawerState(state: State & Actions) {
     (state.lip?.eSigns?.identificazione &&
       Object.keys(state.lip?.eSigns?.identificazione).length > 0);
   const healthQuestionnaireCompiled = !!state.lip?.healthcareQuestionnaire;
+  const privacyESigned = !!state.lip?.contractor?.lastPrivacyEsignId;
 
   if (isPreliminary) {
     // fatca
@@ -64,25 +65,14 @@ function createDrawerState(state: State & Actions) {
       state.drawerStates.contractorFiscalCode = undefined;
     }
 
-    // Attesa creazione aria cliente
+    // Contatti contraente
     if (state.drawerStates.contractorFiscalCode?.variant === "success") {
-      if (state.lip?.contractor === undefined) {
-        state.drawerStates.contractorPersonalAreaActivation = {
-          variant: "active",
-          ...presetButtons.compile,
-        };
-      } else if (state.lip.contractor.lastPrivacyEsignId === null) {
-        state.drawerStates.contractorPersonalAreaActivation = {
-          variant: "waiting",
-          ...presetButtons.privacyEsign,
-        };
-      } else {
-        state.drawerStates.contractorPersonalAreaActivation = {
-          variant: "success",
-        };
-      }
+      state.drawerStates.contractorContacts = {
+        variant: "active",
+        ...presetButtons.compile,
+      };
     } else {
-      state.drawerStates.contractorPersonalAreaActivation = undefined;
+      state.drawerStates.contractorContacts = undefined;
     }
   } else {
     // Dati da server
@@ -109,16 +99,31 @@ function createDrawerState(state: State & Actions) {
       state.drawerStates.contractorFiscalCode = undefined;
     }
 
-    // Attesa creazione aria cliente
+    // Contatti contraente
     if (state.drawerStates.contractorFiscalCode?.variant === "success") {
-      if (state.lip?.contractor === undefined) {
-        state.drawerStates.contractorPersonalAreaActivation = {
+      if (
+        state.lip?.contractor.phone === null ||
+        state.lip?.contractor.email === null
+      ) {
+        state.drawerStates.contractorContacts = {
           variant: "active",
           ...presetButtons.compile,
         };
-      } else if (state.lip.contractor.lastPrivacyEsignId === null) {
+      } else {
+        state.drawerStates.contractorContacts = {
+          variant: "success",
+          ...(!privacyESigned && presetButtons.update),
+        };
+      }
+    } else {
+      state.drawerStates.contractorContacts = undefined;
+    }
+
+    // Attesa creazione aria cliente
+    if (state.drawerStates.contractorContacts?.variant === "success") {
+      if (state.lip?.contractor.lastPrivacyEsignId === null) {
         state.drawerStates.contractorPersonalAreaActivation = {
-          variant: "waiting",
+          variant: "active",
           ...presetButtons.privacyEsign,
         };
       } else {

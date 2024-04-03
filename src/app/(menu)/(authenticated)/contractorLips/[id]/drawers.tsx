@@ -10,10 +10,12 @@ import {IdentificationDataSummary} from "@/app/(menu)/(authenticated)/lipsDrawer
 import {PaymentSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/PaymentSummary";
 import {QuoteSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/QuoteSummary";
 import {ReactNode} from "react";
+import {ContractorContactsSummary} from "../../lipsDrawers/ContractorContactsSummary";
 
 export type DrawerName =
   | "fatca"
   | "contractorFiscalCode"
+  | "contractorContacts"
   | "contractorPersonalAreaActivation"
   | "contractorData"
   | "identification"
@@ -40,6 +42,11 @@ export const drawers: Drawer[] = [
     name: "contractorFiscalCode",
     title: "Dati contraente",
     summaryContent: <ContractorFiscalCodeSummary />,
+  },
+  {
+    name: "contractorContacts",
+    title: "Contatti contraente",
+    summaryContent: <ContractorContactsSummary />,
   },
   {
     name: "contractorPersonalAreaActivation",

@@ -22,10 +22,13 @@ import {QuoteForm} from "@/app/(menu)/(authenticated)/lipsDrawers/QuoteForm";
 import {QuoteSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/QuoteSummary";
 import {ReactNode} from "react";
 import {ContractorPersonalAreaActivationLastPrivacy} from "../../lipsDrawers/ContractorPersonalAreaActivationLastPrivacy";
+import {ContractorContactsForm} from "../../lipsDrawers/ContractorContactsForm";
+import {ContractorContactsSummary} from "../../lipsDrawers/ContractorContactsSummary";
 
 export type DrawerName =
   | "fatca"
   | "contractorFiscalCode"
+  | "contractorContacts"
   | "contractorPersonalAreaActivation"
   | "contractorData"
   | "identification"
@@ -54,6 +57,12 @@ export const drawers: Drawer[] = [
     title: "Dati contraente",
     modalContent: <ContractorFiscalCodeForm />,
     summaryContent: <ContractorFiscalCodeSummary />,
+  },
+  {
+    name: "contractorContacts",
+    title: "Contatti contraente",
+    modalContent: <ContractorContactsForm />,
+    summaryContent: <ContractorContactsSummary />,
   },
   {
     name: "contractorPersonalAreaActivation",

@@ -1,9 +1,13 @@
 "use client";
 
-import {activateContractor} from "@/app/(menu)/(authenticated)/lips/[id]/actions";
+import {
+  activateContractor,
+  updateContractorContacts,
+} from "@/app/(menu)/(authenticated)/lips/[id]/actions";
 import {fatcaQuestions} from "@/app/(menu)/(authenticated)/lipsDrawers/FatcaForm";
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {cns} from "@/helpers/cns";
+import {PersonalData} from "@/models/entities/personalData";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {FieldError} from "@/ui/form/FieldError";
 import {Form} from "@/ui/form/Form";
@@ -26,67 +30,91 @@ import {
 import {useForm} from "react-hook-form";
 import invariant from "tiny-invariant";
 
-const ContractorPersonalAreaActivationDefaultValues = {
-  phone: "",
-  email: "",
-};
+const contractorPersonalAreaActivationDefaultValues = (
+  contractorData?: PersonalData,
+) => ({
+  phone: contractorData?.phone ?? "",
+  email: contractorData?.email ?? "",
+});
 
-export function ContractorPersonalAreaActivationForm() {
+export function ContractorContactsForm() {
   const router = useRouter();
-  const formMethods = useForm({
-    mode: "onChange",
-    defaultValues: ContractorPersonalAreaActivationDefaultValues,
-  });
 
+  const contractor = useDrawerStore((state) => state.lip?.contractor);
+  const lipId = useDrawerStore((state) => state.lip?.id);
   const closeModal = useDrawerStore((state) => state.closeModal);
   const preliminaryData = useDrawerStore((state) => state.preliminaryData);
-  const updateLip = useDrawerStore((state) => state.updateLip);
+
+  const formMethods = useForm({
+    mode: "onChange",
+    defaultValues: contractorPersonalAreaActivationDefaultValues(contractor),
+  });
 
   return (
     <>
       <ModalBody>
         <Form
           onSubmit={async (values) => {
-            let activateContractorResponse: Awaited<
-              ReturnType<typeof activateContractor>
-            >;
-            try {
-              invariant(
-                preliminaryData.contractorPersonalData,
-                "Dati del cliente mancanti",
-              );
-              invariant(preliminaryData.fatca, "Dati FATCA mancanti");
+            if (!contractor) {
+              let activateContractorResponse: Awaited<
+                ReturnType<typeof activateContractor>
+              >;
+              try {
+                invariant(
+                  preliminaryData.contractorPersonalData,
+                  "Dati del cliente mancanti",
+                );
+                invariant(preliminaryData.fatca, "Dati FATCA mancanti");
 
-              activateContractorResponse = await activateContractor({
-                ...values,
-                ...preliminaryData.contractorPersonalData,
-                fatca: {
-                  ...fatcaQuestions.fatcaCheck,
-                  response: preliminaryData.fatca,
-                },
+                activateContractorResponse = await activateContractor({
+                  ...values,
+                  ...preliminaryData.contractorPersonalData,
+                  fatca: {
+                    ...fatcaQuestions.fatcaCheck,
+                    response: preliminaryData.fatca,
+                  },
+                });
+              } catch (e) {
+                throw {
+                  root: {
+                    type: "server",
+                    message: "Errore imprevisto, riprova più tardi.",
+                  },
+                };
+              }
+
+              if (activateContractorResponse.status === "failed") {
+                throw {
+                  root: {
+                    type: "server",
+                    message: activateContractorResponse.message,
+                  },
+                };
+              }
+
+              router.push(`/lips/${activateContractorResponse.lip?.id}`, {
+                scroll: false,
               });
-            } catch (e) {
-              throw {
-                root: {
-                  type: "server",
-                  message: "Errore imprevisto, riprova più tardi.",
-                },
-              };
-            }
+              closeModal();
+            } else {
+              invariant(lipId, "Id analisi mancante");
+              const updatedContractor = await updateContractorContacts(
+                contractor.id,
+                lipId,
+                values,
+              );
 
-            if (activateContractorResponse.status === "failed") {
-              throw {
-                root: {
-                  type: "server",
-                  message: activateContractorResponse.message,
-                },
-              };
-            }
+              if (updatedContractor.status === "failed") {
+                throw {
+                  root: {
+                    type: "server",
+                    message: updatedContractor.message,
+                  },
+                };
+              }
 
-            router.push(`/lips/${activateContractorResponse.lip?.id}`, {
-              scroll: false,
-            });
-            closeModal();
+              closeModal();
+            }
           }}
           id="activate-contractor-form"
           formMethods={formMethods}
