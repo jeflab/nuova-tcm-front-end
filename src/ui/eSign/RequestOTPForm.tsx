@@ -142,6 +142,7 @@ export function RequestOTPForm<TPayload>({
             required: "Inserisci l'OTP che hai ricevuto sul tuo cellulare",
           }}
           normalize={onlyNumbersNormalizer}
+          autoFocus
         />
       </FormGroup>
       <FieldError

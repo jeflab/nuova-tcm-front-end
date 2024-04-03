@@ -244,7 +244,10 @@ function createDrawerState(state: State & Actions) {
           ...presetButtons.compile,
         };
       } else {
-        state.drawerStates.payment = {variant: "success"};
+        state.drawerStates.payment = {
+          variant: "success",
+          ...(!atLeastOneESign && presetButtons.update),
+        };
       }
     }
 

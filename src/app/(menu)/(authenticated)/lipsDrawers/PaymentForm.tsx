@@ -4,6 +4,7 @@ import {updatePaymentData} from "@/app/(menu)/(authenticated)/lips/[id]/actions"
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {getCoverageDuration} from "@/app/(menu)/quoter/helpers";
 import {dbDateString} from "@/helpers/dates";
+import {Lip} from "@/models/entities/lip";
 import {Currency} from "@/ui/Currency";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {CheckGroup} from "@/ui/form/CheckGroup";
@@ -88,17 +89,17 @@ export type PaymentMethods = ReturnType<
   typeof paymentMethodsOptions
 >[number]["value"];
 
-const paymentDefaultValues = {
-  effectiveDate: "",
-  duration: "",
-  expirationDate: "",
-  paymentMethod: "" as PaymentMethods,
-  contractorFullName: "",
-  bank: "",
-  bicSwift: "",
-  iban: "",
-};
-export type PaymentFormValues = typeof paymentDefaultValues;
+const paymentDefaultValues = (paymentData?: Lip["payment"]) => ({
+  effectiveDate: paymentData?.effectiveDate ?? "",
+  duration: paymentData?.duration ?? "",
+  expirationDate: paymentData?.expirationDate ?? "",
+  paymentMethod: paymentData?.paymentMethod ?? ("" as PaymentMethods),
+  contractorFullName: paymentData?.contractorFullName ?? "",
+  bank: paymentData?.bank ?? "",
+  bicSwift: paymentData?.bicSwift ?? "",
+  iban: paymentData?.iban ?? "",
+});
+export type PaymentFormValues = ReturnType<typeof paymentDefaultValues>;
 
 export function PaymentForm() {
   const lipId = useDrawerStore((state) => state.lip?.id);
@@ -107,11 +108,12 @@ export function PaymentForm() {
   const contractorSurname = useDrawerStore(
     (state) => state.lip?.contractor.surname,
   );
+  const paymentData = useDrawerStore((state) => state.lip?.payment);
 
   const formMethods = useForm({
     mode: "onChange",
     defaultValues: {
-      ...paymentDefaultValues,
+      ...paymentDefaultValues(paymentData),
       contractorFullName: `${contractorName} ${contractorSurname}`,
       duration: getCoverageDuration(birthDate).toString(),
       expirationDate: addYears(new Date(), getCoverageDuration(birthDate))
