@@ -270,21 +270,21 @@ export async function updateQuotation(
   const data = {
     birthDate: formData.birthDate,
     smoker: formData.smoker,
-    death: parseInt(formData.death, 10),
+    death: parseInt(formData.death || "0", 10),
     accidentalDeath: formData.accidentalDeath,
     trafficAccidentalDeath: formData.trafficAccidentalDeath,
     exemptionFromPaying: formData.exemptionFromPaying,
     tpi: {
       enabled: formData.tpi.enabled,
-      coverage: parseInt(formData.tpi.coverage, 10),
+      coverage: parseInt(formData.tpi.coverage || "0", 10),
     },
     cancer: {
       enabled: formData.cancer.enabled,
-      coverage: parseInt(formData.cancer.coverage, 10),
+      coverage: parseInt(formData.cancer.coverage || "0", 10),
     },
     tpd: {
       enabled: formData.tpd.enabled,
-      coverage: parseInt(formData.tpd.coverage, 10),
+      coverage: parseInt(formData.tpd.coverage || "0", 10),
     },
     premium: formData.premium,
   };
