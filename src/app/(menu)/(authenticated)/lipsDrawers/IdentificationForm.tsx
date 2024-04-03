@@ -1,12 +1,13 @@
 "use client";
 
 import {identificationContractor} from "@/app/(menu)/(authenticated)/lips/[id]/actions";
+import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {
   IdType,
   idTypeOptions,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
-import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {dbDateString} from "@/helpers/dates";
+import {apiUrl} from "@/services/const";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {CheckboxField} from "@/ui/form/CheckboxField";
 import {DropzoneField} from "@/ui/form/DropzoneField";
@@ -35,25 +36,33 @@ import {
 import {useForm} from "react-hook-form";
 import invariant from "tiny-invariant";
 
-const identificationDefaultValues = {
-  idType: "" as IdType,
-  number: "",
-  issuedBy: "",
-  issuedByOrg: "",
-  issuedDate: "",
-  expiringDate: "",
-  frontPicture: null as unknown as File,
-  backPicture: null as unknown as File,
-  metContractorInPerson: false,
-  documentIsCopyShownByContractor: false,
-  photoIsOfContractor: false,
-  contractorHasBeenIdentified: false,
-};
-
 export function IdentificationForm() {
+  const agentId = useDrawerStore((state) => state.lip?.agent.id);
+  const contractorId = useDrawerStore((state) => state.lip?.contractor.id);
+  const identityDocument = useDrawerStore((state) =>
+    state.lip?.contractor.identitydocument?.at(-1),
+  );
+
   const formMethods = useForm({
     mode: "onChange",
-    defaultValues: identificationDefaultValues,
+    defaultValues: {
+      idType: identityDocument?.idType ?? ("" as IdType),
+      number: identityDocument?.number ?? "",
+      issuedBy: identityDocument?.issuedBy ?? "",
+      issuedByOrg: identityDocument?.issuedByOrg ?? "",
+      issuedDate: identityDocument?.issuedDate
+        ? dbDateString(identityDocument.issuedDate)
+        : "",
+      expiringDate: identityDocument?.expiringDate
+        ? dbDateString(identityDocument.expiringDate)
+        : "",
+      frontPicture: null as unknown as File,
+      backPicture: null as unknown as File,
+      metContractorInPerson: !!identityDocument,
+      documentIsCopyShownByContractor: !!identityDocument,
+      photoIsOfContractor: !!identityDocument,
+      contractorHasBeenIdentified: !!identityDocument,
+    },
   });
 
   const fiscalCode = useDrawerStore(
@@ -61,6 +70,14 @@ export function IdentificationForm() {
   );
   const lipId = useDrawerStore((state) => state.lip?.id);
   const closeModal = useDrawerStore((state) => state.closeModal);
+
+  // TODO: creare una funzione che genera gli url da inserire nel componente IdImage ed esportarla qui
+  const existingFrontImageUrl = encodeURI(
+    `${apiUrl}/personal-datas/${contractorId}/get-image?filename=${identityDocument?.identification?.fileIdFrontName}&agentId=${agentId}&size=thumbnail`,
+  );
+  const existingBackImageUrl = encodeURI(
+    `${apiUrl}/personal-datas/${contractorId}/get-image?filename=${identityDocument?.identification?.fileIdBackName}&agentId=${agentId}&size=thumbnail`,
+  );
 
   return (
     <>
@@ -194,8 +211,15 @@ export function IdentificationForm() {
                 <FormLabel>Documento fronte</FormLabel>
                 <FieldError />
                 <DropzoneField
+                  preselectedImageUrl={existingFrontImageUrl}
                   validation={{
-                    required: "Carica la foto del fronte del documento",
+                    validate: {
+                      required: (value) => {
+                        if (!value && !existingFrontImageUrl) {
+                          return "Carica la foto del retro del documento";
+                        }
+                      },
+                    },
                   }}
                 >
                   <p className="mb-0">
@@ -211,8 +235,15 @@ export function IdentificationForm() {
                 <FormLabel>Documento retro</FormLabel>
                 <FieldError />
                 <DropzoneField
+                  preselectedImageUrl={existingBackImageUrl}
                   validation={{
-                    required: "Carica la foto del retro del documento",
+                    validate: {
+                      required: (value) => {
+                        if (!value && !existingBackImageUrl) {
+                          return "Carica la foto del retro del documento";
+                        }
+                      },
+                    },
                   }}
                 >
                   <p className="mb-0">

@@ -16,8 +16,8 @@ import {Col, Row} from "react-bootstrap";
 export function IdentificationDataSummary() {
   const agentId = useDrawerStore((state) => state.lip?.agent.id);
   const contractorId = useDrawerStore((state) => state.lip?.contractor.id);
-  const identification = useDrawerStore(
-    (state) => state.lip?.contractor.identitydocument?.[0],
+  const identification = useDrawerStore((state) =>
+    state.lip?.contractor.identitydocument?.at(-1),
   );
 
   if (!identification) {

@@ -31,6 +31,13 @@ function createDrawerState(state: State & Actions) {
   const isPreliminary = !state.lip;
   state.drawerStates = {...initialState.drawerStates};
 
+  const atLeastOneESign =
+    (state.lip?.eSigns?.polizza &&
+      Object.keys(state.lip?.eSigns?.polizza).length > 0) ||
+    (state.lip?.eSigns?.identificazione &&
+      Object.keys(state.lip?.eSigns?.identificazione).length > 0);
+  const healthQuestionnaireCompiled = !!state.lip?.healthcareQuestionnaire;
+
   if (isPreliminary) {
     // fatca
     if (state.preliminaryData.fatca === undefined) {
@@ -133,7 +140,10 @@ function createDrawerState(state: State & Actions) {
           ...presetButtons.compile,
         };
       } else {
-        state.drawerStates.contractorData = {variant: "success"};
+        state.drawerStates.contractorData = {
+          variant: "success",
+          ...(!atLeastOneESign && presetButtons.update),
+        };
       }
     } else {
       state.drawerStates.contractorData = undefined;
@@ -150,7 +160,10 @@ function createDrawerState(state: State & Actions) {
           ...presetButtons.compile,
         };
       } else if (state.lip.contractor.identitydocument.length > 0) {
-        state.drawerStates.identification = {variant: "success"};
+        state.drawerStates.identification = {
+          variant: "success",
+          ...(!atLeastOneESign && presetButtons.update),
+        };
       } else {
         state.drawerStates.identification = {variant: "danger"};
       }
@@ -185,7 +198,10 @@ function createDrawerState(state: State & Actions) {
           ...presetButtons.compile,
         };
       } else if (state.lip?.quotation?.premium) {
-        state.drawerStates.quote = {variant: "success"};
+        state.drawerStates.quote = {
+          variant: "success",
+          ...(!healthQuestionnaireCompiled && presetButtons.update),
+        };
       } else {
         state.drawerStates.quote = {variant: "danger"};
       }

@@ -16,12 +16,14 @@ const maxSize = 16 * mb;
 interface DropzoneFieldProps extends WithChildren {
   // renderContent: (dropzoneState: DropzoneState) => ReactElement;
   name?: string;
+  preselectedImageUrl?: string;
   validation?: RegisterOptions;
 }
 
 export function DropzoneField({
   children,
   name,
+  preselectedImageUrl,
   validation,
 }: DropzoneFieldProps) {
   const {controlId} = useContext(FormContext);
@@ -92,18 +94,18 @@ export function DropzoneField({
             )}
           >
             <input {...getInputProps()} />
-            {value && (
+            {(value || preselectedImageUrl) && (
               <div
                 className={styles.dropzoneAreaThumbnail}
                 style={{
-                  backgroundImage: `url(${thumbUrl})`,
+                  backgroundImage: `url(${thumbUrl ?? preselectedImageUrl})`,
                 }}
               />
             )}
             <div
               className={cns(
                 styles.dropzoneAreaPlaceholder,
-                !!value && styles.hasThumbnail,
+                !!(value || preselectedImageUrl) && styles.hasThumbnail,
               )}
             >
               {children}

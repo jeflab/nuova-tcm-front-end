@@ -70,7 +70,7 @@ const denSchema = z.object({
 
 const quotationSchema = z.object({
   birthDate: z.string(),
-  smoker: z.string(),
+  smoker: z.enum(getOptionsValues(yesNoOptions)),
   death: z.number(),
   accidentalDeath: z.boolean(),
   trafficAccidentalDeath: z.boolean(),

@@ -23,7 +23,7 @@ export function InitStoreWithServerData({lip}: InitStoreWithServerDataProps) {
     return () => {
       updateLip(null);
     };
-  }, [lip, updateLip]);
+  }, [lip, updateLip, updatePreliminaryData]);
 
   return null;
 }
