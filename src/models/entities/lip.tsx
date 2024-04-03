@@ -75,9 +75,12 @@ const quotationSchema = z.object({
   accidentalDeath: z.boolean(),
   trafficAccidentalDeath: z.boolean(),
   exemptionFromPaying: z.boolean(),
-  tpi: z.object({enabled: z.boolean(), coverage: z.number()}),
-  cancer: z.object({enabled: z.boolean(), coverage: z.number()}),
-  tpd: z.object({enabled: z.boolean(), coverage: z.number()}),
+  tpi: z.object({enabled: z.boolean(), coverage: z.coerce.number().catch(0)}),
+  cancer: z.object({
+    enabled: z.boolean(),
+    coverage: z.coerce.number().catch(0),
+  }),
+  tpd: z.object({enabled: z.boolean(), coverage: z.coerce.number().catch(0)}),
   premium: z.number(),
 });
 
