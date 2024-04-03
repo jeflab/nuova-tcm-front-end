@@ -197,6 +197,9 @@ export function PaymentForm() {
                 <CheckGroup
                   type="radio-switch"
                   options={paymentMethodsOptions(premium, paymentMethodValue)}
+                  validation={{
+                    required: "Seleziona un frazionamento di pagamento",
+                  }}
                 />
               </FormGroup>
             </Col>
