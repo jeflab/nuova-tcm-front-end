@@ -26,5 +26,9 @@ interface UpdatePassword {
   repeatNewPassword: string;
 }
 export async function updatePassword(formData: UpdatePassword) {
-  return patch("/me/password", accountSchema.shape, JSON.stringify(formData));
+  return patch(
+    "/reset-my-password",
+    accountSchema.shape,
+    JSON.stringify(formData),
+  );
 }
