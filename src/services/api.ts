@@ -108,7 +108,7 @@ export async function get<T extends ZodRawShape>(
   let serverResponseJson;
   try {
     serverResponseJson = z
-      .union([serverSuccessSchema, serverErrorSchema])
+      .discriminatedUnion("status", [serverSuccessSchema, serverErrorSchema])
       .parse(responseJson);
   } catch (e) {
     console.error(
@@ -184,7 +184,7 @@ export async function post<T extends ZodRawShape>(
   let serverResponseJson;
   try {
     serverResponseJson = z
-      .union([serverSuccessSchema, serverErrorSchema])
+      .discriminatedUnion("status", [serverSuccessSchema, serverErrorSchema])
       .parse(responseJson);
   } catch (e) {
     console.error(
@@ -262,7 +262,7 @@ export async function postFormData<T extends ZodRawShape>(
   let serverResponseJson;
   try {
     serverResponseJson = z
-      .union([serverSuccessSchema, serverErrorSchema])
+      .discriminatedUnion("status", [serverSuccessSchema, serverErrorSchema])
       .parse(responseJson);
   } catch (e) {
     console.error(
@@ -341,7 +341,7 @@ export async function put<T extends ZodRawShape>(
   let serverResponseJson;
   try {
     serverResponseJson = z
-      .union([serverSuccessSchema, serverErrorSchema])
+      .discriminatedUnion("status", [serverSuccessSchema, serverErrorSchema])
       .parse(responseJson);
   } catch (e) {
     console.error(
@@ -420,7 +420,7 @@ export async function patch<T extends ZodRawShape>(
   let serverResponseJson;
   try {
     serverResponseJson = z
-      .union([serverSuccessSchema, serverErrorSchema])
+      .discriminatedUnion("status", [serverSuccessSchema, serverErrorSchema])
       .parse(responseJson);
   } catch (e) {
     console.error(
