@@ -5,6 +5,10 @@ export const contentJsonHeader = {
   "Content-Type": "application/json",
 };
 
+export const acceptJsonHeader = {
+  Accept: "application/json",
+};
+
 export const contentMultipartHeader = {
   "Content-Type": "multipart/form-data",
   Accept: "application/json",

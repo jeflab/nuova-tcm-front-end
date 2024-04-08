@@ -1,5 +1,5 @@
 import {AUTH_COOKIE_NAME} from "@/app/(no-menu)/(auth)/const";
-import {apiUrl, contentJsonHeader} from "@/services/const";
+import {acceptJsonHeader, apiUrl, contentJsonHeader} from "@/services/const";
 import {cookies} from "next/headers";
 
 function authorizationHeader() {
@@ -13,6 +13,7 @@ export async function GET(
   return await fetch(`${apiUrl}/${params.url.join("/")}`, {
     headers: {
       ...contentJsonHeader,
+      ...acceptJsonHeader,
       ...authorizationHeader(),
     },
     method: "GET",
