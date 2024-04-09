@@ -4,9 +4,9 @@ import {
   paymentMethodsSimpleOptions,
   relationshipOptions,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
+import {getOptionsValues, yesNoOptions} from "@/helpers/getOptionsLabel";
 import {agentSchema} from "@/models/entities/agent";
 import {personalDataSchema} from "@/models/entities/personalData";
-import {getOptionsValues, yesNoOptions} from "@/helpers/getOptionsLabel";
 import {faCircleHalf, faCircleTrash} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {ReactNode} from "react";

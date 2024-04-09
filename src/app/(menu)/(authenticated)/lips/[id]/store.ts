@@ -38,6 +38,11 @@ function createDrawerState(state: State & Actions) {
       Object.keys(state.lip?.eSigns?.identificazione).length > 0);
   const healthQuestionnaireCompiled = !!state.lip?.healthcareQuestionnaire;
   const privacyESigned = !!state.lip?.contractor?.lastPrivacyEsignId;
+  const oneYesInHealthcareQuestionnaire = Object.values(
+    state.lip?.healthcareQuestionnaire ?? {},
+  ).some(
+    (question) => typeof question === "object" && question.check === "yes",
+  );
 
   if (isPreliminary) {
     // fatca
@@ -243,7 +248,9 @@ function createDrawerState(state: State & Actions) {
 
     // Pagamento
     if (state.drawerStates.beneficiaries?.variant === "success") {
-      if (state.lip?.payment === null) {
+      if (oneYesInHealthcareQuestionnaire) {
+        state.drawerStates.payment = {variant: "waiting", isLocked: true};
+      } else if (state.lip?.payment === null) {
         state.drawerStates.payment = {
           variant: "active",
           ...presetButtons.compile,

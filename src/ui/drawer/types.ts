@@ -12,6 +12,7 @@ export type DrawerVariant =
 
 export type DrawerState = {
   variant: DrawerVariant;
+  isLocked?: boolean;
   buttonLabel?: string;
   buttonIcon?: keyof typeof buttonMap;
 };

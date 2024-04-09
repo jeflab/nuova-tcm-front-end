@@ -17,6 +17,7 @@ import {HealthQuestionnaireSummary} from "@/app/(menu)/(authenticated)/lipsDrawe
 import {IdentificationForm} from "@/app/(menu)/(authenticated)/lipsDrawers/IdentificationForm";
 import {IdentificationDataSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/IdentificationSummary";
 import {PaymentForm} from "@/app/(menu)/(authenticated)/lipsDrawers/PaymentForm";
+import {PaymentLock} from "@/app/(menu)/(authenticated)/lipsDrawers/PaymentLock";
 import {PaymentSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/PaymentSummary";
 import {QuoteForm} from "@/app/(menu)/(authenticated)/lipsDrawers/QuoteForm";
 import {QuoteSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/QuoteSummary";
@@ -25,25 +26,13 @@ import {ContractorPersonalAreaActivationLastPrivacy} from "../../lipsDrawers/Con
 import {ContractorContactsForm} from "../../lipsDrawers/ContractorContactsForm";
 import {ContractorContactsSummary} from "../../lipsDrawers/ContractorContactsSummary";
 
-export type DrawerName =
-  | "fatca"
-  | "contractorFiscalCode"
-  | "contractorContacts"
-  | "contractorPersonalAreaActivation"
-  | "contractorData"
-  | "identification"
-  | "den"
-  | "quote"
-  | "healthQuestionnaire"
-  | "beneficiaries"
-  | "documentation"
-  | "payment";
 interface Drawer {
-  name: DrawerName;
+  name: string;
   title: string;
   shortTitle?: string;
   modalContent?: ReactNode;
   summaryContent?: ReactNode;
+  lock?: ReactNode;
 }
 export const drawers: Drawer[] = [
   {
@@ -118,6 +107,7 @@ export const drawers: Drawer[] = [
     title: "Pagamento",
     modalContent: <PaymentForm />,
     summaryContent: <PaymentSummary />,
+    lock: <PaymentLock />,
   },
   {
     name: "documentation",
@@ -125,4 +115,6 @@ export const drawers: Drawer[] = [
     modalContent: <DocumentsManagement />,
     summaryContent: <DocumentsSummary />,
   },
-];
+] as const;
+
+export type DrawerName = (typeof drawers)[number]["name"];

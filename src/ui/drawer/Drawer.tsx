@@ -38,9 +38,8 @@ export function Drawer({
   const modalOpen = useDrawerStore((state) => state.modalOpen);
   const openModal = useDrawerStore((state) => state.openModal);
   const closeModal = useDrawerStore((state) => state.closeModal);
-  const {variant, buttonLabel, buttonIcon} =
+  const {variant, buttonLabel, buttonIcon, isLocked} =
     useDrawerStore((state) => state.drawerStates[name]) ?? {};
-  const test = useDrawerStore((state) => state.drawerStates[name]) ?? {};
 
   const parent = useRef(null);
   useEffect(() => {
@@ -53,6 +52,7 @@ export function Drawer({
         className={cns(
           styles.drawer,
           variant && styles[`is${upperCaseFirstNormalizer(variant)}`],
+          isLocked && styles.isLocked,
         )}
       >
         <CardHeader className="d-flex align-items-center justify-content-between py-3">

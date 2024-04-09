@@ -220,7 +220,7 @@ export async function postFormData<T extends ZodRawShape>(
 
   const response = await fetch(apiUrl + url, {
     headers: {
-      ...acceptJsonHeader,
+      // ...acceptJsonHeader,
       ...authorizationHeader(),
     },
     method: "POST",
