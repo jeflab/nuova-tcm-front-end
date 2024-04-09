@@ -3,7 +3,7 @@
 import {AUTH_COOKIE_NAME} from "@/app/(no-menu)/(auth)/const";
 import {ErrorCodes, errors} from "@/helpers/errors";
 import {logFetchInfo} from "@/helpers/fetchDebug";
-import {apiUrl, contentJsonHeader} from "@/services/const";
+import {acceptJsonHeader, apiUrl, contentJsonHeader} from "@/services/const";
 import {createServerSuccessSchema, serverErrorSchema} from "@/services/helpers";
 import chalk from "chalk";
 import {cookies} from "next/headers";
@@ -67,6 +67,7 @@ export async function get<T extends ZodRawShape>(
   const response = await fetch(apiUrl + url + searchParamsString, {
     headers: {
       ...contentJsonHeader,
+      ...acceptJsonHeader,
       ...authorizationHeader(),
     },
     method: "GET",
@@ -108,7 +109,7 @@ export async function get<T extends ZodRawShape>(
   let serverResponseJson;
   try {
     serverResponseJson = z
-      .union([serverSuccessSchema, serverErrorSchema])
+      .discriminatedUnion("status", [serverSuccessSchema, serverErrorSchema])
       .parse(responseJson);
   } catch (e) {
     console.error(
@@ -142,6 +143,7 @@ export async function post<T extends ZodRawShape>(
   const response = await fetch(apiUrl + url, {
     headers: {
       ...contentJsonHeader,
+      ...acceptJsonHeader,
       ...authorizationHeader(),
     },
     method: "POST",
@@ -184,7 +186,7 @@ export async function post<T extends ZodRawShape>(
   let serverResponseJson;
   try {
     serverResponseJson = z
-      .union([serverSuccessSchema, serverErrorSchema])
+      .discriminatedUnion("status", [serverSuccessSchema, serverErrorSchema])
       .parse(responseJson);
   } catch (e) {
     console.error(
@@ -218,6 +220,7 @@ export async function postFormData<T extends ZodRawShape>(
 
   const response = await fetch(apiUrl + url, {
     headers: {
+      // ...acceptJsonHeader,
       ...authorizationHeader(),
     },
     method: "POST",
@@ -262,7 +265,7 @@ export async function postFormData<T extends ZodRawShape>(
   let serverResponseJson;
   try {
     serverResponseJson = z
-      .union([serverSuccessSchema, serverErrorSchema])
+      .discriminatedUnion("status", [serverSuccessSchema, serverErrorSchema])
       .parse(responseJson);
   } catch (e) {
     console.error(
@@ -298,6 +301,7 @@ export async function put<T extends ZodRawShape>(
   const response = await fetch(apiUrl + url, {
     headers: {
       ...contentJsonHeader,
+      ...acceptJsonHeader,
       ...authorizationHeader(),
     },
     method: "PUT",
@@ -341,7 +345,7 @@ export async function put<T extends ZodRawShape>(
   let serverResponseJson;
   try {
     serverResponseJson = z
-      .union([serverSuccessSchema, serverErrorSchema])
+      .discriminatedUnion("status", [serverSuccessSchema, serverErrorSchema])
       .parse(responseJson);
   } catch (e) {
     console.error(
@@ -377,6 +381,7 @@ export async function patch<T extends ZodRawShape>(
   const response = await fetch(apiUrl + url, {
     headers: {
       ...contentJsonHeader,
+      ...acceptJsonHeader,
       ...authorizationHeader(),
     },
     method: "PATCH",
@@ -420,7 +425,7 @@ export async function patch<T extends ZodRawShape>(
   let serverResponseJson;
   try {
     serverResponseJson = z
-      .union([serverSuccessSchema, serverErrorSchema])
+      .discriminatedUnion("status", [serverSuccessSchema, serverErrorSchema])
       .parse(responseJson);
   } catch (e) {
     console.error(

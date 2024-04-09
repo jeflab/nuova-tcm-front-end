@@ -11,6 +11,7 @@ import {
 } from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {notFound} from "next/navigation";
+import {Fragment} from "react";
 import {Alert, Col, Nav, Row} from "react-bootstrap";
 import {getLip} from "./actions";
 import {drawers} from "./drawers";
@@ -79,15 +80,13 @@ export default async function NewLipPage({params}: NewLipPageProps) {
               corrispondere.
             </p>
           </Alert>
-          {drawers.map(({name, title, modalContent, summaryContent}) => (
-            <Drawer
-              key={name}
-              name={name}
-              title={title}
-              modalContent={modalContent}
-            >
-              {summaryContent}
-            </Drawer>
+          {drawers.map(({name, title, modalContent, summaryContent, lock}) => (
+            <Fragment key={name}>
+              {lock}
+              <Drawer name={name} title={title} modalContent={modalContent}>
+                {summaryContent}
+              </Drawer>
+            </Fragment>
           ))}
         </Col>
       </Row>

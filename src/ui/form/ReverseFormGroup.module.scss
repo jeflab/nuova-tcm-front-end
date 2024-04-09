@@ -1,0 +1,11 @@
+@import "../../app/variables";
+
+.reverseFormGroup {
+  display: flex;
+  flex-direction: column;
+  row-gap: map-get($spacers, 1);
+
+  :global(:where(.form-text, .invalid-feedback, .valid-feedback)) {
+    margin-top: 0;
+  }
+}

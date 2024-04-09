@@ -1,4 +1,5 @@
 import {
+  fundSourceOptions,
   jobPositionOptions,
   ongoingRelationshipOptions,
   publicOfficesOptions,
@@ -75,7 +76,7 @@ const pepSchema = z.object({
   }),
   job: jobSchema,
   ongoingRelationship: z.enum(getOptionsValues(ongoingRelationshipOptions)),
-  fundSource: z.string(),
+  fundSource: z.enum(getOptionsValues(fundSourceOptions)),
   fundSourceOther: z.string().optional(),
 });
 
