@@ -1,4 +1,7 @@
-import {faPenToSquare} from "@fortawesome/pro-duotone-svg-icons";
+import {
+  faFileSignature,
+  faPenToSquare,
+} from "@fortawesome/pro-duotone-svg-icons";
 
 export type DrawerVariant =
   | "success"
@@ -9,6 +12,7 @@ export type DrawerVariant =
 
 export type DrawerState = {
   variant: DrawerVariant;
+  isLocked?: boolean;
   buttonLabel?: string;
   buttonIcon?: keyof typeof buttonMap;
 };
@@ -19,15 +23,20 @@ export const presetButtons = {
     buttonLabel: "Compila",
   },
   privacyEsign: {
-    buttonIcon: "faPenToSquare",
+    buttonIcon: "faFileSignature",
     buttonLabel: "Leggi e firma",
   },
   documentEsign: {
-    buttonIcon: "faPenToSquare",
+    buttonIcon: "faFileSignature",
     buttonLabel: "Firma",
+  },
+  update: {
+    buttonIcon: "faPenToSquare",
+    buttonLabel: "Aggiorna",
   },
 } as const;
 
 export const buttonMap = {
   faPenToSquare,
+  faFileSignature,
 } as const;

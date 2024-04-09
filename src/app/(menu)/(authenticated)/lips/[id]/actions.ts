@@ -112,6 +112,26 @@ export async function checkIfFiscalCodeExists(fiscalCode: string) {
   );
 }
 
+interface updateContractorContactsParams {
+  phone: string;
+  email: string;
+}
+export async function updateContractorContacts(
+  contractorId: number,
+  lipId: number,
+  formData: updateContractorContactsParams,
+) {
+  revalidateTag(`getLip-${lipId}`);
+  return patch(
+    `/personal-datas/${contractorId}`,
+    {},
+    JSON.stringify({
+      phone: formData.phone,
+      email: formData.email,
+    }),
+  );
+}
+
 const lastPrivacyShape = {
   privacy: privacySchema,
 };
@@ -182,7 +202,7 @@ export async function updateContractorData(
   return patch(`/personal-datas/${contractorId}`, {}, JSON.stringify(data));
 }
 
-interface UpdateContractorFiscalCodeParams {
+interface IdentificationContractorParams {
   frontPicture: File;
   backPicture: File;
   idType: IdType;

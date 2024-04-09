@@ -1,10 +1,10 @@
 "use client";
 
 import {updateContractorData} from "@/app/(menu)/(authenticated)/lips/[id]/actions";
+import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {
   FundSource,
   fundSourceOptions,
-  Gender,
   genderOptions,
   JobPosition,
   jobPositionOptions,
@@ -15,7 +15,6 @@ import {
   TAECode,
   tAECodeOptions,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
-import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {cns} from "@/helpers/cns";
 import {dbDateString} from "@/helpers/dates";
 import {YesNoAnswer} from "@/helpers/getOptionsLabel";
@@ -26,7 +25,9 @@ import {FieldError} from "@/ui/form/FieldError";
 import {Form} from "@/ui/form/Form";
 import {HelpText} from "@/ui/form/HelpText";
 import {InputField} from "@/ui/form/InputField";
+import {emailNormalizer, onlyNumbersNormalizer} from "@/ui/form/normalizers";
 import {SelectField} from "@/ui/form/SelectField";
+import {email} from "@/ui/form/validators/email";
 import {faSave, faSpinner, faXmark} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {
@@ -43,48 +44,6 @@ import {
 import {useForm} from "react-hook-form";
 import invariant from "tiny-invariant";
 
-const contractorDataDefaultValues = {
-  contractorPersonalData: {
-    birthDate: "",
-    birthPlace: {
-      city: "",
-      province: "",
-    },
-    fiscalCode: "",
-    gender: "" as Gender,
-    name: "",
-    surname: "",
-  },
-  contact: {
-    phone: "",
-    email: "",
-  },
-  residence: {
-    place: {
-      city: "",
-      province: "",
-    },
-    streetName: "",
-    streetNumber: "",
-    zipCode: "",
-  },
-  pep: {
-    isPep: "" as YesNoAnswer,
-    publicOffice: "" as PublicOffices,
-    otherPep: "" as YesNoAnswer,
-  },
-  job: {
-    position: "" as JobPosition,
-    positionOther: "",
-    tAECode: "" as TAECode,
-    province: "",
-    country: "",
-  },
-  ongoingRelationship: "" as OngoingRelationship,
-  fundSource: "" as FundSource,
-  fundSourceOther: "",
-};
-
 export function ContractorDataForm() {
   const lipId = useDrawerStore((state) => state.lip?.id);
   const contractor = useDrawerStore((state) => state.lip?.contractor);
@@ -92,24 +51,47 @@ export function ContractorDataForm() {
   const formMethods = useForm({
     mode: "onChange",
     defaultValues: {
-      ...contractorDataDefaultValues,
-      ...(contractor && {
-        contractorPersonalData: {
-          birthDate: dbDateString(contractor.birthDate),
-          birthPlace: {
-            city: contractor.birthPlace,
-            province: contractor.birthProvince,
-          },
-          fiscalCode: contractor.fiscalCode,
-          gender: contractor.gender,
-          name: contractor.name,
-          surname: contractor.surname,
+      contractorPersonalData: {
+        birthDate: contractor ? dbDateString(contractor.birthDate) : "",
+        birthPlace: {
+          city: contractor?.birthPlace ?? "",
+          province: contractor?.birthProvince ?? "",
         },
-        contact: {
-          phone: contractor.phone,
-          email: contractor.email,
+        fiscalCode: contractor?.fiscalCode ?? "",
+        gender: contractor?.gender ?? "",
+        name: contractor?.name ?? "",
+        surname: contractor?.surname ?? "",
+      },
+      contact: {
+        phone: contractor?.phone ?? "",
+        email: contractor?.email ?? "",
+      },
+      residence: {
+        place: {
+          city: contractor?.city ?? "",
+          province: contractor?.region ?? "",
         },
-      }),
+        streetName: contractor?.address ?? "",
+        streetNumber: contractor?.streetNumber ?? "",
+        zipCode: contractor?.zipCode ?? "",
+      },
+      pep: {
+        isPep: contractor?.pep?.isPep.response ?? ("" as YesNoAnswer),
+        publicOffice:
+          contractor?.pep?.publicOffice.response ?? ("" as PublicOffices),
+        otherPep: contractor?.pep?.otherPep.response ?? ("" as YesNoAnswer),
+      },
+      job: {
+        position: contractor?.pep?.job.position.response ?? ("" as JobPosition),
+        positionOther: contractor?.pep?.job.positionOther ?? "",
+        tAECode: contractor?.pep?.job.tAECode.response ?? ("" as TAECode),
+        province: contractor?.pep?.job.province ?? "",
+        country: contractor?.pep?.job.country ?? "",
+      },
+      ongoingRelationship:
+        contractor?.pep?.ongoingRelationship ?? ("" as OngoingRelationship),
+      fundSource: contractor?.pep?.fundSource ?? ("" as FundSource),
+      fundSourceOther: contractor?.pep?.fundSourceOther ?? "",
     },
   });
 
@@ -209,13 +191,38 @@ export function ContractorDataForm() {
             <Col className="d-flex" xs={12} sm={6}>
               <FormGroup controlId="contact.phone" as={BorderFeedback}>
                 <FormLabel>Cellulare</FormLabel>
-                <InputField type="text" plaintext readOnly />
+                <InputField
+                  type="tel"
+                  placeholder="Cellulare del Contraente"
+                  validation={{
+                    required: "Inserisci il Cellulare del Contraente",
+                  }}
+                  normalize={onlyNumbersNormalizer}
+                />
               </FormGroup>
             </Col>{" "}
             <Col className="d-flex" xs={12} sm={6}>
               <FormGroup controlId="contact.email" as={BorderFeedback}>
                 <FormLabel>E-mail</FormLabel>
-                <InputField type="text" plaintext readOnly />
+                <InputField
+                  type="email"
+                  placeholder="Email del Contraente"
+                  validation={{
+                    validate: {
+                      required: (value) => {
+                        if (!value) {
+                          return "Inserisci l'email del Contraente";
+                        }
+                      },
+                      pattern: (value) => {
+                        if (!email(value)) {
+                          return "L'email inserita non è valida";
+                        }
+                      },
+                    },
+                  }}
+                  normalize={emailNormalizer}
+                />
               </FormGroup>
             </Col>
             <h4 className="w-100">Residenza</h4>
@@ -333,7 +340,7 @@ export function ContractorDataForm() {
               </FormGroup>
             </Col>
             <Col className="d-flex" xs={12} sm={6}>
-              <FormGroup controlId="job.provice" as={BorderFeedback}>
+              <FormGroup controlId="job.province" as={BorderFeedback}>
                 <FormLabel>Provincia di attività prevalente</FormLabel>
                 <HelpText>(se diversa da residenza)</HelpText>
                 <InputField

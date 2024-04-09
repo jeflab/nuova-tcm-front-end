@@ -29,23 +29,12 @@ import {Alert, Button, ModalBody, ModalFooter, Row} from "react-bootstrap";
 import {useForm} from "react-hook-form";
 import invariant from "tiny-invariant";
 
-const quoteDefaultValues = {
-  birthDate: "",
-  smoker: "" as YesNoAnswer,
-  death: "20000",
-  accidentalDeath: false,
-  trafficAccidentalDeath: false,
-  exemptionFromPaying: false,
-  tpi: {enabled: false, coverage: "0"},
-  cancer: {enabled: false, coverage: "0"},
-  tpd: {enabled: false, coverage: "0"},
-};
-
 export function QuoteForm() {
   const [premium, setPremium] = useState<number>();
   const [isSaving, setIsSaving] = useState(false);
   const [firstTry, setFirstTry] = useState(true);
 
+  const quoteData = useDrawerStore((state) => state.lip?.quotation);
   const contractorBirthDate = useDrawerStore(
     (state) => state.lip?.contractor?.birthDate,
   );
@@ -55,7 +44,23 @@ export function QuoteForm() {
   const formMethods = useForm({
     mode: "onChange",
     defaultValues: {
-      ...quoteDefaultValues,
+      smoker: quoteData?.smoker ?? ("" as YesNoAnswer),
+      death: quoteData?.death.toString() ?? "20000",
+      accidentalDeath: quoteData?.accidentalDeath ?? false,
+      trafficAccidentalDeath: quoteData?.trafficAccidentalDeath ?? false,
+      exemptionFromPaying: quoteData?.exemptionFromPaying ?? false,
+      tpi: {
+        enabled: quoteData?.tpi.enabled ?? false,
+        coverage: quoteData?.tpi.coverage.toString() ?? "0",
+      },
+      cancer: {
+        enabled: quoteData?.cancer.enabled ?? false,
+        coverage: quoteData?.cancer.coverage.toString() ?? "0",
+      },
+      tpd: {
+        enabled: quoteData?.tpd.enabled ?? false,
+        coverage: quoteData?.tpd.coverage.toString() ?? "0",
+      },
       birthDate: dbDateString(contractorBirthDate),
     },
   });

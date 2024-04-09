@@ -1,22 +1,36 @@
 "use client";
 
-import {updateAccount} from "@/app/(menu)/(authenticated)/profile/actions";
+import {
+  updateAccount,
+  updatePassword,
+} from "@/app/(menu)/(authenticated)/profile/actions";
 import {cns} from "@/helpers/cns";
 import {User} from "@/models/entities/user";
 import {FieldError} from "@/ui/form/FieldError";
 import {Form} from "@/ui/form/Form";
+import {HelpText} from "@/ui/form/HelpText";
 import {InputField} from "@/ui/form/InputField";
 import {
   emailNormalizer,
   onlyNumbersNormalizer,
   upperCaseNormalizer,
 } from "@/ui/form/normalizers";
+import {ReverseFormGroup} from "@/ui/form/ReverseFormGroup";
 import {email} from "@/ui/form/validators/email";
 import {fiscalCodeValidator} from "@/ui/form/validators/fiscalCode";
+import {password} from "@/ui/form/validators/password";
 import {faSave, faSpinner, faXmark} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {useState} from "react";
-import {Button, Row, Card, Col, Alert} from "react-bootstrap";
+import {
+  Button,
+  Row,
+  Card,
+  Col,
+  Alert,
+  FormGroup,
+  FormLabel,
+} from "react-bootstrap";
 import {useForm} from "react-hook-form";
 
 interface AccountProfileProps {
@@ -25,7 +39,8 @@ interface AccountProfileProps {
 
 export function AccountProfile({user}: AccountProfileProps) {
   const [isUpdateMode, setIsUpdateMode] = useState(false);
-  const formMethods = useForm({
+  const [isPasswordMode, setIsPasswordMode] = useState(false);
+  const updateProfileFormMethods = useForm({
     defaultValues: {
       fiscalCode: user.fiscalCode,
       email: user.email,
@@ -33,142 +48,290 @@ export function AccountProfile({user}: AccountProfileProps) {
     },
   });
 
+  const updatePasswordFormMethods = useForm({
+    defaultValues: {
+      oldPassword: "",
+      newPassword: "",
+      repeatNewPassword: "",
+    },
+  });
+
   return (
-    <Form
-      formMethods={formMethods}
-      onSubmit={async (values) => {
-        const updateAccountResponse = await updateAccount(values);
-
-        if (updateAccountResponse.status === "failed") {
-          throw {
-            root: {
-              type: "server",
-              message: updateAccountResponse.message,
-            },
-          };
-        }
-
-        setIsUpdateMode(false);
-      }}
-    >
+    <>
       <h3>Account</h3>
       <Card body>
-        <Row as="dl" xs={1} sm={3}>
-          <Col>
-            <dt id="fiscal-code-label">Codice fiscale:</dt>
-            {isUpdateMode ? (
-              <dd>
-                <InputField
-                  type="text"
-                  name="fiscalCode"
-                  placeholder="Codice fiscale"
-                  normalize={upperCaseNormalizer}
-                  aria-labelledby="fiscal-code-label"
-                  validation={{
-                    validate: {
-                      required: (value) => {
-                        if (!value) {
-                          return "Inserisci il tuo codice fiscale";
-                        }
+        <Form
+          id="update-profile"
+          formMethods={updateProfileFormMethods}
+          onSubmit={async (values) => {
+            const updateAccountResponse = await updateAccount(values);
+
+            if (updateAccountResponse.status === "failed") {
+              throw {
+                root: {
+                  type: "server",
+                  message: updateAccountResponse.message,
+                },
+              };
+            }
+
+            setIsUpdateMode(false);
+          }}
+        >
+          <Row as="dl" xs={1} sm={3}>
+            <Col>
+              <dt id="fiscal-code-label">Codice fiscale:</dt>
+              {isUpdateMode ? (
+                <dd>
+                  <InputField
+                    type="text"
+                    name="fiscalCode"
+                    placeholder="Codice fiscale"
+                    normalize={upperCaseNormalizer}
+                    aria-labelledby="fiscal-code-label"
+                    validation={{
+                      validate: {
+                        required: (value) => {
+                          if (!value) {
+                            return "Inserisci il tuo codice fiscale";
+                          }
+                        },
+                        custom: (value) => {
+                          if (!fiscalCodeValidator(value)) {
+                            return "Il codice fiscale inserito non è valido";
+                          }
+                        },
                       },
-                      custom: (value) => {
-                        if (!fiscalCodeValidator(value)) {
-                          return "Il codice fiscale inserito non è valido";
-                        }
+                    }}
+                  />
+                  <FieldError name="fiscalCode" />
+                </dd>
+              ) : (
+                <dd>{user.fiscalCode}</dd>
+              )}
+            </Col>
+            <Col>
+              <dt>Email:</dt>
+              {isUpdateMode ? (
+                <dd>
+                  <InputField
+                    type="email"
+                    name="email"
+                    placeholder="Email"
+                    normalize={emailNormalizer}
+                    validation={{
+                      validate: {
+                        required: (value) => {
+                          if (!value) {
+                            return "Inserisci la tia email";
+                          }
+                        },
+                        pattern: (value) => {
+                          if (!email(value)) {
+                            return "L'email inserita non è valida";
+                          }
+                        },
                       },
-                    },
-                  }}
-                />
-                <FieldError name="fiscalCode" />
-              </dd>
-            ) : (
-              <dd>{user.fiscalCode}</dd>
-            )}
-          </Col>
-          <Col>
-            <dt>Email:</dt>
-            {isUpdateMode ? (
-              <dd>
-                <InputField
-                  type="email"
-                  name="email"
-                  placeholder="Email"
-                  normalize={emailNormalizer}
-                  validation={{
-                    validate: {
-                      required: (value) => {
-                        if (!value) {
-                          return "Inserisci la tia email";
-                        }
+                    }}
+                  />
+                  <FieldError name="email" />
+                </dd>
+              ) : (
+                <dd>{user.email}</dd>
+              )}
+            </Col>
+            <Col>
+              <dt>Numero di cellulare:</dt>
+              {isUpdateMode ? (
+                <dd>
+                  <InputField
+                    type="tel"
+                    name="phone"
+                    placeholder="Numero di cellulare"
+                    validation={{
+                      required: "Inserisci il tuo numero di cellulare",
+                    }}
+                    normalize={onlyNumbersNormalizer}
+                  />
+                  <FieldError name="phone" />
+                </dd>
+              ) : (
+                <dd>{user.phone}</dd>
+              )}
+            </Col>
+          </Row>
+          <FieldError name="root" as={Alert} variant="danger" />
+        </Form>
+        {isPasswordMode && (
+          <Form
+            id="update-password"
+            formMethods={updatePasswordFormMethods}
+            onSubmit={async (values) => {
+              if (values.newPassword !== values.repeatNewPassword) {
+                throw {
+                  repeatNewPassword: {
+                    type: "custom",
+                    message: "Le password non corrispondono",
+                  },
+                };
+              }
+              const updatePasswordResponse = await updatePassword(values);
+
+              if (updatePasswordResponse.status === "failed") {
+                throw {
+                  root: {
+                    type: "server",
+                    message: updatePasswordResponse.message,
+                  },
+                };
+              }
+
+              setIsUpdateMode(false);
+            }}
+          >
+            <Row as="dl" xs={1} sm={3}>
+              <Col>
+                <FormGroup as={ReverseFormGroup} controlId="oldPassword">
+                  <FormLabel>Vecchia password</FormLabel>
+                  <FieldError />
+                  <InputField
+                    type="password"
+                    name="oldPassword"
+                    placeholder="Vecchia password"
+                    validation={{
+                      required: "Inserisci la tua vecchia password",
+                    }}
+                  />
+                </FormGroup>
+              </Col>
+              <Col>
+                <FormGroup as={ReverseFormGroup} controlId="newPassword">
+                  <FormLabel>Nuova password</FormLabel>
+                  <HelpText>
+                    La password deve contenere almeno 12 caratteri, di cui
+                    almeno una lettera maiuscola, una lettera minuscola, un
+                    numero e un carattere speciale.
+                  </HelpText>
+                  <FieldError />
+                  <InputField
+                    type="password"
+                    name="newPassword"
+                    placeholder="Nuova password"
+                    validation={{
+                      validate: {
+                        required: (value) => {
+                          if (!value) {
+                            return "Inserisci la tua nuova password";
+                          }
+                        },
+                        pattern: (value) => {
+                          if (value && !password(value)) {
+                            return "La password deve non rispetta i requisiti minimi di sicurezza";
+                          }
+                        },
                       },
-                      pattern: (value) => {
-                        if (!email(value)) {
-                          return "L'email inserita non è valida";
-                        }
-                      },
-                    },
-                  }}
-                />
-                <FieldError name="email" />
-              </dd>
-            ) : (
-              <dd>{user.email}</dd>
-            )}
-          </Col>
-          <Col>
-            <dt>Numero di cellulare:</dt>
-            {isUpdateMode ? (
-              <dd>
-                <InputField
-                  type="tel"
-                  name="phone"
-                  placeholder="Numero di cellulare"
-                  validation={{
-                    required: "Inserisci il tuo numero di cellulare",
-                  }}
-                  normalize={onlyNumbersNormalizer}
-                />
-                <FieldError name="phone" />
-              </dd>
-            ) : (
-              <dd>{user.phone}</dd>
-            )}
-          </Col>
-        </Row>
-        {isUpdateMode ? (
-          <>
+                    }}
+                  />
+                </FormGroup>
+              </Col>
+              <Col>
+                <FormGroup as={ReverseFormGroup} controlId="repeatNewPassword">
+                  <FormLabel>Ripeti nuova password</FormLabel>
+                  <FieldError />
+                  <InputField
+                    type="password"
+                    name="repeatNewPassword"
+                    placeholder="Ripeti nuova password"
+                    validation={{
+                      required: "Ripeti la tua nuova password",
+                    }}
+                  />
+                </FormGroup>
+              </Col>
+            </Row>
             <FieldError name="root" as={Alert} variant="danger" />
-            <Button type="submit" className="me-2">
+          </Form>
+        )}
+        {isUpdateMode && (
+          <>
+            <Button type="submit" form="update-profile" className="me-2">
               <FontAwesomeIcon
-                icon={formMethods.formState.isSubmitting ? faSpinner : faSave}
+                icon={
+                  updateProfileFormMethods.formState.isSubmitting
+                    ? faSpinner
+                    : faSave
+                }
                 className={cns(
                   "me-2",
-                  formMethods.formState.isSubmitting && "fa-spin",
+                  updateProfileFormMethods.formState.isSubmitting && "fa-spin",
                 )}
               />
-              Salva
+              Salva profilo
             </Button>
             <Button
               type="button"
               variant="cancel"
               onClick={() => {
                 setIsUpdateMode(false);
+                updateProfileFormMethods.reset();
               }}
             >
               <FontAwesomeIcon icon={faXmark} className="me-2" />
               Annulla
             </Button>
           </>
-        ) : (
-          <Button
-            onClick={() => {
-              setIsUpdateMode(true);
-            }}
-          >
-            Modifica
-          </Button>
+        )}
+        {isPasswordMode && (
+          <>
+            <Button type="submit" form="update-password" className="me-2">
+              <FontAwesomeIcon
+                icon={
+                  updatePasswordFormMethods.formState.isSubmitting
+                    ? faSpinner
+                    : faSave
+                }
+                className={cns(
+                  "me-2",
+                  updatePasswordFormMethods.formState.isSubmitting && "fa-spin",
+                )}
+              />
+              Salva password
+            </Button>
+            <Button
+              type="button"
+              variant="cancel"
+              onClick={() => {
+                setIsPasswordMode(false);
+                updatePasswordFormMethods.reset();
+              }}
+            >
+              <FontAwesomeIcon icon={faXmark} className="me-2" />
+              Annulla
+            </Button>
+          </>
+        )}
+        {!isUpdateMode && !isPasswordMode && (
+          <>
+            <Button
+              type="button"
+              onClick={() => {
+                setIsUpdateMode(true);
+              }}
+            >
+              Modifica profilo
+            </Button>
+            <Button
+              type="button"
+              onClick={() => {
+                setIsPasswordMode(true);
+              }}
+              className="ms-2"
+            >
+              Modifica password
+            </Button>
+          </>
         )}
       </Card>
-    </Form>
+    </>
   );
 }

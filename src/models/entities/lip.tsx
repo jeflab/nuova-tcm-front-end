@@ -4,9 +4,9 @@ import {
   paymentMethodsSimpleOptions,
   relationshipOptions,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
+import {getOptionsValues, yesNoOptions} from "@/helpers/getOptionsLabel";
 import {agentSchema} from "@/models/entities/agent";
 import {personalDataSchema} from "@/models/entities/personalData";
-import {getOptionsValues, yesNoOptions} from "@/helpers/getOptionsLabel";
 import {faCircleHalf, faCircleTrash} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {ReactNode} from "react";
@@ -70,7 +70,7 @@ const denSchema = z.object({
 
 const quotationSchema = z.object({
   birthDate: z.string(),
-  smoker: z.string(),
+  smoker: z.enum(getOptionsValues(yesNoOptions)),
   death: z.number(),
   accidentalDeath: z.boolean(),
   trafficAccidentalDeath: z.boolean(),
@@ -159,6 +159,7 @@ const beneficiarySchema = z.object({
     response: z.string(),
   }),
 });
+export type Beneficiary = z.infer<typeof beneficiarySchema>;
 
 const thirdPartySchema = z.object({
   name: z.string(),
@@ -180,6 +181,7 @@ const thirdPartySchema = z.object({
   phone: z.string(),
   email: z.string(),
 });
+export type ThirdParty = z.infer<typeof thirdPartySchema>;
 
 const beneficiariesSchema = z.object({
   nomination: z.enum(getOptionsValues(nominationOptions)),

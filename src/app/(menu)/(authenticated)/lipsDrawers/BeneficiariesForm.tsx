@@ -1,6 +1,7 @@
 "use client";
 
 import {updateBeneficiaries} from "@/app/(menu)/(authenticated)/lips/[id]/actions";
+import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {
   Gender,
   genderOptions,
@@ -9,8 +10,9 @@ import {
   Relationship,
   relationshipOptions,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
-import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {dbDateString} from "@/helpers/dates";
 import {YesNoAnswer, yesNoOptions} from "@/helpers/getOptionsLabel";
+import {Beneficiary, Lip, ThirdParty} from "@/models/entities/lip";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {CheckboxField} from "@/ui/form/CheckboxField";
 import {CheckGroup} from "@/ui/form/CheckGroup";
@@ -51,59 +53,86 @@ import {
 import {useFieldArray, useForm} from "react-hook-form";
 import invariant from "tiny-invariant";
 
-const beneficiaryDefaultValues = {
-  name: "",
-  surname: "",
-  birthDate: "",
-  birthPlace: {city: "", province: ""},
-  fiscalCode: "",
-  gender: "" as Gender,
-  streetName: "",
-  streetNumber: "",
-  place: {city: "", province: ""},
-  zipCode: "",
-  phone: "",
-  email: "",
-  share: "",
-  pep: {check: "" as YesNoAnswer, response: "" as Relationship, otherValue: ""},
-  relationship: {check: "" as YesNoAnswer, response: ""},
-};
-
-const thirdPartDefaultValues = {
-  name: "",
-  surname: "",
-  birthDate: "",
-  birthPlace: {city: "", province: ""},
-  fiscalCode: "",
-  gender: "" as Gender,
-  place: {
-    city: "",
-    province: "",
+const beneficiaryDefaultValues = (beneficiaryData?: Beneficiary) => ({
+  name: beneficiaryData?.name ?? "",
+  surname: beneficiaryData?.surname ?? "",
+  birthDate: beneficiaryData?.birthDate
+    ? dbDateString(beneficiaryData.birthDate)
+    : "",
+  birthPlace: {
+    city: beneficiaryData?.birthPlace.city ?? "",
+    province: beneficiaryData?.birthPlace.province ?? "",
   },
-  streetName: "",
-  streetNumber: "",
-  zipCode: "",
-  phone: "",
-  email: "",
-};
+  fiscalCode: beneficiaryData?.fiscalCode ?? "",
+  gender: beneficiaryData?.gender ?? ("" as Gender),
+  streetName: beneficiaryData?.streetName ?? "",
+  streetNumber: beneficiaryData?.streetNumber ?? "",
+  place: {
+    city: beneficiaryData?.place.city ?? "",
+    province: beneficiaryData?.place.province ?? "",
+  },
+  zipCode: beneficiaryData?.zipCode ?? "",
+  phone: beneficiaryData?.phone ?? "",
+  email: beneficiaryData?.email ?? "",
+  share: beneficiaryData?.share ?? "",
+  pep: {
+    check: beneficiaryData?.pep.check ?? ("" as YesNoAnswer),
+    response: beneficiaryData?.pep.response ?? ("" as Relationship),
+    otherValue: beneficiaryData?.pep.otherValue ?? "",
+  },
+  relationship: {
+    check: beneficiaryData?.relationship.check ?? ("" as YesNoAnswer),
+    response: beneficiaryData?.relationship.response ?? "",
+  },
+});
 
-const beneficiariesDefaultValues = {
-  nomination: "" as Nomination,
-  thirdParty: false,
-  beneficiaries: [beneficiaryDefaultValues] as
-    | undefined
-    | (typeof beneficiaryDefaultValues)[],
-  thirdPartyContactPerson: undefined as
-    | undefined
-    | typeof thirdPartDefaultValues,
-};
-export type BeneficiariesFormValues = typeof beneficiariesDefaultValues;
+const thirdPartDefaultValues = (thirdParty?: ThirdParty) => ({
+  name: thirdParty?.name ?? "",
+  surname: thirdParty?.surname ?? "",
+  birthDate: thirdParty?.birthDate ? dbDateString(thirdParty.birthDate) : "",
+  birthPlace: {
+    city: thirdParty?.birthPlace.city ?? "",
+    province: thirdParty?.birthPlace.province ?? "",
+  },
+  fiscalCode: thirdParty?.fiscalCode ?? "",
+  gender: thirdParty?.gender ?? ("" as Gender),
+  place: {
+    city: thirdParty?.place.city ?? "",
+    province: thirdParty?.place.province ?? "",
+  },
+  streetName: thirdParty?.streetName ?? "",
+  streetNumber: thirdParty?.streetNumber ?? "",
+  zipCode: thirdParty?.zipCode ?? "",
+  phone: thirdParty?.phone ?? "",
+  email: thirdParty?.email ?? "",
+});
+
+const beneficiariesDefaultValues = (
+  beneficiariesData: Lip["beneficiaries"],
+) => ({
+  nomination: beneficiariesData?.nomination ?? ("" as Nomination),
+  thirdParty: beneficiariesData?.thirdParty ?? false,
+  beneficiaries: beneficiariesData?.beneficiaries
+    ? beneficiariesData?.beneficiaries.map(beneficiaryDefaultValues)
+    : ([beneficiaryDefaultValues()] as
+        | undefined
+        | ReturnType<typeof beneficiaryDefaultValues>[]),
+  thirdPartyContactPerson: (beneficiariesData?.thirdPartyContactPerson
+    ? thirdPartDefaultValues(beneficiariesData.thirdPartyContactPerson)
+    : undefined) as undefined | ReturnType<typeof thirdPartDefaultValues>,
+});
+export type BeneficiariesFormValues = ReturnType<
+  typeof beneficiariesDefaultValues
+>;
 
 export function BeneficiariesForm() {
   const animateContainer = useRef(null);
+
+  const beneficiariesData = useDrawerStore((state) => state.lip?.beneficiaries);
+
   const formMethods = useForm({
     mode: "onChange",
-    defaultValues: beneficiariesDefaultValues,
+    defaultValues: beneficiariesDefaultValues(beneficiariesData),
   });
   const {fields, append, remove} = useFieldArray({
     control: formMethods.control,
@@ -168,9 +197,14 @@ export function BeneficiariesForm() {
                     options={nominationOptions}
                     onChange={(value) => {
                       if (value === "beneficiaries") {
-                        formMethods.setValue("beneficiaries", [
-                          beneficiaryDefaultValues,
-                        ]);
+                        formMethods.setValue(
+                          "beneficiaries",
+                          beneficiariesData?.beneficiaries
+                            ? beneficiariesData?.beneficiaries.map(
+                                beneficiaryDefaultValues,
+                              )
+                            : [beneficiaryDefaultValues()],
+                        );
                       } else {
                         formMethods.setValue("beneficiaries", undefined);
                       }
@@ -638,7 +672,7 @@ export function BeneficiariesForm() {
                       type="button"
                       variant="info"
                       disabled={fields.length >= 5}
-                      onClick={() => append(beneficiaryDefaultValues)}
+                      onClick={() => append(beneficiaryDefaultValues())}
                       className="me-auto"
                     >
                       <FontAwesomeIcon icon={faUserPlus} className="me-2" />
@@ -682,7 +716,7 @@ export function BeneficiariesForm() {
                   if (value.target.checked) {
                     formMethods.setValue(
                       "thirdPartyContactPerson",
-                      thirdPartDefaultValues,
+                      thirdPartDefaultValues(),
                     );
                   } else {
                     formMethods.setValue("thirdPartyContactPerson", undefined);

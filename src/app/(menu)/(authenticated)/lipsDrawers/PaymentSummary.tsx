@@ -1,6 +1,7 @@
 "use client";
 
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {dateString} from "@/helpers/dates";
 import {Currency} from "@/ui/Currency";
 import {IconStack} from "@/ui/IconStack";
 import {
@@ -27,9 +28,9 @@ export function PaymentSummary() {
           <FontAwesomeIcon icon={faCirclePlay} /> Decorrenza assicurazione
         </h4>
         <p className="mb-0">
-          Data di decorrenza sel contratto: {paymentData.effectiveDate}, durata{" "}
-          {paymentData.duration} anni, anno di scadenza:{" "}
-          {paymentData.expirationDate}
+          Data di decorrenza sel contratto:{" "}
+          {dateString(paymentData.effectiveDate)}, durata {paymentData.duration}{" "}
+          anni, anno di scadenza: {paymentData.expirationDate}
         </p>
       </div>
       <div>
