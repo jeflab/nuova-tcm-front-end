@@ -70,6 +70,7 @@
     "lint-staged": "lint-staged",
     "predev": "npm i",
     "prepare": "husky",
+    "preturbo": "npm i",
     "start": "next start",
     "turbo": "next dev --turbo",
     "validate": "npm-run-all --print-label --parallel check-format lint check-types --sequential build"

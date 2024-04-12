@@ -5,9 +5,8 @@ import {cns} from "@/helpers/cns";
 import {FieldError} from "@/ui/form/FieldError";
 import {Form} from "@/ui/form/Form";
 import {InputField} from "@/ui/form/InputField";
-import {emailNormalizer, upperCaseNormalizer} from "@/ui/form/normalizers";
+import {upperCaseNormalizer} from "@/ui/form/normalizers";
 import {SubmitButton} from "@/ui/form/SubmitButton";
-import {email} from "@/ui/form/validators/email";
 import {fiscalCodeValidator} from "@/ui/form/validators/fiscalCode";
 import {IconStack} from "@/ui/IconStack";
 import {faUnlock} from "@fortawesome/pro-duotone-svg-icons";
@@ -17,20 +16,10 @@ import {Alert, FormGroup, FormLabel} from "react-bootstrap";
 
 const defaultValues = {
   fiscalCode: "",
-  email: "",
 };
 
 export function ForgotPasswordForm() {
   const handleSubmit = async (data: typeof defaultValues) => {
-    if (!data.fiscalCode && !data.email) {
-      throw {
-        root: {
-          type: "server",
-          message: "Compila almeno uno dei due campi",
-        },
-      };
-    }
-
     let forgotPasswordResponse: Awaited<ReturnType<typeof forgotPassword>>;
 
     try {
@@ -56,34 +45,17 @@ export function ForgotPasswordForm() {
       defaultValues={defaultValues}
       className="d-flex flex-column gap-3"
     >
-      <Alert variant="info">
-        Inserisci la tua email oppure il tuo codice fiscale. Ti invieremo un
-        messaggio con le istruzioni per impostare una nuova password.
-      </Alert>
       <FormGroup controlId="fiscalCode">
         <FormLabel>Codice Fiscale</FormLabel>
         <InputField
           type="text"
           placeholder="Codice Fiscale"
           validation={{
+            required: "Inserisci il tuo codice fiscale.",
             validate: (value) =>
-              !value ||
-              fiscalCodeValidator(value) ||
-              "Codice fiscale non valido",
+              fiscalCodeValidator(value) || "Codice fiscale non valido",
           }}
           normalize={upperCaseNormalizer}
-        />
-        <FieldError />
-      </FormGroup>
-      <FormGroup controlId="email">
-        <FormLabel>Email</FormLabel>
-        <InputField
-          type="email"
-          placeholder="E-mail"
-          validation={{
-            validate: (value) => !value || email(value) || "Email non valida",
-          }}
-          normalize={emailNormalizer}
         />
         <FieldError />
       </FormGroup>
