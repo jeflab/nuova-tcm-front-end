@@ -3,7 +3,6 @@
 import {updatePaymentData} from "@/app/(menu)/(authenticated)/lips/[id]/actions";
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {getCoverageDuration} from "@/app/(menu)/quoter/helpers";
-import {dbDateString} from "@/helpers/dates";
 import {Lip} from "@/models/entities/lip";
 import {Currency} from "@/ui/Currency";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
@@ -16,7 +15,6 @@ import {validateIBAN} from "@/ui/form/validators/iban";
 import {faSave, faSpinner, faXmark} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {addYears} from "date-fns/addYears";
-import {endOfYear} from "date-fns/endOfYear";
 import {
   Button,
   Col,
@@ -25,7 +23,7 @@ import {
   ModalBody,
   ModalFooter,
   Row,
-  Collapse,
+  Alert,
 } from "react-bootstrap";
 import {useForm} from "react-hook-form";
 import invariant from "tiny-invariant";
@@ -136,44 +134,28 @@ export function PaymentForm() {
         >
           <Row className="row-gap-3">
             <h4>Decorrenza assicurazione e premio</h4>
-            <Col className="d-flex" xs={12} sm={4}>
-              <FormGroup controlId="effectiveDate" as={BorderFeedback}>
-                <FormLabel>Data di decorrenza del contratto</FormLabel>
-                <FieldError />
-                <InputField
-                  type="date"
-                  placeholder="Data decorrenza contratto"
-                  max={dbDateString(endOfYear(new Date()))}
-                  min={dbDateString()}
-                  validation={{
-                    required: "Inserisci la data di decorrenza del contratto",
-                    max: {
-                      value: dbDateString(endOfYear(new Date())),
-                      message:
-                        "La data di decorrenza dev'essere entro la fine dell'anno",
-                    },
-                    min: {
-                      value: dbDateString(),
-                      message:
-                        "La data di decorrenza non può essere antecedente a oggi",
-                    },
-                  }}
-                />
-              </FormGroup>
-            </Col>
-            <Col className="d-flex" xs={12} sm={4}>
-              <FormGroup controlId="duration" as={BorderFeedback}>
-                <FormLabel>Durata in anni</FormLabel>
-                <FieldError />
-                <InputField type="text" readOnly plaintext />
-              </FormGroup>
-            </Col>
-            <Col className="d-flex" xs={12} sm={4}>
-              <FormGroup controlId="expirationDate" as={BorderFeedback}>
-                <FormLabel>Anno di scadenza</FormLabel>
-                <FieldError />
-                <InputField type="text" readOnly plaintext />
-              </FormGroup>
+            <Col className="col-12">
+              <Alert variant="info">
+                <p>
+                  Il contratto si intende{" "}
+                  <strong>perfezionato e concluso</strong> nel momento in cui
+                  avvengono entrambi gli eventi qui elencati:
+                </p>
+                <ol>
+                  <li>
+                    la <strong>sottoscrizione della proposta/polizza</strong> da
+                    parte del Contraente
+                  </li>
+                  <li>
+                    il <strong>pagamento del Premio Annuo Costante</strong> alla
+                    data di perfezionamento.
+                  </li>
+                </ol>
+                <p className="mb-0">
+                  Il contratto entra in vigore alle ore 24 della data di
+                  perfezionamento e conclusione dello stesso.
+                </p>
+              </Alert>
             </Col>
             <Col className="d-flex">
               <FormGroup controlId="paymentMethod" as={BorderFeedback}>

@@ -1,7 +1,6 @@
 "use client";
 
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
-import {dateString} from "@/helpers/dates";
 import {Currency} from "@/ui/Currency";
 import {IconStack} from "@/ui/IconStack";
 import {
@@ -27,10 +26,23 @@ export function PaymentSummary() {
         <h4 className="w-100 text-primary">
           <FontAwesomeIcon icon={faCirclePlay} /> Decorrenza assicurazione
         </h4>
+        <p>
+          Il contratto si intende <strong>perfezionato e concluso</strong> nel
+          momento in cui avvengono entrambi gli eventi qui elencati:
+        </p>
+        <ol>
+          <li>
+            la <strong>sottoscrizione della proposta/polizza</strong> da parte
+            del Contraente
+          </li>
+          <li>
+            il <strong>pagamento del Premio Annuo Costante</strong> alla data di
+            perfezionamento.
+          </li>
+        </ol>
         <p className="mb-0">
-          Data di decorrenza sel contratto:{" "}
-          {dateString(paymentData.effectiveDate)}, durata {paymentData.duration}{" "}
-          anni, anno di scadenza: {paymentData.expirationDate}
+          Il contratto entra in vigore alle ore 24 della data di perfezionamento
+          e conclusione dello stesso.
         </p>
       </div>
       <div>
