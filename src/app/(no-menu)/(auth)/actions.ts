@@ -5,6 +5,8 @@ import {accountSchema} from "@/models/account";
 import {agentSchema} from "@/models/entities/agent";
 import {personalDataSchema} from "@/models/entities/personalData";
 import {userSchema} from "@/models/entities/user";
+import {Tags} from "@/services/const";
+import {invalidateTag} from "@/services/helpers";
 import {cookies, headers} from "next/headers";
 import {redirect} from "next/navigation";
 import {z} from "zod";
@@ -60,6 +62,7 @@ export async function isLoggedIn() {
 
 export async function logout() {
   const logoutResponsePromise = api.post("/logout", {});
+  invalidateTag(Tags.me());
   cookies().delete(AUTH_COOKIE_NAME);
 
   return await logoutResponsePromise;
@@ -78,7 +81,9 @@ export async function checkAuth() {
 }
 
 export async function getAccount() {
-  return await api.get("/me", accountSchema.shape, {tags: ["me"]});
+  return await api.get("/me", accountSchema.shape, {
+    tags: [Tags.me()],
+  });
 }
 
 const getProfileShape = {

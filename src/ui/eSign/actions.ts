@@ -4,7 +4,8 @@ import {getProfile} from "@/app/(no-menu)/(auth)/actions";
 import {esignSchema, PDFType} from "@/models/entities/esign";
 import {lipSchema} from "@/models/entities/lip";
 import {post, put} from "@/services/api";
-import {revalidateTag} from "next/cache";
+import {Tag} from "@/services/const";
+import {invalidateTag} from "@/services/helpers";
 
 const createFEATransactionSchema = {
   esign: esignSchema,
@@ -42,7 +43,7 @@ interface SignFEADocParams<TPayload> {
   OTP: string;
   payload: TPayload;
   pdfType: PDFType;
-  tagToRevalidate?: string;
+  tagToRevalidate?: Tag;
   transactionId: string;
 }
 
@@ -56,7 +57,7 @@ export async function signFEADoc<TPayload>({
   transactionId,
 }: SignFEADocParams<TPayload>) {
   if (tagToRevalidate) {
-    revalidateTag(tagToRevalidate);
+    invalidateTag(tagToRevalidate);
   }
   return put(
     "/esigns/sign-feadoc",

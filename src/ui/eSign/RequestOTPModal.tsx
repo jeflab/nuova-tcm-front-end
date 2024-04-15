@@ -1,5 +1,6 @@
 import {PDFType} from "@/models/entities/esign";
 import {PersonalData} from "@/models/entities/personalData";
+import {Tag} from "@/services/const";
 import {signFEADoc} from "@/ui/eSign/actions";
 import {RequestOTPModalContent} from "@/ui/eSign/RequestOTPModalContent";
 import {Modal, ModalBody} from "react-bootstrap";
@@ -17,7 +18,7 @@ interface RequestOTPModalProps<TPayload> {
   pdfType: PDFType;
   personalData?: PersonalData;
   show: boolean;
-  tagToRevalidate?: string;
+  tagToRevalidate?: Tag;
 }
 
 export function RequestOTPModal<TPayload>({

@@ -1,4 +1,6 @@
+import {revalidateTag} from "next/cache";
 import {z, ZodRawShape} from "zod";
+import {Tag} from "./const";
 
 export const serverErrorSchema = z.object({
   status: z.literal("failed"),
@@ -25,3 +27,7 @@ export const createServerSuccessSchema = <T extends ZodRawShape>(
     responseStatus: z.number(),
     ...successDataShape,
   });
+
+export function invalidateTag(tag: Tag) {
+  revalidateTag(tag);
+}

@@ -2,6 +2,7 @@ import {Profile} from "@/models/account";
 import {PDFType} from "@/models/entities/esign";
 import {PersonalData} from "@/models/entities/personalData";
 import {cns} from "@/helpers/cns";
+import {Tag} from "@/services/const";
 import {signFEADoc} from "@/ui/eSign/actions";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {FieldError} from "@/ui/form/FieldError";
@@ -36,7 +37,7 @@ interface RequestOTPFormProps<TPayload> {
   profile: Profile;
   resendOTP?: () => void;
   transactionId: string;
-  tagToRevalidate?: string;
+  tagToRevalidate?: Tag;
 }
 
 const requestOTPFormDefaultValues = {
