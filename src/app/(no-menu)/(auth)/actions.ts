@@ -1,6 +1,6 @@
 "use server";
 
-import {AUTH_COOKIE_NAME} from "@/app/(no-menu)/(auth)/const";
+import {AUTH_COOKIE_NAME, COOKIE_DURATION} from "@/app/(no-menu)/(auth)/const";
 import {accountSchema} from "@/models/account";
 import {agentSchema} from "@/models/entities/agent";
 import {personalDataSchema} from "@/models/entities/personalData";
@@ -26,6 +26,8 @@ export async function login(data: {fiscalCode: string; password: string}) {
       httpOnly: true,
       secure: true,
       sameSite: "strict",
+      maxAge: COOKIE_DURATION,
+      expires: new Date(Date.now() + COOKIE_DURATION * 1000),
     });
   }
 
