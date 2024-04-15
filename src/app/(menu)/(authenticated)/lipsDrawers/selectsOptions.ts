@@ -371,11 +371,11 @@ export const paymentMethodsSimpleOptions = [
     value: "annual",
   },
   {
-    label: "Pagamento anticipato di 3 anni con sconto del 10%",
+    label: "Pagamento anticipato di 3 anni",
     value: "3yearsAdvance",
   },
   {
-    label: "Pagamento anticipato di 5 anni con sconto del 15",
+    label: "Pagamento anticipato di 5 anni",
     value: "5yearsAdvance",
   },
 ] as const;

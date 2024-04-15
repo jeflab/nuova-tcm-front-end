@@ -31,10 +31,7 @@ import {useForm} from "react-hook-form";
 import invariant from "tiny-invariant";
 
 // Payments
-export function paymentMethodsOptions<T>(
-  premium: number,
-  paymentMethodValue: T,
-) {
+export function paymentMethodsOptions<T>(premium: number) {
   return [
     {
       label: (
@@ -56,14 +53,8 @@ export function paymentMethodsOptions<T>(
     {
       label: (
         <>
-          Sconto del 10%
-          <Collapse in={paymentMethodValue === "3yearsAdvance"}>
-            <div style={{textTransform: "none"}}>
-              Pagamento anticipato di 3 anni con sconto del 10% (
-              <Currency>{premium * 3 * 0.9}</Currency>) e a seguire pagamento
-              mensile di <Currency>{premium / 12}</Currency>
-            </div>
-          </Collapse>
+          Pagamento anticipato di 3 anni (<Currency>{premium * 3}</Currency>) e
+          a seguire pagamento mensile di <Currency>{premium / 12}</Currency>
         </>
       ),
       value: "3yearsAdvance",
@@ -71,14 +62,8 @@ export function paymentMethodsOptions<T>(
     {
       label: (
         <>
-          Sconto del 15%
-          <Collapse in={paymentMethodValue === "5yearsAdvance"}>
-            <div style={{textTransform: "none"}}>
-              Pagamento anticipato di 5 anni con sconto del 15% (
-              <Currency>{premium * 5 * 0.85}</Currency>) e a seguire pagamento
-              mensile di <Currency>{premium / 12}</Currency>
-            </div>
-          </Collapse>
+          Pagamento anticipato di 5 anni (<Currency>{premium * 5}</Currency>) e
+          a seguire pagamento mensile di <Currency>{premium / 12}</Currency>
         </>
       ),
       value: "5yearsAdvance",
@@ -124,8 +109,6 @@ export function PaymentForm() {
 
   const closeModal = useDrawerStore((state) => state.closeModal);
   const premium = useDrawerStore((state) => state.lip?.quotation?.premium)!;
-
-  const paymentMethodValue = formMethods.watch("paymentMethod");
 
   return (
     <>
@@ -198,7 +181,7 @@ export function PaymentForm() {
                 <FieldError />
                 <CheckGroup
                   type="radio-switch"
-                  options={paymentMethodsOptions(premium, paymentMethodValue)}
+                  options={paymentMethodsOptions(premium)}
                   validation={{
                     required: "Seleziona un frazionamento di pagamento",
                   }}
