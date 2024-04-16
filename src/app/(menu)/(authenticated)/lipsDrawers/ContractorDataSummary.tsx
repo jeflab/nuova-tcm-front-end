@@ -1,10 +1,8 @@
 "use client";
 
 import {
-  fundSourceOptions,
   genderOptions,
   jobPositionOptions,
-  ongoingRelationshipOptions,
   publicOfficesOptions,
   tAECodeOptions,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
@@ -14,9 +12,7 @@ import {getOptionsLabel, yesNoOptions} from "@/helpers/getOptionsLabel";
 import {
   faAddressBook,
   faBriefcase,
-  faHandHoldingDollar,
   faLandmarkMagnifyingGlass,
-  faMoneyBillTransfer,
   faUser,
 } from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
@@ -30,8 +26,8 @@ export function ContractorDataSummary() {
   }
 
   return (
-    <Row className="row-gap-4" xs={1} sm={2} md={1} lg={2}>
-      <Col>
+    <Row className="row-gap-4">
+      <Col xs={12} sm={6} md={12} lg={6}>
         <h4 className="w-100 text-primary">
           <FontAwesomeIcon icon={faUser} /> Anagrafica
         </h4>
@@ -52,7 +48,7 @@ export function ContractorDataSummary() {
           <strong>Codice Fiscale:</strong> {contractor.fiscalCode}
         </p>
       </Col>
-      <Col>
+      <Col xs={12} sm={6} md={12} lg={6}>
         <h4 className="w-100 text-primary">
           <FontAwesomeIcon icon={faAddressBook} /> Contatti
         </h4>
@@ -63,7 +59,7 @@ export function ContractorDataSummary() {
           <strong>Email:</strong> {contractor.email}
         </p>
       </Col>
-      <Col>
+      <Col xs={12} xl={6}>
         <h4 className="w-100 text-primary">
           <FontAwesomeIcon icon={faBriefcase} /> Situazione professionale
         </h4>
@@ -90,30 +86,7 @@ export function ContractorDataSummary() {
           {contractor.pep.job.country}
         </p>
       </Col>
-      <Col>
-        <h4 className="w-100 text-primary">
-          <FontAwesomeIcon icon={faHandHoldingDollar} /> Origine prevalente dei
-          fondi
-        </h4>
-        <p className="mb-4">
-          <strong>Origine prevalente dei fondi:</strong>{" "}
-          {contractor.pep.fundSource !== "other"
-            ? getOptionsLabel(fundSourceOptions, contractor.pep.fundSource)
-            : contractor.pep.fundSourceOther}
-        </p>
-        <h4 className="w-100 text-primary">
-          <FontAwesomeIcon icon={faMoneyBillTransfer} /> Informazioni sul
-          rapporto continuativo
-        </h4>
-        <p className="mb-0">
-          <strong>Natura / scopo del rapporto continuativo:</strong>{" "}
-          {getOptionsLabel(
-            ongoingRelationshipOptions,
-            contractor.pep.ongoingRelationship,
-          )}
-        </p>
-      </Col>
-      <Col className="w-100">
+      <Col xs={12} xl={6}>
         <h4 className="w-100 text-primary">
           <FontAwesomeIcon icon={faLandmarkMagnifyingGlass} /> Persona esposta
           politicamente

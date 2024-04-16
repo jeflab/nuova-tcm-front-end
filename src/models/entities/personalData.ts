@@ -1,7 +1,5 @@
 import {
-  fundSourceOptions,
   jobPositionOptions,
-  ongoingRelationshipOptions,
   publicOfficesOptions,
   tAECodeOptions,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
@@ -75,9 +73,6 @@ const pepSchema = z.object({
     response: z.enum(getOptionsValues(yesNoOptions)),
   }),
   job: jobSchema,
-  ongoingRelationship: z.enum(getOptionsValues(ongoingRelationshipOptions)),
-  fundSource: z.enum(getOptionsValues(fundSourceOptions)),
-  fundSourceOther: z.string().optional(),
 });
 
 export const personalDataSchema = z

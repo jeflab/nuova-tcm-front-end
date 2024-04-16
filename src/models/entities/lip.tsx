@@ -1,4 +1,5 @@
 import {
+  fundSourceOptions,
   genderOptions,
   nominationOptions,
   paymentMethodsSimpleOptions,
@@ -58,6 +59,8 @@ const denSchema = z.object({
     options: z.array(z.object({label: z.string(), value: z.string()})),
     response: z.string(),
   }),
+  fundSource: z.enum(getOptionsValues(fundSourceOptions)),
+  fundSourceOther: z.string().optional(),
   expectations: z.object({
     options: z.array(z.object({label: z.string(), value: z.string()})),
     response: z.string(),

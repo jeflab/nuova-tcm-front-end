@@ -29,7 +29,7 @@ const minWidthHack = {minWidth: "1px"};
 
 export default async function NewLipPage({params}: NewLipPageProps) {
   let lip: Lip | null = null;
-  if (params.id !== "new" && params.id !== "debug") {
+  if (params.id !== "new") {
     const lipResponse = await getLip(parseInt(params.id, 10));
     if (lipResponse.status === "failed") {
       if (lipResponse.responseStatus === 404) {

@@ -153,6 +153,7 @@ function createDrawerState(state: State & Actions) {
         state.drawerStates.contractorData = {
           variant: "success",
           ...(!atLeastOneESign && presetButtons.update),
+          ...presetButtons.update, // debug
         };
       }
     } else {
@@ -192,7 +193,10 @@ function createDrawerState(state: State & Actions) {
           state.lip?.den?.expectations.response.includes(value),
         )
       ) {
-        state.drawerStates.den = {variant: "success"};
+        state.drawerStates.den = {
+          variant: "success",
+          ...presetButtons.update, // debug
+        };
       } else {
         state.drawerStates.den = {variant: "danger"};
       }

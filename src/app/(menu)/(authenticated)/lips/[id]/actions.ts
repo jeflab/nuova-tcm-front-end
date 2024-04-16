@@ -24,7 +24,6 @@ import {
   jobPositionOptions,
   needsToMeetOptions,
   NeedsToMeetOptions,
-  OngoingRelationship,
   PublicOffices,
   publicOfficesOptions,
   TAECode,
@@ -162,9 +161,6 @@ interface updateContractorDataParams {
     province: string;
     country: string;
   };
-  ongoingRelationship: OngoingRelationship;
-  fundSource: FundSource;
-  fundSourceOther: string;
 }
 export async function updateContractorData(
   contractorId: number,
@@ -194,9 +190,6 @@ export async function updateContractorData(
         province: formData.job.province,
         country: formData.job.country,
       },
-      ongoingRelationship: formData.ongoingRelationship,
-      fundSource: formData.fundSource,
-      fundSourceOther: formData.fundSourceOther,
     }),
   };
   invalidateTag(`getLip-${lipId}`);
@@ -232,6 +225,8 @@ interface UpdateDenParams {
   savings: string;
   income: string;
   economicCondition: EconomicConditionOptions;
+  fundSource: FundSource;
+  fundSourceOther: string;
   expectations: ExpectationsOptions[];
   duration: DurationOptions;
 }
@@ -258,6 +253,8 @@ export async function updateDen(formData: UpdateDenParams, lipId: number) {
       options: economicConditionOptions,
       response: formData.economicCondition,
     },
+    fundSource: formData.fundSource,
+    fundSourceOther: formData.fundSourceOther,
     expectations: {
       options: expectationsOptions,
       response: formData.expectations,
