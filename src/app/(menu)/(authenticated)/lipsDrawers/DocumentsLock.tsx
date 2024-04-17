@@ -13,7 +13,6 @@ export function DocumentsLock() {
   }
 
   return (
-    // TODO: nuova dicitura
     <Alert className="mb-0" variant="danger">
       I dati inseriti richiedono una revisione da parte del nostro backend.
     </Alert>
