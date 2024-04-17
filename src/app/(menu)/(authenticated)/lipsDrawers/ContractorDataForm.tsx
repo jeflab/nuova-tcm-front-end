@@ -3,13 +3,9 @@
 import {updateContractorData} from "@/app/(menu)/(authenticated)/lips/[id]/actions";
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {
-  FundSource,
-  fundSourceOptions,
   genderOptions,
   JobPosition,
   jobPositionOptions,
-  OngoingRelationship,
-  ongoingRelationshipOptions,
   PublicOffices,
   publicOfficesOptions,
   TAECode,
@@ -88,17 +84,12 @@ export function ContractorDataForm() {
         province: contractor?.pep?.job.province ?? "",
         country: contractor?.pep?.job.country ?? "",
       },
-      ongoingRelationship:
-        contractor?.pep?.ongoingRelationship ?? ("" as OngoingRelationship),
-      fundSource: contractor?.pep?.fundSource ?? ("" as FundSource),
-      fundSourceOther: contractor?.pep?.fundSourceOther ?? "",
     },
   });
 
   const closeModal = useDrawerStore((state) => state.closeModal);
 
   const jobPositionValue = formMethods.watch("job.position");
-  const fundSourceValue = formMethods.watch("fundSource");
 
   return (
     <>
@@ -435,67 +426,6 @@ export function ContractorDataForm() {
                   validation={{required: "Seleziona una risposta"}}
                 />
               </FormGroup>
-            </Col>
-            <h4 className="w-100">Informazioni sul rapporto continuativo</h4>
-            <Col className="d-flex" xs={12}>
-              <FormGroup controlId="ongoingRelationship" as={BorderFeedback}>
-                <FormLabel>Natura / scopo del rapporto continuativo</FormLabel>
-                <FieldError />
-                <SelectField
-                  placeholder="Seleziona natura / scopo del rapporto continuativo..."
-                  options={ongoingRelationshipOptions}
-                  validation={{
-                    required:
-                      "Specificare natura / scopo del rapporto continuativo",
-                  }}
-                />
-              </FormGroup>
-            </Col>
-            <h4 className="w-100">Origine prevalente dei fondi</h4>
-            <Col className="d-flex" xs={12}>
-              <Stack gap={3}>
-                <FormGroup controlId="fundSource" as={BorderFeedback}>
-                  <FormLabel>
-                    Specificare l'origine prevalente dei fondi
-                  </FormLabel>
-                  <HelpText>
-                    Il Contraente dichiara che:
-                    <ul>
-                      <li>
-                        i fondi impiegati per il pagamento del premio
-                        assicurativo non provengono da una attività criminosa o
-                        dalla partecipazione a tale attività;
-                      </li>
-                      <li>
-                        i fondi impiegati per il pagamento del premio
-                        assicurativo sono stati oggetto delle comunicazioni e
-                        dichiarazioni richieste a fini fiscali dalle Autorità
-                        competenti in base alla normativa applicabile.
-                      </li>
-                    </ul>
-                  </HelpText>
-                  <FieldError />
-                  <SelectField
-                    placeholder="Seleziona origine prevalente dei fondi..."
-                    options={fundSourceOptions}
-                    validation={{
-                      required: "Specificare l'origine prevalente dei fondi",
-                    }}
-                  />
-                </FormGroup>
-                {fundSourceValue === "other" && (
-                  <FormGroup controlId="fundSourceOther" as={BorderFeedback}>
-                    <FormLabel></FormLabel>
-                    <InputField
-                      type="text"
-                      placeholder="Specificare l'origine prevalente dei fondi"
-                      validation={{
-                        required: "Inserisci l'origine prevalente dei fondi",
-                      }}
-                    />
-                  </FormGroup>
-                )}
-              </Stack>
             </Col>
             <Col>
               <FieldError

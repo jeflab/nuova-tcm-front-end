@@ -2,6 +2,7 @@ import {Lip} from "@/models/entities/lip";
 import {cns} from "@/helpers/cns";
 import {AppContainer} from "@/ui/AppContainer";
 import {ButtonLink} from "@/ui/ButtonLink";
+import {Debug} from "@/ui/Debug";
 import {Drawer} from "@/ui/drawer/Drawer";
 import {NavDrawer} from "@/ui/drawer/NavDrawer";
 import {PageTitle} from "@/ui/PageTitle";
@@ -29,7 +30,7 @@ const minWidthHack = {minWidth: "1px"};
 
 export default async function NewLipPage({params}: NewLipPageProps) {
   let lip: Lip | null = null;
-  if (params.id !== "new" && params.id !== "debug") {
+  if (params.id !== "new") {
     const lipResponse = await getLip(parseInt(params.id, 10));
     if (lipResponse.status === "failed") {
       if (lipResponse.responseStatus === 404) {
@@ -51,6 +52,7 @@ export default async function NewLipPage({params}: NewLipPageProps) {
         </ButtonLink>
       </PageTitle>
       <InitStoreWithServerData lip={lip} />
+      <Debug>{lip}</Debug>
       <Row className="flex-row-reverse">
         <Col md="auto">
           <Nav className={cns("flex-column", styles.connectedList)}>

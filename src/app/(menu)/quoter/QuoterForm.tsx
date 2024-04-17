@@ -1,9 +1,6 @@
 "use client";
 
-import {
-  PaymentMethods,
-  paymentMethodsOptions,
-} from "@/app/(menu)/(authenticated)/lipsDrawers/PaymentForm";
+import {paymentMethodsOptions} from "@/app/(menu)/(authenticated)/lipsDrawers/PaymentForm";
 import {getQuote} from "@/app/(menu)/quoter/actions";
 import {Advantages} from "@/app/(menu)/quoter/Advantages";
 import {getCoverageDuration} from "@/app/(menu)/quoter/helpers";
@@ -53,7 +50,6 @@ export type QuoterFormValues = typeof quoterFormDefaultValues;
 export function QuoterForm() {
   const [premium, setPremium] = useState<number>();
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethods>();
   const [firstTry, setFirstTry] = useState(true);
 
   const formMethods = useForm({
@@ -196,21 +192,16 @@ export function QuoterForm() {
                 {premium && (
                   <FormGroup>
                     <h4>Modalità di pagamento</h4>
-                    {paymentMethodsOptions(premium, paymentMethod).map(
-                      ({label, value}) => (
-                        <FormCheck
-                          key={value}
-                          onChange={() => {
-                            setPaymentMethod(value);
-                          }}
-                          label={label}
-                          type="radio"
-                          value={value}
-                          className="form-switch"
-                          name="non-quote-form"
-                        />
-                      ),
-                    )}
+                    {paymentMethodsOptions(premium).map(({label, value}) => (
+                      <FormCheck
+                        key={value}
+                        label={label}
+                        type="radio"
+                        value={value}
+                        className="form-switch"
+                        name="non-quote-form"
+                      />
+                    ))}
                   </FormGroup>
                 )}
               </Card>

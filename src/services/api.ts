@@ -3,7 +3,12 @@
 import {AUTH_COOKIE_NAME} from "@/app/(no-menu)/(auth)/const";
 import {ErrorCodes, errors} from "@/helpers/errors";
 import {logFetchInfo} from "@/helpers/fetchDebug";
-import {acceptJsonHeader, apiUrl, contentJsonHeader} from "@/services/const";
+import {
+  acceptJsonHeader,
+  apiUrl,
+  contentJsonHeader,
+  Tag,
+} from "@/services/const";
 import {createServerSuccessSchema, serverErrorSchema} from "@/services/helpers";
 import chalk from "chalk";
 import {cookies} from "next/headers";
@@ -57,7 +62,7 @@ export async function get<T extends ZodRawShape>(
   {
     searchParams,
     tags,
-  }: {searchParams?: Record<string, string>; tags?: string[]} = {},
+  }: {searchParams?: Record<string, string>; tags?: Tag[]} = {},
 ) {
   const serverSuccessSchema = createServerSuccessSchema(zodRowShape);
   const searchParamsString = searchParams

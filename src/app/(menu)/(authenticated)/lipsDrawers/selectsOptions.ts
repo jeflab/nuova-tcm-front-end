@@ -222,15 +222,6 @@ export const fundSourceOptions = [
 ] as const;
 export type FundSource = (typeof fundSourceOptions)[number]["value"];
 
-export const ongoingRelationshipOptions = [
-  {label: "Forma pensionistica/previdenziale", value: "pension"},
-  {label: "Risparmio", value: "savings"},
-  {label: "Protezione", value: "protection"},
-  {label: "Investimento", value: "investment"},
-] as const;
-export type OngoingRelationship =
-  (typeof ongoingRelationshipOptions)[number]["value"];
-
 // Identification
 export const idTypeOptions = [
   {label: "Passaporto", value: "passport"},
@@ -371,11 +362,11 @@ export const paymentMethodsSimpleOptions = [
     value: "annual",
   },
   {
-    label: "Pagamento anticipato di 3 anni con sconto del 10%",
+    label: "Pagamento anticipato di 3 anni",
     value: "3yearsAdvance",
   },
   {
-    label: "Pagamento anticipato di 5 anni con sconto del 15",
+    label: "Pagamento anticipato di 5 anni",
     value: "5yearsAdvance",
   },
 ] as const;

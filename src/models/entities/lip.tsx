@@ -1,4 +1,5 @@
 import {
+  fundSourceOptions,
   genderOptions,
   nominationOptions,
   paymentMethodsSimpleOptions,
@@ -58,6 +59,8 @@ const denSchema = z.object({
     options: z.array(z.object({label: z.string(), value: z.string()})),
     response: z.string(),
   }),
+  fundSource: z.enum(getOptionsValues(fundSourceOptions)),
+  fundSourceOther: z.string().optional(),
   expectations: z.object({
     options: z.array(z.object({label: z.string(), value: z.string()})),
     response: z.string(),
@@ -226,6 +229,16 @@ export const eSignSchema = z.object({
   setInformativo: z.any().optional(),
 });
 
+const amlSchema = z.object({
+  // id: z.number(),
+  blocked: z.boolean(),
+  // version: z.string(),
+  // lip_id: z.number(),
+  // contractor_id: z.number(),
+  // rating: z.array(z.union([z.number(), z.string()])),
+  // note: z.string(),
+});
+
 export const lipSchema = z
   .object({
     id: z.number(),
@@ -252,6 +265,7 @@ export const lipSchema = z
       .optional(),
     json_payment: zu.stringToJSON().pipe(paymentSchema).nullable().optional(),
     json_esign: zu.stringToJSON().pipe(eSignSchema).nullable().optional(),
+    aml: amlSchema.nullable(),
     status: z.union([z.literal(0), z.literal(1)]).transform((status) => {
       return lipStatuses[status];
     }),

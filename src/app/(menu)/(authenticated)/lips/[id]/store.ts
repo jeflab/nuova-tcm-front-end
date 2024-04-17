@@ -43,6 +43,7 @@ function createDrawerState(state: State & Actions) {
   ).some(
     (question) => typeof question === "object" && question.check === "yes",
   );
+  const amlBlocked = state.lip?.aml?.blocked ?? false;
 
   if (isPreliminary) {
     // fatca
@@ -192,7 +193,9 @@ function createDrawerState(state: State & Actions) {
           state.lip?.den?.expectations.response.includes(value),
         )
       ) {
-        state.drawerStates.den = {variant: "success"};
+        state.drawerStates.den = {
+          variant: "success",
+        };
       } else {
         state.drawerStates.den = {variant: "danger"};
       }
@@ -265,7 +268,9 @@ function createDrawerState(state: State & Actions) {
 
     // Documentazione
     if (state.drawerStates.payment?.variant === "success") {
-      if (
+      if (amlBlocked) {
+        state.drawerStates.documentation = {variant: "waiting", isLocked: true};
+      } else if (
         state.lip?.eSigns?.polizza &&
         Object.keys(state.lip?.eSigns?.polizza).length === 3 &&
         state.lip.eSigns.identificazione

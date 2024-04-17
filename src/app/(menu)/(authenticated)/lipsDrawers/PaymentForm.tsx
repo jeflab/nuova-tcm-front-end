@@ -3,7 +3,6 @@
 import {updatePaymentData} from "@/app/(menu)/(authenticated)/lips/[id]/actions";
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {getCoverageDuration} from "@/app/(menu)/quoter/helpers";
-import {dbDateString} from "@/helpers/dates";
 import {Lip} from "@/models/entities/lip";
 import {Currency} from "@/ui/Currency";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
@@ -16,7 +15,6 @@ import {validateIBAN} from "@/ui/form/validators/iban";
 import {faSave, faSpinner, faXmark} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {addYears} from "date-fns/addYears";
-import {endOfYear} from "date-fns/endOfYear";
 import {
   Button,
   Col,
@@ -25,16 +23,13 @@ import {
   ModalBody,
   ModalFooter,
   Row,
-  Collapse,
+  Alert,
 } from "react-bootstrap";
 import {useForm} from "react-hook-form";
 import invariant from "tiny-invariant";
 
 // Payments
-export function paymentMethodsOptions<T>(
-  premium: number,
-  paymentMethodValue: T,
-) {
+export function paymentMethodsOptions<T>(premium: number) {
   return [
     {
       label: (
@@ -56,14 +51,8 @@ export function paymentMethodsOptions<T>(
     {
       label: (
         <>
-          Sconto del 10%
-          <Collapse in={paymentMethodValue === "3yearsAdvance"}>
-            <div style={{textTransform: "none"}}>
-              Pagamento anticipato di 3 anni con sconto del 10% (
-              <Currency>{premium * 3 * 0.9}</Currency>) e a seguire pagamento
-              mensile di <Currency>{premium / 12}</Currency>
-            </div>
-          </Collapse>
+          Pagamento anticipato di 3 anni (<Currency>{premium * 3}</Currency>) e
+          a seguire pagamento mensile di <Currency>{premium / 12}</Currency>
         </>
       ),
       value: "3yearsAdvance",
@@ -71,14 +60,8 @@ export function paymentMethodsOptions<T>(
     {
       label: (
         <>
-          Sconto del 15%
-          <Collapse in={paymentMethodValue === "5yearsAdvance"}>
-            <div style={{textTransform: "none"}}>
-              Pagamento anticipato di 5 anni con sconto del 15% (
-              <Currency>{premium * 5 * 0.85}</Currency>) e a seguire pagamento
-              mensile di <Currency>{premium / 12}</Currency>
-            </div>
-          </Collapse>
+          Pagamento anticipato di 5 anni (<Currency>{premium * 5}</Currency>) e
+          a seguire pagamento mensile di <Currency>{premium / 12}</Currency>
         </>
       ),
       value: "5yearsAdvance",
@@ -125,8 +108,6 @@ export function PaymentForm() {
   const closeModal = useDrawerStore((state) => state.closeModal);
   const premium = useDrawerStore((state) => state.lip?.quotation?.premium)!;
 
-  const paymentMethodValue = formMethods.watch("paymentMethod");
-
   return (
     <>
       <ModalBody>
@@ -153,44 +134,28 @@ export function PaymentForm() {
         >
           <Row className="row-gap-3">
             <h4>Decorrenza assicurazione e premio</h4>
-            <Col className="d-flex" xs={12} sm={4}>
-              <FormGroup controlId="effectiveDate" as={BorderFeedback}>
-                <FormLabel>Data di decorrenza del contratto</FormLabel>
-                <FieldError />
-                <InputField
-                  type="date"
-                  placeholder="Data decorrenza contratto"
-                  max={dbDateString(endOfYear(new Date()))}
-                  min={dbDateString()}
-                  validation={{
-                    required: "Inserisci la data di decorrenza del contratto",
-                    max: {
-                      value: dbDateString(endOfYear(new Date())),
-                      message:
-                        "La data di decorrenza dev'essere entro la fine dell'anno",
-                    },
-                    min: {
-                      value: dbDateString(),
-                      message:
-                        "La data di decorrenza non può essere antecedente a oggi",
-                    },
-                  }}
-                />
-              </FormGroup>
-            </Col>
-            <Col className="d-flex" xs={12} sm={4}>
-              <FormGroup controlId="duration" as={BorderFeedback}>
-                <FormLabel>Durata in anni</FormLabel>
-                <FieldError />
-                <InputField type="text" readOnly plaintext />
-              </FormGroup>
-            </Col>
-            <Col className="d-flex" xs={12} sm={4}>
-              <FormGroup controlId="expirationDate" as={BorderFeedback}>
-                <FormLabel>Anno di scadenza</FormLabel>
-                <FieldError />
-                <InputField type="text" readOnly plaintext />
-              </FormGroup>
+            <Col className="col-12">
+              <Alert variant="info">
+                <p>
+                  Il contratto si intende{" "}
+                  <strong>perfezionato e concluso</strong> nel momento in cui
+                  avvengono entrambi gli eventi qui elencati:
+                </p>
+                <ol>
+                  <li>
+                    la <strong>sottoscrizione della proposta/polizza</strong> da
+                    parte del Contraente
+                  </li>
+                  <li>
+                    il <strong>pagamento del Premio Annuo Costante</strong> alla
+                    data di perfezionamento.
+                  </li>
+                </ol>
+                <p className="mb-0">
+                  Il contratto entra in vigore alle ore 24 della data di
+                  perfezionamento e conclusione dello stesso.
+                </p>
+              </Alert>
             </Col>
             <Col className="d-flex">
               <FormGroup controlId="paymentMethod" as={BorderFeedback}>
@@ -198,7 +163,7 @@ export function PaymentForm() {
                 <FieldError />
                 <CheckGroup
                   type="radio-switch"
-                  options={paymentMethodsOptions(premium, paymentMethodValue)}
+                  options={paymentMethodsOptions(premium)}
                   validation={{
                     required: "Seleziona un frazionamento di pagamento",
                   }}
@@ -270,6 +235,7 @@ export function PaymentForm() {
               </FormGroup>
             </Col>
           </Row>
+          <FieldError name="root" as={Alert} variant="danger" />
         </Form>
       </ModalBody>
       <ModalFooter>

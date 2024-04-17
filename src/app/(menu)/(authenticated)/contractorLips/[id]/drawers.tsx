@@ -7,6 +7,7 @@ import {DocumentsSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/Documen
 import {FatcaSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/FatcaSummary";
 import {HealthQuestionnaireSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/HealthQuestionnaireSummary";
 import {IdentificationDataSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/IdentificationSummary";
+import {PaymentLock} from "@/app/(menu)/(authenticated)/lipsDrawers/PaymentLock";
 import {PaymentSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/PaymentSummary";
 import {QuoteSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/QuoteSummary";
 import {ReactNode} from "react";
@@ -29,8 +30,8 @@ interface Drawer {
   name: DrawerName;
   title: string;
   shortTitle?: string;
-  modalContent?: ReactNode;
   summaryContent?: ReactNode;
+  lock?: ReactNode;
 }
 export const drawers: Drawer[] = [
   {
@@ -90,6 +91,7 @@ export const drawers: Drawer[] = [
     name: "payment",
     title: "Pagamento",
     summaryContent: <PaymentSummary />,
+    lock: <PaymentLock />,
   },
   {
     name: "documentation",

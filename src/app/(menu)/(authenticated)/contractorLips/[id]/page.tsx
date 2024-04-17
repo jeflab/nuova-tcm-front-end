@@ -1,11 +1,16 @@
 import {cns} from "@/helpers/cns";
 import {AppContainer} from "@/ui/AppContainer";
+import {ButtonLink} from "@/ui/ButtonLink";
 import {Drawer} from "@/ui/drawer/Drawer";
 import {NavDrawer} from "@/ui/drawer/NavDrawer";
 import {PageTitle} from "@/ui/PageTitle";
-import {faTriangleExclamation} from "@fortawesome/pro-duotone-svg-icons";
+import {
+  faArrowLeft,
+  faTriangleExclamation,
+} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {notFound} from "next/navigation";
+import {Fragment} from "react";
 import {Alert, Col, Nav, Row} from "react-bootstrap";
 import {getLip} from "./actions";
 import {drawers} from "./drawers";
@@ -34,7 +39,12 @@ export default async function NewLipPage({params}: NewLipPageProps) {
   return (
     <AppContainer className="vstack gap-3">
       <PageTitle>
-        {lip?.lipNumber ? `Polizza n° ${lip?.lipNumber}` : "Nuova polizza"}
+        {lip?.lipNumber
+          ? `Polizza n° ${lip?.lipNumber}`
+          : "Caricamento polizza"}
+        <ButtonLink href="/contractorLips">
+          <FontAwesomeIcon icon={faArrowLeft} /> Torna alle tue polizze
+        </ButtonLink>
       </PageTitle>
       <InitStoreWithServerData lip={lip} />
       <Row className="flex-row-reverse">
@@ -66,10 +76,13 @@ export default async function NewLipPage({params}: NewLipPageProps) {
               corrispondere.
             </p>
           </Alert>
-          {drawers.map(({name, title, summaryContent}) => (
-            <Drawer key={name} name={name} title={title} readonly>
-              {summaryContent}
-            </Drawer>
+          {drawers.map(({name, title, summaryContent, lock}) => (
+            <Fragment key={name}>
+              {lock}
+              <Drawer name={name} title={title} readonly>
+                {summaryContent}
+              </Drawer>
+            </Fragment>
           ))}
         </Col>
       </Row>

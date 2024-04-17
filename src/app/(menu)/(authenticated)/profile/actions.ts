@@ -2,7 +2,8 @@
 
 import {accountSchema} from "@/models/account";
 import {patch, post} from "@/services/api";
-import {revalidateTag} from "next/cache";
+import {Tags} from "@/services/const";
+import {invalidateTag} from "@/services/helpers";
 
 interface UpdateAccountData {
   fiscalCode: string;
@@ -16,7 +17,7 @@ export async function updateAccount(formData: UpdateAccountData) {
     phone: formData.phone,
   };
 
-  revalidateTag("me");
+  invalidateTag(Tags.me());
   return patch("/me", accountSchema.shape, JSON.stringify(data));
 }
 
