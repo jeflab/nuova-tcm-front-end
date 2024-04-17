@@ -235,6 +235,7 @@ export function PaymentForm() {
               </FormGroup>
             </Col>
           </Row>
+          <FieldError name="root" as={Alert} variant="danger" />
         </Form>
       </ModalBody>
       <ModalFooter>

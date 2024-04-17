@@ -15,10 +15,7 @@ export function DocumentsLock() {
   return (
     // TODO: nuova dicitura
     <Alert className="mb-0" variant="danger">
-      La proposta di Polizza non può essere emessa direttamente in virtù delle
-      risposte fornite nella compilazione del questionario sanitario. Valuteremo
-      la situazione singolarmente e la avviseremo quando avremo concluso il
-      processo di underwriting sanitario.
+      I dati inseriti richiedono una revisione da parte del nostro backend.
     </Alert>
   );
 }
