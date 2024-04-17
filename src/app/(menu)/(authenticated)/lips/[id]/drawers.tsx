@@ -26,15 +26,29 @@ import {ContractorPersonalAreaActivationLastPrivacy} from "../../lipsDrawers/Con
 import {ContractorContactsForm} from "../../lipsDrawers/ContractorContactsForm";
 import {ContractorContactsSummary} from "../../lipsDrawers/ContractorContactsSummary";
 
-interface Drawer {
-  name: string;
+export type DrawerName =
+  | "fatca"
+  | "contractorFiscalCode"
+  | "contractorContacts"
+  | "contractorPersonalAreaActivation"
+  | "contractorData"
+  | "identification"
+  | "den"
+  | "quote"
+  | "healthQuestionnaire"
+  | "beneficiaries"
+  | "payment"
+  | "documentation";
+interface DrawerConfig {
+  name: DrawerName;
   title: string;
   shortTitle?: string;
   modalContent?: ReactNode;
   summaryContent?: ReactNode;
   lock?: ReactNode;
 }
-export const drawers: Drawer[] = [
+
+export const drawers: DrawerConfig[] = [
   {
     name: "fatca",
     title: "Verifica residenza USA",
@@ -116,5 +130,3 @@ export const drawers: Drawer[] = [
     summaryContent: <DocumentsSummary />,
   },
 ] as const;
-
-export type DrawerName = (typeof drawers)[number]["name"];

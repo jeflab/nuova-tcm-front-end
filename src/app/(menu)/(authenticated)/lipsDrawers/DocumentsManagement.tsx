@@ -22,10 +22,10 @@ import {
 } from "react-bootstrap";
 import styles from "./DocumentsManagement.module.scss";
 
-export interface Esign {
+export interface ESign {
   key: string;
-  whoEsign: "advisor" | "contractor";
-  esignIndex: number;
+  whoESign: "advisor" | "contractor";
+  eSignIndex: number;
   signed: boolean;
   date?: string;
   chapters: string[];
@@ -36,7 +36,7 @@ export interface Document {
   urlPreview: string;
   urlDownload: string;
   type: PDFType;
-  eSigns: Esign[];
+  eSigns: ESign[];
 }
 const documents: Document[] = [
   {
@@ -48,11 +48,11 @@ const documents: Document[] = [
     eSigns: [
       {
         key: "esign_agente",
-        whoEsign: "advisor",
+        whoESign: "advisor",
         chapters: [
           "L'intermediario dichiara di avere incontrato di persona e di avere identificato attraverso il suo documento d'identità il contraente.",
         ],
-      } as Esign,
+      } as ESign,
     ],
   },
   {
@@ -64,38 +64,38 @@ const documents: Document[] = [
     eSigns: [
       {
         key: "esign_agente",
-        whoEsign: "advisor",
+        whoESign: "advisor",
         chapters: [
           "PG 9/9 - Dichiarazione dell'intermediario.",
           "PG 9/9 - Firma del soggetto incaricato dell'adeguata verifica.",
         ],
-      } as Esign,
+      } as ESign,
       {
         key: "esign_contraente",
-        whoEsign: "contractor",
+        whoESign: "contractor",
         chapters: [
           "PG 5/9 - Dichiarazioni rese dall'assicurato in relazione al proprio stato di salute e abitudini di vita.",
           "PG 6/9 - Autorizzazione alla comunicazione elettronica.",
           "PG 6/9 - Dichiarazioni del contraente e dell'assicurato.",
           "PG 9/9 - Firma della proposta.",
         ],
-      } as Esign,
+      } as ESign,
       {
         key: "esign_contraente_sepa",
-        whoEsign: "contractor",
+        whoESign: "contractor",
         chapters: [
           "PG 5/9 - Firma del contraente per l'addebito diretto SEPA - S.D.D.",
         ],
-      } as Esign,
+      } as ESign,
     ],
   },
 ];
 
 const eSignsCount = (
-  documentESigns: Esign[],
+  documentESigns: ESign[],
   lipESigns: Record<string, {esign_id: number; data: string}>,
   filter?: string,
-): [Esign[], Esign[]] => {
+): [ESign[], ESign[]] => {
   let filteredESigns = documentESigns.map((eSign, index) => ({
     ...eSign,
     esignIndex: index,
@@ -104,7 +104,7 @@ const eSignsCount = (
   }));
   if (filter) {
     filteredESigns = filteredESigns.filter(
-      (eSign) => eSign.whoEsign === filter,
+      (eSign) => eSign.whoESign === filter,
     );
   }
 
@@ -143,7 +143,7 @@ export function DocumentsManagement() {
 
       return [prevPartial.concat(partialESign), prevTotal.concat(totalESign)];
     },
-    [[], []] as [Esign[], Esign[]],
+    [[], []] as [ESign[], ESign[]],
   );
 
   // Ripensare all'auto-chiusura
