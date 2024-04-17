@@ -265,7 +265,7 @@ export const lipSchema = z
       .optional(),
     json_payment: zu.stringToJSON().pipe(paymentSchema).nullable().optional(),
     json_esign: zu.stringToJSON().pipe(eSignSchema).nullable().optional(),
-    aml: amlSchema.nullable(),
+    aml: amlSchema.nullable().optional(),
     status: z.union([z.literal(0), z.literal(1)]).transform((status) => {
       return lipStatuses[status];
     }),
