@@ -50,6 +50,7 @@ function createDrawerState(state: State & Actions) {
       parseInt(state.lip.healthcareQuestionnaire.weight, 10),
       parseInt(state.lip.healthcareQuestionnaire.height, 10),
     );
+  const amlBlocked = state.lip?.aml?.blocked ?? false;
 
   if (isPreliminary) {
     // fatca
@@ -274,7 +275,9 @@ function createDrawerState(state: State & Actions) {
 
     // Documentazione
     if (state.drawerStates.payment?.variant === "success") {
-      if (
+      if (amlBlocked) {
+        state.drawerStates.documentation = {variant: "waiting", isLocked: true};
+      } else if (
         state.lip?.eSigns?.polizza &&
         Object.keys(state.lip?.eSigns?.polizza).length === 3 &&
         state.lip.eSigns.identificazione
@@ -288,10 +291,10 @@ function createDrawerState(state: State & Actions) {
       }
     }
 
-    state.drawerStates.healthQuestionnaire = {
-      variant: "success",
-      buttonLabel: "Test",
-    };
+    // state.drawerStates.beneficiaries = {
+    //   variant: "success",
+    //   buttonLabel: "Test",
+    // };
   }
 }
 
