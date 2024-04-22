@@ -9,7 +9,7 @@ import {ContractorPersonalAreaActivationSummary} from "@/app/(menu)/(authenticat
 import {DenForm} from "@/app/(menu)/(authenticated)/lipsDrawers/DenForm";
 import {DenSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/DenSummary";
 import {DocumentsLock} from "@/app/(menu)/(authenticated)/lipsDrawers/DocumentsLock";
-import {DocumentsManagement} from "@/app/(menu)/(authenticated)/lipsDrawers/DocumentsManagement";
+import {DocumentsModal} from "@/app/(menu)/(authenticated)/lipsDrawers/DocumentsModal";
 import {DocumentsSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/DocumentsSummary";
 import {FatcaForm} from "@/app/(menu)/(authenticated)/lipsDrawers/FatcaForm";
 import {FatcaSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/FatcaSummary";
@@ -127,7 +127,7 @@ export const drawers: DrawerConfig[] = [
   {
     name: "documentation",
     title: "Documentazione",
-    modalContent: <DocumentsManagement />,
+    modalContent: <DocumentsModal />,
     summaryContent: <DocumentsSummary />,
     lock: <DocumentsLock />,
   },

@@ -372,3 +372,27 @@ export const paymentMethodsSimpleOptions = [
 ] as const;
 export type PaymentMethodsSimple =
   (typeof paymentMethodsSimpleOptions)[number]["value"];
+
+export const consentOptions = [
+  {
+    label:
+      "Presto il consenso specifico e facoltativo al trattamento dei miei dati personali per le Finalità di Marketing come illustrato nell’Informativa.",
+    value: "marketing_consent",
+  },
+  {
+    label:
+      "Presto il consenso specifico e facoltativo al trattamento dei miei dati personali per le Finalità di Profilazione come illustrato nell’Informativa.",
+    value: "profiling_consent",
+  },
+  {
+    label:
+      "Presto il consenso aggiuntivo e facoltativo alla comunicazione dei miei dati personali ai terzi individuati nell’Informativa per consentire a questi di svolgere il Trattamento per le Finalità di Marketing come illustrato nell’Informativa.",
+    value: "third_party_marketing_consent",
+  },
+  {
+    label:
+      "Presto il consenso aggiuntivo e facoltativo alla comunicazione dei miei dati personali ai terzi individuati nell’Informativa per consentire a questi di svolgere il Trattamento per le Finalità di Profilazione come illustrato nell’Informativa.",
+    value: "third_party_profiling_consent",
+  },
+] as const;
+export type ConsentOptions = (typeof consentOptions)[number]["value"];

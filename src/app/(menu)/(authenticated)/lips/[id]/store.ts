@@ -283,6 +283,14 @@ function createDrawerState(state: State & Actions) {
         state.lip.eSigns.identificazione
       ) {
         state.drawerStates.documentation = {variant: "success"};
+      } else if (
+        !state.lip?.privacyCompany ||
+        state.lip.privacyCompany.length === 0
+      ) {
+        state.drawerStates.documentation = {
+          variant: "active",
+          ...presetButtons.checkConsent,
+        };
       } else {
         state.drawerStates.documentation = {
           variant: "active",

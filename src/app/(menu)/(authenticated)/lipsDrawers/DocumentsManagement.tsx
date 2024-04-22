@@ -98,7 +98,7 @@ const eSignsCount = (
 ): [ESign[], ESign[]] => {
   let filteredESigns = documentESigns.map((eSign, index) => ({
     ...eSign,
-    esignIndex: index,
+    eSignIndex: index,
     signed: !!lipESigns[eSign.key]?.esign_id,
     date: lipESigns[eSign.key]?.data,
   }));

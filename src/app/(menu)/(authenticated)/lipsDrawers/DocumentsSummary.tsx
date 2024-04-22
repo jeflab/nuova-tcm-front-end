@@ -10,13 +10,21 @@ import {
 } from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {useState} from "react";
-import {Badge, Button, Card, CardHeader, Stack} from "react-bootstrap";
+import {
+  Badge,
+  Button,
+  Card,
+  CardHeader,
+  Modal,
+  ModalHeader,
+  Stack,
+} from "react-bootstrap";
 import styles from "./DocumentsManagement.module.scss";
 
 interface Esign {
   key: string;
   whoEsign: "advisor" | "contractor";
-  esignIndex: number;
+  eSignIndex: number;
   signed: boolean;
 }
 interface Document {
@@ -78,7 +86,7 @@ const eSignsCount = (
 ): [Esign[], Esign[]] => {
   let filteredESigns = documentESigns.map((eSign, index) => ({
     ...eSign,
-    esignIndex: index,
+    eSignIndex: index,
     signed: !!lipESigns[eSign.key]?.esign_id,
   }));
   if (filter) {
@@ -108,6 +116,7 @@ export function DocumentsSummary() {
           <Button
             size="sm"
             className="ms-sm-auto"
+            disabled={!!lip.eSigns}
             onClick={() => {
               setIsConsentCheckOpen(true);
             }}
@@ -142,11 +151,20 @@ export function DocumentsSummary() {
           </div>
         </div>
       </Card>
-      <CompanyPrivacy
-        lipId={lip.id}
-        show={isConsentCheckOpen}
+      <Modal
+        backdrop="static"
+        className={styles.modal}
+        fullscreen="xl-down"
+        keyboard={false}
         onHide={() => setIsConsentCheckOpen(false)}
-      />
+        show={isConsentCheckOpen}
+        size="xl"
+      >
+        <ModalHeader closeButton>
+          <Modal.Title>Privacy di compagnia</Modal.Title>
+        </ModalHeader>
+        <CompanyPrivacy onHide={() => setIsConsentCheckOpen(false)} />
+      </Modal>
 
       {documents.map((document) => {
         const [partialAdvisorESign, totalAdvisorESign] = eSignsCount(

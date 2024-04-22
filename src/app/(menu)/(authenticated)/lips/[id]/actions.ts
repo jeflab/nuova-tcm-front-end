@@ -351,13 +351,9 @@ export async function updatePaymentData(
 }
 
 export async function saveCompanyPrivacyConsent(
-  consent: {flags: string[]},
+  consent: {flags: string[]; options: readonly Option[]},
   lipId: number,
 ) {
   invalidateTag(Tags.getLip(lipId));
-  return patch(
-    `/lips/${lipId}`,
-    {},
-    JSON.stringify({json_privacy: JSON.stringify(consent)}),
-  );
+  return post(`/lips/${lipId}/privacy-company`, {}, JSON.stringify(consent));
 }

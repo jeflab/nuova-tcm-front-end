@@ -360,7 +360,6 @@ export function DenForm() {
                 />
               </FormGroup>
             </Col>
-            ------
             <h4 className="w-100">Origine prevalente dei fondi</h4>
             <Col className="d-flex" xs={12}>
               <Stack gap={3}>
@@ -407,7 +406,6 @@ export function DenForm() {
                 )}
               </Stack>
             </Col>{" "}
-            ------
             <h4>
               Aspettative in relazione alla sottoscrizione di un contratto di
               assicurazione
