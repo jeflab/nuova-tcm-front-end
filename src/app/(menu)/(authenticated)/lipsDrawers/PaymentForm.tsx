@@ -16,14 +16,15 @@ import {faSave, faSpinner, faXmark} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {addYears} from "date-fns/addYears";
 import {
+  Alert,
   Button,
   Col,
   FormGroup,
   FormLabel,
+  InputGroup,
   ModalBody,
   ModalFooter,
   Row,
-  Alert,
 } from "react-bootstrap";
 import {useForm} from "react-hook-form";
 import invariant from "tiny-invariant";
@@ -80,7 +81,7 @@ const paymentDefaultValues = (paymentData?: Lip["payment"]) => ({
   contractorFullName: paymentData?.contractorFullName ?? "",
   bank: paymentData?.bank ?? "",
   bicSwift: paymentData?.bicSwift ?? "",
-  iban: paymentData?.iban ?? "",
+  iban: paymentData?.iban?.replace(/^IT/, "") ?? "",
 });
 export type PaymentFormValues = ReturnType<typeof paymentDefaultValues>;
 
@@ -116,7 +117,10 @@ export function PaymentForm() {
           onSubmit={async (values) => {
             invariant(lipId, "lipId is required");
 
-            const updatedContractor = await updatePaymentData(values, lipId);
+            const updatedContractor = await updatePaymentData(
+              {...values, iban: "IT" + values.iban},
+              lipId,
+            );
 
             if (updatedContractor.status === "failed") {
               throw {
@@ -213,25 +217,28 @@ export function PaymentForm() {
               <FormGroup controlId="iban" as={BorderFeedback}>
                 <FormLabel>IBAN</FormLabel>
                 <FieldError />
-                <InputField
-                  type="text"
-                  placeholder="IT60X0542811101000000123456"
-                  validation={{
-                    validate: {
-                      required: (value) => {
-                        if (!value) {
-                          return "Inserisci l'IBAN del contraente";
-                        }
+                <InputGroup>
+                  <InputGroup.Text>IT</InputGroup.Text>
+                  <InputField
+                    type="text"
+                    placeholder="60X0542811101000000123456"
+                    validation={{
+                      validate: {
+                        required: (value) => {
+                          if (!value) {
+                            return "Inserisci l'IBAN del contraente";
+                          }
+                        },
+                        format: (value) => {
+                          if (!validateIBAN("IT" + value)) {
+                            return "Inserisci un IBAN valido";
+                          }
+                        },
                       },
-                      format: (value) => {
-                        if (!validateIBAN(value)) {
-                          return "Inserisci un IBAN valido";
-                        }
-                      },
-                    },
-                  }}
-                  normalize={upperCaseNormalizer}
-                />
+                    }}
+                    normalize={upperCaseNormalizer}
+                  />
+                </InputGroup>
               </FormGroup>
             </Col>
           </Row>
