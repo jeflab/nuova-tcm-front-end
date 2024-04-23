@@ -170,11 +170,21 @@ export function ContractorContactsForm() {
         </Form>
       </ModalBody>
       <ModalFooter>
-        <Button type="button" variant="cancel" onClick={() => closeModal()}>
+        <Button
+          type="button"
+          variant="cancel"
+          onClick={() => closeModal()}
+          disabled={formMethods.formState.isSubmitting}
+        >
           <FontAwesomeIcon icon={faXmark} className="me-2" />
           Annulla
         </Button>
-        <Button type="submit" variant="primary" form="activate-contractor-form">
+        <Button
+          type="submit"
+          variant="primary"
+          form="activate-contractor-form"
+          disabled={formMethods.formState.isSubmitting}
+        >
           <FontAwesomeIcon
             icon={formMethods.formState.isSubmitting ? faSpinner : faSave}
             className={cns(
