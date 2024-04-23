@@ -116,7 +116,6 @@ export function DocumentsSummary() {
           <Button
             size="sm"
             className="ms-sm-auto"
-            disabled={!!lip.eSigns}
             onClick={() => {
               setIsConsentCheckOpen(true);
             }}

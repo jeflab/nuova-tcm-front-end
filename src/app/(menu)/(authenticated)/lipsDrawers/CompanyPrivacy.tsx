@@ -32,7 +32,7 @@ export function CompanyPrivacy({onHide}: CompanyPrivacyProps) {
   const privacyCompany = useDrawerStore((state) =>
     state.lip?.privacyCompany?.at(-1),
   );
-  const lipId = useDrawerStore((state) => state.lip?.id);
+  const lip = useDrawerStore((state) => state.lip);
   const closeModalFromStore = useDrawerStore((state) => state.closeModal);
 
   const formMethods = useForm({
@@ -547,10 +547,10 @@ export function CompanyPrivacy({onHide}: CompanyPrivacyProps) {
         <Form
           id="company-privacy-form"
           onSubmit={async (values) => {
-            invariant(lipId, "lipId is required");
+            invariant(lip?.id, "lipId is required");
             const updatedContractor = await saveCompanyPrivacyConsent(
               {...values, options: consentOptions},
-              lipId,
+              lip.id,
             );
 
             if (updatedContractor.status === "failed") {
@@ -572,6 +572,9 @@ export function CompanyPrivacy({onHide}: CompanyPrivacyProps) {
               type="checkbox"
               options={consentOptions}
               validationStyle={false}
+              disabled={
+                !!lip?.eSigns?.identificazione || !!lip?.eSigns?.polizza
+              }
             />
           </FormGroup>
           <FieldError name="root" as={Alert} variant="danger" />
