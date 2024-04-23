@@ -23,6 +23,7 @@ interface ComuneProvAutocompleteFiledProps {
   disabled?: boolean;
   name?: string;
   onlyExisting?: boolean;
+  onlyItalian?: boolean;
   placeholder?: string;
   plaintext?: boolean;
   readOnly?: boolean;
@@ -35,6 +36,7 @@ export function ComuneProvAutocompleteField({
   disabled,
   name,
   onlyExisting,
+  onlyItalian,
   placeholder,
   plaintext,
   readOnly,
@@ -58,7 +60,7 @@ export function ComuneProvAutocompleteField({
   const handleSearch = useCallback(
     async (query: string) => {
       setIsLoadingCities(true);
-      setCities(await getCities(query, onlyExisting));
+      setCities(await getCities(query, {onlyExisting, onlyItalian}));
       setIsLoadingCities(false);
     },
     [onlyExisting],

@@ -52,7 +52,7 @@ interface DrawerConfig {
 export const drawers: DrawerConfig[] = [
   {
     name: "fatca",
-    title: "Verifica residenza USA",
+    title: "Verifica residenza",
     modalContent: <FatcaForm />,
     summaryContent: <FatcaSummary />,
   },

@@ -19,16 +19,27 @@ const cities: City[] = COMUNI.map(([cc, province, city, exist], index) => ({
   exist: exist === 1,
 }));
 
+interface GetCitiesOptions {
+  onlyExisting?: boolean;
+  onlyItalian?: boolean;
+}
+const defaultGetCitiesOptions: Required<GetCitiesOptions> = {
+  onlyExisting: false,
+  onlyItalian: false,
+};
+
 export async function getCities(
   query?: string,
-  onlyExisting: boolean = false,
+  options: GetCitiesOptions = {},
 ): Promise<City[]> {
+  const {onlyExisting, onlyItalian} = {...defaultGetCitiesOptions, ...options};
   const safeQuery = query ?? "";
 
   const filteredCities = cities.filter((city) => {
     return (
       city.city.toLowerCase().includes(safeQuery.toLowerCase()) &&
-      (!onlyExisting || city.exist)
+      (!onlyExisting || city.exist) &&
+      (!onlyItalian || city.province !== "EE")
     );
   });
 

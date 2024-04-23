@@ -254,6 +254,7 @@ export function ContractorDataForm() {
                 <ComuneProvAutocompleteField
                   placeholder="Città di residenza"
                   onlyExisting
+                  onlyItalian
                   validation={{
                     required: "Inserisci la città di residenza del contraente",
                   }}

@@ -3,6 +3,7 @@ import {YesNoAnswer} from "@/helpers/getOptionsLabel";
 
 export interface PreliminaryData {
   fatca?: YesNoAnswer;
+  italianResidency?: YesNoAnswer;
   contractorAlreadyRegistered?: boolean;
   contractorPersonalData?: {
     birthDate: string;

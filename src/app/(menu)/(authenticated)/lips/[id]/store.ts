@@ -56,7 +56,10 @@ function createDrawerState(state: State & Actions) {
     // fatca
     if (state.preliminaryData.fatca === undefined) {
       state.drawerStates.fatca = {variant: "active", ...presetButtons.compile};
-    } else if (state.preliminaryData.fatca === "no") {
+    } else if (
+      state.preliminaryData.fatca === "no" &&
+      state.preliminaryData.italianResidency === "yes"
+    ) {
       state.drawerStates.fatca = {variant: "success"};
     } else {
       state.drawerStates.fatca = {variant: "danger"};
@@ -92,7 +95,10 @@ function createDrawerState(state: State & Actions) {
     // fatca
     if (state.lip?.contractor?.fatca.fatcaCheck.response === undefined) {
       state.drawerStates.fatca = {variant: "active", ...presetButtons.compile};
-    } else if (state.lip?.contractor.fatca.fatcaCheck.response === "no") {
+    } else if (
+      state.lip?.contractor.fatca.fatcaCheck.response === "no" &&
+      state.lip?.contractor.fatca.residencyCheck.response === "yes"
+    ) {
       state.drawerStates.fatca = {variant: "success"};
     } else {
       state.drawerStates.fatca = {variant: "danger"};

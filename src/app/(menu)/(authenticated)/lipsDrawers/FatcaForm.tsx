@@ -1,6 +1,7 @@
 "use client";
 
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {YesNoAnswer} from "@/helpers/getOptionsLabel";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {CheckGroup} from "@/ui/form/CheckGroup";
 import {FieldError} from "@/ui/form/FieldError";
@@ -20,11 +21,21 @@ export const fatcaQuestions = {
       {label: "No", value: "no"},
     ],
   },
+  residencyCheck: {
+    label: "Residenza italiana",
+    text: "Il contraente è residente in Italia?",
+    options: [
+      {label: "Sì", value: "yes"},
+      {label: "No", value: "no"},
+    ],
+  },
 } as const;
 
 const fatcaDefaultValues = {
   fatcaCheck:
     "" as (typeof fatcaQuestions)["fatcaCheck"]["options"][number]["value"],
+  residencyCheck:
+    "" as (typeof fatcaQuestions)["residencyCheck"]["options"][number]["value"],
 };
 
 export function FatcaForm() {
@@ -44,7 +55,10 @@ export function FatcaForm() {
         <Form
           id="fatca-form"
           onSubmit={(values) => {
-            updatePreliminaryData({fatca: values.fatcaCheck});
+            updatePreliminaryData({
+              fatca: values.fatcaCheck,
+              italianResidency: values.residencyCheck,
+            });
             closeModal();
           }}
           formMethods={formMethods}
@@ -60,6 +74,21 @@ export function FatcaForm() {
               type="radio"
               inline
               options={fatcaQuestions.fatcaCheck.options}
+              validation={{
+                required: "Seleziona un'opzione",
+              }}
+            />
+          </FormGroup>
+          <FormGroup controlId="residencyCheck" as={BorderFeedback}>
+            <p className="mb-2 input-heading">
+              {fatcaQuestions.residencyCheck.label}
+            </p>
+            <HelpText>{fatcaQuestions.residencyCheck.text}</HelpText>
+            <FieldError />
+            <CheckGroup
+              type="radio"
+              inline
+              options={fatcaQuestions.residencyCheck.options}
               validation={{
                 required: "Seleziona un'opzione",
               }}
