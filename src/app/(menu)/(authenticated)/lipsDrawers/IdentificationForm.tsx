@@ -72,12 +72,16 @@ export function IdentificationForm() {
   const closeModal = useDrawerStore((state) => state.closeModal);
 
   // TODO: creare una funzione che genera gli url da inserire nel componente IdImage ed esportarla qui
-  const existingFrontImageUrl = encodeURI(
-    `${apiUrl}/personal-datas/${contractorId}/get-image?filename=${identityDocument?.identification?.fileIdFrontName}&agentId=${agentId}&size=thumbnail`,
-  );
-  const existingBackImageUrl = encodeURI(
-    `${apiUrl}/personal-datas/${contractorId}/get-image?filename=${identityDocument?.identification?.fileIdBackName}&agentId=${agentId}&size=thumbnail`,
-  );
+  const existingFrontImageUrl =
+    identityDocument?.identification?.fileIdFrontName &&
+    encodeURI(
+      `${apiUrl}/personal-datas/${contractorId}/get-image?filename=${identityDocument.identification.fileIdFrontName}&agentId=${agentId}&size=thumbnail`,
+    );
+  const existingBackImageUrl =
+    identityDocument?.identification?.fileIdBackName &&
+    encodeURI(
+      `${apiUrl}/personal-datas/${contractorId}/get-image?filename=${identityDocument.identification.fileIdBackName}&agentId=${agentId}&size=thumbnail`,
+    );
 
   return (
     <>
