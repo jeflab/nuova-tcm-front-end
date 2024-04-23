@@ -79,11 +79,11 @@ export function ContractorDataSummary() {
         </p>
         <p className="mb-0">
           <strong>Provincia attività prevalente:</strong>{" "}
-          {contractor.pep.job.province}
+          {contractor.pep.job.province || contractor.region}
         </p>
         <p className="mb-0">
           <strong>Paese attività prevalente:</strong>{" "}
-          {contractor.pep.job.country}
+          {contractor.pep.job.country || "Italia"}
         </p>
       </Col>
       <Col xs={12} xl={6}>
