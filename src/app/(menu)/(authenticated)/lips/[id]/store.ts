@@ -1,6 +1,7 @@
 import {DrawerName} from "@/app/(menu)/(authenticated)/lips/[id]/drawers";
-import {PreliminaryData} from "@/models/preliminaryData";
+import {imcInRange} from "@/app/(menu)/(authenticated)/lipsDrawers/imc";
 import {Lip} from "@/models/entities/lip";
+import {PreliminaryData} from "@/models/preliminaryData";
 import {DrawerState, presetButtons} from "@/ui/drawer/types";
 import {create} from "zustand";
 import {immer} from "zustand/middleware/immer";
@@ -43,6 +44,12 @@ function createDrawerState(state: State & Actions) {
   ).some(
     (question) => typeof question === "object" && question.check === "yes",
   );
+  const isImcInRange =
+    state.lip?.healthcareQuestionnaire &&
+    imcInRange(
+      parseInt(state.lip.healthcareQuestionnaire.weight, 10),
+      parseInt(state.lip.healthcareQuestionnaire.height, 10),
+    );
   const amlBlocked = state.lip?.aml?.blocked ?? false;
 
   if (isPreliminary) {
@@ -251,7 +258,7 @@ function createDrawerState(state: State & Actions) {
 
     // Pagamento
     if (state.drawerStates.beneficiaries?.variant === "success") {
-      if (oneYesInHealthcareQuestionnaire) {
+      if (oneYesInHealthcareQuestionnaire || !isImcInRange) {
         state.drawerStates.payment = {variant: "waiting", isLocked: true};
       } else if (state.lip?.payment === null) {
         state.drawerStates.payment = {
@@ -276,6 +283,14 @@ function createDrawerState(state: State & Actions) {
         state.lip.eSigns.identificazione
       ) {
         state.drawerStates.documentation = {variant: "success"};
+      } else if (
+        !state.lip?.privacyCompany ||
+        state.lip.privacyCompany.length === 0
+      ) {
+        state.drawerStates.documentation = {
+          variant: "active",
+          ...presetButtons.checkConsent,
+        };
       } else {
         state.drawerStates.documentation = {
           variant: "active",

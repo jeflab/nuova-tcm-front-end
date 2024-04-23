@@ -12,28 +12,17 @@ import {PaymentSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/PaymentSu
 import {QuoteSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/QuoteSummary";
 import {ReactNode} from "react";
 import {ContractorContactsSummary} from "../../lipsDrawers/ContractorContactsSummary";
+import {DrawerName} from "../../lips/[id]/drawers";
 
-export type DrawerName =
-  | "fatca"
-  | "contractorFiscalCode"
-  | "contractorContacts"
-  | "contractorPersonalAreaActivation"
-  | "contractorData"
-  | "identification"
-  | "den"
-  | "quote"
-  | "healthQuestionnaire"
-  | "beneficiaries"
-  | "documentation"
-  | "payment";
-interface Drawer {
+interface DrawerConfig {
   name: DrawerName;
   title: string;
   shortTitle?: string;
   summaryContent?: ReactNode;
   lock?: ReactNode;
 }
-export const drawers: Drawer[] = [
+
+export const drawers: DrawerConfig[] = [
   {
     name: "fatca",
     title: "Verifica residenza USA",

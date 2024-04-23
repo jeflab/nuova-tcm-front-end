@@ -9,7 +9,7 @@ import {ContractorPersonalAreaActivationSummary} from "@/app/(menu)/(authenticat
 import {DenForm} from "@/app/(menu)/(authenticated)/lipsDrawers/DenForm";
 import {DenSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/DenSummary";
 import {DocumentsLock} from "@/app/(menu)/(authenticated)/lipsDrawers/DocumentsLock";
-import {DocumentsManagement} from "@/app/(menu)/(authenticated)/lipsDrawers/DocumentsManagement";
+import {DocumentsModal} from "@/app/(menu)/(authenticated)/lipsDrawers/DocumentsModal";
 import {DocumentsSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/DocumentsSummary";
 import {FatcaForm} from "@/app/(menu)/(authenticated)/lipsDrawers/FatcaForm";
 import {FatcaSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/FatcaSummary";
@@ -27,15 +27,29 @@ import {ContractorPersonalAreaActivationLastPrivacy} from "../../lipsDrawers/Con
 import {ContractorContactsForm} from "../../lipsDrawers/ContractorContactsForm";
 import {ContractorContactsSummary} from "../../lipsDrawers/ContractorContactsSummary";
 
-interface Drawer {
-  name: string;
+export type DrawerName =
+  | "fatca"
+  | "contractorFiscalCode"
+  | "contractorContacts"
+  | "contractorPersonalAreaActivation"
+  | "contractorData"
+  | "identification"
+  | "den"
+  | "quote"
+  | "healthQuestionnaire"
+  | "beneficiaries"
+  | "payment"
+  | "documentation";
+interface DrawerConfig {
+  name: DrawerName;
   title: string;
   shortTitle?: string;
   modalContent?: ReactNode;
   summaryContent?: ReactNode;
   lock?: ReactNode;
 }
-export const drawers: Drawer[] = [
+
+export const drawers: DrawerConfig[] = [
   {
     name: "fatca",
     title: "Verifica residenza USA",
@@ -113,10 +127,8 @@ export const drawers: Drawer[] = [
   {
     name: "documentation",
     title: "Documentazione",
-    modalContent: <DocumentsManagement />,
+    modalContent: <DocumentsModal />,
     summaryContent: <DocumentsSummary />,
     lock: <DocumentsLock />,
   },
 ] as const;
-
-export type DrawerName = (typeof drawers)[number]["name"];

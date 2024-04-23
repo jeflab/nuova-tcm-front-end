@@ -9,8 +9,6 @@ import {
 } from "react-hook-form";
 import invariant from "tiny-invariant";
 
-type GroupTypes = "checkbox" | "radio" | "switch";
-
 interface SingleValue<TValue> {
   type: "radio" | "radio-switch";
   onChange?: (value: TValue) => void;
@@ -30,6 +28,7 @@ type CheckGroupProps<TFieldValues extends FieldValues, TValue> = (
   options: readonly {label: ReactNode; value: TValue}[];
   readOnly?: boolean;
   validation?: RegisterOptions<TFieldValues>;
+  validationStyle?: boolean;
 };
 
 export function CheckGroup<
@@ -44,6 +43,7 @@ export function CheckGroup<
   readOnly,
   type,
   validation,
+  validationStyle,
 }: CheckGroupProps<TFieldValues, TValue>) {
   const {controlId} = useContext(FormContext);
   const controlName = name || controlId;
@@ -69,6 +69,7 @@ export function CheckGroup<
             validation={validation as any}
             value={value}
             className={cns(type === "radio-switch" && "form-switch")}
+            validationStyle={validationStyle}
           />
         );
       })}

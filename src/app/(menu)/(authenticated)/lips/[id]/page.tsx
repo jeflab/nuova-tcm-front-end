@@ -2,7 +2,6 @@ import {Lip} from "@/models/entities/lip";
 import {cns} from "@/helpers/cns";
 import {AppContainer} from "@/ui/AppContainer";
 import {ButtonLink} from "@/ui/ButtonLink";
-import {Debug} from "@/ui/Debug";
 import {Drawer} from "@/ui/drawer/Drawer";
 import {NavDrawer} from "@/ui/drawer/NavDrawer";
 import {PageTitle} from "@/ui/PageTitle";
@@ -52,7 +51,6 @@ export default async function NewLipPage({params}: NewLipPageProps) {
         </ButtonLink>
       </PageTitle>
       <InitStoreWithServerData lip={lip} />
-      <Debug>{lip}</Debug>
       <Row className="flex-row-reverse">
         <Col md="auto">
           <Nav className={cns("flex-column", styles.connectedList)}>
