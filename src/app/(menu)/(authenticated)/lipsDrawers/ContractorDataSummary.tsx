@@ -53,10 +53,12 @@ export function ContractorDataSummary() {
           <FontAwesomeIcon icon={faAddressBook} /> Contatti
         </h4>
         <p className="mb-0">
-          <strong>Telefono:</strong> {contractor.phone}
+          <strong>Telefono:</strong>{" "}
+          <a href={`tel:${contractor.phone}`}>{contractor.phone}</a>
         </p>
         <p className="mb-0">
-          <strong>Email:</strong> {contractor.email}
+          <strong>Email:</strong>{" "}
+          <a href={`mailto:${contractor.email}`}>{contractor.email}</a>
         </p>
       </Col>
       <Col xs={12} xl={6}>
