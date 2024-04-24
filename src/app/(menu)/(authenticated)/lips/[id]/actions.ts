@@ -53,6 +53,12 @@ interface ActivateContractorParams {
     options: readonly Option[];
     response: (typeof fatcaQuestions)["fatcaCheck"]["options"][number]["value"];
   };
+  italianResidency: {
+    label: string;
+    text: string;
+    options: readonly Option[];
+    response: (typeof fatcaQuestions)["residencyCheck"]["options"][number]["value"];
+  };
   birthDate: string;
   birthPlace: {
     city: string;
@@ -71,6 +77,7 @@ export async function activateContractor(
   const data = {
     json_fatca: JSON.stringify({
       fatcaCheck: contractorData.fatca,
+      residencyCheck: contractorData.italianResidency,
     }),
     fiscal_code: contractorData.fiscalCode,
     date_birth: contractorData.birthDate,
