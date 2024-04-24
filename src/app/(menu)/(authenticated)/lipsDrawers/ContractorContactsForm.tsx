@@ -9,6 +9,7 @@ import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {cns} from "@/helpers/cns";
 import {PersonalData} from "@/models/entities/personalData";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
+import {CheckboxField} from "@/ui/form/CheckboxField";
 import {FieldError} from "@/ui/form/FieldError";
 import {Form} from "@/ui/form/Form";
 import {InputField} from "@/ui/form/InputField";
@@ -157,6 +158,24 @@ export function ContractorContactsForm() {
                     },
                   }}
                   normalize={emailNormalizer}
+                />
+              </FormGroup>
+            </Col>
+            <Col xs={12}>
+              <FormGroup
+                controlId="documentIsCopyShownByContractor"
+                as={BorderFeedback}
+                className="position-relative"
+              >
+                <FieldError />
+                <CheckboxField
+                  type="checkbox"
+                  label="l'advisor dichiara di aver verificato che il numero di telefono del contraente è di proprietà e uso esclusivo dello stesso"
+                  validation={{
+                    required:
+                      "Per procedere devi confermare di aver verificato il numero di telefono del contraente",
+                  }}
+                  stretchedLabel
                 />
               </FormGroup>
             </Col>
