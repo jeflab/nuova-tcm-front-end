@@ -52,9 +52,14 @@ export async function Navbar() {
         <NavbarToggle aria-controls="basic-navbar-nav" />
         <NavbarCollapse id="basic-navbar-nav">
           <Nav className="ms-auto">
-            <NavLink as={Link} href="/quoter">
-              Preventivatore
-            </NavLink>
+            {(!loggedIn ||
+              permissions?.some(
+                (permission) => permission.name === "create-lip",
+              )) && (
+              <NavLink as={Link} href="/quoter">
+                Preventivatore
+              </NavLink>
+            )}
             {loggedIn ? (
               <>
                 {permissions.some(
