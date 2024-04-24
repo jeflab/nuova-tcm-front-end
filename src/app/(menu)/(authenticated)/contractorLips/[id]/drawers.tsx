@@ -30,33 +30,33 @@ export const drawers: DrawerConfig[] = [
   },
   {
     name: "contractorFiscalCode",
-    title: "Dati contraente",
+    title: "Dati Contraente",
     summaryContent: <ContractorFiscalCodeSummary />,
   },
   {
     name: "contractorContacts",
-    title: "Contatti contraente",
+    title: "Contatti Contraente",
     summaryContent: <ContractorContactsSummary />,
   },
   {
     name: "contractorPersonalAreaActivation",
-    title: "Attivazione area contraente",
+    title: "Attivazione area Contraente",
     summaryContent: <ContractorPersonalAreaActivationSummary />,
   },
   {
     name: "contractorData",
-    title: "Censimento contraente",
+    title: "Censimento Contraente",
     summaryContent: <ContractorDataSummary />,
   },
   {
     name: "identification",
-    title: "Identificazione del cliente",
+    title: "Identificazione del Contraente",
     summaryContent: <IdentificationDataSummary />,
   },
   {
     name: "den",
     title:
-      "Questionario per la coerenza del contratto rispetto alle richieste ed esigenze del cliente",
+      "Questionario per la coerenza del contratto rispetto alle richieste ed esigenze del Contraente",
     shortTitle: "Questionario di coerenza",
     summaryContent: <DenSummary />,
   },

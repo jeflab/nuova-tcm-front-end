@@ -92,12 +92,12 @@ export function ContractorDataSummary() {
           politicamente
         </h4>
         <p className="mb-0">
-          <strong>Il contraente è una persona esposta politicamente:</strong>{" "}
+          <strong>Il Contraente è una persona esposta politicamente:</strong>{" "}
           {getOptionsLabel(yesNoOptions, contractor.pep.isPep.response)}
         </p>
         <p className="mb-0">
           <strong>
-            Il contraente Ricopre cariche pubbliche diverse da P.E.P.:
+            Il Contraente Ricopre cariche pubbliche diverse da P.E.P.:
           </strong>{" "}
           {getOptionsLabel(
             publicOfficesOptions,

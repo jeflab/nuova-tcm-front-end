@@ -11,7 +11,7 @@ export default async function Quoter() {
         <Alert variant="info" className="mb-0">
           Si prega di compilare il form per il preventivo della polizza vita con
           attenzione alle normative vigenti e principi etici. Concentrarsi sul
-          benessere del cliente, garantendo chiarezza, trasparenza e
+          benessere del Contraente, garantendo chiarezza, trasparenza e
           riservatezza nelle informazioni è fondamentale.
         </Alert>
       </AppContainer>

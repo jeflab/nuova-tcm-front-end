@@ -50,7 +50,7 @@ const documents: Document[] = [
         key: "esign_agente",
         whoESign: "advisor",
         chapters: [
-          "L'intermediario dichiara di avere incontrato di persona e di avere identificato attraverso il suo documento d'identità il contraente.",
+          "L'intermediario dichiara di avere incontrato di persona e di avere identificato attraverso il suo documento d'identità il Contraente.",
         ],
       } as ESign,
     ],
@@ -76,7 +76,7 @@ const documents: Document[] = [
         chapters: [
           "PG 5/9 - Dichiarazioni rese dall'assicurato in relazione al proprio stato di salute e abitudini di vita.",
           "PG 6/9 - Autorizzazione alla comunicazione elettronica.",
-          "PG 6/9 - Dichiarazioni del contraente e dell'assicurato.",
+          "PG 6/9 - Dichiarazioni del Contraente e dell'assicurato.",
           "PG 9/9 - Firma della proposta.",
         ],
       } as ESign,
@@ -84,7 +84,7 @@ const documents: Document[] = [
         key: "esign_contraente_sepa",
         whoESign: "contractor",
         chapters: [
-          "PG 5/9 - Firma del contraente per l'addebito diretto SEPA - S.D.D.",
+          "PG 5/9 - Firma del Contraente per l'addebito diretto SEPA - S.D.D.",
         ],
       } as ESign,
     ],
@@ -261,7 +261,7 @@ export function DocumentsManagement() {
                 </>
                 <>
                   <div>
-                    <strong>Firme cliente:</strong>
+                    <strong>Firme Contraente:</strong>
                     <span className="d-block d-sm-none">
                       {partialContractorESign.length} di{" "}
                       {totalContractorESign.length}
@@ -307,7 +307,7 @@ export function DocumentsManagement() {
                                 icon={faFileSignature}
                                 className="me-2"
                               />
-                              Firma del cliente
+                              Firma del Contraente
                             </Button>
                             <DocumentsChapterDetails
                               eSigns={totalContractorESign}

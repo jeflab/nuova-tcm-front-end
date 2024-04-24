@@ -61,7 +61,7 @@ export async function Navbar() {
                   (permission) => permission.name === "create-lip",
                 ) && (
                   <NavLink as={Link} href="/lips">
-                    Elenco clienti
+                    Elenco Contraenti
                   </NavLink>
                 )}
                 {permissions.some(

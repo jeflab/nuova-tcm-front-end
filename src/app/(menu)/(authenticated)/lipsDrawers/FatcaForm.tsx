@@ -1,7 +1,6 @@
 "use client";
 
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
-import {YesNoAnswer} from "@/helpers/getOptionsLabel";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {CheckGroup} from "@/ui/form/CheckGroup";
 import {FieldError} from "@/ui/form/FieldError";
@@ -15,7 +14,7 @@ import {useForm} from "react-hook-form";
 export const fatcaQuestions = {
   fatcaCheck: {
     label: "Residenza USA",
-    text: "Il contraente è residente negli Stati Uniti d'America?",
+    text: "Il Contraente è residente negli Stati Uniti d'America?",
     options: [
       {label: "Sì", value: "yes"},
       {label: "No", value: "no"},
@@ -23,7 +22,7 @@ export const fatcaQuestions = {
   },
   residencyCheck: {
     label: "Residenza italiana",
-    text: "Il contraente è residente in Italia?",
+    text: "Il Contraente è residente in Italia?",
     options: [
       {label: "Sì", value: "yes"},
       {label: "No", value: "no"},

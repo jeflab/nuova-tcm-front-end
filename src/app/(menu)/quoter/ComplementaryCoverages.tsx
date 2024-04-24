@@ -141,7 +141,7 @@ export function ComplementaryCoverages() {
           <HelpText>
             Fino all'età assicurativa di 65 anni, se l'assicurato subisce
             un'invalidità totale e permanente, la compagnia esonera il
-            contraente/assicurato dall'obbligo di pagamento dei premi per il
+            Contraente/assicurato dall'obbligo di pagamento dei premi per il
             resto della durata del contratto.
           </HelpText>
           <div>

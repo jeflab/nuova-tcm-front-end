@@ -17,7 +17,7 @@ export default function LipsPage({searchParams}: LipsPageProps) {
   return (
     <AppContainer className="vstack gap-3">
       <PageTitle>
-        Elenco clienti
+        Elenco Contraenti
         <ButtonLink href="lips/new">
           <FontAwesomeIcon icon={faPlus} /> Nuova proposta di polizza
         </ButtonLink>

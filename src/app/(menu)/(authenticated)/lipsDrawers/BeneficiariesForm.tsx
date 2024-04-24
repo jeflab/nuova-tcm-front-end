@@ -407,7 +407,7 @@ export function BeneficiariesForm() {
                             type="text"
                             placeholder="Indirizzo di residenza"
                             validation={{
-                              required: "Inserisci l'indirizzo del contraente",
+                              required: "Inserisci l'indirizzo del Contraente",
                             }}
                           />
                         </FormGroup>
@@ -423,7 +423,7 @@ export function BeneficiariesForm() {
                             type="text"
                             placeholder="N° civico"
                             validation={{
-                              required: "Inserisci il n° civico del contraente",
+                              required: "Inserisci il n° civico del Contraente",
                             }}
                           />
                         </FormGroup>
@@ -698,7 +698,7 @@ export function BeneficiariesForm() {
                   Ove non sia designato alcun Beneficiario, la prestazione
                   assicurativa sarà corrisposta in favore degli eredi
                   testamentari o, in mancanza di testamento, degli eredi
-                  legittimi del contraente-assicurato
+                  legittimi del Contraente-assicurato
                 </Alert>
                 <Alert variant="warning" className="mb-0">
                   In caso di mancata indicazione nominativa del Beneficiario, la

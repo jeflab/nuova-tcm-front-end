@@ -37,7 +37,7 @@ export function DenSummary() {
     return (
       <p className="mb-0">
         Non è possibile continuare la consulenza poiché le aspettative del
-        contraente in merito alla durata del contratto non sono coerenti con la
+        Contraente in merito alla durata del contratto non sono coerenti con la
         durata del prodotto.
       </p>
     );
@@ -51,7 +51,7 @@ export function DenSummary() {
     return (
       <p className="mb-0">
         Non è possibile continuare la consulenza poiché le aspettative del
-        contraente non sono coerenti con le caratteristiche del prodotto.
+        Contraente non sono coerenti con le caratteristiche del prodotto.
       </p>
     );
   }
@@ -73,7 +73,7 @@ export function DenSummary() {
         </p>
         <p className="mb-0">
           <strong>
-            Numero di componenti del nucleo familiare oltre al contraente:
+            Numero di componenti del nucleo familiare oltre al Contraente:
           </strong>{" "}
           {getOptionsLabel(familyOptions, denData.family.response)} di cui{" "}
           {getOptionsLabel(
@@ -162,7 +162,7 @@ export function DenSummary() {
         </h4>
         <p className="mb-0">
           <strong>
-            Il contraente ha bisogno di coperture per un periodo di tempo:
+            Il Contraente ha bisogno di coperture per un periodo di tempo:
           </strong>{" "}
           {getOptionsLabel(durationOptions, denData.duration.response)}
         </p>

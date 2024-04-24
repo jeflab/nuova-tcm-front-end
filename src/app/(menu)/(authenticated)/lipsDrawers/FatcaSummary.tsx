@@ -23,7 +23,7 @@ export function FatcaSummary() {
   if (fatcaData === "yes") {
     return (
       <p className="mb-0">
-        Non è possibile continuare la consulenza poiché il contraente è
+        Non è possibile continuare la consulenza poiché il Contraente è
         residente negli Stati Uniti d'America.
       </p>
     );
@@ -32,7 +32,7 @@ export function FatcaSummary() {
   if (residencyData === "no") {
     return (
       <p className="mb-0">
-        Non è possibile continuare la consulenza poiché il contraente non è
+        Non è possibile continuare la consulenza poiché il Contraente non è
         residente in Italia.
       </p>
     );
@@ -42,7 +42,7 @@ export function FatcaSummary() {
     return (
       <>
         <p className="mb-0">
-          Il contraente è residenze in Italia e non è residente negli Stati
+          Il Contraente è residenze in Italia e non è residente negli Stati
           Uniti d'America
         </p>
       </>

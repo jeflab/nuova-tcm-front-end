@@ -81,7 +81,7 @@ function createDrawerState(state: State & Actions) {
       state.drawerStates.contractorFiscalCode = undefined;
     }
 
-    // Contatti contraente
+    // Contatti Contraente
     if (state.drawerStates.contractorFiscalCode?.variant === "success") {
       state.drawerStates.contractorContacts = {
         variant: "active",
@@ -118,7 +118,7 @@ function createDrawerState(state: State & Actions) {
       state.drawerStates.contractorFiscalCode = undefined;
     }
 
-    // Contatti contraente
+    // Contatti Contraente
     if (state.drawerStates.contractorFiscalCode?.variant === "success") {
       if (
         state.lip?.contractor.phone === null ||
@@ -138,7 +138,7 @@ function createDrawerState(state: State & Actions) {
       state.drawerStates.contractorContacts = undefined;
     }
 
-    // Attesa creazione aria cliente
+    // Attesa creazione aria Contraente
     if (state.drawerStates.contractorContacts?.variant === "success") {
       if (state.lip?.contractor.lastPrivacyEsignId === null) {
         state.drawerStates.contractorPersonalAreaActivation = {
@@ -154,7 +154,7 @@ function createDrawerState(state: State & Actions) {
       state.drawerStates.contractorPersonalAreaActivation = undefined;
     }
 
-    // Censimento cliente
+    // Censimento Contraente
     if (
       state.drawerStates.contractorPersonalAreaActivation?.variant === "success"
     ) {
@@ -173,7 +173,7 @@ function createDrawerState(state: State & Actions) {
       state.drawerStates.contractorData = undefined;
     }
 
-    // Identificazione cliente
+    // Identificazione Contraente
     if (state.drawerStates.contractorData?.variant === "success") {
       if (
         !state.lip?.contractor.identitydocument ||

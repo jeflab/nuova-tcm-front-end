@@ -51,41 +51,41 @@ const ContractorFormSchema = z
   .object({
     birthDate: z
       .string()
-      .refine(required, "Inserisci la data di nascita del contraente")
+      .refine(required, "Inserisci la data di nascita del Contraente")
       .refine((value) => {
         const date = new Date(value);
         return date <= subYears(Date(), 18);
-      }, "Il contraente deve essere maggiorenne")
+      }, "Il Contraente deve essere maggiorenne")
       .refine((value) => {
         const date = new Date(value);
         return date > startOfYear(subYears(Date(), 65));
-      }, "L'età assicurativa del contraente deve essere inferiore a 65 anni"),
+      }, "L'età assicurativa del Contraente deve essere inferiore a 65 anni"),
     birthPlace: z.object({
       city: z
         .string()
-        .refine(required, "Inserisci il comune di nascita del contraente"),
+        .refine(required, "Inserisci il comune di nascita del Contraente"),
       province: z
         .string()
-        .refine(required, "Inserisci la provincia di nascita del contraente"),
+        .refine(required, "Inserisci la provincia di nascita del Contraente"),
     }),
     fiscalCode: z
       .string()
-      .refine(required, "Inserisci il codice fiscale del contraente")
+      .refine(required, "Inserisci il codice fiscale del Contraente")
       .refine((value) => {
         return fiscalCodeValidator(value);
       }, "Codice fiscale non valido"),
     gender: z
       .string()
-      .refine(required, "Inserisci il genere del contraente")
+      .refine(required, "Inserisci il genere del Contraente")
       .and(
         z.enum(getOptionsValues(genderOptions), {
           errorMap: () => ({
-            message: "Il genere del contraente non è valido",
+            message: "Il genere del Contraente non è valido",
           }),
         }),
       ),
-    name: z.string().refine(required, "Inserisci il nome del contraente"),
-    surname: z.string().refine(required, "Inserisci il cognome del contraente"),
+    name: z.string().refine(required, "Inserisci il nome del Contraente"),
+    surname: z.string().refine(required, "Inserisci il cognome del Contraente"),
   })
   .superRefine((formValues, ctx) => {
     fiscalCodeMatchDataSuperRefine(
@@ -127,7 +127,6 @@ export function ContractorFiscalCodeForm() {
   const updatePreliminaryData = useDrawerStore(
     (state) => state.updatePreliminaryData,
   );
-  const updateLip = useDrawerStore((state) => state.updateLip);
   // Lip dovrebbe essere sempre a undefined la prima volta, ma così siamo future proof
   const lip = useDrawerStore((state) => state.lip);
 

@@ -117,7 +117,7 @@ export function CompanyPrivacy({onHide}: CompanyPrivacyProps) {
           </h4>
           <p>
             Raccogliamo i tuoi dati personali – di regola - direttamente presso
-            di te oppure dal contraente che stipula a tuo favore una polizza.
+            di te oppure dal Contraente che stipula a tuo favore una polizza.
             Raccogliamo i tuoi dati personali anche avvalendoci di banche dati,
             elenchi e registri pubblici legittimamente accessibili (es:
             consultazione delle centrali-rischi private o di banche dati di

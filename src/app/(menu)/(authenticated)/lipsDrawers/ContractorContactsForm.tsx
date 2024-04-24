@@ -62,7 +62,7 @@ export function ContractorContactsForm() {
               try {
                 invariant(
                   preliminaryData.contractorPersonalData,
-                  "Dati del cliente mancanti",
+                  "Dati del Contraente mancanti",
                 );
                 invariant(preliminaryData.fatca, "Dati FATCA mancanti");
 

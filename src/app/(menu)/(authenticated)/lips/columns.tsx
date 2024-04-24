@@ -158,7 +158,7 @@ export const skeletonColumns = [
     ),
   }),
   columnHelper.accessor("contractor", {
-    header: "Cliente",
+    header: "Contraente",
     id: "contractor",
     cell: () => (
       <Placeholder as="span" animation="glow">

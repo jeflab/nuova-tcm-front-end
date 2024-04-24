@@ -225,7 +225,7 @@ export function ContractorDataForm() {
                   type="text"
                   placeholder="Indirizzo"
                   validation={{
-                    required: "Inserisci l'indirizzo del contraente",
+                    required: "Inserisci l'indirizzo del Contraente",
                   }}
                 />
               </FormGroup>
@@ -238,7 +238,7 @@ export function ContractorDataForm() {
                   type="text"
                   placeholder="N° civico"
                   validation={{
-                    required: "Inserisci il n° civico del contraente",
+                    required: "Inserisci il n° civico del Contraente",
                   }}
                 />
               </FormGroup>
@@ -256,7 +256,7 @@ export function ContractorDataForm() {
                   onlyExisting
                   onlyItalian
                   validation={{
-                    required: "Inserisci la città di residenza del contraente",
+                    required: "Inserisci la città di residenza del Contraente",
                   }}
                 />
               </FormGroup>
@@ -269,7 +269,7 @@ export function ContractorDataForm() {
                   type="text"
                   placeholder="CAP"
                   validation={{
-                    required: "Inserisci l'indirizzo del contraente",
+                    required: "Inserisci l'indirizzo del Contraente",
                     minLength: {
                       value: 5,
                       message: "Il CAP deve essere di 5 caratteri",
@@ -355,7 +355,7 @@ export function ContractorDataForm() {
             <Col className="d-flex" xs={12}>
               <FormGroup controlId="pep.isPep" as={BorderFeedback}>
                 <FormLabel>
-                  Il contraente è una persona esposta politicamente?
+                  Il Contraente è una persona esposta politicamente?
                 </FormLabel>
                 <HelpText>
                   Si considerano Persone Politicamente Esposte le persone

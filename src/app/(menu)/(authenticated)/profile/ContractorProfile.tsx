@@ -11,7 +11,7 @@ interface ContractorProfileProps {
 export function ContractorProfile({contractor}: ContractorProfileProps) {
   return (
     <>
-      <h3>Cliente</h3>
+      <h3>Contraente</h3>
       <Card body>
         <Row as="dl" xs={1} sm={3} className="mb-0">
           <Col>

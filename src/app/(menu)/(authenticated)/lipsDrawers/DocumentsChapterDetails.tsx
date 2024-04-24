@@ -85,7 +85,7 @@ export function DocumentsChapterDetails({
                     }}
                   >
                     <FontAwesomeIcon icon={faFileSignature} /> Firma
-                    {eSign.whoESign === "contractor" ? " del contraente" : ""}
+                    {eSign.whoESign === "contractor" ? " del Contraente" : ""}
                   </Button>{" "}
                   <RequestOTPModal
                     onHide={() => {

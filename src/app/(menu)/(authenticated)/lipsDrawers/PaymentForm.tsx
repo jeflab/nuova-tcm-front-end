@@ -174,7 +174,7 @@ export function PaymentForm() {
                 />
               </FormGroup>
             </Col>
-            <h4>Dati bancari del contraente</h4>
+            <h4>Dati bancari del Contraente</h4>
             <Col className="d-flex" xs={12} sm={6}>
               <FormGroup controlId="contractorFullName" as={BorderFeedback}>
                 <FormLabel>Intestatario c/c</FormLabel>
@@ -226,7 +226,7 @@ export function PaymentForm() {
                       validate: {
                         required: (value) => {
                           if (!value) {
-                            return "Inserisci l'IBAN del contraente";
+                            return "Inserisci l'IBAN del Contraente";
                           }
                         },
                         format: (value) => {

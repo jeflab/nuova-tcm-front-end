@@ -136,7 +136,7 @@ export function DocumentsSummary() {
           </div>
           <div>Nessuna firma richiesta</div>
           <div>
-            <strong>Firme cliente:</strong>
+            <strong>Firme Contraente:</strong>
             <span className="d-block d-sm-none">
               <FontAwesomeIcon
                 icon={faCheckCircle}
@@ -251,7 +251,7 @@ export function DocumentsSummary() {
               </>
               <>
                 <div>
-                  <strong>Firme cliente:</strong>
+                  <strong>Firme Contraente:</strong>
                   <span className="d-block d-sm-none">
                     {partialContractorESign.length} di{" "}
                     {totalContractorESign.length}

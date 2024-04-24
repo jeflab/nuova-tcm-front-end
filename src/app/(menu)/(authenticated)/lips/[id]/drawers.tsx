@@ -58,19 +58,19 @@ export const drawers: DrawerConfig[] = [
   },
   {
     name: "contractorFiscalCode",
-    title: "Dati contraente",
+    title: "Dati Contraente",
     modalContent: <ContractorFiscalCodeForm />,
     summaryContent: <ContractorFiscalCodeSummary />,
   },
   {
     name: "contractorContacts",
-    title: "Contatti contraente",
+    title: "Contatti Contraente",
     modalContent: <ContractorContactsForm />,
     summaryContent: <ContractorContactsSummary />,
   },
   {
     name: "contractorPersonalAreaActivation",
-    title: "Attivazione area contraente",
+    title: "Attivazione area Contraente",
     modalContent: (
       <ContractorPersonalAreaActivationModalContent
         lastPrivacy={<ContractorPersonalAreaActivationLastPrivacy />}
@@ -80,20 +80,20 @@ export const drawers: DrawerConfig[] = [
   },
   {
     name: "contractorData",
-    title: "Censimento contraente",
+    title: "Censimento Contraente",
     modalContent: <ContractorDataForm />,
     summaryContent: <ContractorDataSummary />,
   },
   {
     name: "identification",
-    title: "Identificazione del cliente",
+    title: "Identificazione del Contraente",
     modalContent: <IdentificationForm />,
     summaryContent: <IdentificationDataSummary />,
   },
   {
     name: "den",
     title:
-      "Questionario per la coerenza del contratto rispetto alle richieste ed esigenze del cliente",
+      "Questionario per la coerenza del contratto rispetto alle richieste ed esigenze del Contraente",
     shortTitle: "Questionario di coerenza",
     modalContent: <DenForm />,
     summaryContent: <DenSummary />,
