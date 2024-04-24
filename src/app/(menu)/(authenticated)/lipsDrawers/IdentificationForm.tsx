@@ -258,7 +258,7 @@ export function IdentificationForm() {
                 </DropzoneField>
               </FormGroup>
             </Col>{" "}
-            <h4>L'intermediario dichiara:</h4>
+            <h4>L'Intermediario dichiara:</h4>
             <Col xs={12}>
               <FormGroup
                 controlId="metContractorInPerson"

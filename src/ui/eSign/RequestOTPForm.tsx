@@ -130,7 +130,7 @@ export function RequestOTPForm<TPayload>({
                   verticalAlign: "baseline",
                 }}
               >
-                Test cambia numero agente
+                Test cambia numero Intermediario
               </Button>
             </p>
           )}

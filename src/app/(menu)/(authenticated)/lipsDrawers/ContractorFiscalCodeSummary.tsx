@@ -25,7 +25,7 @@ export function ContractorFiscalCodeSummary() {
     return (
       <p className="mb-0">
         Non è possibile continuare la consulenza poiché il Contraente risulta
-        già censito da un altro agente
+        già censito da un altro Intermediario
       </p>
     );
   }

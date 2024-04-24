@@ -50,7 +50,7 @@ const documents: Document[] = [
         key: "esign_agente",
         whoESign: "advisor",
         chapters: [
-          "L'intermediario dichiara di avere incontrato di persona e di avere identificato attraverso il suo documento d'identità il Contraente.",
+          "L'Intermediario dichiara di avere incontrato di persona e di avere identificato attraverso il suo documento d'identità il Contraente.",
         ],
       } as ESign,
     ],
@@ -66,7 +66,7 @@ const documents: Document[] = [
         key: "esign_agente",
         whoESign: "advisor",
         chapters: [
-          "PG 9/9 - Dichiarazione dell'intermediario.",
+          "PG 9/9 - Dichiarazione dell'Intermediario.",
           "PG 9/9 - Firma del soggetto incaricato dell'adeguata verifica.",
         ],
       } as ESign,
