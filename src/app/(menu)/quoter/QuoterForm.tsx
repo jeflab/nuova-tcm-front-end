@@ -1,6 +1,6 @@
 "use client";
 
-import {paymentMethodsOptions} from "@/app/(menu)/(authenticated)/lipsDrawers/PaymentForm";
+import {paymentMethodsOptions} from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
 import {getQuote} from "@/app/(menu)/quoter/actions";
 import {Advantages} from "@/app/(menu)/quoter/Advantages";
 import {getCoverageDuration} from "@/app/(menu)/quoter/helpers";
@@ -200,6 +200,7 @@ export function QuoterForm() {
                         value={value}
                         className="form-switch"
                         name="non-quote-form"
+                        id={`non-quote-form-${value}`}
                       />
                     ))}
                   </FormGroup>

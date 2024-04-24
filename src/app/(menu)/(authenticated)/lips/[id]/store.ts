@@ -1,6 +1,7 @@
 import {DrawerName} from "@/app/(menu)/(authenticated)/lips/[id]/drawers";
-import {PreliminaryData} from "@/models/preliminaryData";
+import {imcInRange} from "@/app/(menu)/(authenticated)/lipsDrawers/imc";
 import {Lip} from "@/models/entities/lip";
+import {PreliminaryData} from "@/models/preliminaryData";
 import {DrawerState, presetButtons} from "@/ui/drawer/types";
 import {create} from "zustand";
 import {immer} from "zustand/middleware/immer";
@@ -43,13 +44,22 @@ function createDrawerState(state: State & Actions) {
   ).some(
     (question) => typeof question === "object" && question.check === "yes",
   );
+  const isImcInRange =
+    state.lip?.healthcareQuestionnaire &&
+    imcInRange(
+      parseInt(state.lip.healthcareQuestionnaire.weight, 10),
+      parseInt(state.lip.healthcareQuestionnaire.height, 10),
+    );
   const amlBlocked = state.lip?.aml?.blocked ?? false;
 
   if (isPreliminary) {
     // fatca
     if (state.preliminaryData.fatca === undefined) {
       state.drawerStates.fatca = {variant: "active", ...presetButtons.compile};
-    } else if (state.preliminaryData.fatca === "no") {
+    } else if (
+      state.preliminaryData.fatca === "no" &&
+      state.preliminaryData.italianResidency === "yes"
+    ) {
       state.drawerStates.fatca = {variant: "success"};
     } else {
       state.drawerStates.fatca = {variant: "danger"};
@@ -57,7 +67,10 @@ function createDrawerState(state: State & Actions) {
 
     // contractor fiscal code
     if (state.drawerStates.fatca?.variant === "success") {
-      if (state.preliminaryData.contractorPersonalData === undefined) {
+      if (
+        !state.preliminaryData.contractorAlreadyRegistered &&
+        state.preliminaryData.contractorPersonalData === undefined
+      ) {
         state.drawerStates.contractorFiscalCode = {
           variant: "active",
           ...presetButtons.compile,
@@ -71,7 +84,7 @@ function createDrawerState(state: State & Actions) {
       state.drawerStates.contractorFiscalCode = undefined;
     }
 
-    // Contatti contraente
+    // Contatti Contraente
     if (state.drawerStates.contractorFiscalCode?.variant === "success") {
       state.drawerStates.contractorContacts = {
         variant: "active",
@@ -85,7 +98,10 @@ function createDrawerState(state: State & Actions) {
     // fatca
     if (state.lip?.contractor?.fatca.fatcaCheck.response === undefined) {
       state.drawerStates.fatca = {variant: "active", ...presetButtons.compile};
-    } else if (state.lip?.contractor.fatca.fatcaCheck.response === "no") {
+    } else if (
+      state.lip?.contractor.fatca.fatcaCheck.response === "no" &&
+      state.lip?.contractor.fatca.residencyCheck.response === "yes"
+    ) {
       state.drawerStates.fatca = {variant: "success"};
     } else {
       state.drawerStates.fatca = {variant: "danger"};
@@ -105,7 +121,7 @@ function createDrawerState(state: State & Actions) {
       state.drawerStates.contractorFiscalCode = undefined;
     }
 
-    // Contatti contraente
+    // Contatti Contraente
     if (state.drawerStates.contractorFiscalCode?.variant === "success") {
       if (
         state.lip?.contractor.phone === null ||
@@ -125,7 +141,7 @@ function createDrawerState(state: State & Actions) {
       state.drawerStates.contractorContacts = undefined;
     }
 
-    // Attesa creazione aria cliente
+    // Attesa creazione aria Contraente
     if (state.drawerStates.contractorContacts?.variant === "success") {
       if (state.lip?.contractor.lastPrivacyEsignId === null) {
         state.drawerStates.contractorPersonalAreaActivation = {
@@ -141,7 +157,7 @@ function createDrawerState(state: State & Actions) {
       state.drawerStates.contractorPersonalAreaActivation = undefined;
     }
 
-    // Censimento cliente
+    // Censimento Contraente
     if (
       state.drawerStates.contractorPersonalAreaActivation?.variant === "success"
     ) {
@@ -160,7 +176,7 @@ function createDrawerState(state: State & Actions) {
       state.drawerStates.contractorData = undefined;
     }
 
-    // Identificazione cliente
+    // Identificazione Contraente
     if (state.drawerStates.contractorData?.variant === "success") {
       if (
         !state.lip?.contractor.identitydocument ||
@@ -251,7 +267,7 @@ function createDrawerState(state: State & Actions) {
 
     // Pagamento
     if (state.drawerStates.beneficiaries?.variant === "success") {
-      if (oneYesInHealthcareQuestionnaire) {
+      if (oneYesInHealthcareQuestionnaire || !isImcInRange) {
         state.drawerStates.payment = {variant: "waiting", isLocked: true};
       } else if (state.lip?.payment === null) {
         state.drawerStates.payment = {
@@ -276,6 +292,14 @@ function createDrawerState(state: State & Actions) {
         state.lip.eSigns.identificazione
       ) {
         state.drawerStates.documentation = {variant: "success"};
+      } else if (
+        !state.lip?.privacyCompany ||
+        state.lip.privacyCompany.length === 0
+      ) {
+        state.drawerStates.documentation = {
+          variant: "active",
+          ...presetButtons.checkConsent,
+        };
       } else {
         state.drawerStates.documentation = {
           variant: "active",

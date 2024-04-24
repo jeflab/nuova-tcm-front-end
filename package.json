@@ -1,6 +1,6 @@
 {
   "name": "nuova-tcm-front-end",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "dependencies": {
     "@formkit/auto-animate": "^0.8.1",
     "@fortawesome/fontawesome-svg-core": "^6.4.2",
@@ -72,6 +72,7 @@
     "prepare": "husky",
     "start": "next start",
     "turbo": "next dev --turbo",
-    "validate": "npm-run-all --print-label --parallel check-format lint check-types --sequential build"
+    "validate": "npm-run-all --print-label --parallel check-format lint check-types --sequential build",
+    "u": "npm update && cls && npm run validate"
   }
 }

@@ -19,14 +19,23 @@ import {ReverseFormGroup} from "@/ui/form/ReverseFormGroup";
 import {email} from "@/ui/form/validators/email";
 import {fiscalCodeValidator} from "@/ui/form/validators/fiscalCode";
 import {password} from "@/ui/form/validators/password";
+import {IconStack} from "@/ui/IconStack";
 import autoAnimate from "@formkit/auto-animate";
-import {faSave, faSpinner, faXmark} from "@fortawesome/pro-duotone-svg-icons";
+import {
+  faSave,
+  faSpinner,
+  faUserPen,
+  faXmark,
+} from "@fortawesome/pro-duotone-svg-icons";
+import {faLock, faPen} from "@fortawesome/pro-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {useEffect, useRef, useState} from "react";
 import {
   Alert,
   Button,
   Card,
+  CardBody,
+  CardHeader,
   Col,
   FormGroup,
   FormLabel,
@@ -65,9 +74,9 @@ export function AccountProfile({user}: AccountProfileProps) {
   }, []);
 
   return (
-    <>
-      <h3>Account</h3>
-      <Card body>
+    <Card>
+      <CardHeader>Account</CardHeader>
+      <CardBody>
         <div ref={animateContainer}>
           <Form
             id="update-profile"
@@ -270,8 +279,8 @@ export function AccountProfile({user}: AccountProfileProps) {
             </Alert>
           )}
           {isUpdateMode && (
-            <div>
-              <Button type="submit" form="update-profile" className="me-2">
+            <div className="d-flex flex-column flex-sm-row gap-2">
+              <Button type="submit" form="update-profile">
                 <FontAwesomeIcon
                   icon={
                     updateProfileFormMethods.formState.isSubmitting
@@ -300,8 +309,8 @@ export function AccountProfile({user}: AccountProfileProps) {
             </div>
           )}
           {isPasswordMode === "open" && (
-            <div>
-              <Button type="submit" form="update-password" className="me-2">
+            <div className="d-flex flex-column flex-sm-row gap-2">
+              <Button type="submit" form="update-password">
                 <FontAwesomeIcon
                   icon={
                     updatePasswordFormMethods.formState.isSubmitting
@@ -330,7 +339,7 @@ export function AccountProfile({user}: AccountProfileProps) {
             </div>
           )}
           {!isUpdateMode && ["close", "success"].includes(isPasswordMode) && (
-            <div>
+            <div className="d-flex flex-column flex-sm-row gap-2">
               <Button
                 type="button"
                 onClick={() => {
@@ -338,6 +347,7 @@ export function AccountProfile({user}: AccountProfileProps) {
                   setIsPasswordMode("close");
                 }}
               >
+                <FontAwesomeIcon icon={faUserPen} className="me-2" />
                 Modifica profilo
               </Button>
               <Button
@@ -345,14 +355,25 @@ export function AccountProfile({user}: AccountProfileProps) {
                 onClick={() => {
                   setIsPasswordMode("open");
                 }}
-                className="ms-2"
               >
+                <IconStack className="me-2">
+                  <FontAwesomeIcon
+                    icon={faLock}
+                    className="fa-stack-2x"
+                    opacity={0.4}
+                  />
+                  <FontAwesomeIcon
+                    icon={faPen}
+                    className="fa-stack-1x"
+                    transform="down-7 right-16"
+                  />
+                </IconStack>
                 Modifica password
               </Button>
             </div>
           )}
         </div>
-      </Card>
-    </>
+      </CardBody>
+    </Card>
   );
 }

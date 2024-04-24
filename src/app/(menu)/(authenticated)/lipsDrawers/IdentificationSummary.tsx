@@ -84,19 +84,19 @@ export function IdentificationDataSummary() {
         </h4>
         <p className="mb-0">
           <FontAwesomeIcon icon={faSquareCheck} className="me-2" />
-          Di aver incontrato il contraente di persona
+          Di aver incontrato il Contraente di persona
         </p>
         <p className="mb-0">
           <FontAwesomeIcon icon={faSquareCheck} className="me-2" />
-          Che il documento è la copia di quello mostrato dal contraente
+          Che il documento è la copia di quello mostrato dal Contraente
         </p>
         <p className="mb-0">
           <FontAwesomeIcon icon={faSquareCheck} className="me-2" />
-          Che la fotografia è del contraente
+          Che la fotografia è del Contraente
         </p>
         <p className="mb-0">
           <FontAwesomeIcon icon={faSquareCheck} className="me-2" />
-          Di aver identificato il contraente
+          Di aver identificato il Contraente
         </p>
       </Col>
     </Row>

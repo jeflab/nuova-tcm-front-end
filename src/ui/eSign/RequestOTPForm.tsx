@@ -104,7 +104,7 @@ export function RequestOTPForm<TPayload>({
           </div>
           {personalData ? (
             <div>
-              Per modificare il numero di cellulare del tuo cliente{" "}
+              Per modificare il numero di cellulare del tuo Contraente{" "}
               <Button
                 variant="link"
                 onClick={openEditNumberForm}
@@ -130,7 +130,7 @@ export function RequestOTPForm<TPayload>({
                   verticalAlign: "baseline",
                 }}
               >
-                Test cambia numero agente
+                Test cambia numero Intermediario
               </Button>
             </p>
           )}

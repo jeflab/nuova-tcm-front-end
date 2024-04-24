@@ -53,10 +53,12 @@ export function ContractorDataSummary() {
           <FontAwesomeIcon icon={faAddressBook} /> Contatti
         </h4>
         <p className="mb-0">
-          <strong>Telefono:</strong> {contractor.phone}
+          <strong>Telefono:</strong>{" "}
+          <a href={`tel:${contractor.phone}`}>{contractor.phone}</a>
         </p>
         <p className="mb-0">
-          <strong>Email:</strong> {contractor.email}
+          <strong>Email:</strong>{" "}
+          <a href={`mailto:${contractor.email}`}>{contractor.email}</a>
         </p>
       </Col>
       <Col xs={12} xl={6}>
@@ -79,11 +81,11 @@ export function ContractorDataSummary() {
         </p>
         <p className="mb-0">
           <strong>Provincia attività prevalente:</strong>{" "}
-          {contractor.pep.job.province}
+          {contractor.pep.job.province || contractor.region}
         </p>
         <p className="mb-0">
           <strong>Paese attività prevalente:</strong>{" "}
-          {contractor.pep.job.country}
+          {contractor.pep.job.country || "Italia"}
         </p>
       </Col>
       <Col xs={12} xl={6}>
@@ -92,12 +94,12 @@ export function ContractorDataSummary() {
           politicamente
         </h4>
         <p className="mb-0">
-          <strong>Il contraente è una persona esposta politicamente:</strong>{" "}
+          <strong>Il Contraente è una persona esposta politicamente:</strong>{" "}
           {getOptionsLabel(yesNoOptions, contractor.pep.isPep.response)}
         </p>
         <p className="mb-0">
           <strong>
-            Il contraente Ricopre cariche pubbliche diverse da P.E.P.:
+            Il Contraente Ricopre cariche pubbliche diverse da P.E.P.:
           </strong>{" "}
           {getOptionsLabel(
             publicOfficesOptions,

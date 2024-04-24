@@ -9,7 +9,7 @@ import {Col, FormGroup, FormLabel, InputGroup} from "react-bootstrap";
 import {useFormContext} from "react-hook-form";
 
 export function Coverages() {
-  const {watch} = useFormContext();
+  const {watch, setValue} = useFormContext();
 
   return (
     <>
@@ -32,6 +32,13 @@ export function Coverages() {
             </FormLabel>
             <InputGroup className="flex-grow-0">
               <InputField
+                onChange={(event) => {
+                  const value = parseInt(event.target.value, 10);
+                  if (value < 24_000) {
+                    setValue("tpd.enabled", "", {shouldValidate: true});
+                    setValue("tpd.coverage", "", {shouldValidate: true});
+                  }
+                }}
                 aria-describedby="death-help-text"
                 min={20_000}
                 max={300_000}

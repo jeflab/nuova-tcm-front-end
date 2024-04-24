@@ -14,7 +14,15 @@ import {useForm} from "react-hook-form";
 export const fatcaQuestions = {
   fatcaCheck: {
     label: "Residenza USA",
-    text: "Il contraente è residente negli Stati Uniti d'America?",
+    text: "Il Contraente è residente negli Stati Uniti d'America?",
+    options: [
+      {label: "Sì", value: "yes"},
+      {label: "No", value: "no"},
+    ],
+  },
+  residencyCheck: {
+    label: "Residenza italiana",
+    text: "Il Contraente è residente in Italia?",
     options: [
       {label: "Sì", value: "yes"},
       {label: "No", value: "no"},
@@ -25,6 +33,8 @@ export const fatcaQuestions = {
 const fatcaDefaultValues = {
   fatcaCheck:
     "" as (typeof fatcaQuestions)["fatcaCheck"]["options"][number]["value"],
+  residencyCheck:
+    "" as (typeof fatcaQuestions)["residencyCheck"]["options"][number]["value"],
 };
 
 export function FatcaForm() {
@@ -44,7 +54,10 @@ export function FatcaForm() {
         <Form
           id="fatca-form"
           onSubmit={(values) => {
-            updatePreliminaryData({fatca: values.fatcaCheck});
+            updatePreliminaryData({
+              fatca: values.fatcaCheck,
+              italianResidency: values.residencyCheck,
+            });
             closeModal();
           }}
           formMethods={formMethods}
@@ -60,6 +73,21 @@ export function FatcaForm() {
               type="radio"
               inline
               options={fatcaQuestions.fatcaCheck.options}
+              validation={{
+                required: "Seleziona un'opzione",
+              }}
+            />
+          </FormGroup>
+          <FormGroup controlId="residencyCheck" as={BorderFeedback}>
+            <p className="mb-2 input-heading">
+              {fatcaQuestions.residencyCheck.label}
+            </p>
+            <HelpText>{fatcaQuestions.residencyCheck.text}</HelpText>
+            <FieldError />
+            <CheckGroup
+              type="radio"
+              inline
+              options={fatcaQuestions.residencyCheck.options}
               validation={{
                 required: "Seleziona un'opzione",
               }}

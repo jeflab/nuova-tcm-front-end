@@ -63,8 +63,9 @@ export function InsuredData({blockBirthDate}: InsuredDataProps) {
         <FormGroup controlId="smoker" as={BorderFeedback}>
           <p className="mb-2 input-heading">Fumatore</p>
           <HelpText>
-            L'assicurato ha fumato (sigarette, sigari, pipa o altro) negli
-            ultimi 24 mesi, oppure ha smesso di fumare su consiglio medico?
+            L'assicurato ha fumato (sigarette, sigari, pipa, sigaretta
+            elettronica o altro) negli ultimi 24 mesi, oppure ha smesso di
+            fumare su consiglio medico?
           </HelpText>
           <FieldError />
           <CheckGroup

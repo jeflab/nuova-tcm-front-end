@@ -8,5 +8,5 @@ const getLipShape = {
   lip: lipSchema,
 };
 export async function getLip(id: number) {
-  return get(`/lips/${id}`, getLipShape, {tags: [Tags.getLip(id)]});
+  return get(`/contractor-lips/${id}`, getLipShape, {tags: [Tags.getLip(id)]});
 }

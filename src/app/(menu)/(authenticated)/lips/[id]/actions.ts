@@ -121,7 +121,7 @@ export async function updateContractorContacts(
   lipId: number,
   formData: updateContractorContactsParams,
 ) {
-  invalidateTag(`getLip-${lipId}`);
+  invalidateTag(Tags.getLip(lipId));
   return patch(
     `/personal-datas/${contractorId}`,
     {},
@@ -192,7 +192,7 @@ export async function updateContractorData(
       },
     }),
   };
-  invalidateTag(`getLip-${lipId}`);
+  invalidateTag(Tags.getLip(lipId));
   return patch(`/personal-datas/${contractorId}`, {}, JSON.stringify(data));
 }
 
@@ -211,7 +211,7 @@ export async function identificationContractor(
   formData: FormData,
   lipId: number,
 ) {
-  invalidateTag(`getLip-${lipId}`);
+  invalidateTag(Tags.getLip(lipId));
   return postFormData("/identification-contractor", {}, formData);
 }
 
@@ -261,7 +261,7 @@ export async function updateDen(formData: UpdateDenParams, lipId: number) {
     },
     duration: {options: durationOptions, response: formData.duration},
   };
-  invalidateTag(`getLip-${lipId}`);
+  invalidateTag(Tags.getLip(lipId));
   return patch(
     `/lips/${lipId}`,
     {},
@@ -307,7 +307,7 @@ export async function updateQuotation(
     premium: formData.premium,
   };
 
-  invalidateTag(`getLip-${lipId}`);
+  invalidateTag(Tags.getLip(lipId));
   return patch(
     `/lips/${lipId}`,
     {},
@@ -318,7 +318,7 @@ export async function updateHealthQuestionnaire(
   formData: HealthQuestionnaireFormValues,
   lipId: number,
 ) {
-  invalidateTag(`getLip-${lipId}`);
+  invalidateTag(Tags.getLip(lipId));
   return patch(
     `/lips/${lipId}`,
     {},
@@ -330,7 +330,7 @@ export async function updateBeneficiaries(
   beneficiaries: BeneficiariesFormValues,
   lipId: number,
 ) {
-  invalidateTag(`getLip-${lipId}`);
+  invalidateTag(Tags.getLip(lipId));
   return patch(
     `/lips/${lipId}`,
     {},
@@ -342,10 +342,18 @@ export async function updatePaymentData(
   payment: PaymentFormValues,
   lipId: number,
 ) {
-  invalidateTag(`getLip-${lipId}`);
+  invalidateTag(Tags.getLip(lipId));
   return patch(
     `/lips/${lipId}`,
     {},
     JSON.stringify({json_payment: JSON.stringify(payment)}),
   );
+}
+
+export async function saveCompanyPrivacyConsent(
+  consent: {flags: string[]; options: readonly Option[]},
+  lipId: number,
+) {
+  invalidateTag(Tags.getLip(lipId));
+  return post(`/lips/${lipId}/privacy-company`, {}, JSON.stringify(consent));
 }

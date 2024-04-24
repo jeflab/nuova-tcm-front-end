@@ -80,10 +80,11 @@ export function PaymentSummary() {
       </div>
       <div>
         <h4 className="w-100 text-primary">
-          <FontAwesomeIcon icon={faBank} /> Dati bancari del contraente:
+          <FontAwesomeIcon icon={faBank} /> Dati bancari del Contraente:
         </h4>
         <p className="mb-0">
           <strong>Intestatario c/c</strong>: {paymentData.contractorFullName}
+          {paymentData.jointOwners ? `, ${paymentData.jointOwners}` : ""}
           <br />
           <strong>Banca</strong>: {paymentData.bank}
           <br />

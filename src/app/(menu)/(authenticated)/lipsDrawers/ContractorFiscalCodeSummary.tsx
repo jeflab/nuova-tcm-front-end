@@ -24,11 +24,11 @@ export function ContractorFiscalCodeSummary() {
   if (contractorAlreadyRegistered) {
     return (
       <p className="mb-0">
-        Non è possibile continuare la consulenza poiché il contraente risulta
-        già censito da un altro agente
+        Non è possibile continuare la consulenza poiché il Contraente risulta
+        già censito da un altro Intermediario
       </p>
     );
   }
 
-  return <p className="mb-0">Il codice fiscale del contraente è corretto</p>;
+  return <p className="mb-0">Il codice fiscale del Contraente è corretto</p>;
 }

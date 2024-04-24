@@ -18,6 +18,12 @@ const fatcaSchema = z.object({
     ),
     response: z.enum(["yes", "no"]),
   }),
+  residencyCheck: z.object({
+    options: z.array(
+      z.object({label: z.string(), value: z.enum(["yes", "no"])}),
+    ),
+    response: z.enum(["yes", "no"]),
+  }),
 });
 
 const jobSchema = z.object({

@@ -48,7 +48,7 @@ export function InsertPhoneForm({
       className="vstack gap-3"
     >
       {personalData ? (
-        <h3>Inserisci il numero di cellulare del tuo cliente</h3>
+        <h3>Inserisci il numero di cellulare del tuo Contraente</h3>
       ) : (
         <h3>Inserisci il tuo numero di cellulare</h3>
       )}
