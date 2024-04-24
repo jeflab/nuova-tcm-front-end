@@ -66,6 +66,10 @@ export function ContractorContactsForm() {
                   "Dati del Contraente mancanti",
                 );
                 invariant(preliminaryData.fatca, "Dati FATCA mancanti");
+                invariant(
+                  preliminaryData.italianResidency,
+                  "Dati residenza mancanti",
+                );
 
                 activateContractorResponse = await activateContractor({
                   ...values,
@@ -73,6 +77,10 @@ export function ContractorContactsForm() {
                   fatca: {
                     ...fatcaQuestions.fatcaCheck,
                     response: preliminaryData.fatca,
+                  },
+                  italianResidency: {
+                    ...fatcaQuestions.residencyCheck,
+                    response: preliminaryData.italianResidency,
                   },
                 });
               } catch (e) {
