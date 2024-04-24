@@ -66,25 +66,26 @@ const documents: Document[] = [
         key: "esign_agente",
         whoESign: "advisor",
         chapters: [
-          "PG 9/9 - Dichiarazione dell'Intermediario.",
-          "PG 9/9 - Firma del soggetto incaricato dell'adeguata verifica.",
+          "PG 1/32 - Dichiarazione di coerenza del contratto.",
+          "PG 13/32 - Dichiarazione dell'Intermediario.",
+          "PG 32/32 - Firma del soggetto incaricato dell'adeguata verifica.",
         ],
       } as ESign,
       {
         key: "esign_contraente",
         whoESign: "contractor",
         chapters: [
-          "PG 5/9 - Dichiarazioni rese dall'assicurato in relazione al proprio stato di salute e abitudini di vita.",
-          "PG 6/9 - Autorizzazione alla comunicazione elettronica.",
-          "PG 6/9 - Dichiarazioni del Contraente e dell'assicurato.",
-          "PG 9/9 - Firma della proposta.",
+          "PG 9/32 - Dichiarazioni rese dall'assicurato in relazione al proprio stato di salute e abitudini di vita.",
+          "PG 10/32 - Autorizzazione alla comunicazione elettronica.",
+          "PG 10/32 - Dichiarazioni del Contraente e dell'assicurato.",
+          "PG 32/32 - Firma della proposta.",
         ],
       } as ESign,
       {
         key: "esign_contraente_sepa",
         whoESign: "contractor",
         chapters: [
-          "PG 5/9 - Firma del Contraente per l'addebito diretto SEPA - S.D.D.",
+          "PG 9/32 - Firma del Contraente per l'addebito diretto SEPA - S.D.D.",
         ],
       } as ESign,
     ],
