@@ -67,7 +67,10 @@ function createDrawerState(state: State & Actions) {
 
     // contractor fiscal code
     if (state.drawerStates.fatca?.variant === "success") {
-      if (state.preliminaryData.contractorPersonalData === undefined) {
+      if (
+        !state.preliminaryData.contractorAlreadyRegistered &&
+        state.preliminaryData.contractorPersonalData === undefined
+      ) {
         state.drawerStates.contractorFiscalCode = {
           variant: "active",
           ...presetButtons.compile,
