@@ -34,6 +34,8 @@ import {
   Alert,
   Button,
   Card,
+  CardBody,
+  CardHeader,
   Col,
   FormGroup,
   FormLabel,
@@ -72,9 +74,9 @@ export function AccountProfile({user}: AccountProfileProps) {
   }, []);
 
   return (
-    <>
-      <h3>Account</h3>
-      <Card body>
+    <Card>
+      <CardHeader>Account</CardHeader>
+      <CardBody>
         <div ref={animateContainer}>
           <Form
             id="update-profile"
@@ -371,7 +373,7 @@ export function AccountProfile({user}: AccountProfileProps) {
             </div>
           )}
         </div>
-      </Card>
-    </>
+      </CardBody>
+    </Card>
   );
 }

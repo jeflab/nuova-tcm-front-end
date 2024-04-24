@@ -1,6 +1,6 @@
 import {dateString} from "@/helpers/dates";
 import {Agent} from "@/models/entities/agent";
-import {Button, Card, Col, Row} from "react-bootstrap";
+import {Button, Card, CardBody, CardHeader, Col, Row} from "react-bootstrap";
 
 interface AgentProfileProps {
   agent: Agent;
@@ -8,9 +8,9 @@ interface AgentProfileProps {
 
 export function AgentProfile({agent}: AgentProfileProps) {
   return (
-    <>
-      <h3>Agente</h3>
-      <Card body>
+    <Card>
+      <CardHeader>Agente</CardHeader>
+      <CardBody>
         <Row as="dl" xs={1} sm={3} className="mb-0">
           <Col>
             <dt>Nome:</dt>
@@ -49,7 +49,7 @@ export function AgentProfile({agent}: AgentProfileProps) {
             <dd>{dateString(agent.ruiDate)}</dd>
           </Col>
         </Row>
-      </Card>
-    </>
+      </CardBody>
+    </Card>
   );
 }
