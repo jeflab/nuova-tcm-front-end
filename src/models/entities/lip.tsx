@@ -199,6 +199,7 @@ const paymentSchema = z.object({
   expirationDate: z.string(),
   paymentMethod: z.enum(getOptionsValues(paymentMethodsSimpleOptions)),
   contractorFullName: z.string(),
+  jointOwners: z.string().nullish(),
   bank: z.string(),
   bicSwift: z.string(),
   iban: z.string(),

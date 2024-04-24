@@ -84,6 +84,7 @@ export function PaymentSummary() {
         </h4>
         <p className="mb-0">
           <strong>Intestatario c/c</strong>: {paymentData.contractorFullName}
+          {paymentData.jointOwners ? `, ${paymentData.jointOwners}` : ""}
           <br />
           <strong>Banca</strong>: {paymentData.bank}
           <br />

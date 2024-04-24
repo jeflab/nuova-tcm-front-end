@@ -1,4 +1,6 @@
 // Generic
+import {toCurrency} from "@/helpers/numbers";
+
 export const genderOptions = [
   {label: "Maschio", value: "male"},
   {label: "Femmina", value: "female"},
@@ -372,6 +374,32 @@ export const paymentMethodsSimpleOptions = [
 ] as const;
 export type PaymentMethodsSimple =
   (typeof paymentMethodsSimpleOptions)[number]["value"];
+
+export function paymentMethodsOptions(premium: number) {
+  return [
+    {
+      label: `Pagamento mensile di ${toCurrency(premium / 12)} con anticipo di 3 mesi (${toCurrency((premium / 12) * 3)})`,
+      value: "monthly",
+    },
+    {
+      label: `Pagamento annuale di ${toCurrency(premium)}`,
+      value: "annual",
+    },
+    {
+      label: `Pagamento anticipato di 3 anni (${toCurrency(premium * 3)}) e
+    a seguire pagamento mensile di ${toCurrency(premium / 12)}`,
+      value: "3yearsAdvance",
+    },
+    {
+      label: `Pagamento anticipato di 5 anni (${toCurrency(premium * 5)}) e
+    a seguire pagamento mensile di ${toCurrency(premium / 12)}`,
+      value: "5yearsAdvance",
+    },
+  ] as const;
+}
+export type PaymentMethods = ReturnType<
+  typeof paymentMethodsOptions
+>[number]["value"];
 
 export const consentOptions = [
   {
