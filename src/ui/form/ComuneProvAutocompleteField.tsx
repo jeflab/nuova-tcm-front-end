@@ -64,8 +64,6 @@ export function ComuneProvAutocompleteField({
     [onlyExisting, onlyItalian],
   );
 
-  console.log({value});
-
   return (
     <div className="hstack gap-3">
       {readOnly ? (
