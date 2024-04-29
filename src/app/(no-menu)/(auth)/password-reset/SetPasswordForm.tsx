@@ -15,9 +15,14 @@ import {Alert, FormGroup, FormLabel} from "react-bootstrap";
 interface SetPasswordParams {
   submitButtonLabel: string;
   token?: string;
+  onPasswordSet?: () => void;
 }
 
-export function SetPasswordForm({submitButtonLabel, token}: SetPasswordParams) {
+export function SetPasswordForm({
+  submitButtonLabel,
+  token,
+  onPasswordSet,
+}: SetPasswordParams) {
   return (
     <Form
       onSubmit={async (values) => {
@@ -47,6 +52,8 @@ export function SetPasswordForm({submitButtonLabel, token}: SetPasswordParams) {
         if (setPasswordResponse.status === "failed") {
           throw {root: {type: "server", message: setPasswordResponse.message}};
         }
+
+        onPasswordSet?.();
       }}
       defaultValues={{
         token: token ?? "",

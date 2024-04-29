@@ -1,4 +1,4 @@
-import {SetPasswordForm} from "@/app/(no-menu)/(auth)/resetPassword/SetPasswordForm";
+import {SetPasswordForm} from "@/app/(no-menu)/(auth)/password-reset/SetPasswordForm";
 import {ButtonLink} from "@/ui/ButtonLink";
 import CenterLogoContent from "@/ui/CenterLogoContent";
 import {Alert, Card} from "react-bootstrap";

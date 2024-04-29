@@ -53,7 +53,22 @@ interface SetPasswordParams {
   password: string;
 }
 export async function setPassword(data: SetPasswordParams) {
-  return {status: "failed", message: "Not implemented"};
+  const setPasswordResponse = await api.post(
+    "/set-password",
+    LoginResponseRawShape,
+    JSON.stringify(data),
+  );
+  if (setPasswordResponse.status === "success") {
+    cookies().set(AUTH_COOKIE_NAME, setPasswordResponse.access_token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "strict",
+      maxAge: COOKIE_DURATION,
+      expires: new Date(Date.now() + COOKIE_DURATION * 1000),
+    });
+  }
+
+  return setPasswordResponse;
 }
 
 export async function isLoggedIn() {
