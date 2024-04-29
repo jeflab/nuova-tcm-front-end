@@ -39,23 +39,13 @@ export async function login(data: {fiscalCode: string; password: string}) {
 interface ForgotPasswordParams {
   fiscalCode: string;
 }
+const forgotPasswordResponseShape = {
+  email: z.string(),
+};
 export async function forgotPassword(data: ForgotPasswordParams) {
-  const body = JSON.stringify(data);
+  const body = JSON.stringify({fiscal_code: data.fiscalCode});
 
-  const forgotPasswordResponse = await api.post(
-    "/forgot-password",
-    LoginResponseRawShape,
-    body,
-  );
-  if (forgotPasswordResponse.status === "success") {
-    cookies().set(AUTH_COOKIE_NAME, forgotPasswordResponse.access_token, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "strict",
-    });
-  }
-
-  return forgotPasswordResponse;
+  return api.post("/forgot-password", forgotPasswordResponseShape, body);
 }
 
 interface SetPasswordParams {

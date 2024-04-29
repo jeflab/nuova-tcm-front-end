@@ -18,7 +18,11 @@ const defaultValues = {
   fiscalCode: "",
 };
 
-export function ForgotPasswordForm() {
+interface ForgotPasswordFormProps {
+  onResetSuccess?: (email: string) => void;
+}
+
+export function ForgotPasswordForm({onResetSuccess}: ForgotPasswordFormProps) {
   const handleSubmit = async (data: typeof defaultValues) => {
     let forgotPasswordResponse: Awaited<ReturnType<typeof forgotPassword>>;
 
@@ -37,6 +41,8 @@ export function ForgotPasswordForm() {
     if (forgotPasswordResponse.status === "failed") {
       throw {root: {type: "server", message: forgotPasswordResponse.message}};
     }
+
+    onResetSuccess?.(forgotPasswordResponse.email);
   };
 
   return (
