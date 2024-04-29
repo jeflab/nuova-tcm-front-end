@@ -1,6 +1,6 @@
 {
   "name": "nuova-tcm-front-end",
-  "version": "0.3.9",
+  "version": "0.4.3",
   "dependencies": {
     "@formkit/auto-animate": "^0.8.1",
     "@fortawesome/fontawesome-svg-core": "^6.4.2",
@@ -53,8 +53,8 @@
     "typescript": "^5"
   },
   "engines": {
-    "npm": "^9.8.0 || ^10.2.0",
-    "node": "^18.18.0"
+    "npm": "^10.5",
+    "node": "^18.20"
   },
   "private": true,
   "scripts": {
@@ -73,6 +73,7 @@
     "preturbo": "npm i",
     "start": "next start",
     "turbo": "next dev --turbo",
-    "validate": "npm-run-all --print-label --parallel check-format lint check-types --sequential build"
+    "validate": "npm-run-all --print-label --parallel check-format lint check-types --sequential build",
+    "u": "npm update && npm run validate"
   }
 }

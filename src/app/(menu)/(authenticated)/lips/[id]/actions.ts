@@ -24,7 +24,6 @@ import {
   jobPositionOptions,
   needsToMeetOptions,
   NeedsToMeetOptions,
-  OngoingRelationship,
   PublicOffices,
   publicOfficesOptions,
   TAECode,
@@ -34,13 +33,14 @@ import {lipSchema} from "@/models/entities/lip";
 import {privacySchema} from "@/models/entities/privacy";
 import {Option, YesNoAnswer, yesNoOptions} from "@/helpers/getOptionsLabel";
 import {get, patch, post, postFormData} from "@/services/api";
-import {revalidateTag} from "next/cache";
+import {Tags} from "@/services/const";
+import {invalidateTag} from "@/services/helpers";
 
 const getLipShape = {
   lip: lipSchema,
 };
 export async function getLip(id: number) {
-  return get(`/lips/${id}`, getLipShape, {tags: ["getLip", `getLip-${id}`]});
+  return get(`/lips/${id}`, getLipShape, {tags: [Tags.getLip(id)]});
 }
 
 const checkContractorShape = {
@@ -52,6 +52,12 @@ interface ActivateContractorParams {
     text: string;
     options: readonly Option[];
     response: (typeof fatcaQuestions)["fatcaCheck"]["options"][number]["value"];
+  };
+  italianResidency: {
+    label: string;
+    text: string;
+    options: readonly Option[];
+    response: (typeof fatcaQuestions)["residencyCheck"]["options"][number]["value"];
   };
   birthDate: string;
   birthPlace: {
@@ -71,6 +77,7 @@ export async function activateContractor(
   const data = {
     json_fatca: JSON.stringify({
       fatcaCheck: contractorData.fatca,
+      residencyCheck: contractorData.italianResidency,
     }),
     fiscal_code: contractorData.fiscalCode,
     date_birth: contractorData.birthDate,
@@ -121,7 +128,7 @@ export async function updateContractorContacts(
   lipId: number,
   formData: updateContractorContactsParams,
 ) {
-  revalidateTag(`getLip-${lipId}`);
+  invalidateTag(Tags.getLip(lipId));
   return patch(
     `/personal-datas/${contractorId}`,
     {},
@@ -161,9 +168,6 @@ interface updateContractorDataParams {
     province: string;
     country: string;
   };
-  ongoingRelationship: OngoingRelationship;
-  fundSource: FundSource;
-  fundSourceOther: string;
 }
 export async function updateContractorData(
   contractorId: number,
@@ -193,12 +197,9 @@ export async function updateContractorData(
         province: formData.job.province,
         country: formData.job.country,
       },
-      ongoingRelationship: formData.ongoingRelationship,
-      fundSource: formData.fundSource,
-      fundSourceOther: formData.fundSourceOther,
     }),
   };
-  revalidateTag(`getLip-${lipId}`);
+  invalidateTag(Tags.getLip(lipId));
   return patch(`/personal-datas/${contractorId}`, {}, JSON.stringify(data));
 }
 
@@ -217,7 +218,7 @@ export async function identificationContractor(
   formData: FormData,
   lipId: number,
 ) {
-  revalidateTag(`getLip-${lipId}`);
+  invalidateTag(Tags.getLip(lipId));
   return postFormData("/identification-contractor", {}, formData);
 }
 
@@ -231,6 +232,8 @@ interface UpdateDenParams {
   savings: string;
   income: string;
   economicCondition: EconomicConditionOptions;
+  fundSource: FundSource;
+  fundSourceOther: string;
   expectations: ExpectationsOptions[];
   duration: DurationOptions;
 }
@@ -257,13 +260,15 @@ export async function updateDen(formData: UpdateDenParams, lipId: number) {
       options: economicConditionOptions,
       response: formData.economicCondition,
     },
+    fundSource: formData.fundSource,
+    fundSourceOther: formData.fundSourceOther,
     expectations: {
       options: expectationsOptions,
       response: formData.expectations,
     },
     duration: {options: durationOptions, response: formData.duration},
   };
-  revalidateTag(`getLip-${lipId}`);
+  invalidateTag(Tags.getLip(lipId));
   return patch(
     `/lips/${lipId}`,
     {},
@@ -309,7 +314,7 @@ export async function updateQuotation(
     premium: formData.premium,
   };
 
-  revalidateTag(`getLip-${lipId}`);
+  invalidateTag(Tags.getLip(lipId));
   return patch(
     `/lips/${lipId}`,
     {},
@@ -320,7 +325,7 @@ export async function updateHealthQuestionnaire(
   formData: HealthQuestionnaireFormValues,
   lipId: number,
 ) {
-  revalidateTag(`getLip-${lipId}`);
+  invalidateTag(Tags.getLip(lipId));
   return patch(
     `/lips/${lipId}`,
     {},
@@ -332,7 +337,7 @@ export async function updateBeneficiaries(
   beneficiaries: BeneficiariesFormValues,
   lipId: number,
 ) {
-  revalidateTag(`getLip-${lipId}`);
+  invalidateTag(Tags.getLip(lipId));
   return patch(
     `/lips/${lipId}`,
     {},
@@ -344,10 +349,18 @@ export async function updatePaymentData(
   payment: PaymentFormValues,
   lipId: number,
 ) {
-  revalidateTag(`getLip-${lipId}`);
+  invalidateTag(Tags.getLip(lipId));
   return patch(
     `/lips/${lipId}`,
     {},
     JSON.stringify({json_payment: JSON.stringify(payment)}),
   );
+}
+
+export async function saveCompanyPrivacyConsent(
+  consent: {flags: string[]; options: readonly Option[]},
+  lipId: number,
+) {
+  invalidateTag(Tags.getLip(lipId));
+  return post(`/lips/${lipId}/privacy-company`, {}, JSON.stringify(consent));
 }

@@ -72,12 +72,16 @@ export function IdentificationForm() {
   const closeModal = useDrawerStore((state) => state.closeModal);
 
   // TODO: creare una funzione che genera gli url da inserire nel componente IdImage ed esportarla qui
-  const existingFrontImageUrl = encodeURI(
-    `${apiUrl}/personal-datas/${contractorId}/get-image?filename=${identityDocument?.identification?.fileIdFrontName}&agentId=${agentId}&size=thumbnail`,
-  );
-  const existingBackImageUrl = encodeURI(
-    `${apiUrl}/personal-datas/${contractorId}/get-image?filename=${identityDocument?.identification?.fileIdBackName}&agentId=${agentId}&size=thumbnail`,
-  );
+  const existingFrontImageUrl =
+    identityDocument?.identification?.fileIdFrontName &&
+    encodeURI(
+      `${apiUrl}/personal-datas/${contractorId}/get-image?filename=${identityDocument.identification.fileIdFrontName}&agentId=${agentId}&size=thumbnail`,
+    );
+  const existingBackImageUrl =
+    identityDocument?.identification?.fileIdBackName &&
+    encodeURI(
+      `${apiUrl}/personal-datas/${contractorId}/get-image?filename=${identityDocument.identification.fileIdBackName}&agentId=${agentId}&size=thumbnail`,
+    );
 
   return (
     <>
@@ -254,7 +258,7 @@ export function IdentificationForm() {
                 </DropzoneField>
               </FormGroup>
             </Col>{" "}
-            <h4>L'intermediario dichiara:</h4>
+            <h4>L'Intermediario dichiara:</h4>
             <Col xs={12}>
               <FormGroup
                 controlId="metContractorInPerson"
@@ -264,10 +268,10 @@ export function IdentificationForm() {
                 <FieldError />
                 <CheckboxField
                   type="checkbox"
-                  label="Di aver incontrato il contraente di persona"
+                  label="Di aver incontrato il Contraente di persona"
                   validation={{
                     required:
-                      "Per procedere devi dichiarare di aver incontrato il contraente di persona",
+                      "Per procedere devi dichiarare di aver incontrato il Contraente di persona",
                   }}
                   stretchedLabel
                 />
@@ -282,10 +286,10 @@ export function IdentificationForm() {
                 <FieldError />
                 <CheckboxField
                   type="checkbox"
-                  label="Che il documento è la copia di quello mostrato dal contraente"
+                  label="Che il documento è la copia di quello mostrato dal Contraente"
                   validation={{
                     required:
-                      "Per procedere devi dichiarare che il documento è la copia di quello mostrato dal contraente",
+                      "Per procedere devi dichiarare che il documento è la copia di quello mostrato dal Contraente",
                   }}
                   stretchedLabel
                 />
@@ -300,10 +304,10 @@ export function IdentificationForm() {
                 <FieldError />
                 <CheckboxField
                   type="checkbox"
-                  label="Che la fotografia è del contraente"
+                  label="Che la fotografia è del Contraente"
                   validation={{
                     required:
-                      "Per procedere devi dichiarare che la fotografia è del contraente",
+                      "Per procedere devi dichiarare che la fotografia è del Contraente",
                   }}
                   stretchedLabel
                 />
@@ -318,10 +322,10 @@ export function IdentificationForm() {
                 <FieldError />
                 <CheckboxField
                   type="checkbox"
-                  label="Di aver identificato il contraente"
+                  label="Di aver identificato il Contraente"
                   validation={{
                     required:
-                      "Per procedere devi dichiarare di aver identificato il contraente",
+                      "Per procedere devi dichiarare di aver identificato il Contraente",
                   }}
                   stretchedLabel
                 />

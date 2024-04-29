@@ -1,4 +1,5 @@
 import {
+  fundSourceOptions,
   genderOptions,
   nominationOptions,
   paymentMethodsSimpleOptions,
@@ -58,6 +59,8 @@ const denSchema = z.object({
     options: z.array(z.object({label: z.string(), value: z.string()})),
     response: z.string(),
   }),
+  fundSource: z.enum(getOptionsValues(fundSourceOptions)),
+  fundSourceOther: z.string().optional(),
   expectations: z.object({
     options: z.array(z.object({label: z.string(), value: z.string()})),
     response: z.string(),
@@ -196,6 +199,7 @@ const paymentSchema = z.object({
   expirationDate: z.string(),
   paymentMethod: z.enum(getOptionsValues(paymentMethodsSimpleOptions)),
   contractorFullName: z.string(),
+  jointOwners: z.string().nullish(),
   bank: z.string(),
   bicSwift: z.string(),
   iban: z.string(),
@@ -226,6 +230,24 @@ export const eSignSchema = z.object({
   setInformativo: z.any().optional(),
 });
 
+const amlSchema = z.object({
+  // id: z.number(),
+  blocked: z.boolean(),
+  // version: z.string(),
+  // lip_id: z.number(),
+  // contractor_id: z.number(),
+  // rating: z.array(z.union([z.number(), z.string()])),
+  // note: z.string(),
+});
+
+const privacyCompanySchema = z.array(
+  z.object({
+    flags: z.array(z.string()),
+    options: z.array(z.object({label: z.string(), value: z.string()})),
+    data: z.string(),
+  }),
+);
+
 export const lipSchema = z
   .object({
     id: z.number(),
@@ -234,24 +256,20 @@ export const lipSchema = z
     agent: agentSchema,
     contractor: personalDataSchema,
     lip_number: z.coerce.string(),
-    json_den: zu.stringToJSON().pipe(denSchema).nullable().optional(),
-    json_quotation: zu
-      .stringToJSON()
-      .pipe(quotationSchema)
-      .nullable()
-      .optional(),
+    json_den: zu.stringToJSON().pipe(denSchema).nullish(),
+    json_quotation: zu.stringToJSON().pipe(quotationSchema).nullish(),
     json_survey_healthcare: zu
       .stringToJSON()
       .pipe(healthcareQuestionnaireSchema)
-      .nullable()
-      .optional(),
-    json_beneficiary: zu
+      .nullish(),
+    json_beneficiary: zu.stringToJSON().pipe(beneficiariesSchema).nullish(),
+    json_payment: zu.stringToJSON().pipe(paymentSchema).nullish(),
+    json_esign: zu.stringToJSON().pipe(eSignSchema).nullish(),
+    aml: amlSchema.nullish(),
+    json_privacy_company: zu
       .stringToJSON()
-      .pipe(beneficiariesSchema)
-      .nullable()
-      .optional(),
-    json_payment: zu.stringToJSON().pipe(paymentSchema).nullable().optional(),
-    json_esign: zu.stringToJSON().pipe(eSignSchema).nullable().optional(),
+      .pipe(privacyCompanySchema)
+      .nullish(),
     status: z.union([z.literal(0), z.literal(1)]).transform((status) => {
       return lipStatuses[status];
     }),
@@ -267,6 +285,7 @@ export const lipSchema = z
       json_beneficiary,
       json_payment,
       json_esign,
+      json_privacy_company,
       ...data
     }) => {
       return {
@@ -280,6 +299,7 @@ export const lipSchema = z
         beneficiaries: json_beneficiary,
         payment: json_payment,
         eSigns: json_esign,
+        privacyCompany: json_privacy_company,
       };
     },
   );

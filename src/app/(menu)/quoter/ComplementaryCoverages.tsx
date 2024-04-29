@@ -1,6 +1,7 @@
 import {getCoverageDuration} from "@/app/(menu)/quoter/helpers";
 import {QuoterFormValues} from "@/app/(menu)/quoter/QuoterForm";
 import {calendarYearAge} from "@/helpers/ages";
+import {Option} from "@/helpers/getOptionsLabel";
 import {toCurrency} from "@/helpers/numbers";
 import {Currency} from "@/ui/Currency";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
@@ -8,6 +9,7 @@ import {CheckboxField} from "@/ui/form/CheckboxField";
 import {FieldError} from "@/ui/form/FieldError";
 import {HelpText} from "@/ui/form/HelpText";
 import {InputField} from "@/ui/form/InputField";
+import {SelectField} from "@/ui/form/SelectField";
 import {faTriangleExclamation} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Col, FormGroup, FormLabel, InputGroup} from "react-bootstrap";
@@ -25,6 +27,13 @@ export function ComplementaryCoverages() {
     !!birthDateValue &&
     calendarYearAge(birthDateValue) > 55 &&
     calendarYearAge(birthDateValue) <= 85; // per escludere date erronee tipo 0001-06-24
+
+  const tpdOptions: Option[] = [];
+  for (let i = 500; i <= 2000; i += 100) {
+    if (i * 48 <= parseInt(deathValue, 10)) {
+      tpdOptions.push({value: i.toString(), label: toCurrency(i)});
+    }
+  }
 
   return (
     <>
@@ -132,7 +141,7 @@ export function ComplementaryCoverages() {
           <HelpText>
             Fino all'età assicurativa di 65 anni, se l'assicurato subisce
             un'invalidità totale e permanente, la compagnia esonera il
-            contraente/assicurato dall'obbligo di pagamento dei premi per il
+            Contraente/assicurato dall'obbligo di pagamento dei premi per il
             resto della durata del contratto.
           </HelpText>
           <div>
@@ -396,17 +405,17 @@ export function ComplementaryCoverages() {
           controlId="tpd"
           as={BorderFeedback}
           validationStyle={watch("tpd.enabled")}
-          disabled={isMoreThan75}
+          disabled={isMoreThan75 || tpdOptions.length === 0}
           className="position-relative"
         >
           <CheckboxField
-            disabled={isMoreThan75}
+            disabled={isMoreThan75 || tpdOptions.length === 0}
             type="switch"
             label="Perdita totale di autosufficienza"
             name="tpd.enabled"
             onChange={(value) => {
               if (value.currentTarget.checked) {
-                setValue("tpd.coverage", "20000", {shouldValidate: true});
+                setValue("tpd.coverage", "500", {shouldValidate: true});
               } else {
                 setValue("tpd.coverage", "", {shouldValidate: true});
               }
@@ -415,13 +424,9 @@ export function ComplementaryCoverages() {
             stretchedLabel
           />
           <HelpText>
-            In caso di perdita totale di autosufficienza dell'assicurato, la
-            compagnia liquida il 100% del capitale assicurato (dev'essere
-            compreso tra <Currency>{20_000}</Currency> e{" "}
-            <Currency>
-              {Math.min(parseInt(watch("death"), 10), 96_000)}
-            </Currency>
-            ).
+            In caso di perdita totale di autosufficienza dell'assicurato, La
+            compagnia corrisponde la rendita mensile pari all’importo
+            selezionato, per una durata di 48 mesi.
           </HelpText>
           <div>
             {!isMoreThan75 ? (
@@ -443,62 +448,25 @@ export function ComplementaryCoverages() {
             <FormLabel className="text-nowrap mb-sm-0" htmlFor="tpd-coverage">
               Capitale assicurato
             </FormLabel>
-            <InputGroup className="flex-grow-0">
-              <InputField
-                disabled={!watch("tpd.enabled") || isMoreThan75}
-                id="tpd-coverage"
-                min={20_000}
-                max={Math.min(parseInt(watch("death"), 10), 96_000)}
-                name="tpd.coverage"
-                placeholder="Capitale assicurato"
-                step={1_000}
-                type="number"
-                validation={{
-                  validate: {
-                    required: (value, formValues) => {
-                      if (formValues.tpd?.enabled && !isMoreThan75 && !value) {
-                        return "Inserisci l'importo del capitale assicurato";
-                      }
-                    },
-                    min: (value, formValues) => {
-                      if (
-                        formValues.tpd?.enabled &&
-                        !isMoreThan75 &&
-                        value < 20_000
-                      ) {
-                        return `Il capitale assicurato deve essere maggiore o uguale a ${toCurrency(
-                          20_000,
-                        )}`;
-                      }
-                    },
-                    max: (value, formValues) => {
-                      if (
-                        formValues.tpd?.enabled &&
-                        !isMoreThan75 &&
-                        value > Math.min(parseInt(formValues.death, 10), 96_000)
-                      ) {
-                        return `Il capitale assicurato deve essere minore o uguale a ${toCurrency(
-                          Math.min(parseInt(formValues.death, 10), 96_000),
-                        )}`;
-                      }
-                    },
-                    format: (value, formValues) => {
-                      if (
-                        formValues.tpd?.enabled &&
-                        !isMoreThan75 &&
-                        value % 1_000 !== 0
-                      ) {
-                        return `Il capitale assicurato deve essere multiplo di ${toCurrency(
-                          1_000,
-                        )}`;
-                      }
-                    },
+            <SelectField
+              id="tpd-coverage"
+              name="tpd.coverage"
+              options={tpdOptions}
+              disabled={
+                !watch("tpd.enabled") || isMoreThan75 || tpdOptions.length === 0
+              }
+              placeholder="Capitale assicurato"
+              validation={{
+                validate: {
+                  required: (value, formValues) => {
+                    if (formValues.tpd?.enabled && !isMoreThan75 && !value) {
+                      return "Inserisci l'importo del capitale assicurato";
+                    }
                   },
-                }}
-                validationStyle={watch("tpd.enabled")}
-              />
-              <InputGroup.Text>,00 €</InputGroup.Text>
-            </InputGroup>
+                },
+              }}
+              validationStyle={watch("tpd.enabled")}
+            />
           </div>
         </FormGroup>
       </Col>

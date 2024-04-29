@@ -85,7 +85,7 @@ export function HealthQuestionnaireForm() {
       <ModalBody>
         <Alert variant="info">
           <p>
-            Gentile Cliente,
+            Gentile Contraente,
             <br />
             per la corretta compilazione del questionario sullo stato di salute
             si comunica che la Legge n. 193 del 7.12.2023 (di seguito la

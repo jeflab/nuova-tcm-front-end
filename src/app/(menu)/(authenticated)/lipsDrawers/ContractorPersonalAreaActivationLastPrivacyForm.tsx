@@ -82,7 +82,7 @@ export function ContractorPersonalAreaActivationLastPrivacyForm({
                 icon={isSaving ? faSpinner : faFileSignature}
                 className={cns("me-2", isSaving && "fa-spin")}
               />
-              Firma del cliente
+              Firma del Contraente
             </>
           )}
         </SubmitButton>

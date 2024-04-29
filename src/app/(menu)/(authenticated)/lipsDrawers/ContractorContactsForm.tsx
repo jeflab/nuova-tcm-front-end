@@ -9,6 +9,7 @@ import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {cns} from "@/helpers/cns";
 import {PersonalData} from "@/models/entities/personalData";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
+import {CheckboxField} from "@/ui/form/CheckboxField";
 import {FieldError} from "@/ui/form/FieldError";
 import {Form} from "@/ui/form/Form";
 import {InputField} from "@/ui/form/InputField";
@@ -62,9 +63,13 @@ export function ContractorContactsForm() {
               try {
                 invariant(
                   preliminaryData.contractorPersonalData,
-                  "Dati del cliente mancanti",
+                  "Dati del Contraente mancanti",
                 );
                 invariant(preliminaryData.fatca, "Dati FATCA mancanti");
+                invariant(
+                  preliminaryData.italianResidency,
+                  "Dati residenza mancanti",
+                );
 
                 activateContractorResponse = await activateContractor({
                   ...values,
@@ -72,6 +77,10 @@ export function ContractorContactsForm() {
                   fatca: {
                     ...fatcaQuestions.fatcaCheck,
                     response: preliminaryData.fatca,
+                  },
+                  italianResidency: {
+                    ...fatcaQuestions.residencyCheck,
+                    response: preliminaryData.italianResidency,
                   },
                 });
               } catch (e) {
@@ -160,6 +169,24 @@ export function ContractorContactsForm() {
                 />
               </FormGroup>
             </Col>
+            <Col xs={12}>
+              <FormGroup
+                controlId="documentIsCopyShownByContractor"
+                as={BorderFeedback}
+                className="position-relative"
+              >
+                <FieldError />
+                <CheckboxField
+                  type="checkbox"
+                  label="l'advisor dichiara di aver verificato che il numero di telefono del contraente è di proprietà e uso esclusivo dello stesso"
+                  validation={{
+                    required:
+                      "Per procedere devi confermare di aver verificato il numero di telefono del contraente",
+                  }}
+                  stretchedLabel
+                />
+              </FormGroup>
+            </Col>
           </Row>
           <FieldError
             name="root"
@@ -170,11 +197,21 @@ export function ContractorContactsForm() {
         </Form>
       </ModalBody>
       <ModalFooter>
-        <Button type="button" variant="cancel" onClick={() => closeModal()}>
+        <Button
+          type="button"
+          variant="cancel"
+          onClick={() => closeModal()}
+          disabled={formMethods.formState.isSubmitting}
+        >
           <FontAwesomeIcon icon={faXmark} className="me-2" />
           Annulla
         </Button>
-        <Button type="submit" variant="primary" form="activate-contractor-form">
+        <Button
+          type="submit"
+          variant="primary"
+          form="activate-contractor-form"
+          disabled={formMethods.formState.isSubmitting}
+        >
           <FontAwesomeIcon
             icon={formMethods.formState.isSubmitting ? faSpinner : faSave}
             className={cns(

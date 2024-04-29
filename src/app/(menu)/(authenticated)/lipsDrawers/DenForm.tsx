@@ -14,6 +14,8 @@ import {
   ExpectationsOptions,
   familyOptions,
   FamilyOptions,
+  FundSource,
+  fundSourceOptions,
   JobPosition,
   jobPositionOptions,
   needsToMeetOptions,
@@ -56,6 +58,8 @@ const denDefaultValues = {
   savings: "",
   income: "",
   economicCondition: "" as EconomicConditionOptions,
+  fundSource: "" as FundSource,
+  fundSourceOther: "",
   expectations: [] as ExpectationsOptions[],
   duration: "" as DurationOptions,
 };
@@ -84,6 +88,7 @@ export function DenForm() {
   );
   const educationValue = formMethods.watch("education");
   const needsIntendToMeetValue = formMethods.watch("needsIntendToMeet");
+  const fundSourceValue = formMethods.watch("fundSource");
 
   return (
     <>
@@ -116,10 +121,10 @@ export function DenForm() {
                   <FormLabel>Titolo di studio</FormLabel>
                   <FieldError />
                   <SelectField
-                    placeholder="Titolo di studio del contraente"
+                    placeholder="Titolo di studio del Contraente"
                     options={educationOptions}
                     validation={{
-                      required: "Seleziona il titolo di studio del contraente",
+                      required: "Seleziona il titolo di studio del Contraente",
                     }}
                   />
                 </FormGroup>
@@ -144,13 +149,13 @@ export function DenForm() {
                 <FieldError />
                 <InputField
                   type="hidden"
-                  placeholder="Attuale occupazione del contraente"
+                  placeholder="Attuale occupazione del Contraente"
                   readOnly
                   plaintext
                 />
                 <FormControl
                   type="text"
-                  placeholder="Attuale occupazione del contraente"
+                  placeholder="Attuale occupazione del Contraente"
                   readOnly
                   plaintext
                   name="jobValue"
@@ -165,8 +170,8 @@ export function DenForm() {
             <Col className="d-flex" xs={12} sm={6}>
               <FormGroup controlId="family" as={BorderFeedback}>
                 <FormLabel>
-                  Componenti del nucleo famigliare del contraente (oltre al
-                  contraente)
+                  Componenti del nucleo famigliare del Contraente (oltre al
+                  Contraente)
                 </FormLabel>
                 <FieldError />
                 <SelectField
@@ -175,11 +180,11 @@ export function DenForm() {
                       void formMethods.trigger("dependentFamilyMembers");
                     }
                   }}
-                  placeholder="Componenti del nucleo famigliare del contraente"
+                  placeholder="Componenti del nucleo famigliare del Contraente"
                   options={familyOptions}
                   validation={{
                     required:
-                      "Seleziona il numero di componenti del nucleo famigliare del contraente",
+                      "Seleziona il numero di componenti del nucleo famigliare del Contraente",
                   }}
                 />
               </FormGroup>
@@ -187,7 +192,7 @@ export function DenForm() {
             <Col className="d-flex" xs={12} sm={6}>
               <FormGroup controlId="dependentFamilyMembers" as={BorderFeedback}>
                 <FormLabel>
-                  Componenti del nucleo famigliare a carico del contraente
+                  Componenti del nucleo famigliare a carico del Contraente
                 </FormLabel>
                 <HelpText>
                   Indicare tutti i componenti del nucleo famigliare che non
@@ -195,13 +200,13 @@ export function DenForm() {
                 </HelpText>
                 <FieldError />
                 <SelectField
-                  placeholder="Componenti del nucleo famigliare a carico del contraente"
+                  placeholder="Componenti del nucleo famigliare a carico del Contraente"
                   options={dependentFamilyMembersOptions}
                   validation={{
                     validate: {
                       required: (value) => {
                         if (!value) {
-                          return "Seleziona il numero di componenti del nucleo famigliare a carico del contraente";
+                          return "Seleziona il numero di componenti del nucleo famigliare a carico del Contraente";
                         }
                       },
                       max: (value, formValues) => {
@@ -211,7 +216,7 @@ export function DenForm() {
                         if (
                           parseInt(value, 10) > parseInt(formValues.family, 10)
                         ) {
-                          return `Il numero di componenti del nucleo famigliare a carico del contraente non può essere maggiore del numero di componenti del nucleo famigliare del contraente`;
+                          return `Il numero di componenti del nucleo famigliare a carico del Contraente non può essere maggiore del numero di componenti del nucleo famigliare del Contraente`;
                         }
                       },
                     },
@@ -355,6 +360,52 @@ export function DenForm() {
                 />
               </FormGroup>
             </Col>
+            <h4 className="w-100">Origine prevalente dei fondi</h4>
+            <Col className="d-flex" xs={12}>
+              <Stack gap={3}>
+                <FormGroup controlId="fundSource" as={BorderFeedback}>
+                  <FormLabel>
+                    Specificare l'origine prevalente dei fondi
+                  </FormLabel>
+                  <HelpText>
+                    Il Contraente dichiara che:
+                    <ul>
+                      <li>
+                        i fondi impiegati per il pagamento del premio
+                        assicurativo non provengono da una attività criminosa o
+                        dalla partecipazione a tale attività;
+                      </li>
+                      <li>
+                        i fondi impiegati per il pagamento del premio
+                        assicurativo sono stati oggetto delle comunicazioni e
+                        dichiarazioni richieste a fini fiscali dalle Autorità
+                        competenti in base alla normativa applicabile.
+                      </li>
+                    </ul>
+                  </HelpText>
+                  <FieldError />
+                  <SelectField
+                    placeholder="Seleziona origine prevalente dei fondi..."
+                    options={fundSourceOptions}
+                    validation={{
+                      required: "Specificare l'origine prevalente dei fondi",
+                    }}
+                  />
+                </FormGroup>
+                {fundSourceValue === "other" && (
+                  <FormGroup controlId="fundSourceOther" as={BorderFeedback}>
+                    <FormLabel></FormLabel>
+                    <InputField
+                      type="text"
+                      placeholder="Specificare l'origine prevalente dei fondi"
+                      validation={{
+                        required: "Inserisci l'origine prevalente dei fondi",
+                      }}
+                    />
+                  </FormGroup>
+                )}
+              </Stack>
+            </Col>{" "}
             <h4>
               Aspettative in relazione alla sottoscrizione di un contratto di
               assicurazione
@@ -385,7 +436,7 @@ export function DenForm() {
             <Col xs={12}>
               <FormGroup controlId="duration" as={BorderFeedback}>
                 <FormLabel>
-                  Il cliente ha bisogno di coperture assicurative che coprano
+                  Il Contraente ha bisogno di coperture assicurative che coprano
                   rischi per un periodo di tempo
                 </FormLabel>
                 <FieldError />

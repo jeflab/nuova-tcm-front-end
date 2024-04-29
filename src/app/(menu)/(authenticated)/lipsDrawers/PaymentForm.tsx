@@ -2,92 +2,36 @@
 
 import {updatePaymentData} from "@/app/(menu)/(authenticated)/lips/[id]/actions";
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {
+  PaymentMethods,
+  paymentMethodsOptions,
+} from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
 import {getCoverageDuration} from "@/app/(menu)/quoter/helpers";
-import {dbDateString} from "@/helpers/dates";
 import {Lip} from "@/models/entities/lip";
-import {Currency} from "@/ui/Currency";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {CheckGroup} from "@/ui/form/CheckGroup";
 import {FieldError} from "@/ui/form/FieldError";
 import {Form} from "@/ui/form/Form";
+import {HelpText} from "@/ui/form/HelpText";
 import {InputField} from "@/ui/form/InputField";
 import {upperCaseNormalizer} from "@/ui/form/normalizers";
 import {validateIBAN} from "@/ui/form/validators/iban";
 import {faSave, faSpinner, faXmark} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {addYears} from "date-fns/addYears";
-import {endOfYear} from "date-fns/endOfYear";
 import {
+  Alert,
   Button,
   Col,
   FormGroup,
   FormLabel,
+  InputGroup,
   ModalBody,
   ModalFooter,
   Row,
-  Collapse,
 } from "react-bootstrap";
 import {useForm} from "react-hook-form";
 import invariant from "tiny-invariant";
-
-// Payments
-export function paymentMethodsOptions<T>(
-  premium: number,
-  paymentMethodValue: T,
-) {
-  return [
-    {
-      label: (
-        <>
-          Pagamento mensile di <Currency>{premium / 12}</Currency> con anticipo
-          di 3 mesi (<Currency>{(premium / 12) * 3}</Currency>)
-        </>
-      ),
-      value: "monthly",
-    },
-    {
-      label: (
-        <>
-          Pagamento annuale di <Currency>{premium}</Currency>
-        </>
-      ),
-      value: "annual",
-    },
-    {
-      label: (
-        <>
-          Sconto del 10%
-          <Collapse in={paymentMethodValue === "3yearsAdvance"}>
-            <div style={{textTransform: "none"}}>
-              Pagamento anticipato di 3 anni con sconto del 10% (
-              <Currency>{premium * 3 * 0.9}</Currency>) e a seguire pagamento
-              mensile di <Currency>{premium / 12}</Currency>
-            </div>
-          </Collapse>
-        </>
-      ),
-      value: "3yearsAdvance",
-    },
-    {
-      label: (
-        <>
-          Sconto del 15%
-          <Collapse in={paymentMethodValue === "5yearsAdvance"}>
-            <div style={{textTransform: "none"}}>
-              Pagamento anticipato di 5 anni con sconto del 15% (
-              <Currency>{premium * 5 * 0.85}</Currency>) e a seguire pagamento
-              mensile di <Currency>{premium / 12}</Currency>
-            </div>
-          </Collapse>
-        </>
-      ),
-      value: "5yearsAdvance",
-    },
-  ] as const;
-}
-export type PaymentMethods = ReturnType<
-  typeof paymentMethodsOptions
->[number]["value"];
 
 const paymentDefaultValues = (paymentData?: Lip["payment"]) => ({
   effectiveDate: paymentData?.effectiveDate ?? "",
@@ -95,9 +39,10 @@ const paymentDefaultValues = (paymentData?: Lip["payment"]) => ({
   expirationDate: paymentData?.expirationDate ?? "",
   paymentMethod: paymentData?.paymentMethod ?? ("" as PaymentMethods),
   contractorFullName: paymentData?.contractorFullName ?? "",
+  jointOwners: paymentData?.jointOwners ?? "",
   bank: paymentData?.bank ?? "",
   bicSwift: paymentData?.bicSwift ?? "",
-  iban: paymentData?.iban ?? "",
+  iban: paymentData?.iban?.replace(/^IT/, "") ?? "",
 });
 export type PaymentFormValues = ReturnType<typeof paymentDefaultValues>;
 
@@ -125,8 +70,6 @@ export function PaymentForm() {
   const closeModal = useDrawerStore((state) => state.closeModal);
   const premium = useDrawerStore((state) => state.lip?.quotation?.premium)!;
 
-  const paymentMethodValue = formMethods.watch("paymentMethod");
-
   return (
     <>
       <ModalBody>
@@ -135,7 +78,10 @@ export function PaymentForm() {
           onSubmit={async (values) => {
             invariant(lipId, "lipId is required");
 
-            const updatedContractor = await updatePaymentData(values, lipId);
+            const updatedContractor = await updatePaymentData(
+              {...values, iban: "IT" + values.iban},
+              lipId,
+            );
 
             if (updatedContractor.status === "failed") {
               throw {
@@ -153,44 +99,28 @@ export function PaymentForm() {
         >
           <Row className="row-gap-3">
             <h4>Decorrenza assicurazione e premio</h4>
-            <Col className="d-flex" xs={12} sm={4}>
-              <FormGroup controlId="effectiveDate" as={BorderFeedback}>
-                <FormLabel>Data di decorrenza del contratto</FormLabel>
-                <FieldError />
-                <InputField
-                  type="date"
-                  placeholder="Data decorrenza contratto"
-                  max={dbDateString(endOfYear(new Date()))}
-                  min={dbDateString()}
-                  validation={{
-                    required: "Inserisci la data di decorrenza del contratto",
-                    max: {
-                      value: dbDateString(endOfYear(new Date())),
-                      message:
-                        "La data di decorrenza dev'essere entro la fine dell'anno",
-                    },
-                    min: {
-                      value: dbDateString(),
-                      message:
-                        "La data di decorrenza non può essere antecedente a oggi",
-                    },
-                  }}
-                />
-              </FormGroup>
-            </Col>
-            <Col className="d-flex" xs={12} sm={4}>
-              <FormGroup controlId="duration" as={BorderFeedback}>
-                <FormLabel>Durata in anni</FormLabel>
-                <FieldError />
-                <InputField type="text" readOnly plaintext />
-              </FormGroup>
-            </Col>
-            <Col className="d-flex" xs={12} sm={4}>
-              <FormGroup controlId="expirationDate" as={BorderFeedback}>
-                <FormLabel>Anno di scadenza</FormLabel>
-                <FieldError />
-                <InputField type="text" readOnly plaintext />
-              </FormGroup>
+            <Col className="col-12">
+              <Alert variant="info">
+                <p>
+                  Il contratto si intende{" "}
+                  <strong>perfezionato e concluso</strong> nel momento in cui
+                  avvengono entrambi gli eventi qui elencati:
+                </p>
+                <ol>
+                  <li>
+                    la <strong>sottoscrizione della proposta/polizza</strong> da
+                    parte del Contraente
+                  </li>
+                  <li>
+                    il <strong>pagamento del Premio Annuo Costante</strong> alla
+                    data di perfezionamento.
+                  </li>
+                </ol>
+                <p className="mb-0">
+                  Il contratto entra in vigore alle ore 24 della data di
+                  perfezionamento e conclusione dello stesso.
+                </p>
+              </Alert>
             </Col>
             <Col className="d-flex">
               <FormGroup controlId="paymentMethod" as={BorderFeedback}>
@@ -198,15 +128,15 @@ export function PaymentForm() {
                 <FieldError />
                 <CheckGroup
                   type="radio-switch"
-                  options={paymentMethodsOptions(premium, paymentMethodValue)}
+                  options={paymentMethodsOptions(premium)}
                   validation={{
                     required: "Seleziona un frazionamento di pagamento",
                   }}
                 />
               </FormGroup>
             </Col>
-            <h4>Dati bancari del contraente</h4>
-            <Col className="d-flex" xs={12} sm={6}>
+            <h4>Dati bancari del Contraente</h4>
+            <Col className="d-flex" xs={12} sm={3}>
               <FormGroup controlId="contractorFullName" as={BorderFeedback}>
                 <FormLabel>Intestatario c/c</FormLabel>
                 <FieldError />
@@ -218,7 +148,21 @@ export function PaymentForm() {
                 />
               </FormGroup>
             </Col>
-            <Col className="d-flex" xs={12} sm={6}>
+            <Col className="d-flex" xs={12} sm={5}>
+              <FormGroup controlId="jointOwners" as={BorderFeedback}>
+                <FormLabel>Eventuali cointestatari c/c</FormLabel>
+                <HelpText>
+                  Indicare nomi e cognomi degli eventuali cointestatari del
+                  conto corrente separati da una virgola.
+                </HelpText>
+                <FieldError />
+                <InputField
+                  type="text"
+                  placeholder="Eventuali cointestatari c/c"
+                />
+              </FormGroup>
+            </Col>
+            <Col className="d-flex" xs={12} sm={4}>
               <FormGroup controlId="bank" as={BorderFeedback}>
                 <FormLabel>Banca</FormLabel>
                 <FieldError />
@@ -248,28 +192,32 @@ export function PaymentForm() {
               <FormGroup controlId="iban" as={BorderFeedback}>
                 <FormLabel>IBAN</FormLabel>
                 <FieldError />
-                <InputField
-                  type="text"
-                  placeholder="IT60X0542811101000000123456"
-                  validation={{
-                    validate: {
-                      required: (value) => {
-                        if (!value) {
-                          return "Inserisci l'IBAN del contraente";
-                        }
+                <InputGroup>
+                  <InputGroup.Text>IT</InputGroup.Text>
+                  <InputField
+                    type="text"
+                    placeholder="60X0542811101000000123456"
+                    validation={{
+                      validate: {
+                        required: (value) => {
+                          if (!value) {
+                            return "Inserisci l'IBAN del Contraente";
+                          }
+                        },
+                        format: (value) => {
+                          if (!validateIBAN("IT" + value)) {
+                            return "Inserisci un IBAN valido";
+                          }
+                        },
                       },
-                      format: (value) => {
-                        if (!validateIBAN(value)) {
-                          return "Inserisci un IBAN valido";
-                        }
-                      },
-                    },
-                  }}
-                  normalize={upperCaseNormalizer}
-                />
+                    }}
+                    normalize={upperCaseNormalizer}
+                  />
+                </InputGroup>
               </FormGroup>
             </Col>
           </Row>
+          <FieldError name="root" as={Alert} variant="danger" />
         </Form>
       </ModalBody>
       <ModalFooter>

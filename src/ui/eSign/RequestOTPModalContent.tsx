@@ -1,5 +1,6 @@
 import {PDFType} from "@/models/entities/esign";
 import {PersonalData} from "@/models/entities/personalData";
+import {Tag} from "@/services/const";
 import {createFEATransaction, signFEADoc} from "@/ui/eSign/actions";
 import {InsertPhoneForm} from "@/ui/eSign/InsertPhoneForm";
 import {RequestOTPForm} from "@/ui/eSign/RequestOTPForm";
@@ -20,7 +21,7 @@ interface RequestOTPModalContentProps<TPayload> {
   ) => void;
   payload: TPayload;
   personalData?: PersonalData;
-  tagToRevalidate?: string;
+  tagToRevalidate?: Tag;
   pdfType: PDFType;
 }
 export function RequestOTPModalContent<TPayload>({

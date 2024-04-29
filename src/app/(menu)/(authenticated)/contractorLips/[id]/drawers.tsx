@@ -7,66 +7,56 @@ import {DocumentsSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/Documen
 import {FatcaSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/FatcaSummary";
 import {HealthQuestionnaireSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/HealthQuestionnaireSummary";
 import {IdentificationDataSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/IdentificationSummary";
+import {PaymentLock} from "@/app/(menu)/(authenticated)/lipsDrawers/PaymentLock";
 import {PaymentSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/PaymentSummary";
 import {QuoteSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/QuoteSummary";
 import {ReactNode} from "react";
 import {ContractorContactsSummary} from "../../lipsDrawers/ContractorContactsSummary";
+import {DrawerName} from "../../lips/[id]/drawers";
 
-export type DrawerName =
-  | "fatca"
-  | "contractorFiscalCode"
-  | "contractorContacts"
-  | "contractorPersonalAreaActivation"
-  | "contractorData"
-  | "identification"
-  | "den"
-  | "quote"
-  | "healthQuestionnaire"
-  | "beneficiaries"
-  | "documentation"
-  | "payment";
-interface Drawer {
+interface DrawerConfig {
   name: DrawerName;
   title: string;
   shortTitle?: string;
-  modalContent?: ReactNode;
   summaryContent?: ReactNode;
+  lock?: ReactNode;
 }
-export const drawers: Drawer[] = [
+
+export const drawers: DrawerConfig[] = [
   {
     name: "fatca",
-    title: "Verifica residenza USA",
+    title: "Verifica residenza",
     summaryContent: <FatcaSummary />,
   },
   {
     name: "contractorFiscalCode",
-    title: "Dati contraente",
+    title: "Dati Contraente",
     summaryContent: <ContractorFiscalCodeSummary />,
   },
   {
     name: "contractorContacts",
-    title: "Contatti contraente",
+    title: "Contatti Contraente",
     summaryContent: <ContractorContactsSummary />,
   },
   {
     name: "contractorPersonalAreaActivation",
-    title: "Attivazione area contraente",
+    title: "Attivazione area Contraente",
     summaryContent: <ContractorPersonalAreaActivationSummary />,
   },
   {
     name: "contractorData",
-    title: "Censimento contraente",
+    title: "Censimento Contraente",
     summaryContent: <ContractorDataSummary />,
   },
   {
     name: "identification",
-    title: "Identificazione del cliente",
+    title: "Identificazione del Contraente",
     summaryContent: <IdentificationDataSummary />,
   },
   {
     name: "den",
     title:
-      "Questionario per la coerenza del contratto rispetto alle richieste ed esigenze del cliente",
+      "Questionario per la coerenza del contratto rispetto alle richieste ed esigenze del Contraente",
     shortTitle: "Questionario di coerenza",
     summaryContent: <DenSummary />,
   },
@@ -90,6 +80,7 @@ export const drawers: Drawer[] = [
     name: "payment",
     title: "Pagamento",
     summaryContent: <PaymentSummary />,
+    lock: <PaymentLock />,
   },
   {
     name: "documentation",

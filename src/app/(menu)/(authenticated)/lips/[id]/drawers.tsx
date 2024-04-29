@@ -8,7 +8,8 @@ import {ContractorPersonalAreaActivationModalContent} from "@/app/(menu)/(authen
 import {ContractorPersonalAreaActivationSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/ContractorPersonalAreaActivationSummary";
 import {DenForm} from "@/app/(menu)/(authenticated)/lipsDrawers/DenForm";
 import {DenSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/DenSummary";
-import {DocumentsManagement} from "@/app/(menu)/(authenticated)/lipsDrawers/DocumentsManagement";
+import {DocumentsLock} from "@/app/(menu)/(authenticated)/lipsDrawers/DocumentsLock";
+import {DocumentsModal} from "@/app/(menu)/(authenticated)/lipsDrawers/DocumentsModal";
 import {DocumentsSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/DocumentsSummary";
 import {FatcaForm} from "@/app/(menu)/(authenticated)/lipsDrawers/FatcaForm";
 import {FatcaSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/FatcaSummary";
@@ -26,36 +27,50 @@ import {ContractorPersonalAreaActivationLastPrivacy} from "../../lipsDrawers/Con
 import {ContractorContactsForm} from "../../lipsDrawers/ContractorContactsForm";
 import {ContractorContactsSummary} from "../../lipsDrawers/ContractorContactsSummary";
 
-interface Drawer {
-  name: string;
+export type DrawerName =
+  | "fatca"
+  | "contractorFiscalCode"
+  | "contractorContacts"
+  | "contractorPersonalAreaActivation"
+  | "contractorData"
+  | "identification"
+  | "den"
+  | "quote"
+  | "healthQuestionnaire"
+  | "beneficiaries"
+  | "payment"
+  | "documentation";
+interface DrawerConfig {
+  name: DrawerName;
   title: string;
   shortTitle?: string;
   modalContent?: ReactNode;
   summaryContent?: ReactNode;
   lock?: ReactNode;
 }
-export const drawers: Drawer[] = [
+
+export const drawers: DrawerConfig[] = [
   {
     name: "fatca",
-    title: "Verifica residenza USA",
+    title: "Verifica residenza",
     modalContent: <FatcaForm />,
     summaryContent: <FatcaSummary />,
   },
   {
     name: "contractorFiscalCode",
-    title: "Dati contraente",
+    title: "Dati Contraente",
     modalContent: <ContractorFiscalCodeForm />,
     summaryContent: <ContractorFiscalCodeSummary />,
   },
   {
     name: "contractorContacts",
-    title: "Contatti contraente",
+    title: "Contatti Contraente",
     modalContent: <ContractorContactsForm />,
     summaryContent: <ContractorContactsSummary />,
   },
   {
     name: "contractorPersonalAreaActivation",
-    title: "Attivazione area contraente",
+    title: "Attivazione area Contraente",
     modalContent: (
       <ContractorPersonalAreaActivationModalContent
         lastPrivacy={<ContractorPersonalAreaActivationLastPrivacy />}
@@ -65,20 +80,20 @@ export const drawers: Drawer[] = [
   },
   {
     name: "contractorData",
-    title: "Censimento contraente",
+    title: "Censimento Contraente",
     modalContent: <ContractorDataForm />,
     summaryContent: <ContractorDataSummary />,
   },
   {
     name: "identification",
-    title: "Identificazione del cliente",
+    title: "Identificazione del Contraente",
     modalContent: <IdentificationForm />,
     summaryContent: <IdentificationDataSummary />,
   },
   {
     name: "den",
     title:
-      "Questionario per la coerenza del contratto rispetto alle richieste ed esigenze del cliente",
+      "Questionario per la coerenza del contratto rispetto alle richieste ed esigenze del Contraente",
     shortTitle: "Questionario di coerenza",
     modalContent: <DenForm />,
     summaryContent: <DenSummary />,
@@ -112,9 +127,8 @@ export const drawers: Drawer[] = [
   {
     name: "documentation",
     title: "Documentazione",
-    modalContent: <DocumentsManagement />,
+    modalContent: <DocumentsModal />,
     summaryContent: <DocumentsSummary />,
+    lock: <DocumentsLock />,
   },
 ] as const;
-
-export type DrawerName = (typeof drawers)[number]["name"];

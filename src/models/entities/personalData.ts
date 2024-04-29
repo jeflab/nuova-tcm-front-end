@@ -1,7 +1,5 @@
 import {
-  fundSourceOptions,
   jobPositionOptions,
-  ongoingRelationshipOptions,
   publicOfficesOptions,
   tAECodeOptions,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
@@ -15,6 +13,12 @@ const fatcaSchema = z.object({
   fatcaCheck: z.object({
     label: z.string(),
     text: z.string(),
+    options: z.array(
+      z.object({label: z.string(), value: z.enum(["yes", "no"])}),
+    ),
+    response: z.enum(["yes", "no"]),
+  }),
+  residencyCheck: z.object({
     options: z.array(
       z.object({label: z.string(), value: z.enum(["yes", "no"])}),
     ),
@@ -75,9 +79,6 @@ const pepSchema = z.object({
     response: z.enum(getOptionsValues(yesNoOptions)),
   }),
   job: jobSchema,
-  ongoingRelationship: z.enum(getOptionsValues(ongoingRelationshipOptions)),
-  fundSource: z.enum(getOptionsValues(fundSourceOptions)),
-  fundSourceOther: z.string().optional(),
 });
 
 export const personalDataSchema = z

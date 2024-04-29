@@ -1,6 +1,6 @@
 import {
   Document,
-  Esign,
+  ESign,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/DocumentsManagement";
 import {dateTimeString} from "@/helpers/dates";
 import {Lip} from "@/models/entities/lip";
@@ -24,7 +24,7 @@ import {
 
 interface ESignsManagementModalProps {
   document: Document;
-  eSigns: Esign[];
+  eSigns: ESign[];
   show: boolean;
   onHide: () => void;
   lip: Lip;
@@ -81,11 +81,11 @@ export function DocumentsChapterDetails({
                 <>
                   <Button
                     onClick={() => {
-                      setEsignModalOpen(eSign.esignIndex);
+                      setEsignModalOpen(eSign.eSignIndex);
                     }}
                   >
                     <FontAwesomeIcon icon={faFileSignature} /> Firma
-                    {eSign.whoEsign === "contractor" ? " del contraente" : ""}
+                    {eSign.whoESign === "contractor" ? " del Contraente" : ""}
                   </Button>{" "}
                   <RequestOTPModal
                     onHide={() => {
@@ -100,13 +100,13 @@ export function DocumentsChapterDetails({
                       }
                     }}
                     personalData={
-                      eSign.whoEsign === "contractor"
+                      eSign.whoESign === "contractor"
                         ? lip.contractor
                         : undefined
                     }
                     pdfType={document.type}
-                    payload={{esignIndex: eSign.esignIndex}}
-                    show={esignModalOpen === eSign.esignIndex}
+                    payload={{esignIndex: eSign.eSignIndex}}
+                    show={esignModalOpen === eSign.eSignIndex}
                     lipId={lip.id}
                     tagToRevalidate={`getLip-${lip.id}`}
                   />

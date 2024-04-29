@@ -7,6 +7,7 @@ import {
   educationOptions,
   expectationsOptions,
   familyOptions,
+  fundSourceOptions,
   jobPositionOptions,
   needsToMeetOptions,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
@@ -16,6 +17,7 @@ import {Currency} from "@/ui/Currency";
 import {
   faCalendarClock,
   faFamily,
+  faHandHoldingDollar,
   faSackDollar,
   faShieldCheck,
   faShieldHeart,
@@ -35,7 +37,7 @@ export function DenSummary() {
     return (
       <p className="mb-0">
         Non è possibile continuare la consulenza poiché le aspettative del
-        contraente in merito alla durata del contratto non sono coerenti con la
+        Contraente in merito alla durata del contratto non sono coerenti con la
         durata del prodotto.
       </p>
     );
@@ -49,14 +51,14 @@ export function DenSummary() {
     return (
       <p className="mb-0">
         Non è possibile continuare la consulenza poiché le aspettative del
-        contraente non sono coerenti con le caratteristiche del prodotto.
+        Contraente non sono coerenti con le caratteristiche del prodotto.
       </p>
     );
   }
 
   return (
     <Row className="row-gap-4">
-      <Col xs={12} sm={4} md={12} lg={4}>
+      <Col xs={12} sm={6} md={12} lg={6}>
         <h4 className="text-primary">
           <FontAwesomeIcon icon={faFamily} className="me-2" />
           Situazione personale e familiare
@@ -71,7 +73,7 @@ export function DenSummary() {
         </p>
         <p className="mb-0">
           <strong>
-            Numero di componenti del nucleo familiare oltre al contraente:
+            Numero di componenti del nucleo familiare oltre al Contraente:
           </strong>{" "}
           {getOptionsLabel(familyOptions, denData.family.response)} di cui{" "}
           {getOptionsLabel(
@@ -81,7 +83,7 @@ export function DenSummary() {
           a carico
         </p>
       </Col>
-      <Col xs={12} sm={4} md={12} lg={4}>
+      <Col xs={12} sm={6} md={12} lg={6}>
         <h4 className="text-primary">
           <FontAwesomeIcon icon={faShieldCheck} className="me-2" />
           Situazione assicurativa attuale
@@ -89,7 +91,7 @@ export function DenSummary() {
         <p className="mb-0">
           <strong>Prodotti assicurativi in essere:</strong>
         </p>
-        <ul className="list-unstyled">
+        <ul className="list-unstyled mb-0">
           {denData.otherInsuranceProducts.response === "yes"
             ? denData.needsIntendToMeet.response.map((value) => (
                 <li key={value} className="d-flex">
@@ -100,7 +102,7 @@ export function DenSummary() {
             : "Nessuno"}
         </ul>
       </Col>
-      <Col xs={12} sm={4} md={12} lg={4}>
+      <Col xs={12} sm={6} md={12} lg={6}>
         <h4 className="text-primary">
           <FontAwesomeIcon icon={faSackDollar} className="me-2" />
           Situazione finanziaria
@@ -121,7 +123,19 @@ export function DenSummary() {
           )}
         </p>
       </Col>
-      <Col xs={12} sm={8} md={12} lg={8}>
+      <Col xs={12} sm={6} md={12} lg={6}>
+        <h4 className="w-100 text-primary">
+          <FontAwesomeIcon icon={faHandHoldingDollar} /> Origine prevalente dei
+          fondi
+        </h4>
+        <p className="mb-0">
+          <strong>Origine prevalente dei fondi:</strong>{" "}
+          {denData.fundSource !== "other"
+            ? getOptionsLabel(fundSourceOptions, denData.fundSource)
+            : denData.fundSourceOther}
+        </p>
+      </Col>
+      <Col xs={12} sm={6} md={12} lg={6}>
         <h4 className="text-primary">
           <FontAwesomeIcon icon={faShieldHeart} className="me-2" />
           Aspettative
@@ -141,14 +155,14 @@ export function DenSummary() {
           </li>
         </ul>
       </Col>
-      <Col xs={12} sm={4} md={12} lg={4}>
+      <Col xs={12} sm={6} md={12} lg={6}>
         <h4 className="text-primary">
           <FontAwesomeIcon icon={faCalendarClock} className="me-2" />
           Aspettative in merito alla durata del contratto
         </h4>
         <p className="mb-0">
           <strong>
-            Il contraente ha bisogno di coperture per un periodo di tempo:
+            Il Contraente ha bisogno di coperture per un periodo di tempo:
           </strong>{" "}
           {getOptionsLabel(durationOptions, denData.duration.response)}
         </p>

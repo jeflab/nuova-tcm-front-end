@@ -1,11 +1,16 @@
 import {cns} from "@/helpers/cns";
 import {AppContainer} from "@/ui/AppContainer";
+import {ButtonLink} from "@/ui/ButtonLink";
 import {Drawer} from "@/ui/drawer/Drawer";
 import {NavDrawer} from "@/ui/drawer/NavDrawer";
 import {PageTitle} from "@/ui/PageTitle";
-import {faTriangleExclamation} from "@fortawesome/pro-duotone-svg-icons";
+import {
+  faArrowLeft,
+  faTriangleExclamation,
+} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {notFound} from "next/navigation";
+import {Fragment} from "react";
 import {Alert, Col, Nav, Row} from "react-bootstrap";
 import {getLip} from "./actions";
 import {drawers} from "./drawers";
@@ -34,7 +39,12 @@ export default async function NewLipPage({params}: NewLipPageProps) {
   return (
     <AppContainer className="vstack gap-3">
       <PageTitle>
-        {lip?.lipNumber ? `Polizza n° ${lip?.lipNumber}` : "Nuova polizza"}
+        {lip?.lipNumber
+          ? `Polizza n° ${lip?.lipNumber}`
+          : "Caricamento polizza"}
+        <ButtonLink href="/contractorLips">
+          <FontAwesomeIcon icon={faArrowLeft} /> Torna alle tue polizze
+        </ButtonLink>
       </PageTitle>
       <InitStoreWithServerData lip={lip} />
       <Row className="flex-row-reverse">
@@ -55,21 +65,24 @@ export default async function NewLipPage({params}: NewLipPageProps) {
             </h3>
             <p>
               Ti diamo il benvenuto nell'app di calcolo preventivo per polizze
-              vita. Ai fini legali, è obbligatorio che il contraente coincida
+              vita. Ai fini legali, è obbligatorio che il Contraente coincida
               con l'assicurato durante la compilazione dei dati.
             </p>
             <p className="mb-0">
-              Il contraente è la persona responsabile della sottoscrizione della
+              Il Contraente è la persona responsabile della sottoscrizione della
               polizza, mentre l'assicurato è la persona per la quale la polizza
               viene stipulata. Affinché il processo sia conforme alle normative
-              vigenti, i dettagli del contraente e dell'assicurato devono
+              vigenti, i dettagli del Contraente e dell'assicurato devono
               corrispondere.
             </p>
           </Alert>
-          {drawers.map(({name, title, summaryContent}) => (
-            <Drawer key={name} name={name} title={title} readonly>
-              {summaryContent}
-            </Drawer>
+          {drawers.map(({name, title, summaryContent, lock}) => (
+            <Fragment key={name}>
+              {lock}
+              <Drawer name={name} title={title} readonly>
+                {summaryContent}
+              </Drawer>
+            </Fragment>
           ))}
         </Col>
       </Row>

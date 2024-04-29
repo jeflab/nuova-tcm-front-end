@@ -31,14 +31,14 @@ export default async function NewLipPage() {
             </h3>
             <p>
               Ti diamo il benvenuto nell'app di calcolo preventivo per polizze
-              vita. Ai fini legali, è obbligatorio che il contraente coincida
+              vita. Ai fini legali, è obbligatorio che il Contraente coincida
               con l'assicurato durante la compilazione dei dati.
             </p>
             <p className="mb-0">
-              Il contraente è la persona responsabile della sottoscrizione della
+              Il Contraente è la persona responsabile della sottoscrizione della
               polizza, mentre l'assicurato è la persona per la quale la polizza
               viene stipulata. Affinché il processo sia conforme alle normative
-              vigenti, i dettagli del contraente e dell'assicurato devono
+              vigenti, i dettagli del Contraente e dell'assicurato devono
               corrispondere.
             </p>
           </Alert>

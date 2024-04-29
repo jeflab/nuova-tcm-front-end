@@ -2,6 +2,7 @@ import {Profile} from "@/models/account";
 import {PDFType} from "@/models/entities/esign";
 import {PersonalData} from "@/models/entities/personalData";
 import {cns} from "@/helpers/cns";
+import {Tag} from "@/services/const";
 import {signFEADoc} from "@/ui/eSign/actions";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {FieldError} from "@/ui/form/FieldError";
@@ -36,7 +37,7 @@ interface RequestOTPFormProps<TPayload> {
   profile: Profile;
   resendOTP?: () => void;
   transactionId: string;
-  tagToRevalidate?: string;
+  tagToRevalidate?: Tag;
 }
 
 const requestOTPFormDefaultValues = {
@@ -103,7 +104,7 @@ export function RequestOTPForm<TPayload>({
           </div>
           {personalData ? (
             <div>
-              Per modificare il numero di cellulare del tuo cliente{" "}
+              Per modificare il numero di cellulare del tuo Contraente{" "}
               <Button
                 variant="link"
                 onClick={openEditNumberForm}
@@ -129,7 +130,7 @@ export function RequestOTPForm<TPayload>({
                   verticalAlign: "baseline",
                 }}
               >
-                Test cambia numero agente
+                Test cambia numero Intermediario
               </Button>
             </p>
           )}

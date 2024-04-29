@@ -26,30 +26,36 @@ export function Advantages({
               <td>Bonus a scadenza</td>
               <td>100%</td>
               <td>Importo</td>
-              <td>{premium ? <Currency>{30 * premium}</Currency> : "? €"}</td>
+              <td>
+                {premium ? (
+                  <Currency>{30 * premium}</Currency>
+                ) : (
+                  <span className="text-nowrap">? €</span>
+                )}
+              </td>
             </tr>
             <tr className={cns(duration < 25 && "d-none")}>
               <td>Bonus dal 25° al 29° anno</td>
-              <td>90%</td>
+              <td>75%</td>
               <td>Importo minimo garantito</td>
               <td>
-                {premium ? <Currency>{25 * premium * 0.9}</Currency> : "? €"}
+                {premium ? (
+                  <Currency>{25 * premium * 0.75}</Currency>
+                ) : (
+                  <span className="text-nowrap">? €</span>
+                )}
               </td>
             </tr>
             <tr className={cns(duration < 20 && "d-none")}>
               <td>Bonus dal 20° al 24° anno</td>
-              <td>75%</td>
-              <td>Importo minimo garantito</td>
-              <td>
-                {premium ? <Currency>{20 * premium * 0.75}</Currency> : "? €"}
-              </td>
-            </tr>
-            <tr className={cns(duration < 15 && "d-none")}>
-              <td>Bonus dal 15° al 19° anno</td>
               <td>50%</td>
               <td>Importo minimo garantito</td>
               <td>
-                {premium ? <Currency>{15 * premium * 0.5}</Currency> : "? €"}
+                {premium ? (
+                  <Currency>{20 * premium * 0.5}</Currency>
+                ) : (
+                  <span className="text-nowrap">? €</span>
+                )}
               </td>
             </tr>
             <tr style={{borderBottom: "transparent"}}>
@@ -75,7 +81,7 @@ export function Advantages({
                 {premium ? (
                   <Currency>{Math.min(101, premium * 0.19)}</Currency>
                 ) : (
-                  "? €"
+                  <span className="text-nowrap">? €</span>
                 )}
               </td>
             </tr>

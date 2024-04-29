@@ -1,10 +1,8 @@
 "use client";
 
 import {
-  fundSourceOptions,
   genderOptions,
   jobPositionOptions,
-  ongoingRelationshipOptions,
   publicOfficesOptions,
   tAECodeOptions,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
@@ -14,9 +12,7 @@ import {getOptionsLabel, yesNoOptions} from "@/helpers/getOptionsLabel";
 import {
   faAddressBook,
   faBriefcase,
-  faHandHoldingDollar,
   faLandmarkMagnifyingGlass,
-  faMoneyBillTransfer,
   faUser,
 } from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
@@ -30,8 +26,8 @@ export function ContractorDataSummary() {
   }
 
   return (
-    <Row className="row-gap-4" xs={1} sm={2} md={1} lg={2}>
-      <Col>
+    <Row className="row-gap-4">
+      <Col xs={12} sm={6} md={12} lg={6}>
         <h4 className="w-100 text-primary">
           <FontAwesomeIcon icon={faUser} /> Anagrafica
         </h4>
@@ -52,18 +48,20 @@ export function ContractorDataSummary() {
           <strong>Codice Fiscale:</strong> {contractor.fiscalCode}
         </p>
       </Col>
-      <Col>
+      <Col xs={12} sm={6} md={12} lg={6}>
         <h4 className="w-100 text-primary">
           <FontAwesomeIcon icon={faAddressBook} /> Contatti
         </h4>
         <p className="mb-0">
-          <strong>Telefono:</strong> {contractor.phone}
+          <strong>Telefono:</strong>{" "}
+          <a href={`tel:${contractor.phone}`}>{contractor.phone}</a>
         </p>
         <p className="mb-0">
-          <strong>Email:</strong> {contractor.email}
+          <strong>Email:</strong>{" "}
+          <a href={`mailto:${contractor.email}`}>{contractor.email}</a>
         </p>
       </Col>
-      <Col>
+      <Col xs={12} xl={6}>
         <h4 className="w-100 text-primary">
           <FontAwesomeIcon icon={faBriefcase} /> Situazione professionale
         </h4>
@@ -83,48 +81,25 @@ export function ContractorDataSummary() {
         </p>
         <p className="mb-0">
           <strong>Provincia attività prevalente:</strong>{" "}
-          {contractor.pep.job.province}
+          {contractor.pep.job.province || contractor.region}
         </p>
         <p className="mb-0">
           <strong>Paese attività prevalente:</strong>{" "}
-          {contractor.pep.job.country}
+          {contractor.pep.job.country || "Italia"}
         </p>
       </Col>
-      <Col>
-        <h4 className="w-100 text-primary">
-          <FontAwesomeIcon icon={faHandHoldingDollar} /> Origine prevalente dei
-          fondi
-        </h4>
-        <p className="mb-4">
-          <strong>Origine prevalente dei fondi:</strong>{" "}
-          {contractor.pep.fundSource !== "other"
-            ? getOptionsLabel(fundSourceOptions, contractor.pep.fundSource)
-            : contractor.pep.fundSourceOther}
-        </p>
-        <h4 className="w-100 text-primary">
-          <FontAwesomeIcon icon={faMoneyBillTransfer} /> Informazioni sul
-          rapporto continuativo
-        </h4>
-        <p className="mb-0">
-          <strong>Natura / scopo del rapporto continuativo:</strong>{" "}
-          {getOptionsLabel(
-            ongoingRelationshipOptions,
-            contractor.pep.ongoingRelationship,
-          )}
-        </p>
-      </Col>
-      <Col className="w-100">
+      <Col xs={12} xl={6}>
         <h4 className="w-100 text-primary">
           <FontAwesomeIcon icon={faLandmarkMagnifyingGlass} /> Persona esposta
           politicamente
         </h4>
         <p className="mb-0">
-          <strong>Il contraente è una persona esposta politicamente:</strong>{" "}
+          <strong>Il Contraente è una persona esposta politicamente:</strong>{" "}
           {getOptionsLabel(yesNoOptions, contractor.pep.isPep.response)}
         </p>
         <p className="mb-0">
           <strong>
-            Il contraente Ricopre cariche pubbliche diverse da P.E.P.:
+            Il Contraente Ricopre cariche pubbliche diverse da P.E.P.:
           </strong>{" "}
           {getOptionsLabel(
             publicOfficesOptions,

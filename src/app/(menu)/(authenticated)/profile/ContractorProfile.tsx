@@ -2,7 +2,7 @@ import {genderOptions} from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOpt
 import {dateString} from "@/helpers/dates";
 import {getOptionsLabel} from "@/helpers/getOptionsLabel";
 import {PersonalData} from "@/models/entities/personalData";
-import {Card, Col, Row} from "react-bootstrap";
+import {Card, CardBody, CardHeader, Col, Row} from "react-bootstrap";
 
 interface ContractorProfileProps {
   contractor: PersonalData;
@@ -10,9 +10,9 @@ interface ContractorProfileProps {
 
 export function ContractorProfile({contractor}: ContractorProfileProps) {
   return (
-    <>
-      <h3>Cliente</h3>
-      <Card body>
+    <Card>
+      <CardHeader>Contraente</CardHeader>
+      <CardBody>
         <Row as="dl" xs={1} sm={3} className="mb-0">
           <Col>
             <dt>Nome:</dt>
@@ -41,7 +41,7 @@ export function ContractorProfile({contractor}: ContractorProfileProps) {
             <dd>{getOptionsLabel(genderOptions, contractor.gender)}</dd>
           </Col>
         </Row>
-      </Card>
-    </>
+      </CardBody>
+    </Card>
   );
 }

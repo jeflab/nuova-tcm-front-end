@@ -22,10 +22,10 @@ import {
 } from "react-bootstrap";
 import styles from "./DocumentsManagement.module.scss";
 
-export interface Esign {
+export interface ESign {
   key: string;
-  whoEsign: "advisor" | "contractor";
-  esignIndex: number;
+  whoESign: "advisor" | "contractor";
+  eSignIndex: number;
   signed: boolean;
   date?: string;
   chapters: string[];
@@ -36,7 +36,7 @@ export interface Document {
   urlPreview: string;
   urlDownload: string;
   type: PDFType;
-  eSigns: Esign[];
+  eSigns: ESign[];
 }
 const documents: Document[] = [
   {
@@ -48,11 +48,11 @@ const documents: Document[] = [
     eSigns: [
       {
         key: "esign_agente",
-        whoEsign: "advisor",
+        whoESign: "advisor",
         chapters: [
-          "L'intermediario dichiara di avere incontrato di persona e di avere identificato attraverso il suo documento d'identità il contraente.",
+          "L'Intermediario dichiara di avere incontrato di persona e di avere identificato attraverso il suo documento d'identità il Contraente.",
         ],
-      } as Esign,
+      } as ESign,
     ],
   },
   {
@@ -64,47 +64,48 @@ const documents: Document[] = [
     eSigns: [
       {
         key: "esign_agente",
-        whoEsign: "advisor",
+        whoESign: "advisor",
         chapters: [
-          "PG 9/9 - Dichiarazione dell'intermediario.",
-          "PG 9/9 - Firma del soggetto incaricato dell'adeguata verifica.",
+          "PG 1/32 - Dichiarazione di coerenza del contratto.",
+          "PG 13/32 - Dichiarazione dell'Intermediario.",
+          "PG 32/32 - Firma del soggetto incaricato dell'adeguata verifica.",
         ],
-      } as Esign,
+      } as ESign,
       {
         key: "esign_contraente",
-        whoEsign: "contractor",
+        whoESign: "contractor",
         chapters: [
-          "PG 5/9 - Dichiarazioni rese dall'assicurato in relazione al proprio stato di salute e abitudini di vita.",
-          "PG 6/9 - Autorizzazione alla comunicazione elettronica.",
-          "PG 6/9 - Dichiarazioni del contraente e dell'assicurato.",
-          "PG 9/9 - Firma della proposta.",
+          "PG 9/32 - Dichiarazioni rese dall'assicurato in relazione al proprio stato di salute e abitudini di vita.",
+          "PG 10/32 - Autorizzazione alla comunicazione elettronica.",
+          "PG 10/32 - Dichiarazioni del Contraente e dell'assicurato.",
+          "PG 32/32 - Firma della proposta.",
         ],
-      } as Esign,
+      } as ESign,
       {
         key: "esign_contraente_sepa",
-        whoEsign: "contractor",
+        whoESign: "contractor",
         chapters: [
-          "PG 5/9 - Firma del contraente per l'addebito diretto SEPA - S.D.D.",
+          "PG 9/32 - Firma del Contraente per l'addebito diretto SEPA - S.D.D.",
         ],
-      } as Esign,
+      } as ESign,
     ],
   },
 ];
 
 const eSignsCount = (
-  documentESigns: Esign[],
+  documentESigns: ESign[],
   lipESigns: Record<string, {esign_id: number; data: string}>,
   filter?: string,
-): [Esign[], Esign[]] => {
+): [ESign[], ESign[]] => {
   let filteredESigns = documentESigns.map((eSign, index) => ({
     ...eSign,
-    esignIndex: index,
+    eSignIndex: index,
     signed: !!lipESigns[eSign.key]?.esign_id,
     date: lipESigns[eSign.key]?.data,
   }));
   if (filter) {
     filteredESigns = filteredESigns.filter(
-      (eSign) => eSign.whoEsign === filter,
+      (eSign) => eSign.whoESign === filter,
     );
   }
 
@@ -143,7 +144,7 @@ export function DocumentsManagement() {
 
       return [prevPartial.concat(partialESign), prevTotal.concat(totalESign)];
     },
-    [[], []] as [Esign[], Esign[]],
+    [[], []] as [ESign[], ESign[]],
   );
 
   // Ripensare all'auto-chiusura
@@ -261,7 +262,7 @@ export function DocumentsManagement() {
                 </>
                 <>
                   <div>
-                    <strong>Firme cliente:</strong>
+                    <strong>Firme Contraente:</strong>
                     <span className="d-block d-sm-none">
                       {partialContractorESign.length} di{" "}
                       {totalContractorESign.length}
@@ -307,7 +308,7 @@ export function DocumentsManagement() {
                                 icon={faFileSignature}
                                 className="me-2"
                               />
-                              Firma del cliente
+                              Firma del Contraente
                             </Button>
                             <DocumentsChapterDetails
                               eSigns={totalContractorESign}

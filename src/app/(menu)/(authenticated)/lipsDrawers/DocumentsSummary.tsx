@@ -1,16 +1,30 @@
 "use client";
 
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {CompanyPrivacy} from "@/app/(menu)/(authenticated)/lipsDrawers/CompanyPrivacy";
 import {PDFType} from "@/models/entities/esign";
-import {faCheckCircle, faDownload} from "@fortawesome/pro-duotone-svg-icons";
+import {
+  faCheckCircle,
+  faClipboardCheck,
+  faDownload,
+} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {Badge, Button, Card, CardHeader, Stack} from "react-bootstrap";
+import {useState} from "react";
+import {
+  Badge,
+  Button,
+  Card,
+  CardHeader,
+  Modal,
+  ModalHeader,
+  Stack,
+} from "react-bootstrap";
 import styles from "./DocumentsManagement.module.scss";
 
 interface Esign {
   key: string;
   whoEsign: "advisor" | "contractor";
-  esignIndex: number;
+  eSignIndex: number;
   signed: boolean;
 }
 interface Document {
@@ -72,7 +86,7 @@ const eSignsCount = (
 ): [Esign[], Esign[]] => {
   let filteredESigns = documentESigns.map((eSign, index) => ({
     ...eSign,
-    esignIndex: index,
+    eSignIndex: index,
     signed: !!lipESigns[eSign.key]?.esign_id,
   }));
   if (filter) {
@@ -87,29 +101,70 @@ const eSignsCount = (
 };
 
 export function DocumentsSummary() {
-  const paymentData = useDrawerStore((state) => state.lip?.payment);
-  const premium = useDrawerStore((state) => state.lip?.quotation?.premium);
+  const [isConsentCheckOpen, setIsConsentCheckOpen] = useState(false);
   const lip = useDrawerStore((state) => state.lip);
 
   if (!lip) {
     return null;
   }
 
-  const allESigns = documents.every((document) => {
-    const [partialESign, totalESign] = eSignsCount(
-      document.eSigns,
-      lip.eSigns?.[document.key] ?? {},
-    );
-
-    return partialESign.length === totalESign.length;
-  });
-
-  if (!paymentData || !premium) {
-    return null;
-  }
-
   return (
     <Stack gap={3}>
+      <Card>
+        <CardHeader className={styles.documentHeader}>
+          <strong>Privacy di compagnia</strong>
+          <Button
+            size="sm"
+            className="ms-sm-auto"
+            onClick={() => {
+              setIsConsentCheckOpen(true);
+            }}
+          >
+            <FontAwesomeIcon icon={faClipboardCheck} /> Controlla i consensi
+          </Button>
+        </CardHeader>
+        <div className={styles.docTableActions}>
+          <div>
+            <strong>Firme consulente:</strong>
+            <span className="d-block d-sm-none">
+              <FontAwesomeIcon
+                icon={faCheckCircle}
+                title="Completato"
+                className="text-success ms-2"
+              />
+            </span>
+          </div>
+          <div>Nessuna firma richiesta</div>
+          <div>
+            <strong>Firme Contraente:</strong>
+            <span className="d-block d-sm-none">
+              <FontAwesomeIcon
+                icon={faCheckCircle}
+                title="Completato"
+                className="text-success ms-2"
+              />
+            </span>
+          </div>
+          <div className="doc-table-contractor-esign-content">
+            Nessuna firma richiesta
+          </div>
+        </div>
+      </Card>
+      <Modal
+        backdrop="static"
+        className={styles.modal}
+        fullscreen="xl-down"
+        keyboard={false}
+        onHide={() => setIsConsentCheckOpen(false)}
+        show={isConsentCheckOpen}
+        size="xl"
+      >
+        <ModalHeader closeButton>
+          <Modal.Title>Privacy di compagnia</Modal.Title>
+        </ModalHeader>
+        <CompanyPrivacy onHide={() => setIsConsentCheckOpen(false)} />
+      </Modal>
+
       {documents.map((document) => {
         const [partialAdvisorESign, totalAdvisorESign] = eSignsCount(
           document.eSigns,
@@ -196,7 +251,7 @@ export function DocumentsSummary() {
               </>
               <>
                 <div>
-                  <strong>Firme cliente:</strong>
+                  <strong>Firme Contraente:</strong>
                   <span className="d-block d-sm-none">
                     {partialContractorESign.length} di{" "}
                     {totalContractorESign.length}
@@ -248,18 +303,6 @@ export function DocumentsSummary() {
           </Card>
         );
       })}
-      {/*<ButtonLink*/}
-      {/*  href={`${apiUrl}/${lipId}/pdf-allegato4?lipId=${lipId}&agentId=${agentId}`}*/}
-      {/*  download*/}
-      {/*>*/}
-      {/*  <FontAwesomeIcon icon={faDownload} /> Allegato 4*/}
-      {/*</ButtonLink>*/}
-      {/*<ButtonLink*/}
-      {/*  href={`${apiUrl}/${lipId}/set-informativo?lipId=${lipId}&agentId=${agentId}`}*/}
-      {/*  download*/}
-      {/*>*/}
-      {/*  <FontAwesomeIcon icon={faDownload} /> Set informativo*/}
-      {/*</ButtonLink>*/}
     </Stack>
   );
 }

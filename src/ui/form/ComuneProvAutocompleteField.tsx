@@ -19,10 +19,10 @@ import "react-bootstrap-typeahead/css/Typeahead.bs5.css";
 import styles from "./ComuneProvAutocompleteField.module.scss";
 
 interface ComuneProvAutocompleteFiledProps {
-  defaultValue?: {city?: string; province?: string};
   disabled?: boolean;
   name?: string;
   onlyExisting?: boolean;
+  onlyItalian?: boolean;
   placeholder?: string;
   plaintext?: boolean;
   readOnly?: boolean;
@@ -31,10 +31,10 @@ interface ComuneProvAutocompleteFiledProps {
 }
 
 export function ComuneProvAutocompleteField({
-  defaultValue,
   disabled,
   name,
   onlyExisting,
+  onlyItalian,
   placeholder,
   plaintext,
   readOnly,
@@ -50,7 +50,7 @@ export function ComuneProvAutocompleteField({
   invariant(controlName, "name or controlId is required");
 
   const {
-    field: {onBlur, onChange},
+    field: {onBlur, onChange, value},
   } = useController({name: `${controlName}.city`, rules: validation});
 
   const {isInvalid, isValid} = useValidationState(controlName);
@@ -58,10 +58,10 @@ export function ComuneProvAutocompleteField({
   const handleSearch = useCallback(
     async (query: string) => {
       setIsLoadingCities(true);
-      setCities(await getCities(query, onlyExisting));
+      setCities(await getCities(query, {onlyExisting, onlyItalian}));
       setIsLoadingCities(false);
     },
-    [onlyExisting],
+    [onlyExisting, onlyItalian],
   );
 
   return (
@@ -77,6 +77,7 @@ export function ComuneProvAutocompleteField({
         <AsyncTypeahead
           id={controlName}
           className={styles.cityInputWrapper}
+          defaultInputValue={value}
           disabled={disabled}
           options={cities}
           placeholder={placeholder}

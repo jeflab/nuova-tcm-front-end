@@ -1,4 +1,6 @@
 // Generic
+import {toCurrency} from "@/helpers/numbers";
+
 export const genderOptions = [
   {label: "Maschio", value: "male"},
   {label: "Femmina", value: "female"},
@@ -222,15 +224,6 @@ export const fundSourceOptions = [
 ] as const;
 export type FundSource = (typeof fundSourceOptions)[number]["value"];
 
-export const ongoingRelationshipOptions = [
-  {label: "Forma pensionistica/previdenziale", value: "pension"},
-  {label: "Risparmio", value: "savings"},
-  {label: "Protezione", value: "protection"},
-  {label: "Investimento", value: "investment"},
-] as const;
-export type OngoingRelationship =
-  (typeof ongoingRelationshipOptions)[number]["value"];
-
 // Identification
 export const idTypeOptions = [
   {label: "Passaporto", value: "passport"},
@@ -349,12 +342,12 @@ export type DurationOptions = (typeof durationOptions)[number]["value"];
 
 export const nominationOptions = [
   {
-    label: "Il contraente designa i seguenti Beneficiari",
+    label: "Il Contraente designa i seguenti Beneficiari",
     value: "beneficiaries",
   },
   {
     label:
-      "Il contraente designa come Beneficiari gli eredi testamentari o, in assenza di testamento, gli eredi legittimi del contraente-assicurato in parti uguali fra loro",
+      "Il Contraente designa come Beneficiari gli eredi testamentari o, in assenza di testamento, gli eredi legittimi del Contraente-assicurato in parti uguali fra loro",
     value: "heirs",
   },
 ] as const;
@@ -371,13 +364,63 @@ export const paymentMethodsSimpleOptions = [
     value: "annual",
   },
   {
-    label: "Pagamento anticipato di 3 anni con sconto del 10%",
+    label: "Pagamento anticipato di 3 anni",
     value: "3yearsAdvance",
   },
   {
-    label: "Pagamento anticipato di 5 anni con sconto del 15",
+    label: "Pagamento anticipato di 5 anni",
     value: "5yearsAdvance",
   },
 ] as const;
 export type PaymentMethodsSimple =
   (typeof paymentMethodsSimpleOptions)[number]["value"];
+
+export function paymentMethodsOptions(premium: number) {
+  return [
+    {
+      label: `Pagamento mensile di ${toCurrency(premium / 12)} con anticipo di 3 mesi (${toCurrency((premium / 12) * 3)})`,
+      value: "monthly",
+    },
+    {
+      label: `Pagamento annuale di ${toCurrency(premium)}`,
+      value: "annual",
+    },
+    {
+      label: `Pagamento anticipato di 3 anni (${toCurrency(premium * 3)}) e
+    a seguire pagamento mensile di ${toCurrency(premium / 12)}`,
+      value: "3yearsAdvance",
+    },
+    {
+      label: `Pagamento anticipato di 5 anni (${toCurrency(premium * 5)}) e
+    a seguire pagamento mensile di ${toCurrency(premium / 12)}`,
+      value: "5yearsAdvance",
+    },
+  ] as const;
+}
+export type PaymentMethods = ReturnType<
+  typeof paymentMethodsOptions
+>[number]["value"];
+
+export const consentOptions = [
+  {
+    label:
+      "Presto il consenso specifico e facoltativo al trattamento dei miei dati personali per le Finalità di Marketing come illustrato nell’Informativa.",
+    value: "marketing_consent",
+  },
+  {
+    label:
+      "Presto il consenso specifico e facoltativo al trattamento dei miei dati personali per le Finalità di Profilazione come illustrato nell’Informativa.",
+    value: "profiling_consent",
+  },
+  {
+    label:
+      "Presto il consenso aggiuntivo e facoltativo alla comunicazione dei miei dati personali ai terzi individuati nell’Informativa per consentire a questi di svolgere il Trattamento per le Finalità di Marketing come illustrato nell’Informativa.",
+    value: "third_party_marketing_consent",
+  },
+  {
+    label:
+      "Presto il consenso aggiuntivo e facoltativo alla comunicazione dei miei dati personali ai terzi individuati nell’Informativa per consentire a questi di svolgere il Trattamento per le Finalità di Profilazione come illustrato nell’Informativa.",
+    value: "third_party_profiling_consent",
+  },
+] as const;
+export type ConsentOptions = (typeof consentOptions)[number]["value"];
