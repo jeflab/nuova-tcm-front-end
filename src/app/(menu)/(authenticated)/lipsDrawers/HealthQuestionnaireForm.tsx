@@ -502,6 +502,14 @@ export function HealthQuestionnaireForm() {
             </Col>
             <Collapse in={sportRiskCheckValue === "yes"}>
               <Col xs={12} as={Stack} gap={3}>
+                <Alert variant="info" className="mb-0">
+                  Chi pratica sport a livello agonistico o semi-professionale
+                  può percepire compensi per comparse, premi, sponsorizzazioni,
+                  donazioni di privati o sussidi da parte di associazioni
+                  nazionali e enti pubblici. Queste persone praticano lo sport a
+                  un livello agonistico più alto di un dilettante e, pertanto, è
+                  importante operare una differenziazione adeguata del rischio.
+                </Alert>
                 <Row>
                   <Col className="d-flex" xs={6}>
                     <FormGroup
