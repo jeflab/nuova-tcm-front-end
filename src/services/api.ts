@@ -138,6 +138,30 @@ export async function get<T extends ZodRawShape>(
   return serverResponseJson;
 }
 
+interface NewPostOptions<ResponsePayloadShape extends ZodRawShape> {
+  zodRowShape?: ResponsePayloadShape;
+  data?: object | FormData;
+}
+export async function apiCall<T extends ZodRawShape>(
+  method: "GET" | "POST" | "PUT" | "PATCH",
+  url: `/${string}`,
+  {zodRowShape, data}: NewPostOptions<T>,
+) {
+  const body = data instanceof FormData ? data : JSON.stringify(data);
+  const serverSuccessSchema = createServerSuccessSchema(zodRowShape ?? {});
+
+  const response = await fetch(apiUrl + url, {
+    headers: {
+      ...contentJsonHeader,
+      ...acceptJsonHeader,
+      ...authorizationHeader(),
+    },
+    credentials: "include",
+    method,
+    body,
+  });
+}
+
 export async function post<T extends ZodRawShape>(
   url: `/${string}`,
   zodRowShape: T,
