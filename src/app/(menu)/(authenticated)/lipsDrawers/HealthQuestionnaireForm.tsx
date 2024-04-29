@@ -6,7 +6,7 @@ import {
   SportRiskIndex,
   sportRiskIndexOptions,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
-import {YesNoAnswer} from "@/helpers/getOptionsLabel";
+import {YesNoAnswer, yesNoOptions} from "@/helpers/getOptionsLabel";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {CheckGroup} from "@/ui/form/CheckGroup";
 import {FieldError} from "@/ui/form/FieldError";
@@ -247,10 +247,7 @@ export function HealthQuestionnaireForm() {
                 <CheckGroup
                   type="radio"
                   inline
-                  options={[
-                    {label: "Sì", value: "yes"},
-                    {label: "No", value: "no"},
-                  ]}
+                  options={yesNoOptions}
                   validation={{
                     required: "Seleziona un'opzione",
                   }}
@@ -301,10 +298,7 @@ export function HealthQuestionnaireForm() {
                 <CheckGroup
                   type="radio"
                   inline
-                  options={[
-                    {label: "Sì", value: "yes"},
-                    {label: "No", value: "no"},
-                  ]}
+                  options={yesNoOptions}
                   validation={{
                     required: "Seleziona un'opzione",
                   }}
@@ -349,10 +343,7 @@ export function HealthQuestionnaireForm() {
                 <CheckGroup
                   type="radio"
                   inline
-                  options={[
-                    {label: "Sì", value: "yes"},
-                    {label: "No", value: "no"},
-                  ]}
+                  options={yesNoOptions}
                   validation={{
                     required: "Seleziona un'opzione",
                   }}
@@ -399,10 +390,7 @@ export function HealthQuestionnaireForm() {
                 <CheckGroup
                   type="radio"
                   inline
-                  options={[
-                    {label: "Sì", value: "yes"},
-                    {label: "No", value: "no"},
-                  ]}
+                  options={yesNoOptions}
                   validation={{
                     required: "Seleziona un'opzione",
                   }}
@@ -453,10 +441,7 @@ export function HealthQuestionnaireForm() {
                 <CheckGroup
                   type="radio"
                   inline
-                  options={[
-                    {label: "Sì", value: "yes"},
-                    {label: "No", value: "no"},
-                  ]}
+                  options={yesNoOptions}
                   validation={{
                     required: "Seleziona un'opzione",
                   }}
@@ -508,10 +493,7 @@ export function HealthQuestionnaireForm() {
                 <CheckGroup
                   type="radio"
                   inline
-                  options={[
-                    {label: "Sì", value: "yes"},
-                    {label: "No", value: "no"},
-                  ]}
+                  options={yesNoOptions}
                   validation={{
                     required: "Seleziona un'opzione",
                   }}
