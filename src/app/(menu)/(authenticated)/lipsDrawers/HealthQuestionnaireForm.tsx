@@ -2,6 +2,10 @@
 
 import {updateHealthQuestionnaire} from "@/app/(menu)/(authenticated)/lips/[id]/actions";
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {
+  SportRiskIndex,
+  sportRiskIndexOptions,
+} from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
 import {YesNoAnswer} from "@/helpers/getOptionsLabel";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {CheckGroup} from "@/ui/form/CheckGroup";
@@ -22,9 +26,15 @@ import {
   ModalBody,
   ModalFooter,
   Row,
+  Stack,
 } from "react-bootstrap";
 import {useForm} from "react-hook-form";
 import invariant from "tiny-invariant";
+
+const sportDefaultValues = {
+  name: "",
+  riskIndex: "" as "" | SportRiskIndex,
+};
 
 const healthQuestionnaireDefaultValues = {
   weight: "",
@@ -34,7 +44,10 @@ const healthQuestionnaireDefaultValues = {
   drugTherapy: {check: "" as YesNoAnswer, details: ""},
   symptomatology: {check: "" as YesNoAnswer, details: ""},
   professionalRisk: {check: "" as YesNoAnswer, details: ""},
-  sportRisk: {check: "" as YesNoAnswer, details: ""},
+  sportRisk: {
+    check: "" as YesNoAnswer,
+    sport: [] as (typeof sportDefaultValues)[],
+  },
   cancer: {check: "" as YesNoAnswer, details: ""},
   nervousSystemDiseases: {check: "" as YesNoAnswer, details: ""},
   invalidityPension: {check: "" as YesNoAnswer, details: ""},
@@ -69,6 +82,7 @@ export function HealthQuestionnaireForm() {
     "professionalRisk.check",
   );
   const sportRiskCheckValue = formMethods.watch("sportRisk.check");
+  const sports = formMethods.watch("sportRisk.sport");
   const cancerCheckValue = formMethods.watch("cancer.check");
   const nervousSystemDiseasesCheckValue = formMethods.watch(
     "nervousSystemDiseases.check",
@@ -78,6 +92,10 @@ export function HealthQuestionnaireForm() {
   );
   const physicalImpairmentCheckValue = formMethods.watch(
     "physicalImpairment.check",
+  );
+
+  const atLeastOneSportRisk = sports.some(
+    (sport) => sport.name !== "" && sport.riskIndex !== "",
   );
 
   return (
@@ -132,7 +150,11 @@ export function HealthQuestionnaireForm() {
         <Form
           id="healt-questionnaire-form"
           onSubmit={async (values) => {
+            values.sportRisk.sport = values.sportRisk.sport.filter(
+              (sport) => !!sport.name && !!sport.riskIndex,
+            );
             invariant(lipId, "lipId is required");
+
             const updatedContractor = await updateHealthQuestionnaire(
               values,
               lipId,
@@ -497,25 +519,95 @@ export function HealthQuestionnaireForm() {
               </FormGroup>
             </Col>
             <Collapse in={sportRiskCheckValue === "yes"}>
-              <div>
-                <Col className="d-flex" xs={12}>
-                  <FormGroup controlId="sportRisk.details" as={BorderFeedback}>
-                    <FormLabel>
-                      Fornire dettagli relativi alla risposta affermativa
-                      precedente
-                    </FormLabel>
-                    <FieldError />
-                    <InputField
-                      type="textarea"
-                      validation={{
-                        required:
-                          sportRiskCheckValue === "yes" &&
-                          "Fornire dettagli relativi alla risposta affermativa precedente",
-                      }}
-                    />
-                  </FormGroup>
-                </Col>
-              </div>
+              <Col xs={12} as={Stack} gap={3}>
+                <Row>
+                  <Col className="d-flex" xs={6}>
+                    <FormGroup
+                      controlId="sportRisk.sport.0.name"
+                      as={BorderFeedback}
+                    >
+                      <FormLabel>Sport</FormLabel>
+                      <FieldError />
+                      <InputField
+                        type="text"
+                        validation={{
+                          required:
+                            sportRiskCheckValue === "yes" &&
+                            !atLeastOneSportRisk &&
+                            "Inserisci il nome dello sport",
+                        }}
+                      />
+                    </FormGroup>
+                  </Col>
+                  <Col className="d-flex" xs={6}>
+                    <FormGroup
+                      controlId="sportRisk.sport.0.riskIndex"
+                      as={BorderFeedback}
+                    >
+                      <FormLabel>Pratica</FormLabel>
+                      <FieldError />
+                      <CheckGroup
+                        type="radio"
+                        options={sportRiskIndexOptions}
+                        validation={{
+                          required:
+                            sportRiskCheckValue === "yes" &&
+                            !atLeastOneSportRisk &&
+                            "Inserisci il livello di pratica dello sport",
+                        }}
+                      />
+                    </FormGroup>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col className="d-flex" xs={6}>
+                    <FormGroup
+                      controlId="sportRisk.sport.1.name"
+                      as={BorderFeedback}
+                    >
+                      <FormLabel>Sport</FormLabel>
+                      <FieldError />
+                      <InputField type="text" />
+                    </FormGroup>
+                  </Col>
+                  <Col className="d-flex" xs={6}>
+                    <FormGroup
+                      controlId="sportRisk.sport.1.riskIndex"
+                      as={BorderFeedback}
+                    >
+                      <FormLabel>Pratica</FormLabel>
+                      <CheckGroup
+                        type="radio"
+                        options={sportRiskIndexOptions}
+                      />
+                    </FormGroup>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col className="d-flex" xs={6}>
+                    <FormGroup
+                      controlId="sportRisk.sport.2.name"
+                      as={BorderFeedback}
+                    >
+                      <FormLabel>Sport</FormLabel>
+                      <FieldError />
+                      <InputField type="text" />
+                    </FormGroup>
+                  </Col>
+                  <Col className="d-flex" xs={6}>
+                    <FormGroup
+                      controlId="sportRisk.sport.2.riskIndex"
+                      as={BorderFeedback}
+                    >
+                      <FormLabel>Pratica</FormLabel>
+                      <CheckGroup
+                        type="radio"
+                        options={sportRiskIndexOptions}
+                      />
+                    </FormGroup>
+                  </Col>
+                </Row>
+              </Col>
             </Collapse>
             {hasCancerCoverage && (
               <>

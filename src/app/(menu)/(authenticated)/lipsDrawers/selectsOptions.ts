@@ -424,3 +424,10 @@ export const consentOptions = [
   },
 ] as const;
 export type ConsentOptions = (typeof consentOptions)[number]["value"];
+
+export const sportRiskIndexOptions = [
+  {label: "Dilettante", value: "amateur"},
+  {label: "Semi-professionista", value: "semi_professional"},
+  {label: "Professionista", value: "professional"},
+] as const;
+export type SportRiskIndex = (typeof sportRiskIndexOptions)[number]["value"];
