@@ -36,11 +36,14 @@ export async function login(data: {fiscalCode: string; password: string}) {
   return loginResponse;
 }
 
-export async function forgotPassword(data: {}) {
+interface ForgotPasswordParams {
+  fiscalCode: string;
+}
+export async function forgotPassword(data: ForgotPasswordParams) {
   const body = JSON.stringify(data);
 
   const forgotPasswordResponse = await api.post(
-    "/forgotPassword",
+    "/forgot-password",
     LoginResponseRawShape,
     body,
   );
@@ -53,6 +56,14 @@ export async function forgotPassword(data: {}) {
   }
 
   return forgotPasswordResponse;
+}
+
+interface SetPasswordParams {
+  token: string;
+  password: string;
+}
+export async function setPassword(data: SetPasswordParams) {
+  return {status: "failed", message: "Not implemented"};
 }
 
 export async function isLoggedIn() {

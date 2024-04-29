@@ -92,43 +92,33 @@ const healthcareQuestionnaireSchema = z.object({
   height: z.string(),
   hospitalization: z.object({
     check: z.enum(getOptionsValues(yesNoOptions)),
-    details: z.string(),
   }),
   diseases: z.object({
     check: z.enum(getOptionsValues(yesNoOptions)),
-    details: z.string(),
   }),
   drugTherapy: z.object({
     check: z.enum(getOptionsValues(yesNoOptions)),
-    details: z.string(),
   }),
   symptomatology: z.object({
     check: z.enum(getOptionsValues(yesNoOptions)),
-    details: z.string(),
   }),
   professionalRisk: z.object({
     check: z.enum(getOptionsValues(yesNoOptions)),
-    details: z.string(),
   }),
   sportRisk: z.object({
     check: z.enum(getOptionsValues(yesNoOptions)),
-    details: z.string(),
   }),
   cancer: z.object({
     check: z.enum([...getOptionsValues(yesNoOptions), ""]),
-    details: z.string(),
   }),
   nervousSystemDiseases: z.object({
     check: z.enum([...getOptionsValues(yesNoOptions), ""]),
-    details: z.string(),
   }),
   invalidityPension: z.object({
     check: z.enum([...getOptionsValues(yesNoOptions), ""]),
-    details: z.string(),
   }),
   physicalImpairment: z.object({
     check: z.enum([...getOptionsValues(yesNoOptions), ""]),
-    details: z.string(),
   }),
 });
 

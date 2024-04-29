@@ -1,20 +1,26 @@
-import {ForgotPasswordForm} from "@/app/(no-menu)/(auth)/forgotPassword/ForgotPasswordForm";
-import styles from "@/app/(no-menu)/(auth)/login/page.module.scss";
+import {SetPasswordForm} from "@/app/(no-menu)/(auth)/resetPassword/SetPasswordForm";
 import {ButtonLink} from "@/ui/ButtonLink";
 import CenterLogoContent from "@/ui/CenterLogoContent";
 import {Alert, Card} from "react-bootstrap";
 
 const containerStyle = {"--content-width": "400px"};
 
-export default async function ForgotPasswordPage() {
+interface ResetPasswordParams {
+  searchParams: {token: string};
+}
+
+export default function ResetPassword({searchParams}: ResetPasswordParams) {
   return (
     <CenterLogoContent style={containerStyle}>
       <Card body className="w-100">
         <Alert variant="info">
-          Inserisci il tuo codice fiscale. Ti invieremo un messaggio con le
-          istruzioni per impostare una nuova password.
+          Inserisci il codice che hai ricevuto via mail e scegli una password
+          per attivare il tuo account
         </Alert>
-        <ForgotPasswordForm />
+        <SetPasswordForm
+          token={searchParams.token}
+          submitButtonLabel="Attiva il tuo account"
+        />
         <ButtonLink variant="link" href="/login" className="w-100">
           Login
         </ButtonLink>
