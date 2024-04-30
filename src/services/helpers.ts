@@ -19,8 +19,10 @@ export function isServerError(
   );
 }
 
-export const createServerSuccessSchema = <T extends ZodRawShape>(
-  successDataShape: T,
+export const createServerSuccessSchema = <
+  ResponsePayloadShape extends ZodRawShape,
+>(
+  successDataShape: ResponsePayloadShape,
 ) =>
   z.object({
     status: z.literal("success"),

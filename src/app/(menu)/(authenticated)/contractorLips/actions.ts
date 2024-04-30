@@ -11,5 +11,5 @@ const getContractorLipsShape = {
 };
 
 export async function getContractorLips() {
-  return await get(`/contractor-lips`, getContractorLipsShape);
+  return await get(`/contractor-lips`, {payloadShape: getContractorLipsShape});
 }

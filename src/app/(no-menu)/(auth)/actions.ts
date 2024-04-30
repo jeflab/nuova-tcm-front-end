@@ -16,13 +16,19 @@ const LoginResponseRawShape = {
   access_token: z.string(),
 };
 
-export async function login(data: {fiscalCode: string; password: string}) {
-  const body = JSON.stringify({
-    fiscal_code: data.fiscalCode,
-    password: data.password,
+interface LoginParams {
+  fiscalCode: string;
+  password: string;
+}
+export async function login(data: LoginParams) {
+  const loginResponse = await api.post("/login", {
+    payloadShape: LoginResponseRawShape,
+    data: {
+      fiscal_code: data.fiscalCode,
+      password: data.password,
+    },
   });
 
-  const loginResponse = await api.post("/login", LoginResponseRawShape, body);
   if (loginResponse.status === "success") {
     cookies().set(AUTH_COOKIE_NAME, loginResponse.access_token, {
       httpOnly: true,
@@ -40,13 +46,11 @@ interface ForgotPasswordParams {
   fiscalCode: string;
 }
 export async function forgotPassword(data: ForgotPasswordParams) {
-  const body = JSON.stringify(data);
+  const forgotPasswordResponse = await api.post("/forgot-password", {
+    payloadShape: LoginResponseRawShape,
+    data: {fiscal_code: data.fiscalCode},
+  });
 
-  const forgotPasswordResponse = await api.post(
-    "/forgot-password",
-    LoginResponseRawShape,
-    body,
-  );
   if (forgotPasswordResponse.status === "success") {
     cookies().set(AUTH_COOKIE_NAME, forgotPasswordResponse.access_token, {
       httpOnly: true,
@@ -92,7 +96,8 @@ export async function checkAuth() {
 }
 
 export async function getAccount() {
-  return await api.get("/me", accountSchema.shape, {
+  return await api.get("/me", {
+    payloadShape: accountSchema.shape,
     tags: [Tags.me()],
   });
 }
@@ -103,5 +108,5 @@ const getProfileShape = {
   contractor: personalDataSchema.nullable(),
 };
 export async function getProfile() {
-  return await api.get("/profile-me", getProfileShape);
+  return await api.get("/profile-me", {payloadShape: getProfileShape});
 }

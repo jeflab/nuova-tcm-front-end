@@ -35,7 +35,8 @@ export async function getLipsList({
   perPage,
   sorting,
 }: GetLipsListOptions) {
-  return get("/lips", getLipsShape, {
+  return get("/lips", {
+    payloadShape: getLipsShape,
     searchParams: {
       query,
       page: page.toString(),

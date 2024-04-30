@@ -18,7 +18,7 @@ export async function updateAccount(formData: UpdateAccountData) {
   };
 
   invalidateTag(Tags.me());
-  return patch("/me", accountSchema.shape, JSON.stringify(data));
+  return patch("/me", {payloadShape: accountSchema.shape, data});
 }
 
 interface UpdatePassword {
@@ -26,6 +26,6 @@ interface UpdatePassword {
   newPassword: string;
   repeatNewPassword: string;
 }
-export async function updatePassword(formData: UpdatePassword) {
-  return post("/reset-my-password", {}, JSON.stringify(formData));
+export async function updatePassword(data: UpdatePassword) {
+  return post("/reset-my-password", {data});
 }
