@@ -9,17 +9,29 @@ import {
 } from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import * as Sentry from "@sentry/nextjs";
-import {useEffect} from "react";
+import {useRouter} from "next/navigation";
+import {startTransition, useEffect} from "react";
 import {Alert, AlertHeading, Button} from "react-bootstrap";
 
 export default function ContractorLipsErrorPage({
   error,
+  reset,
 }: {
   error: Error & {digest?: string};
+  reset: () => void;
 }) {
+  const router = useRouter();
+
   useEffect(() => {
     Sentry.captureException(error);
   }, [error]);
+
+  const refresh = () => {
+    router.refresh();
+    startTransition(() => {
+      reset();
+    });
+  };
 
   return (
     <AppContainer className="vstack gap-3">
@@ -29,13 +41,7 @@ export default function ContractorLipsErrorPage({
         <p className="mb-0">{error.message}</p>
       </Alert>
       <div>
-        <Button
-          onClick={() => {
-            window.location.reload();
-          }}
-          type="button"
-          className="me-2"
-        >
+        <Button onClick={refresh} type="button" className="me-2">
           <FontAwesomeIcon icon={faArrowRotateBack} className="me-2" />
           Riprova
         </Button>

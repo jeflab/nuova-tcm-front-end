@@ -12,7 +12,8 @@ import {
 } from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import * as Sentry from "@sentry/nextjs";
-import {useEffect} from "react";
+import {useRouter} from "next/navigation";
+import {startTransition, useEffect} from "react";
 import {Button} from "react-bootstrap";
 
 const containerStyle = {"--content-width": "max-content"};
@@ -24,6 +25,7 @@ export default function GlobalError({
   error: Error & {digest?: string};
   reset: () => void;
 }) {
+  const router = useRouter();
   const theme = getThemeClientSide();
 
   useEffect(() => {
@@ -32,6 +34,13 @@ export default function GlobalError({
     }
   }, [error]);
 
+  const refresh = () => {
+    router.refresh();
+    startTransition(() => {
+      reset();
+    });
+  };
+
   return (
     <html lang="it" data-bs-theme={theme}>
       <body>
@@ -39,7 +48,7 @@ export default function GlobalError({
           <main className={styles.publicMain}>
             <CenterLogoContent style={containerStyle}>
               <h2>Qualcosa è andato storto 😕</h2>
-              <Button onClick={() => reset()} type="button" className="w-100">
+              <Button onClick={refresh} type="button" className="w-100">
                 <FontAwesomeIcon icon={faArrowRotateBack} className="me-2" />
                 Riprova
               </Button>

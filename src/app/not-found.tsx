@@ -5,6 +5,7 @@ import {faHouseChimney} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 const containerStyle = {"--content-width": "max-content"};
+
 export default function NotFound() {
   return (
     <main className={styles.publicMain}>
