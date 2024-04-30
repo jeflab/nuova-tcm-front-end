@@ -1,9 +1,16 @@
 import chalk from "chalk";
 
+export function unrollFetchData(data?: object | FormData) {
+  if (data instanceof FormData) {
+    return Object.fromEntries([...data.entries()]);
+  }
+  return data ?? "No data";
+}
+
 export const logFetchInfo = async (
   method: string,
   response: Response,
-  body?: string | FormData,
+  body?: object | FormData,
 ) => {
   if (process.env.FETCH_DEBUG === "true") {
     try {
@@ -13,9 +20,7 @@ export const logFetchInfo = async (
         chalk.greenBright(response.url),
         chalk.yellowBright(response.status),
       );
-      console.log(
-        body ? (typeof body === "string" ? JSON.parse(body) : body) : "no data",
-      );
+      console.log(unrollFetchData(body));
       console.log(await response.clone().json());
     } catch (e) {
       // fall silently

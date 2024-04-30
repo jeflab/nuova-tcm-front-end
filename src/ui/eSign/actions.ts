@@ -5,7 +5,6 @@ import {esignSchema, PDFType} from "@/models/entities/esign";
 import {lipSchema} from "@/models/entities/lip";
 import {post, put} from "@/services/api";
 import {Tag} from "@/services/const";
-import {invalidateTag} from "@/services/helpers";
 
 const createFEATransactionSchema = {
   esign: esignSchema,
@@ -15,18 +14,11 @@ interface CreateFEATransactionParams {
   lipId: number;
 }
 
-export async function createFEATransaction({
-  contractorId,
-  lipId,
-}: CreateFEATransactionParams) {
-  const featTransaction = post(
-    "/esigns/create-featransaction",
-    createFEATransactionSchema,
-    JSON.stringify({
-      contractorId,
-      lipId,
-    }),
-  );
+export async function createFEATransaction(data: CreateFEATransactionParams) {
+  const featTransaction = post("/esigns/create-featransaction", {
+    payloadShape: createFEATransactionSchema,
+    data,
+  });
   const profile = getProfile();
   return {
     featTransaction: await featTransaction,
@@ -56,19 +48,16 @@ export async function signFEADoc<TPayload>({
   tagToRevalidate,
   transactionId,
 }: SignFEADocParams<TPayload>) {
-  if (tagToRevalidate) {
-    invalidateTag(tagToRevalidate);
-  }
-  return put(
-    "/esigns/sign-feadoc",
-    signFEADocSchema,
-    JSON.stringify({
+  return put("/esigns/sign-feadoc", {
+    payloadShape: signFEADocSchema,
+    data: {
       OTP,
       transactionId,
       lipId,
       pdfType,
       contractorId,
       ...payload,
-    }),
-  );
+    },
+    ...(tagToRevalidate && {tags: [tagToRevalidate]}),
+  });
 }
