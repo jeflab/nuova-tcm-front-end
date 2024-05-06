@@ -7,8 +7,9 @@ interface AppError {
 
 export enum ErrorCodes {
   GENERIC_ERROR = 10,
-  INVALID_JSON = 11,
-  INVALID_SCHEMA = 12,
+  FETCH_ERROR = 11,
+  INVALID_JSON = 12,
+  INVALID_SCHEMA = 13,
   ID_FILE_TOO_BIG = 20,
   ID_FILE_MULTIPLE = 21,
   ID_FILE_NOT_VALID = 22,
@@ -18,6 +19,11 @@ export const errors: Record<ErrorCodes, AppError> = {
   [ErrorCodes.GENERIC_ERROR]: {
     code: ErrorCodes.GENERIC_ERROR,
     message: "Si è verificato un errore imprevisto, riprova più tardi",
+    status: "failed",
+  },
+  [ErrorCodes.FETCH_ERROR]: {
+    code: ErrorCodes.FETCH_ERROR,
+    message: "Errore di rete, riprova più tardi",
     status: "failed",
   },
   [ErrorCodes.INVALID_JSON]: {

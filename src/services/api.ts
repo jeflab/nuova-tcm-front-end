@@ -2,14 +2,18 @@
 
 import {AUTH_COOKIE_NAME} from "@/app/(no-menu)/(auth)/const";
 import {ErrorCodes, errors} from "@/helpers/errors";
-import {logFetchInfo} from "@/helpers/fetchDebug";
+import {logFetchInfo, unrollFetchData} from "@/helpers/fetchDebug";
 import {
   acceptJsonHeader,
   apiUrl,
   contentJsonHeader,
   Tag,
 } from "@/services/const";
-import {createServerSuccessSchema, serverErrorSchema} from "@/services/helpers";
+import {
+  createServerSuccessSchema,
+  invalidateTag,
+  serverErrorSchema,
+} from "@/services/helpers";
 import chalk from "chalk";
 import {cookies} from "next/headers";
 import {z, ZodRawShape} from "zod";
@@ -54,33 +58,64 @@ function isServerSuccess<T extends ZodRawShape>(
   );
 }
 
-// TODO: se ottendo un 405 ma risulto loggato facciamo logout automatico oppure dobbiamo fare una pagina per scalare i permessi
+// TODO: se ottengo un 405 ma risulto loggato facciamo logout automatico oppure dobbiamo fare una pagina per scalare i permessi
 
-export async function get<T extends ZodRawShape>(
+interface ApiCallOptions<ResponsePayloadShape extends ZodRawShape> {
+  payloadShape?: ResponsePayloadShape;
+  data?: object | FormData;
+  searchParams?: Record<string, string>;
+  tags?: Tag[];
+}
+export async function apiCall<ResponsePayloadShape extends ZodRawShape>(
+  method: "GET" | "POST" | "PUT" | "PATCH",
   url: `/${string}`,
-  zodRowShape: T,
   {
+    payloadShape,
+    data,
     searchParams,
     tags,
-  }: {searchParams?: Record<string, string>; tags?: Tag[]} = {},
+  }: ApiCallOptions<ResponsePayloadShape>,
 ) {
-  const serverSuccessSchema = createServerSuccessSchema(zodRowShape);
+  const payloadShapeOrDefault: ResponsePayloadShape =
+    payloadShape ?? ({} as ResponsePayloadShape);
+  const body = data instanceof FormData ? data : JSON.stringify(data);
   const searchParamsString = searchParams
     ? "?" + new URLSearchParams(searchParams).toString()
     : "";
+  const serverSuccessSchema = createServerSuccessSchema(payloadShapeOrDefault);
+  const headers =
+    data instanceof FormData
+      ? {
+          ...authorizationHeader(),
+        }
+      : {
+          ...authorizationHeader(),
+          ...acceptJsonHeader,
+          ...contentJsonHeader,
+        };
 
-  const response = await fetch(apiUrl + url + searchParamsString, {
-    headers: {
-      ...contentJsonHeader,
-      ...acceptJsonHeader,
-      ...authorizationHeader(),
-    },
-    method: "GET",
-    credentials: "include",
-    ...(tags ? {tags} : {}),
-  });
+  let response: Response;
+  try {
+    response = await fetch(apiUrl + url + searchParamsString, {
+      credentials: "include",
+      headers,
+      method,
+      body,
+      ...(tags ? {tags} : {}),
+    });
 
-  void logFetchInfo("GET", response);
+    void logFetchInfo(method, response, data);
+  } catch (e) {
+    console.error(chalk.red.inverse("Errore di rete"));
+    console.error(
+      chalk.italic.bold("Chiamata API:"),
+      chalk.cyanBright(method),
+      chalk.greenBright(apiUrl + url + searchParamsString),
+    );
+    console.error(unrollFetchData(data));
+    console.error(chalk.redBright(e));
+    return errors[ErrorCodes.FETCH_ERROR] as z.infer<typeof serverErrorSchema>;
+  }
 
   let responseJson;
   try {
@@ -92,10 +127,11 @@ export async function get<T extends ZodRawShape>(
     );
     console.error(
       chalk.italic.bold("Chiamata API:"),
-      chalk.cyanBright("GET"),
+      chalk.cyanBright(method),
       chalk.greenBright(response.url),
       chalk.yellowBright(response.status),
     );
+    console.error(unrollFetchData(data));
     console.error(chalk.redBright(e));
     const text = await response.clone().text();
     if (text.length > 50000) {
@@ -124,10 +160,11 @@ export async function get<T extends ZodRawShape>(
     );
     console.error(
       chalk.italic.bold("Chiamata API:"),
-      chalk.cyanBright("GET"),
+      chalk.cyanBright(method),
       chalk.greenBright(response.url),
       chalk.yellowBright(response.status),
     );
+    console.error(unrollFetchData(data));
     console.error(chalk.redBright(e));
     console.error(await response.text());
     return errors[ErrorCodes.INVALID_SCHEMA] as z.infer<
@@ -135,323 +172,35 @@ export async function get<T extends ZodRawShape>(
     >;
   }
 
+  tags?.map((tag) => invalidateTag(tag));
+
   return serverResponseJson;
+}
+
+export async function get<T extends ZodRawShape>(
+  url: `/${string}`,
+  options: Omit<ApiCallOptions<T>, "data"> = {},
+) {
+  return apiCall("GET", url, options);
 }
 
 export async function post<T extends ZodRawShape>(
   url: `/${string}`,
-  zodRowShape: T,
-  body?: string,
+  options: ApiCallOptions<T> = {},
 ) {
-  const serverSuccessSchema = createServerSuccessSchema(zodRowShape);
-
-  const response = await fetch(apiUrl + url, {
-    headers: {
-      ...contentJsonHeader,
-      ...acceptJsonHeader,
-      ...authorizationHeader(),
-    },
-    method: "POST",
-    credentials: "include",
-    body,
-  });
-
-  void logFetchInfo("POST", response, body);
-
-  let responseJson;
-  try {
-    responseJson = await response.clone().json();
-    responseJson.responseStatus = response.status;
-  } catch (e) {
-    console.error(
-      chalk.red.inverse("Errore di parsing del JSON della risposta del server"),
-    );
-    console.error(
-      chalk.italic.bold("Chiamata API:"),
-      chalk.cyanBright("POST"),
-      chalk.greenBright(response.url),
-      chalk.yellowBright(response.status),
-    );
-    console.error(body ? JSON.parse(body) : "no data");
-    console.error(chalk.redBright(e));
-    const text = await response.clone().text();
-    if (text.length > 50000) {
-      const parsed = parseLaravelErrorPage(text);
-      if (parsed === false) {
-        console.error(text.slice(0, 50000));
-      } else {
-        console.error(parsed);
-      }
-    } else {
-      console.error(text);
-    }
-    return errors[ErrorCodes.INVALID_JSON] as z.infer<typeof serverErrorSchema>;
-  }
-
-  let serverResponseJson;
-  try {
-    serverResponseJson = z
-      .discriminatedUnion("status", [serverSuccessSchema, serverErrorSchema])
-      .parse(responseJson);
-  } catch (e) {
-    console.error(
-      chalk.red.inverse(
-        "Errore di parsing dello schema della risposta del server",
-      ),
-    );
-    console.error(
-      chalk.italic.bold("Chiamata API:"),
-      chalk.cyanBright("POST"),
-      chalk.greenBright(response.url),
-      chalk.yellowBright(response.status),
-    );
-    console.error(body ? JSON.parse(body) : "no data");
-    console.error(chalk.redBright(e));
-    console.error(await response.text());
-    return errors[ErrorCodes.INVALID_SCHEMA] as z.infer<
-      typeof serverErrorSchema
-    >;
-  }
-
-  return serverResponseJson;
+  return apiCall("POST", url, options);
 }
 
-export async function postFormData<T extends ZodRawShape>(
-  url: `/${string}`,
-  zodRowShape: T,
-  formData?: FormData,
-) {
-  const serverSuccessSchema = createServerSuccessSchema(zodRowShape);
-
-  const response = await fetch(apiUrl + url, {
-    headers: {
-      // ...acceptJsonHeader,
-      ...authorizationHeader(),
-    },
-    method: "POST",
-    credentials: "include",
-    body: formData,
-  });
-
-  void logFetchInfo("POST", response, formData);
-
-  let responseJson;
-  try {
-    responseJson = await response.clone().json();
-    responseJson.responseStatus = response.status;
-  } catch (e) {
-    console.error(
-      chalk.red.inverse("Errore di parsing del JSON della risposta del server"),
-    );
-    console.error(
-      chalk.italic.bold("Chiamata API:"),
-      chalk.cyanBright("POST"),
-      chalk.greenBright(response.url),
-      chalk.yellowBright(response.status),
-    );
-    console.error(
-      formData ? Object.fromEntries([...formData.entries()]) : "no data",
-    );
-    console.error(chalk.redBright(e));
-    const text = await response.clone().text();
-    if (text.length > 50000) {
-      const parsed = parseLaravelErrorPage(text);
-      if (parsed === false) {
-        console.error(text.slice(0, 50000));
-      } else {
-        console.error(parsed);
-      }
-    } else {
-      console.error(text);
-    }
-    return errors[ErrorCodes.INVALID_JSON] as z.infer<typeof serverErrorSchema>;
-  }
-
-  let serverResponseJson;
-  try {
-    serverResponseJson = z
-      .discriminatedUnion("status", [serverSuccessSchema, serverErrorSchema])
-      .parse(responseJson);
-  } catch (e) {
-    console.error(
-      chalk.red.inverse(
-        "Errore di parsing dello schema della risposta del server",
-      ),
-    );
-    console.error(
-      chalk.italic.bold("Chiamata API:"),
-      chalk.cyanBright("POST"),
-      chalk.greenBright(response.url),
-      chalk.yellowBright(response.status),
-    );
-    console.error(
-      formData ? Object.fromEntries([...formData.entries()]) : "no data",
-    );
-    console.error(chalk.redBright(e));
-    console.error(await response.text());
-    return errors[ErrorCodes.INVALID_SCHEMA] as z.infer<
-      typeof serverErrorSchema
-    >;
-  }
-
-  return serverResponseJson;
-}
 export async function put<T extends ZodRawShape>(
   url: `/${string}`,
-  zodRowShape: T,
-  body?: string,
+  options: ApiCallOptions<T> = {},
 ) {
-  const serverSuccessSchema = createServerSuccessSchema(zodRowShape);
-
-  const response = await fetch(apiUrl + url, {
-    headers: {
-      ...contentJsonHeader,
-      ...acceptJsonHeader,
-      ...authorizationHeader(),
-    },
-    method: "PUT",
-    credentials: "include",
-    body,
-  });
-
-  void logFetchInfo("PUT", response, body);
-
-  let responseJson;
-  try {
-    responseJson = await response.clone().json();
-    responseJson.responseStatus = response.status;
-  } catch (e) {
-    console.error(
-      chalk.red.inverse("Errore di parsing del JSON della risposta del server"),
-    );
-    console.error(
-      chalk.italic.bold("Chiamata API:"),
-      chalk.cyanBright("PUT"),
-      chalk.greenBright(response.url),
-      chalk.yellowBright(response.status),
-    );
-    console.error(body ? JSON.parse(body) : "no data");
-
-    console.error(chalk.redBright(e));
-    const text = await response.clone().text();
-    if (text.length > 50000) {
-      const parsed = parseLaravelErrorPage(text);
-      if (parsed === false) {
-        console.error(text.slice(0, 50000));
-      } else {
-        console.error(parsed);
-      }
-    } else {
-      console.error(text);
-    }
-    return errors[ErrorCodes.INVALID_JSON] as z.infer<typeof serverErrorSchema>;
-  }
-
-  let serverResponseJson;
-  try {
-    serverResponseJson = z
-      .discriminatedUnion("status", [serverSuccessSchema, serverErrorSchema])
-      .parse(responseJson);
-  } catch (e) {
-    console.error(
-      chalk.red.inverse(
-        "Errore di parsing dello schema della risposta del server",
-      ),
-    );
-    console.error(
-      chalk.italic.bold("Chiamata API:"),
-      chalk.cyanBright("PUT"),
-      chalk.greenBright(response.url),
-      chalk.yellowBright(response.status),
-    );
-    console.error(body ? JSON.parse(body) : "no data");
-
-    console.error(chalk.redBright(e));
-    console.error(await response.text());
-    return errors[ErrorCodes.INVALID_SCHEMA] as z.infer<
-      typeof serverErrorSchema
-    >;
-  }
-
-  return serverResponseJson;
+  return apiCall("PUT", url, options);
 }
 
 export async function patch<T extends ZodRawShape>(
   url: `/${string}`,
-  zodRowShape: T,
-  body?: string,
+  options: ApiCallOptions<T> = {},
 ) {
-  const serverSuccessSchema = createServerSuccessSchema(zodRowShape);
-
-  const response = await fetch(apiUrl + url, {
-    headers: {
-      ...contentJsonHeader,
-      ...acceptJsonHeader,
-      ...authorizationHeader(),
-    },
-    method: "PATCH",
-    credentials: "include",
-    body,
-  });
-
-  void logFetchInfo("PATCH", response, body);
-
-  let responseJson;
-  try {
-    responseJson = await response.clone().json();
-    responseJson.responseStatus = response.status;
-  } catch (e) {
-    console.error(
-      chalk.red.inverse("Errore di parsing del JSON della risposta del server"),
-    );
-    console.error(
-      chalk.italic.bold("Chiamata API:"),
-      chalk.cyanBright("PATCH"),
-      chalk.greenBright(response.url),
-      chalk.yellowBright(response.status),
-    );
-    console.error(body ? JSON.parse(body) : "no data");
-
-    console.error(chalk.redBright(e));
-    const text = await response.clone().text();
-    if (text.length > 50000) {
-      const parsed = parseLaravelErrorPage(text);
-      if (parsed === false) {
-        console.error(text.slice(0, 50000));
-      } else {
-        console.error(parsed);
-      }
-    } else {
-      console.error(text);
-    }
-    return errors[ErrorCodes.INVALID_JSON] as z.infer<typeof serverErrorSchema>;
-  }
-
-  let serverResponseJson;
-  try {
-    serverResponseJson = z
-      .discriminatedUnion("status", [serverSuccessSchema, serverErrorSchema])
-      .parse(responseJson);
-  } catch (e) {
-    console.error(
-      chalk.red.inverse(
-        "Errore di parsing dello schema della risposta del server",
-      ),
-    );
-    console.error(
-      chalk.italic.bold("Chiamata API:"),
-      chalk.cyanBright("PATCH"),
-      chalk.greenBright(response.url),
-      chalk.yellowBright(response.status),
-    );
-    console.error(body ? JSON.parse(body) : "no data");
-
-    console.error(chalk.redBright(e));
-    console.error(await response.text());
-    return errors[ErrorCodes.INVALID_SCHEMA] as z.infer<
-      typeof serverErrorSchema
-    >;
-  }
-
-  return serverResponseJson;
+  return apiCall("PATCH", url, options);
 }

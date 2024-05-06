@@ -21,9 +21,8 @@ interface GetQuoteParams {
   smoker: string;
   trafficAccidentalDeath: boolean;
 }
-
 export async function getQuote(quoterData: GetQuoteParams) {
-  const body = JSON.stringify({
+  const data = {
     sumInsured: parseInt(quoterData.death),
     age: calendarYearAge(quoterData.birthDate),
     duration: getCoverageDuration(quoterData.birthDate),
@@ -44,7 +43,7 @@ export async function getQuote(quoterData: GetQuoteParams) {
       quoterData.exemptionFromPaying &&
       calendarYearAge(quoterData.birthDate) <= 55,
     aggregate: 0,
-  });
+  };
 
-  return await post("/quoter", getQuoteResponseSchema, body);
+  return await post("/quoter", {payloadShape: getQuoteResponseSchema, data});
 }
