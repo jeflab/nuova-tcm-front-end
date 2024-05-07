@@ -46,18 +46,6 @@ function parseLaravelErrorPage(text: string) {
   }
 }
 
-function isServerSuccess<T extends ZodRawShape>(
-  json: unknown,
-  zodRowShape: T,
-): json is z.infer<typeof serverSuccessSchema> {
-  const serverSuccessSchema = createServerSuccessSchema(zodRowShape);
-
-  return (
-    "status" in (json as z.infer<typeof serverErrorSchema>) &&
-    (json as z.infer<typeof serverSuccessSchema>).status === "success"
-  );
-}
-
 // TODO: se ottengo un 405 ma risulto loggato facciamo logout automatico oppure dobbiamo fare una pagina per scalare i permessi
 
 interface ApiCallOptions<ResponsePayloadShape extends ZodRawShape> {
@@ -121,6 +109,7 @@ export async function apiCall<ResponsePayloadShape extends ZodRawShape>(
   try {
     responseJson = await response.clone().json();
     responseJson.responseStatus = response.status;
+    responseJson.status = responseJson.status ?? "failed";
   } catch (e) {
     console.error(
       chalk.red.inverse("Errore di parsing del JSON della risposta del server"),
