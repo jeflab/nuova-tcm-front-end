@@ -1,4 +1,5 @@
 import {cns} from "@/helpers/cns";
+import {sleep} from "@/helpers/sleep";
 import {AppContainer} from "@/ui/AppContainer";
 import {ButtonLink} from "@/ui/ButtonLink";
 import {Drawer} from "@/ui/drawer/Drawer";
@@ -27,6 +28,7 @@ interface NewLipPageProps {
 const minWidthHack = {minWidth: "1px"};
 
 export default async function NewLipPage({params}: NewLipPageProps) {
+  await sleep(5000);
   const lipResponse = await getLip(parseInt(params.id, 10));
   if (lipResponse.status === "failed") {
     if (lipResponse.responseStatus === 404) {
@@ -37,15 +39,15 @@ export default async function NewLipPage({params}: NewLipPageProps) {
   const lip = lipResponse.lip;
 
   return (
-    <AppContainer className="vstack gap-3">
+    <AppContainer className="vstack gap-3 align-items-start">
       <PageTitle>
         {lip?.lipNumber
           ? `Polizza n° ${lip?.lipNumber}`
           : "Caricamento polizza"}
-        <ButtonLink href="/contractorLips">
-          <FontAwesomeIcon icon={faArrowLeft} /> Torna alle tue polizze
-        </ButtonLink>
       </PageTitle>
+      <ButtonLink href="/contractorLips">
+        <FontAwesomeIcon icon={faArrowLeft} /> Torna alle tue polizze
+      </ButtonLink>
       <InitStoreWithServerData lip={lip} />
       <Row className="flex-row-reverse">
         <Col md="auto">
