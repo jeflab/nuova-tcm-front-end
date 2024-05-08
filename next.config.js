@@ -9,7 +9,7 @@ const nextConfig = {
       },
       {
         protocol: "https",
-        hostname: "prevision.family",
+        hostname: "api.tcm-dev.prevision.family",
       },
     ],
   },
