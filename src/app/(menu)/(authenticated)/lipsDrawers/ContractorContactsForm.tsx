@@ -14,7 +14,7 @@ import {FieldError} from "@/ui/form/FieldError";
 import {Form} from "@/ui/form/Form";
 import {InputField} from "@/ui/form/InputField";
 import {emailNormalizer, onlyNumbersNormalizer} from "@/ui/form/normalizers";
-import {email} from "@/ui/form/validators/email";
+import {emailValidator} from "@/ui/form/validators/email";
 import {faSave, faSpinner, faXmark} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {useRouter} from "next/navigation";
@@ -159,7 +159,7 @@ export function ContractorContactsForm() {
                         }
                       },
                       pattern: (value) => {
-                        if (!email(value)) {
+                        if (!emailValidator(value)) {
                           return "L'email inserita non è valida";
                         }
                       },

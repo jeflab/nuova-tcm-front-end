@@ -41,15 +41,15 @@ export default async function NewLipPage({params}: NewLipPageProps) {
   }
 
   return (
-    <AppContainer className="vstack gap-3">
+    <AppContainer className="vstack gap-3 align-items-start">
       <PageTitle>
         {lip?.lipNumber
           ? `Polizza n° ${lip?.lipNumber}`
           : "Nuova proposta di polizza"}
-        <ButtonLink href="/lips">
-          <FontAwesomeIcon icon={faArrowLeft} /> Torna all'elenco
-        </ButtonLink>
       </PageTitle>
+      <ButtonLink href="/lips">
+        <FontAwesomeIcon icon={faArrowLeft} /> Torna all'elenco
+      </ButtonLink>
       <InitStoreWithServerData lip={lip} />
       <Row className="flex-row-reverse">
         <Col md="auto">

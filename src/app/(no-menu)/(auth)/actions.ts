@@ -1,16 +1,17 @@
 "use server";
 
 import {AUTH_COOKIE_NAME, COOKIE_DURATION} from "@/app/(no-menu)/(auth)/const";
-import {accountSchema} from "@/models/account";
+import {permissionSchema, roleSchema} from "@/models/account";
 import {agentSchema} from "@/models/entities/agent";
+import {brokerSchema} from "@/models/entities/broker";
 import {personalDataSchema} from "@/models/entities/personalData";
 import {userSchema} from "@/models/entities/user";
+import * as api from "@/services/api";
 import {Tags} from "@/services/const";
 import {invalidateTag} from "@/services/helpers";
 import {cookies, headers} from "next/headers";
 import {redirect} from "next/navigation";
 import {z} from "zod";
-import * as api from "@/services/api";
 
 const LoginResponseRawShape = {
   access_token: z.string(),
@@ -45,29 +46,27 @@ export async function login(data: LoginParams) {
 interface ForgotPasswordParams {
   fiscalCode: string;
 }
+const forgotPasswordResponseShape = {
+  email: z.string(),
+};
 export async function forgotPassword(data: ForgotPasswordParams) {
-  const forgotPasswordResponse = await api.post("/forgot-password", {
-    payloadShape: LoginResponseRawShape,
-    data: {fiscal_code: data.fiscalCode},
+  return api.post("/forgot-password", {
+    payloadShape: forgotPasswordResponseShape,
+    data: {
+      fiscal_code: data.fiscalCode,
+    },
   });
-
-  if (forgotPasswordResponse.status === "success") {
-    cookies().set(AUTH_COOKIE_NAME, forgotPasswordResponse.access_token, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "strict",
-    });
-  }
-
-  return forgotPasswordResponse;
 }
 
 interface SetPasswordParams {
+  email: string;
   token: string;
   password: string;
 }
 export async function setPassword(data: SetPasswordParams) {
-  return {status: "failed", message: "Not implemented"};
+  return await api.post("/set-password", {
+    data,
+  });
 }
 
 export async function isLoggedIn() {
@@ -95,9 +94,15 @@ export async function checkAuth() {
   }
 }
 
+const accountShape = {
+  user: userSchema,
+  roles: z.array(roleSchema),
+  permissions: z.array(permissionSchema),
+  broker: brokerSchema,
+};
 export async function getAccount() {
   return await api.get("/me", {
-    payloadShape: accountSchema.shape,
+    payloadShape: accountShape,
     tags: [Tags.me()],
   });
 }

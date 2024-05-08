@@ -1,7 +1,7 @@
 import {LoginButton} from "@/app/(menu)/LoginButton";
 import {getAccount, isLoggedIn} from "@/app/(no-menu)/(auth)/actions";
 import logo from "@/images/logo.png";
-import {Account} from "@/models/account";
+import {Broker} from "@/models/entities/broker";
 import {AppContainer} from "@/ui/AppContainer";
 import {getTheme} from "@/ui/Theme/actions";
 import {ThemeButton} from "@/ui/Theme/ThemeButton";
@@ -17,18 +17,21 @@ import {
 } from "react-bootstrap";
 import styles from "./layout.module.scss";
 import {LogoutButton} from "./LogoutButton";
+import {Permission} from "@/models/account";
 
 export async function Navbar() {
   const serverTheme = await getTheme();
   const loggedIn = await isLoggedIn();
 
-  let permissions = [] as Account["permissions"];
+  let permissions = [] as Permission[];
+  let broker: Broker | undefined;
 
   if (loggedIn) {
     const account = await getAccount();
 
     if (account.status === "success") {
       permissions = account.permissions;
+      broker = account.broker;
     }
   }
 
@@ -42,12 +45,15 @@ export async function Navbar() {
       <AppContainer>
         <NavbarBrand href="/">
           <Image
-            src={logo}
-            height={30}
+            src={broker?.information.logo.url ?? logo}
+            height={broker?.information.logo.height ?? 30}
+            width={broker?.information.logo.width ?? 30}
             alt="logo"
             className="d-inline-block align-top"
           />{" "}
-          <span className={styles.navbarBrandText}>Piattaforma TCM</span>
+          <span className={styles.navbarBrandText}>
+            {broker?.name ?? "Piattaforma TCM"}
+          </span>
         </NavbarBrand>
         <NavbarToggle aria-controls="basic-navbar-nav" />
         <NavbarCollapse id="basic-navbar-nav">
