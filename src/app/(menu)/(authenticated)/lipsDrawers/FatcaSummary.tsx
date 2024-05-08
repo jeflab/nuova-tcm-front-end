@@ -42,7 +42,7 @@ export function FatcaSummary() {
     return (
       <>
         <p className="mb-0">
-          Il Contraente è residenze in Italia e non è residente negli Stati
+          Il Contraente è residente in Italia e non è residente negli Stati
           Uniti d'America
         </p>
       </>
