@@ -23,7 +23,7 @@ import {HelpText} from "@/ui/form/HelpText";
 import {InputField} from "@/ui/form/InputField";
 import {emailNormalizer, onlyNumbersNormalizer} from "@/ui/form/normalizers";
 import {SelectField} from "@/ui/form/SelectField";
-import {email} from "@/ui/form/validators/email";
+import {emailValidator} from "@/ui/form/validators/email";
 import {faSave, faSpinner, faXmark} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {
@@ -206,7 +206,7 @@ export function ContractorDataForm() {
                         }
                       },
                       pattern: (value) => {
-                        if (!email(value)) {
+                        if (!emailValidator(value)) {
                           return "L'email inserita non è valida";
                         }
                       },

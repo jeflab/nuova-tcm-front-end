@@ -2,7 +2,12 @@
 
 import {updateHealthQuestionnaire} from "@/app/(menu)/(authenticated)/lips/[id]/actions";
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
-import {YesNoAnswer} from "@/helpers/getOptionsLabel";
+import {
+  SportRiskIndex,
+  sportRiskIndexOptions,
+} from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
+import {YesNoAnswer, yesNoOptions} from "@/helpers/getOptionsLabel";
+import {backendUrl} from "@/services/const";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {CheckGroup} from "@/ui/form/CheckGroup";
 import {FieldError} from "@/ui/form/FieldError";
@@ -11,6 +16,7 @@ import {HelpText} from "@/ui/form/HelpText";
 import {InputField} from "@/ui/form/InputField";
 import {faSave, faSpinner, faXmark} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {CSSProperties} from "react";
 import {
   Alert,
   Button,
@@ -22,9 +28,16 @@ import {
   ModalBody,
   ModalFooter,
   Row,
+  Stack,
+  Table,
 } from "react-bootstrap";
 import {useForm} from "react-hook-form";
 import invariant from "tiny-invariant";
+
+const sportDefaultValues = {
+  name: "",
+  riskIndex: "" as "" | SportRiskIndex,
+};
 
 const healthQuestionnaireDefaultValues = {
   weight: "",
@@ -34,7 +47,10 @@ const healthQuestionnaireDefaultValues = {
   drugTherapy: {check: "" as YesNoAnswer, details: ""},
   symptomatology: {check: "" as YesNoAnswer, details: ""},
   professionalRisk: {check: "" as YesNoAnswer, details: ""},
-  sportRisk: {check: "" as YesNoAnswer, details: ""},
+  sportRisk: {
+    check: "" as YesNoAnswer,
+    sport: [] as (typeof sportDefaultValues)[],
+  },
   cancer: {check: "" as YesNoAnswer, details: ""},
   nervousSystemDiseases: {check: "" as YesNoAnswer, details: ""},
   invalidityPension: {check: "" as YesNoAnswer, details: ""},
@@ -42,6 +58,8 @@ const healthQuestionnaireDefaultValues = {
 };
 export type HealthQuestionnaireFormValues =
   typeof healthQuestionnaireDefaultValues;
+
+const tableBgTransparent = {"--bs-table-bg": "transparent"} as CSSProperties;
 
 export function HealthQuestionnaireForm() {
   const formMethods = useForm({
@@ -69,6 +87,7 @@ export function HealthQuestionnaireForm() {
     "professionalRisk.check",
   );
   const sportRiskCheckValue = formMethods.watch("sportRisk.check");
+  const sports = formMethods.watch("sportRisk.sport");
   const cancerCheckValue = formMethods.watch("cancer.check");
   const nervousSystemDiseasesCheckValue = formMethods.watch(
     "nervousSystemDiseases.check",
@@ -80,6 +99,10 @@ export function HealthQuestionnaireForm() {
     "physicalImpairment.check",
   );
 
+  const atLeastOneSportRisk = sports.some(
+    (sport) => sport.name !== "" && sport.riskIndex !== "",
+  );
+
   return (
     <>
       <ModalBody>
@@ -88,8 +111,8 @@ export function HealthQuestionnaireForm() {
             Gentile Contraente,
             <br />
             per la corretta compilazione del questionario sullo stato di salute
-            si comunica che la Legge n. 193 del 7.12.2023 (di seguito la
-            “Legge”) ha introdotto il “
+            si comunica che la <strong>Legge n. 193 del 7.12.2023</strong> (di
+            seguito la “Legge”) ha introdotto il “
             <strong>diritto all’oblio oncologico</strong>”.
           </p>
           <p>
@@ -114,11 +137,85 @@ export function HealthQuestionnaireForm() {
             insorta prima del ventunesimo anno di età.
           </p>
           <p>
+            Inoltre, il Decreto del Ministero della Salute del 22.03.2024 ha
+            stabilito ulteriori termini ridotti per il maturarsi dell'oblio
+            oncologico rispetto al limite dei dieci anni (o cinque se diagnosi
+            precedente al compimento del 21° anno di età) dalla fine del
+            trattamento o dall'ultimo intervento chirurgico come da tabella
+            seguente:
+          </p>
+          <Table size="sm" style={tableBgTransparent}>
+            <thead>
+              <tr>
+                <th>Tipo di tumore</th>
+                <th>Specificazioni</th>
+                <th>Anni dalla fine del trattamento</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Colon-retto</td>
+                <td>Stadio I, qualsiasi età</td>
+                <td>1</td>
+              </tr>
+              <tr>
+                <td>Colon-retto</td>
+                <td>Stadio II-III, &gt; 21 anni</td>
+                <td>7</td>
+              </tr>
+              <tr>
+                <td>Melanoma</td>
+                <td>&gt; 21 anni</td>
+                <td>6</td>
+              </tr>
+              <tr>
+                <td>Mammella</td>
+                <td>Stadio I - II, qualsiasi età</td>
+                <td>1</td>
+              </tr>
+              <tr>
+                <td>Utero, collo</td>
+                <td>&gt; 21 anni</td>
+                <td>6</td>
+              </tr>
+              <tr>
+                <td>Utero, corpo</td>
+                <td>Qualsiasi età</td>
+                <td>5</td>
+              </tr>
+              <tr>
+                <td>Testicolo</td>
+                <td>Qualsiasi età</td>
+                <td>1</td>
+              </tr>
+              <tr>
+                <td>Tiroide</td>
+                <td>
+                  Donne con diagnosi &lt; 55 anni - Uomini con diagnosi &lt; 45
+                  anni. Esclusi i tumori anaplastici per entrambi i sessi
+                </td>
+                <td>1</td>
+              </tr>
+              <tr>
+                <td>Linfomi di Hodgkin</td>
+                <td>&lt; 45 anni</td>
+                <td>5</td>
+              </tr>
+              <tr>
+                <td>Leucemie</td>
+                <td>Acute (linfoblastiche e mieloidi) qualsiasi età</td>
+                <td>5</td>
+              </tr>
+            </tbody>
+          </Table>
+          <p>
             Di conseguenza, chi è stato affetto da una patologia oncologica e ha
-            concluso il trattamento attivo da più di 10 anni (ovvero 5 anni se
-            la patologia è insorta prima del 21° anno di età), senza episodi di
-            recidiva, secondo la Legge NON è tenuto a fornire alcuna
-            informazione relativa alla precedente patologia oncologica.
+            concluso il trattamento attivo da più di 10 anni, ovvero 5 anni se
+            la patologia è insorta prima del 21° anno di età, ovvero -a seconda
+            del tipo di patologia- nel termine più breve riportato nella tabella
+            di cui sopra, senza episodi di recidiva, secondo la Legge non è
+            tenuto a fornire alcuna informazione relativa alla precedente
+            patologia oncologica.
           </p>
           <p>
             In ogni caso, qualora le informazioni relative ai casi previsti
@@ -132,7 +229,11 @@ export function HealthQuestionnaireForm() {
         <Form
           id="healt-questionnaire-form"
           onSubmit={async (values) => {
+            values.sportRisk.sport = values.sportRisk.sport.filter(
+              (sport) => !!sport.name && !!sport.riskIndex,
+            );
             invariant(lipId, "lipId is required");
+
             const updatedContractor = await updateHealthQuestionnaire(
               values,
               lipId,
@@ -225,10 +326,7 @@ export function HealthQuestionnaireForm() {
                 <CheckGroup
                   type="radio"
                   inline
-                  options={[
-                    {label: "Sì", value: "yes"},
-                    {label: "No", value: "no"},
-                  ]}
+                  options={yesNoOptions}
                   validation={{
                     required: "Seleziona un'opzione",
                   }}
@@ -279,10 +377,7 @@ export function HealthQuestionnaireForm() {
                 <CheckGroup
                   type="radio"
                   inline
-                  options={[
-                    {label: "Sì", value: "yes"},
-                    {label: "No", value: "no"},
-                  ]}
+                  options={yesNoOptions}
                   validation={{
                     required: "Seleziona un'opzione",
                   }}
@@ -327,10 +422,7 @@ export function HealthQuestionnaireForm() {
                 <CheckGroup
                   type="radio"
                   inline
-                  options={[
-                    {label: "Sì", value: "yes"},
-                    {label: "No", value: "no"},
-                  ]}
+                  options={yesNoOptions}
                   validation={{
                     required: "Seleziona un'opzione",
                   }}
@@ -377,10 +469,7 @@ export function HealthQuestionnaireForm() {
                 <CheckGroup
                   type="radio"
                   inline
-                  options={[
-                    {label: "Sì", value: "yes"},
-                    {label: "No", value: "no"},
-                  ]}
+                  options={yesNoOptions}
                   validation={{
                     required: "Seleziona un'opzione",
                   }}
@@ -431,10 +520,7 @@ export function HealthQuestionnaireForm() {
                 <CheckGroup
                   type="radio"
                   inline
-                  options={[
-                    {label: "Sì", value: "yes"},
-                    {label: "No", value: "no"},
-                  ]}
+                  options={yesNoOptions}
                   validation={{
                     required: "Seleziona un'opzione",
                   }}
@@ -486,10 +572,7 @@ export function HealthQuestionnaireForm() {
                 <CheckGroup
                   type="radio"
                   inline
-                  options={[
-                    {label: "Sì", value: "yes"},
-                    {label: "No", value: "no"},
-                  ]}
+                  options={yesNoOptions}
                   validation={{
                     required: "Seleziona un'opzione",
                   }}
@@ -497,25 +580,103 @@ export function HealthQuestionnaireForm() {
               </FormGroup>
             </Col>
             <Collapse in={sportRiskCheckValue === "yes"}>
-              <div>
-                <Col className="d-flex" xs={12}>
-                  <FormGroup controlId="sportRisk.details" as={BorderFeedback}>
-                    <FormLabel>
-                      Fornire dettagli relativi alla risposta affermativa
-                      precedente
-                    </FormLabel>
-                    <FieldError />
-                    <InputField
-                      type="textarea"
-                      validation={{
-                        required:
-                          sportRiskCheckValue === "yes" &&
-                          "Fornire dettagli relativi alla risposta affermativa precedente",
-                      }}
-                    />
-                  </FormGroup>
-                </Col>
-              </div>
+              <Col xs={12} as={Stack} gap={3}>
+                <Alert variant="info" className="mb-0">
+                  Chi pratica sport a livello agonistico o semi-professionale
+                  può percepire compensi per comparse, premi, sponsorizzazioni,
+                  donazioni di privati o sussidi da parte di associazioni
+                  nazionali e enti pubblici. Queste persone praticano lo sport a
+                  un livello agonistico più alto di un dilettante e, pertanto, è
+                  importante operare una differenziazione adeguata del rischio.
+                </Alert>
+                <Row>
+                  <Col className="d-flex" xs={6}>
+                    <FormGroup
+                      controlId="sportRisk.sport.0.name"
+                      as={BorderFeedback}
+                    >
+                      <FormLabel>Sport</FormLabel>
+                      <FieldError />
+                      <InputField
+                        type="text"
+                        validation={{
+                          required:
+                            sportRiskCheckValue === "yes" &&
+                            !atLeastOneSportRisk &&
+                            "Inserisci il nome dello sport",
+                        }}
+                      />
+                    </FormGroup>
+                  </Col>
+                  <Col className="d-flex" xs={6}>
+                    <FormGroup
+                      controlId="sportRisk.sport.0.riskIndex"
+                      as={BorderFeedback}
+                    >
+                      <FormLabel>Pratica</FormLabel>
+                      <FieldError />
+                      <CheckGroup
+                        type="radio"
+                        options={sportRiskIndexOptions}
+                        validation={{
+                          required:
+                            sportRiskCheckValue === "yes" &&
+                            !atLeastOneSportRisk &&
+                            "Inserisci il livello di pratica dello sport",
+                        }}
+                      />
+                    </FormGroup>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col className="d-flex" xs={6}>
+                    <FormGroup
+                      controlId="sportRisk.sport.1.name"
+                      as={BorderFeedback}
+                    >
+                      <FormLabel>Sport</FormLabel>
+                      <FieldError />
+                      <InputField type="text" />
+                    </FormGroup>
+                  </Col>
+                  <Col className="d-flex" xs={6}>
+                    <FormGroup
+                      controlId="sportRisk.sport.1.riskIndex"
+                      as={BorderFeedback}
+                    >
+                      <FormLabel>Pratica</FormLabel>
+                      <CheckGroup
+                        type="radio"
+                        options={sportRiskIndexOptions}
+                      />
+                    </FormGroup>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col className="d-flex" xs={6}>
+                    <FormGroup
+                      controlId="sportRisk.sport.2.name"
+                      as={BorderFeedback}
+                    >
+                      <FormLabel>Sport</FormLabel>
+                      <FieldError />
+                      <InputField type="text" />
+                    </FormGroup>
+                  </Col>
+                  <Col className="d-flex" xs={6}>
+                    <FormGroup
+                      controlId="sportRisk.sport.2.riskIndex"
+                      as={BorderFeedback}
+                    >
+                      <FormLabel>Pratica</FormLabel>
+                      <CheckGroup
+                        type="radio"
+                        options={sportRiskIndexOptions}
+                      />
+                    </FormGroup>
+                  </Col>
+                </Row>
+              </Col>
             </Collapse>
             {hasCancerCoverage && (
               <>

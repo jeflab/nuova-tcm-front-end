@@ -17,13 +17,11 @@ const minWidthHack = {minWidth: "1px"};
 
 export default async function NewLipPage() {
   return (
-    <AppContainer className="vstack gap-3">
-      <PageTitle>
-        Caricamento polizza{" "}
-        <ButtonLink href="/lips">
-          <FontAwesomeIcon icon={faArrowLeft} /> Torna all'elenco
-        </ButtonLink>
-      </PageTitle>
+    <AppContainer className="vstack gap-3 align-items-start">
+      <PageTitle>Caricamento polizza</PageTitle>
+      <ButtonLink href="/lips">
+        <FontAwesomeIcon icon={faArrowLeft} /> Torna all'elenco
+      </ButtonLink>
       <Row className="flex-row-reverse">
         <Col md="auto">
           <Nav className={cns("flex-column", styles.connectedList)}>

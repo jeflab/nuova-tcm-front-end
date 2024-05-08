@@ -12,7 +12,7 @@ import {
   faXmark,
 } from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {Fragment, startTransition, useState} from "react";
+import {startTransition, useState} from "react";
 import {
   Button,
   Card,
