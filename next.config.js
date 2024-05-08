@@ -1,6 +1,18 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   logging: {fetches: {fullUrl: true}},
+  images: {
+    remotePatterns: [
+      {
+        protocol: "http",
+        hostname: "127.0.0.1",
+      },
+      {
+        protocol: "https",
+        hostname: "prevision.family",
+      },
+    ],
+  },
 };
 module.exports = nextConfig;
 

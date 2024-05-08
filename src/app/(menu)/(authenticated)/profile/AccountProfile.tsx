@@ -16,7 +16,7 @@ import {
   upperCaseNormalizer,
 } from "@/ui/form/normalizers";
 import {ReverseFormGroup} from "@/ui/form/ReverseFormGroup";
-import {email} from "@/ui/form/validators/email";
+import {emailValidator} from "@/ui/form/validators/email";
 import {fiscalCodeValidator} from "@/ui/form/validators/fiscalCode";
 import {password} from "@/ui/form/validators/password";
 import {IconStack} from "@/ui/IconStack";
@@ -145,7 +145,7 @@ export function AccountProfile({user}: AccountProfileProps) {
                             }
                           },
                           pattern: (value) => {
-                            if (!email(value)) {
+                            if (!emailValidator(value)) {
                               return "L'email inserita non è valida";
                             }
                           },

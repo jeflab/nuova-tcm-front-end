@@ -3,22 +3,23 @@ import {userSchema} from "@/models/entities/user";
 import {z} from "zod";
 import {agentSchema} from "./entities/agent";
 
-const roleSchema = z.object({
+export const roleSchema = z.object({
   id: z.number(),
   name: z.string(),
 });
+export type Role = z.infer<typeof roleSchema>;
 
-const permissionSchema = z.object({
+export const permissionSchema = z.object({
   id: z.number(),
   name: z.string(),
 });
+export type Permission = z.infer<typeof permissionSchema>;
 
 export const accountSchema = z.object({
   user: userSchema,
   roles: z.array(roleSchema),
   permissions: z.array(permissionSchema),
 });
-export type Account = z.infer<typeof accountSchema>;
 
 export const profileSchema = z.object({
   user: userSchema,
