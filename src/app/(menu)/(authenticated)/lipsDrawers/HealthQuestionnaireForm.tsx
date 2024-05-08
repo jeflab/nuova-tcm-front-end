@@ -7,6 +7,7 @@ import {
   sportRiskIndexOptions,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
 import {YesNoAnswer, yesNoOptions} from "@/helpers/getOptionsLabel";
+import {backendUrl} from "@/services/const";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {CheckGroup} from "@/ui/form/CheckGroup";
 import {FieldError} from "@/ui/form/FieldError";
