@@ -58,25 +58,14 @@ export async function forgotPassword(data: ForgotPasswordParams) {
 }
 
 interface SetPasswordParams {
+  email: string;
   token: string;
   password: string;
 }
 export async function setPassword(data: SetPasswordParams) {
-  const setPasswordResponse = await api.post("/set-password", {
-    payloadShape: LoginResponseRawShape,
+  return await api.post("/set-password", {
     data,
   });
-  if (setPasswordResponse.status === "success") {
-    cookies().set(AUTH_COOKIE_NAME, setPasswordResponse.access_token, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "strict",
-      maxAge: COOKIE_DURATION,
-      expires: new Date(Date.now() + COOKIE_DURATION * 1000),
-    });
-  }
-
-  return setPasswordResponse;
 }
 
 export async function isLoggedIn() {

@@ -6,22 +6,26 @@ import {FieldError} from "@/ui/form/FieldError";
 import {Form} from "@/ui/form/Form";
 import {HelpText} from "@/ui/form/HelpText";
 import {InputField} from "@/ui/form/InputField";
+import {emailNormalizer} from "@/ui/form/normalizers";
 import {SubmitButton} from "@/ui/form/SubmitButton";
+import {emailValidator} from "@/ui/form/validators/email";
 import {password} from "@/ui/form/validators/password";
 import {faKey, faSpinner} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Alert, FormGroup, FormLabel} from "react-bootstrap";
 
 interface SetPasswordParams {
+  email: string;
+  onPasswordSet?: () => void;
   submitButtonLabel: string;
   token?: string;
-  onPasswordSet?: () => void;
 }
 
 export function SetPasswordForm({
+  email,
+  onPasswordSet,
   submitButtonLabel,
   token,
-  onPasswordSet,
 }: SetPasswordParams) {
   return (
     <Form
@@ -56,6 +60,7 @@ export function SetPasswordForm({
         onPasswordSet?.();
       }}
       defaultValues={{
+        email,
         token: token ?? "",
         password: "",
         repeatPassword: "",
@@ -72,6 +77,29 @@ export function SetPasswordForm({
           }}
         />
         <FieldError />
+      </FormGroup>
+      <FormGroup controlId="email">
+        <FormLabel>Email</FormLabel>
+        <FieldError />
+        <InputField
+          type="email"
+          placeholder="Email"
+          validation={{
+            validate: {
+              required: (value) => {
+                if (!value) {
+                  return "Inserisci l'email";
+                }
+              },
+              pattern: (value) => {
+                if (!emailValidator(value)) {
+                  return "L'email inserita non è valida";
+                }
+              },
+            },
+          }}
+          normalize={emailNormalizer}
+        />
       </FormGroup>
       <FormGroup controlId="password">
         <FormLabel>Nuova password</FormLabel>

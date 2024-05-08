@@ -6,7 +6,7 @@ import {Alert, Card} from "react-bootstrap";
 const containerStyle = {"--content-width": "400px"};
 
 interface ResetPasswordParams {
-  searchParams: {token: string};
+  searchParams: {token: string; email: string};
 }
 
 export default function ResetPassword({searchParams}: ResetPasswordParams) {
@@ -19,6 +19,7 @@ export default function ResetPassword({searchParams}: ResetPasswordParams) {
         </Alert>
         <SetPasswordForm
           token={searchParams.token}
+          email={searchParams.email}
           submitButtonLabel="Attiva il tuo account"
         />
         <ButtonLink variant="link" href="/login" className="w-100">

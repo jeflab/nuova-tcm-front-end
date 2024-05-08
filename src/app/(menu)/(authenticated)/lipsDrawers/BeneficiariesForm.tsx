@@ -26,7 +26,7 @@ import {
   upperCaseNormalizer,
 } from "@/ui/form/normalizers";
 import {SelectField} from "@/ui/form/SelectField";
-import {email} from "@/ui/form/validators/email";
+import {emailValidator} from "@/ui/form/validators/email";
 import {fiscalCodeValidator} from "@/ui/form/validators/fiscalCode";
 import autoAnimate from "@formkit/auto-animate";
 import {
@@ -516,7 +516,7 @@ export function BeneficiariesForm() {
                                   }
                                 },
                                 pattern: (value) => {
-                                  if (!email(value)) {
+                                  if (!emailValidator(value)) {
                                     return "L'email inserita non è valida";
                                   }
                                 },
@@ -969,7 +969,7 @@ export function BeneficiariesForm() {
                             }
                           },
                           pattern: (value) => {
-                            if (!email(value)) {
+                            if (!emailValidator(value)) {
                               return "L'email inserita non è valida";
                             }
                           },
