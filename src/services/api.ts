@@ -161,6 +161,21 @@ export async function apiCall<ResponsePayloadShape extends ZodRawShape>(
     >;
   }
 
+  if (serverResponseJson.status === "failed") {
+    console.error(
+      chalk.red.inverse("Errore nella risposta del server"),
+      chalk.redBright(serverResponseJson.message),
+    );
+    console.error(
+      chalk.italic.bold("Chiamata API:"),
+      chalk.cyanBright(method),
+      chalk.greenBright(response.url),
+      chalk.yellowBright(response.status),
+    );
+    console.error(unrollFetchData(data));
+    console.error(serverResponseJson);
+  }
+
   tags?.map((tag) => invalidateTag(tag));
 
   return serverResponseJson;
