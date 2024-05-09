@@ -16,7 +16,7 @@ export default async function OperatingManualPage() {
       </PageTitle>
       <div
         dangerouslySetInnerHTML={{
-          __html: account.broker.information.manualeOperativo,
+          __html: account.broker?.information.manualeOperativo ?? "",
         }}
       />
     </AppContainer>
