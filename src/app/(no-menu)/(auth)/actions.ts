@@ -98,7 +98,7 @@ const accountShape = {
   user: userSchema,
   roles: z.array(roleSchema),
   permissions: z.array(permissionSchema),
-  broker: brokerSchema,
+  broker: brokerSchema.nullish(),
 };
 export async function getAccount() {
   return await api.get("/me", {

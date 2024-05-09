@@ -1,9 +1,7 @@
 import {getAccount, isLoggedIn} from "@/app/(no-menu)/(auth)/actions";
 import {getVersion} from "@/helpers/release";
-import {Permission} from "@/models/account";
 import {Broker} from "@/models/entities/broker";
 import {AppContainer} from "@/ui/AppContainer";
-import {getTheme} from "@/ui/Theme/actions";
 import {faCopyright} from "@fortawesome/pro-duotone-svg-icons/faCopyright";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
@@ -11,7 +9,7 @@ export async function Footer() {
   const currentYear = new Date().getFullYear();
   const loggedIn = await isLoggedIn();
 
-  let broker: Broker | undefined;
+  let broker: Broker | undefined | null;
 
   if (loggedIn) {
     const account = await getAccount();
