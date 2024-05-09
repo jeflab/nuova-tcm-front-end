@@ -24,7 +24,7 @@ export async function Navbar() {
   const loggedIn = await isLoggedIn();
 
   let permissions = [] as Permission[];
-  let broker: Broker | undefined;
+  let broker: Broker | undefined | null;
 
   if (loggedIn) {
     const account = await getAccount();

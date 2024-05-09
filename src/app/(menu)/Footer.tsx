@@ -11,7 +11,7 @@ export async function Footer() {
   const currentYear = new Date().getFullYear();
   const loggedIn = await isLoggedIn();
 
-  let broker: Broker | undefined;
+  let broker: Broker | undefined | null;
 
   if (loggedIn) {
     const account = await getAccount();
