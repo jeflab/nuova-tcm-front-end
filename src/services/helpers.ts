@@ -7,6 +7,10 @@ export const serverErrorSchema = z.object({
   message: z.string(),
   responseStatus: z.number(),
   code: z.number().optional(),
+  exception: z.string().optional(),
+  file: z.string().optional(),
+  line: z.number().optional(),
+  trace: z.array(z.any()).optional(),
 });
 
 export function isServerError(
