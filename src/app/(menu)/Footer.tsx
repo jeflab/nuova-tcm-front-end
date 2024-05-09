@@ -1,9 +1,7 @@
 import {getAccount, isLoggedIn} from "@/app/(no-menu)/(auth)/actions";
 import {getVersion} from "@/helpers/release";
-import {Permission} from "@/models/account";
 import {Broker} from "@/models/entities/broker";
 import {AppContainer} from "@/ui/AppContainer";
-import {getTheme} from "@/ui/Theme/actions";
 import {faCopyright} from "@fortawesome/pro-duotone-svg-icons/faCopyright";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
