@@ -5,7 +5,7 @@ import {CompanyPrivacy} from "@/app/(menu)/(authenticated)/lipsDrawers/CompanyPr
 import {PDFType} from "@/models/entities/esign";
 import {
   faCheckCircle,
-  faClipboardCheck,
+  faClipboardListCheck,
   faDownload,
 } from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
@@ -37,6 +37,19 @@ interface Document {
 }
 const documents: Document[] = [
   {
+    key: "identificazione",
+    fileName: "File di identificazione",
+    urlPreview: "pdf-identificazione-preview",
+    urlDownload: "pdf-identificazione",
+    type: PDFType.Identification,
+    eSigns: [
+      {
+        key: "esign_agente",
+        whoEsign: "advisor",
+      } as Esign,
+    ],
+  },
+  {
     key: "allegato4",
     fileName: "Allegato 4",
     urlPreview: "pdf-allegato4",
@@ -51,19 +64,6 @@ const documents: Document[] = [
     urlDownload: "set-informativo",
     type: PDFType.SetInformativo,
     eSigns: [],
-  },
-  {
-    key: "identificazione",
-    fileName: "File di identificazione",
-    urlPreview: "pdf-identificazione-preview",
-    urlDownload: "pdf-identificazione",
-    type: PDFType.Identification,
-    eSigns: [
-      {
-        key: "esign_agente",
-        whoEsign: "advisor",
-      } as Esign,
-    ],
   },
   {
     key: "polizza",
@@ -120,7 +120,7 @@ export function DocumentsSummary() {
               setIsConsentCheckOpen(true);
             }}
           >
-            <FontAwesomeIcon icon={faClipboardCheck} /> Controlla i consensi
+            <FontAwesomeIcon icon={faClipboardListCheck} /> Controlla i consensi
           </Button>
         </CardHeader>
         <div className={styles.docTableActions}>

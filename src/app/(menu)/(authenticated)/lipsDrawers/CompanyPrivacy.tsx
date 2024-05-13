@@ -10,6 +10,7 @@ import {FieldError} from "@/ui/form/FieldError";
 import {Form} from "@/ui/form/Form";
 import {
   faClipboardCheck,
+  faClipboardListCheck,
   faSpinner,
   faXmark,
 } from "@fortawesome/pro-duotone-svg-icons";
@@ -39,6 +40,7 @@ export function CompanyPrivacy({onHide}: CompanyPrivacyProps) {
     defaultValues: {flags: privacyCompany?.flags ?? ([] as ConsentOptions[])},
   });
 
+  const oneESing = !!lip?.eSigns?.identificazione || !!lip?.eSigns?.polizza;
   const closeModal = onHide ?? closeModalFromStore;
 
   return (
@@ -572,9 +574,7 @@ export function CompanyPrivacy({onHide}: CompanyPrivacyProps) {
               type="checkbox"
               options={consentOptions}
               validationStyle={false}
-              disabled={
-                !!lip?.eSigns?.identificazione || !!lip?.eSigns?.polizza
-              }
+              disabled={oneESing}
             />
           </FormGroup>
           <FieldError name="root" as={Alert} variant="danger" />
@@ -588,18 +588,22 @@ export function CompanyPrivacy({onHide}: CompanyPrivacyProps) {
         <Button
           type="submit"
           form="company-privacy-form"
-          disabled={formMethods.formState.isSubmitting}
+          disabled={formMethods.formState.isSubmitting || oneESing}
         >
           <FontAwesomeIcon
             icon={
-              formMethods.formState.isSubmitting ? faSpinner : faClipboardCheck
+              formMethods.formState.isSubmitting
+                ? faSpinner
+                : oneESing
+                  ? faClipboardCheck
+                  : faClipboardListCheck
             }
             className={cns(
               "me-2",
               formMethods.formState.isSubmitting && "fa-spin",
             )}
           />
-          Salva consensi
+          {oneESing ? "Consensi salvati" : "Salva consensi"}
         </Button>
       </ModalFooter>
     </>
