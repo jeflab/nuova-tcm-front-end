@@ -16,6 +16,7 @@ import {
 } from "@/services/helpers";
 import chalk from "chalk";
 import {cookies} from "next/headers";
+import {redirect} from "next/navigation";
 import {z, ZodRawShape} from "zod";
 
 function authorizationHeader() {
@@ -46,7 +47,7 @@ function parseLaravelErrorPage(text: string) {
   }
 }
 
-// TODO: se ottengo un 405 ma risulto loggato facciamo logout automatico oppure dobbiamo fare una pagina per scalare i permessi
+// TODO: se ottengo un 403 ma risulto loggato facciamo logout automatico oppure dobbiamo fare una pagina per scalare i permessi
 
 interface ApiCallOptions<ResponsePayloadShape extends ZodRawShape> {
   payloadShape?: ResponsePayloadShape;
@@ -174,6 +175,16 @@ export async function apiCall<ResponsePayloadShape extends ZodRawShape>(
     );
     console.error(unrollFetchData(data));
     console.error(serverResponseJson);
+
+    if (serverResponseJson.responseStatus === 401) {
+      console.error("Chiamata non autorizzata, logout");
+
+      redirect("/logout");
+
+      return errors[ErrorCodes.UNAUTHORIZED] as z.infer<
+        typeof serverErrorSchema
+      >;
+    }
   }
 
   tags?.map((tag) => invalidateTag(tag));

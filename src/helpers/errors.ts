@@ -10,6 +10,7 @@ export enum ErrorCodes {
   FETCH_ERROR = 11,
   INVALID_JSON = 12,
   INVALID_SCHEMA = 13,
+  UNAUTHORIZED = 14,
   ID_FILE_TOO_BIG = 20,
   ID_FILE_MULTIPLE = 21,
   ID_FILE_NOT_VALID = 22,
@@ -34,6 +35,11 @@ export const errors: Record<ErrorCodes, AppError> = {
   [ErrorCodes.INVALID_SCHEMA]: {
     code: ErrorCodes.INVALID_SCHEMA,
     message: "Il server ha risposto con uno schema non valido",
+    status: "failed",
+  },
+  [ErrorCodes.UNAUTHORIZED]: {
+    code: ErrorCodes.UNAUTHORIZED,
+    message: "Non autorizzato",
     status: "failed",
   },
   [ErrorCodes.ID_FILE_TOO_BIG]: {

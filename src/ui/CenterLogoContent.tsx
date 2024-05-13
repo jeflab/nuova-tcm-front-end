@@ -15,7 +15,7 @@ export default function CenterLogoContent({
 }: CenterLogoContentProps) {
   return (
     <div className={styles.centerContent} style={style as CSSProperties}>
-      <Image src={logo} height={200} alt={`${appInfo.name} logo`} />
+      <Image src={logo} height={200} alt={`logo ${appInfo.name}`} />
       {children}
     </div>
   );
