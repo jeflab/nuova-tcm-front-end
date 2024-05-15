@@ -286,7 +286,7 @@ export const lipSchema = z
       .pipe(privacyCompanySchema)
       .nullish(),
     lipstates: z.array(lipStateSchema).transform((states) => {
-      return states?.[states.length - 1] ?? {id: 1, label: "Incompleta"};
+      return states?.[states.length - 1] ?? lipStateSchema._def.defaultValue();
     }),
   })
   .transform(
@@ -321,5 +321,3 @@ export const lipSchema = z
     },
   );
 export type Lip = z.infer<typeof lipSchema>;
-
-console.log("lipStateSchema.default", lipStateSchema.default);
