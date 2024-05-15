@@ -16,7 +16,6 @@ import {
 } from "@fortawesome/pro-duotone-svg-icons";
 import {
   faCircle,
-  faHandHoldingDollar,
   faSackDollar,
   faUserMd,
 } from "@fortawesome/pro-solid-svg-icons";

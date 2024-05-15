@@ -1,5 +1,4 @@
 import {DrawerName} from "@/app/(menu)/(authenticated)/lips/[id]/drawers";
-import {imcInRange} from "@/app/(menu)/(authenticated)/lipsDrawers/imc";
 import {Lip} from "@/models/entities/lip";
 import {PreliminaryData} from "@/models/preliminaryData";
 import {DrawerState, presetButtons} from "@/ui/drawer/types";
