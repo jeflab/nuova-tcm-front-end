@@ -253,7 +253,10 @@ export function DataTable<Row>({
         striped
         bordered
         responsive
-        className={cns(responsiveStyles.responsiveTableWrapper, "mb-0")}
+        className={cns(
+          responsiveStyles.responsiveTableWrapper,
+          "mb-0 align-middle",
+        )}
       >
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (

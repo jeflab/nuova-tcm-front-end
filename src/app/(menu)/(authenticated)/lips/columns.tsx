@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  Lip,
-  lipStatuses,
-  LipStatusesIcons,
-  lipStatusesLabels,
-} from "@/models/entities/lip";
+import {Lip, LipStatesIcons} from "@/models/entities/lip";
 import {cns} from "@/helpers/cns";
 import {dateString, dbDateString} from "@/helpers/dates";
 import {ButtonLink} from "@/ui/ButtonLink";
@@ -74,12 +69,12 @@ export const columns = [
       },
     },
   }),
-  columnHelper.accessor("status", {
+  columnHelper.accessor("lipStates", {
     header: "Stato",
     cell: (props) => (
       <>
-        {LipStatusesIcons[props.getValue()]}{" "}
-        {lipStatusesLabels[props.getValue()]}
+        {LipStatesIcons[props.getValue().id] ?? LipStatesIcons[0]}{" "}
+        {props.getValue().label}
       </>
     ),
     meta: {
@@ -87,18 +82,18 @@ export const columns = [
         return (
           <FormSelect
             defaultValue={filterValue}
-            onChange={(e) => setFilterValue(e.target.value as Lip["status"])}
+            onChange={(e) => setFilterValue(e.target.value)}
             size="sm"
             aria-label="Filtra per stato"
           >
             <option key="all" value="all">
               Tutti
             </option>
-            {lipStatuses.map((status) => (
-              <option key={status} value={status}>
-                {lipStatusesLabels[status]}
-              </option>
-            ))}
+            {/*{lipStatuses.map((status) => (*/}
+            {/*  <option key={status} value={status}>*/}
+            {/*    {lipStatusesLabels[status]}*/}
+            {/*  </option>*/}
+            {/*))}*/}
           </FormSelect>
         );
       },
@@ -207,7 +202,7 @@ export const skeletonColumns = [
       },
     },
   }),
-  columnHelper.accessor("status", {
+  columnHelper.accessor("lipStates", {
     header: "Stato",
     cell: () => (
       <>
@@ -230,18 +225,18 @@ export const skeletonColumns = [
           <FormSelect
             defaultValue={filterValue}
             disabled={disabled}
-            onChange={(e) => setFilterValue(e.target.value as Lip["status"])}
+            onChange={(e) => setFilterValue(e.target.value)}
             size="sm"
             aria-label="Filtra per stato"
           >
             <option key="all" value="all">
               Tutti
             </option>
-            {lipStatuses.map((status) => (
-              <option key={status} value={status}>
-                {lipStatusesLabels[status]}
-              </option>
-            ))}
+            {/*{lipStatuses.map((status) => (*/}
+            {/*  <option key={status} value={status}>*/}
+            {/*    {lipStatusesLabels[status]}*/}
+            {/*  </option>*/}
+            {/*))}*/}
           </FormSelect>
         );
       },

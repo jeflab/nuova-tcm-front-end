@@ -8,22 +8,38 @@ import {
 import {getOptionsValues, yesNoOptions} from "@/helpers/getOptionsLabel";
 import {agentSchema} from "@/models/entities/agent";
 import {personalDataSchema} from "@/models/entities/personalData";
-import {faCircleHalf, faCircleTrash} from "@fortawesome/pro-duotone-svg-icons";
+import {IconStack} from "@/ui/IconStack";
+import {
+  faCheckCircle,
+  faCircleHalf,
+  faQuestionCircle,
+} from "@fortawesome/pro-duotone-svg-icons";
+import {
+  faCircle,
+  faSackDollar,
+  faUserMd,
+} from "@fortawesome/pro-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {ReactNode} from "react";
 import {z} from "zod";
 import {zu} from "zod_utilz";
 
-export const lipStatuses = ["softDeleted", "open"] as const;
-export type LipStatesKeys = (typeof lipStatuses)[number];
-
-export const lipStatusesLabels: Record<LipStatesKeys, string> = {
-  softDeleted: "Eliminata",
-  open: "Aperta",
-} as const;
-export const LipStatusesIcons: Record<LipStatesKeys, ReactNode> = {
-  softDeleted: <FontAwesomeIcon icon={faCircleTrash} className="text-danger" />,
-  open: <FontAwesomeIcon icon={faCircleHalf} className="text-warning" />,
+export const LipStatesIcons: Record<number, ReactNode> = {
+  0: <FontAwesomeIcon icon={faQuestionCircle} className="text-primary" />,
+  1: <FontAwesomeIcon icon={faCircleHalf} className="text-warning" />,
+  2: (
+    <IconStack className="text-danger">
+      <FontAwesomeIcon icon={faCircle} className="fa-stack-2x" opacity={0.4} />
+      <FontAwesomeIcon icon={faUserMd} className="fa-stack-1x" />
+    </IconStack>
+  ),
+  3: <FontAwesomeIcon icon={faCheckCircle} className="text-success" />,
+  13: (
+    <IconStack className="text-danger">
+      <FontAwesomeIcon icon={faCircle} className="fa-stack-2x" opacity={0.4} />
+      <FontAwesomeIcon icon={faSackDollar} className="fa-stack-1x" />
+    </IconStack>
+  ),
 } as const;
 
 const denSchema = z.object({
@@ -90,6 +106,7 @@ const quotationSchema = z.object({
 const healthcareQuestionnaireSchema = z.object({
   weight: z.string(),
   height: z.string(),
+  IMC: z.coerce.number(),
   hospitalization: z.object({
     check: z.enum(getOptionsValues(yesNoOptions)),
   }),
@@ -238,6 +255,13 @@ const privacyCompanySchema = z.array(
   }),
 );
 
+const lipStateSchema = z
+  .object({
+    id: z.number(),
+    label: z.string(),
+  })
+  .default({id: 1, label: "Incompleta"});
+
 export const lipSchema = z
   .object({
     id: z.number(),
@@ -260,8 +284,8 @@ export const lipSchema = z
       .stringToJSON()
       .pipe(privacyCompanySchema)
       .nullish(),
-    status: z.union([z.literal(0), z.literal(1)]).transform((status) => {
-      return lipStatuses[status];
+    lipstates: z.array(lipStateSchema).transform((states) => {
+      return states?.[states.length - 1] ?? lipStateSchema._def.defaultValue();
     }),
   })
   .transform(
@@ -276,6 +300,7 @@ export const lipSchema = z
       json_payment,
       json_esign,
       json_privacy_company,
+      lipstates,
       ...data
     }) => {
       return {
@@ -290,6 +315,7 @@ export const lipSchema = z
         payment: json_payment,
         eSigns: json_esign,
         privacyCompany: json_privacy_company,
+        lipStates: lipstates,
       };
     },
   );

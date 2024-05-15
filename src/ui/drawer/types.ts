@@ -1,5 +1,5 @@
 import {
-  faClipboardCheck,
+  faClipboardListCheck,
   faFileSignature,
   faPenToSquare,
 } from "@fortawesome/pro-duotone-svg-icons";
@@ -36,7 +36,7 @@ export const presetButtons = {
     buttonLabel: "Aggiorna",
   },
   checkConsent: {
-    buttonIcon: "faClipboardCheck",
+    buttonIcon: "faClipboardListCheck",
     buttonLabel: "Controlla i consensi",
   },
 } as const;
@@ -44,5 +44,5 @@ export const presetButtons = {
 export const buttonMap = {
   faPenToSquare,
   faFileSignature,
-  faClipboardCheck,
+  faClipboardListCheck,
 } as const;

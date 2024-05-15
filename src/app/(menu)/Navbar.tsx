@@ -47,8 +47,8 @@ export async function Navbar() {
           <Image
             src={broker?.information.logo.url ?? logo}
             height={broker?.information.logo.height ?? 30}
-            width={broker?.information.logo.width ?? 30}
-            alt="logo"
+            width={broker?.information.logo.width ?? undefined}
+            alt={`logo ${broker?.name ?? "Piattaforma TCM"}`}
             className="d-inline-block align-top"
           />{" "}
           <span className={styles.navbarBrandText}>

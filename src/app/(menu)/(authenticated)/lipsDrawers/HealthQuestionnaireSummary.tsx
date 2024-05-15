@@ -2,11 +2,11 @@
 
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {backendUrl} from "@/services/const";
-import {calculateImc} from "./imc";
-import {Alert, Button} from "react-bootstrap";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faDownload, faFilePdf} from "@fortawesome/pro-duotone-svg-icons";
 import {ButtonLink} from "@/ui/ButtonLink";
+import {Decimal} from "@/ui/Currency";
+import {faDownload} from "@fortawesome/pro-duotone-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {Alert} from "react-bootstrap";
 
 const professionalSportQuestionnaireUrl =
   backendUrl + "questionario_professionale_sportivo.pdf";
@@ -20,18 +20,16 @@ export function HealthQuestionnaireSummary() {
     return null;
   }
 
-  const imc = calculateImc(
-    parseInt(healthQuestionnaireData?.weight, 10),
-    parseInt(healthQuestionnaireData?.height, 10),
-  );
-
   const showProfessionalSportQuestionnaire =
     healthQuestionnaireData.professionalRisk.check === "yes" ||
     healthQuestionnaireData.sportRisk.check === "yes";
 
   return (
     <>
-      <p>L'indice di massa corporea dell'assicurato è di {imc.toFixed(2)}.</p>
+      <p>
+        L'indice di massa corporea dell'assicurato è di{" "}
+        <Decimal>{healthQuestionnaireData.IMC}</Decimal>.
+      </p>
       {showProfessionalSportQuestionnaire && (
         <Alert variant="info" className="mb-0">
           <p>

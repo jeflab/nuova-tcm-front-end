@@ -1,5 +1,5 @@
 import {cns} from "@/helpers/cns";
-import {toCurrency, toPercent} from "@/helpers/numbers";
+import {toCurrency, toDecimal, toPercent} from "@/helpers/numbers";
 
 interface FormatNumbersProps {
   className?: string;
@@ -35,6 +35,22 @@ export function Percent({
   return (
     <span className={cns(className, shouldWrap && "text-nowrap")}>
       {toPercent(safeValue)}
+    </span>
+  );
+}
+
+export function Decimal({
+  className,
+  children,
+  preventWrap,
+}: FormatNumbersProps) {
+  const safeValue =
+    typeof children === "string" ? parseFloat(children) : children;
+  const shouldWrap = preventWrap !== false;
+
+  return (
+    <span className={cns(className, shouldWrap && "text-nowrap")}>
+      {toDecimal(safeValue)}
     </span>
   );
 }

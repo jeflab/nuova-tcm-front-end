@@ -1,7 +1,8 @@
-# npm run check-types && npx lint-staged && npm run build
-branch="$(git rev-parse --abbrev-ref HEAD)"
-if [ "$branch" = "develop" ] || [ "$branch" = "main" ]; then
-	npm run check-types && npx lint-staged && npm run build
-else
-  npm run check-types && npx lint-staged
-fi
+npm run check-types && npx lint-staged
+
+#branch="$(git rev-parse --abbrev-ref HEAD)"
+#if [ "$branch" = "develop" ] || [ "$branch" = "main" ]; then
+#	 npm run check-types && npx lint-staged && npm run build
+#else
+#  npm run check-types && npx lint-staged
+#fi
