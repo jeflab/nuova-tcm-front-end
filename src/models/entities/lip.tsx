@@ -8,12 +8,18 @@ import {
 import {getOptionsValues, yesNoOptions} from "@/helpers/getOptionsLabel";
 import {agentSchema} from "@/models/entities/agent";
 import {personalDataSchema} from "@/models/entities/personalData";
+import {IconStack} from "@/ui/IconStack";
 import {
   faCheckCircle,
-  faCircle,
   faCircleHalf,
   faQuestionCircle,
 } from "@fortawesome/pro-duotone-svg-icons";
+import {
+  faCircle,
+  faHandHoldingDollar,
+  faSackDollar,
+  faUserMd,
+} from "@fortawesome/pro-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {ReactNode} from "react";
 import {z} from "zod";
@@ -22,8 +28,19 @@ import {zu} from "zod_utilz";
 export const LipStatesIcons: Record<number, ReactNode> = {
   0: <FontAwesomeIcon icon={faQuestionCircle} className="text-primary" />,
   1: <FontAwesomeIcon icon={faCircleHalf} className="text-warning" />,
-  2: <FontAwesomeIcon icon={faCircleHalf} className="text-warning" />,
+  2: (
+    <IconStack className="text-danger">
+      <FontAwesomeIcon icon={faCircle} className="fa-stack-2x" opacity={0.4} />
+      <FontAwesomeIcon icon={faUserMd} className="fa-stack-1x" />
+    </IconStack>
+  ),
   3: <FontAwesomeIcon icon={faCheckCircle} className="text-success" />,
+  13: (
+    <IconStack className="text-danger">
+      <FontAwesomeIcon icon={faCircle} className="fa-stack-2x" opacity={0.4} />
+      <FontAwesomeIcon icon={faSackDollar} className="fa-stack-1x" />
+    </IconStack>
+  ),
 } as const;
 
 const denSchema = z.object({
@@ -90,6 +107,7 @@ const quotationSchema = z.object({
 const healthcareQuestionnaireSchema = z.object({
   weight: z.string(),
   height: z.string(),
+  IMC: z.coerce.number(),
   hospitalization: z.object({
     check: z.enum(getOptionsValues(yesNoOptions)),
   }),

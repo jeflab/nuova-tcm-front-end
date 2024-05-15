@@ -39,17 +39,8 @@ function createDrawerState(state: State & Actions) {
       Object.keys(state.lip?.eSigns?.identificazione).length > 0);
   const healthQuestionnaireCompiled = !!state.lip?.healthcareQuestionnaire;
   const privacyESigned = !!state.lip?.contractor?.lastPrivacyEsignId;
-  const oneYesInHealthcareQuestionnaire = Object.values(
-    state.lip?.healthcareQuestionnaire ?? {},
-  ).some(
-    (question) => typeof question === "object" && question.check === "yes",
-  );
-  const isImcInRange =
-    state.lip?.healthcareQuestionnaire &&
-    imcInRange(
-      parseInt(state.lip.healthcareQuestionnaire.weight, 10),
-      parseInt(state.lip.healthcareQuestionnaire.height, 10),
-    );
+
+  const underWritingBlocked = state.lip?.lipStates?.id === 2;
   const amlBlocked = state.lip?.aml?.blocked ?? false;
 
   if (isPreliminary) {
@@ -267,7 +258,7 @@ function createDrawerState(state: State & Actions) {
 
     // Pagamento
     if (state.drawerStates.beneficiaries?.variant === "success") {
-      if (oneYesInHealthcareQuestionnaire || !isImcInRange) {
+      if (underWritingBlocked) {
         state.drawerStates.payment = {variant: "waiting", isLocked: true};
       } else if (state.lip?.payment === null) {
         state.drawerStates.payment = {
@@ -309,7 +300,7 @@ function createDrawerState(state: State & Actions) {
     }
 
     // state.drawerStates.beneficiaries = {
-    //   variant: "success",
+    //   variant: "active",
     //   buttonLabel: "Test",
     // };
   }
