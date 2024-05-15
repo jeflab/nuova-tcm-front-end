@@ -8,22 +8,22 @@ import {
 import {getOptionsValues, yesNoOptions} from "@/helpers/getOptionsLabel";
 import {agentSchema} from "@/models/entities/agent";
 import {personalDataSchema} from "@/models/entities/personalData";
-import {faCircleHalf, faCircleTrash} from "@fortawesome/pro-duotone-svg-icons";
+import {
+  faCheckCircle,
+  faCircle,
+  faCircleHalf,
+  faQuestionCircle,
+} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {ReactNode} from "react";
 import {z} from "zod";
 import {zu} from "zod_utilz";
 
-export const lipStatuses = ["softDeleted", "open"] as const;
-export type LipStatesKeys = (typeof lipStatuses)[number];
-
-export const lipStatusesLabels: Record<LipStatesKeys, string> = {
-  softDeleted: "Eliminata",
-  open: "Aperta",
-} as const;
-export const LipStatusesIcons: Record<LipStatesKeys, ReactNode> = {
-  softDeleted: <FontAwesomeIcon icon={faCircleTrash} className="text-danger" />,
-  open: <FontAwesomeIcon icon={faCircleHalf} className="text-warning" />,
+export const LipStatesIcons: Record<number, ReactNode> = {
+  0: <FontAwesomeIcon icon={faQuestionCircle} className="text-primary" />,
+  1: <FontAwesomeIcon icon={faCircleHalf} className="text-warning" />,
+  2: <FontAwesomeIcon icon={faCircleHalf} className="text-warning" />,
+  3: <FontAwesomeIcon icon={faCheckCircle} className="text-success" />,
 } as const;
 
 const denSchema = z.object({
@@ -238,6 +238,13 @@ const privacyCompanySchema = z.array(
   }),
 );
 
+const lipStateSchema = z
+  .object({
+    id: z.number(),
+    label: z.string(),
+  })
+  .default({id: 1, label: "Incompleta"});
+
 export const lipSchema = z
   .object({
     id: z.number(),
@@ -260,8 +267,8 @@ export const lipSchema = z
       .stringToJSON()
       .pipe(privacyCompanySchema)
       .nullish(),
-    status: z.union([z.literal(0), z.literal(1)]).transform((status) => {
-      return lipStatuses[status];
+    lipstates: z.array(lipStateSchema).transform((states) => {
+      return states?.[states.length - 1] ?? {id: 1, label: "Incompleta"};
     }),
   })
   .transform(
@@ -276,6 +283,7 @@ export const lipSchema = z
       json_payment,
       json_esign,
       json_privacy_company,
+      lipstates,
       ...data
     }) => {
       return {
@@ -290,7 +298,10 @@ export const lipSchema = z
         payment: json_payment,
         eSigns: json_esign,
         privacyCompany: json_privacy_company,
+        lipStates: lipstates,
       };
     },
   );
 export type Lip = z.infer<typeof lipSchema>;
+
+console.log("lipStateSchema.default", lipStateSchema.default);
