@@ -27,8 +27,9 @@ module.exports = withSentryConfig(
     // For all available options, see:
     // https://github.com/getsentry/sentry-webpack-plugin#options
 
-    // Suppresses source map uploading logs during build
-    silent: true,
+    // Only print logs for uploading source maps in CI
+    silent: !process.env.CI,
+
     org: "fabio-lazzaroni",
     project: "piattaforma-tcm",
     release: getRelease(),
