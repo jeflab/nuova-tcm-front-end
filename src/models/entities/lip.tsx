@@ -284,9 +284,14 @@ export const lipSchema = z
       .stringToJSON()
       .pipe(privacyCompanySchema)
       .nullish(),
-    lipstates: z.array(lipStateSchema).transform((states) => {
-      return states?.[states.length - 1] ?? lipStateSchema._def.defaultValue();
-    }),
+    lipstates: z
+      .array(lipStateSchema)
+      .nullish()
+      .transform((states) => {
+        return (
+          states?.[states.length - 1] ?? lipStateSchema._def.defaultValue()
+        );
+      }),
   })
   .transform(
     ({
