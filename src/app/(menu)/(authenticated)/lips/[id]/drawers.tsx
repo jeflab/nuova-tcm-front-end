@@ -3,6 +3,7 @@ import {BeneficiariesSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/Ben
 import {ContractorDataForm} from "@/app/(menu)/(authenticated)/lipsDrawers/ContractorDataForm";
 import {ContractorDataSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/ContractorDataSummary";
 import {ContractorFiscalCodeForm} from "@/app/(menu)/(authenticated)/lipsDrawers/ContractorFiscalCodeForm";
+import {ContractorFiscalCodeModal} from "@/app/(menu)/(authenticated)/lipsDrawers/ContractorFiscalCodeModal";
 import {ContractorFiscalCodeSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/ContractorFiscalCodeSummary";
 import {ContractorPersonalAreaActivationModalContent} from "@/app/(menu)/(authenticated)/lipsDrawers/ContractorPersonalAreaActivationModalContent";
 import {ContractorPersonalAreaActivationSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/ContractorPersonalAreaActivationSummary";
@@ -59,7 +60,7 @@ export const drawers: DrawerConfig[] = [
   {
     name: "contractorFiscalCode",
     title: "Dati Contraente",
-    modalContent: <ContractorFiscalCodeForm />,
+    modalContent: <ContractorFiscalCodeModal />,
     summaryContent: <ContractorFiscalCodeSummary />,
   },
   {
