@@ -19,7 +19,7 @@ import {useDrawerStore} from "../lips/[id]/store";
 const complementaryCoverages = [
   {
     key: "accidentalDeath",
-    label: "Morte accidentale",
+    label: "Morte da infortunio",
     maxDuration: 30,
     maxAge: 85,
   },
