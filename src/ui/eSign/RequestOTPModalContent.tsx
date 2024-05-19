@@ -50,12 +50,12 @@ export function RequestOTPModalContent<TPayload>({
         lipId: lipId,
       });
 
-      if (response.featTransaction.status === "failed") {
+      if (response.featTransaction?.status !== "success") {
         setRequestOTPError(response.featTransaction.message);
         setIsRequestOTPLoading(false);
         callingServer.current = false;
         return;
-      } else if (response.profile.status === "failed") {
+      } else if (response.profile?.status !== "success") {
         setRequestOTPError(response.profile.message);
         setIsRequestOTPLoading(false);
         callingServer.current = false;
@@ -92,8 +92,8 @@ export function RequestOTPModalContent<TPayload>({
     );
   } else if (
     !createdFEATransaction ||
-    createdFEATransaction.featTransaction.status === "failed" ||
-    createdFEATransaction.profile.status === "failed"
+    createdFEATransaction.featTransaction.status !== "success" ||
+    createdFEATransaction.profile.status !== "success"
   ) {
     // TODO: Togliere quando messo tanstack o rtk
     return (

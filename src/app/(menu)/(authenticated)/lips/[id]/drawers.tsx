@@ -2,7 +2,6 @@ import {BeneficiariesForm} from "@/app/(menu)/(authenticated)/lipsDrawers/Benefi
 import {BeneficiariesSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/BeneficiariesSummary";
 import {ContractorDataForm} from "@/app/(menu)/(authenticated)/lipsDrawers/ContractorDataForm";
 import {ContractorDataSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/ContractorDataSummary";
-import {ContractorFiscalCodeForm} from "@/app/(menu)/(authenticated)/lipsDrawers/ContractorFiscalCodeForm";
 import {ContractorFiscalCodeModal} from "@/app/(menu)/(authenticated)/lipsDrawers/ContractorFiscalCodeModal";
 import {ContractorFiscalCodeSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/ContractorFiscalCodeSummary";
 import {ContractorPersonalAreaActivationModalContent} from "@/app/(menu)/(authenticated)/lipsDrawers/ContractorPersonalAreaActivationModalContent";
