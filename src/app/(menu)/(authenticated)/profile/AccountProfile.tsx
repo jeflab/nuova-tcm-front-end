@@ -99,34 +99,7 @@ export function AccountProfile({user}: AccountProfileProps) {
             <Row as="dl" xs={1} sm={3}>
               <Col>
                 <dt id="fiscal-code-label">Codice fiscale:</dt>
-                {isUpdateMode ? (
-                  <dd>
-                    <InputField
-                      type="text"
-                      name="fiscalCode"
-                      placeholder="Codice fiscale"
-                      normalize={upperCaseNormalizer}
-                      aria-labelledby="fiscal-code-label"
-                      validation={{
-                        validate: {
-                          required: (value) => {
-                            if (!value) {
-                              return "Inserisci il tuo codice fiscale";
-                            }
-                          },
-                          custom: (value) => {
-                            if (!fiscalCodeValidator(value)) {
-                              return "Il codice fiscale inserito non è valido";
-                            }
-                          },
-                        },
-                      }}
-                    />
-                    <FieldError name="fiscalCode" />
-                  </dd>
-                ) : (
-                  <dd>{user.fiscalCode}</dd>
-                )}
+                <dd>{user.fiscalCode}</dd>
               </Col>
               <Col>
                 <dt>Email:</dt>
