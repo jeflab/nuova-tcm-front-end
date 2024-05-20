@@ -86,6 +86,7 @@ const denSchema = z.object({
     response: z.string(),
   }),
 });
+export type Den = z.infer<typeof denSchema>;
 
 const quotationSchema = z.object({
   birthDate: z.string(),
