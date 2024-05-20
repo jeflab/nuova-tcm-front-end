@@ -94,7 +94,7 @@ export async function checkAuth() {
   }
 }
 
-const accountShape = {
+const getAccountShape = {
   user: userSchema,
   roles: z.array(roleSchema),
   permissions: z.array(permissionSchema),
@@ -102,7 +102,7 @@ const accountShape = {
 };
 export async function getAccount() {
   return await api.get("/me", {
-    payloadShape: accountShape,
+    payloadShape: getAccountShape,
     tags: [Tags.me()],
   });
 }
