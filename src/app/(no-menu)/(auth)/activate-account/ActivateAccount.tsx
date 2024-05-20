@@ -1,17 +1,18 @@
 "use client";
 
 import {SetPasswordForm} from "@/app/(no-menu)/(auth)/password-reset/SetPasswordForm";
+import {backendUrl} from "@/services/const";
 import {ButtonLink} from "@/ui/ButtonLink";
 import autoAnimate from "@formkit/auto-animate";
 import {useEffect, useRef, useState} from "react";
 import {Alert, Card} from "react-bootstrap";
 
-interface SetPasswordProps {
+interface ActivateAccountParams {
   token: string;
   email: string;
 }
 
-export function SetPassword(props: SetPasswordProps) {
+export function ActivateAccount(props: ActivateAccountParams) {
   const animateContainer = useRef<HTMLDivElement>(null);
   const [passwordSet, setPasswordSet] = useState<boolean>(false);
   useEffect(() => {
@@ -24,23 +25,26 @@ export function SetPassword(props: SetPasswordProps) {
         <Alert variant="success">
           <h3>Recupera password</h3>
           <p>
-            La tua password è stata impostata con successo. Ora puoi effettuare
-            il login.
+            Il tuo account è stato attivato con successo. Ora puoi effettuare il
+            login.
           </p>
-          <ButtonLink href="/login" className="w-100">
+          <ButtonLink href="/login" className="w-100 mb-3">
             Login
+          </ButtonLink>
+          <ButtonLink href={`${backendUrl}admin/login`} className="w-100">
+            Login Admin
           </ButtonLink>
         </Alert>
       ) : (
         <Card body className="w-100">
           <Alert variant="info">
             Inserisci il codice che hai ricevuto via mail e scegli una password
-            per ripristinare la tua password
+            per attivare il tuo account
           </Alert>
           <SetPasswordForm
             token={props.token}
             email={props.email}
-            submitButtonLabel="Imposta nuova password"
+            submitButtonLabel="Attiva il tuo account"
             onPasswordSet={() => setPasswordSet(true)}
           />
           <ButtonLink variant="link" href="/login" className="w-100">

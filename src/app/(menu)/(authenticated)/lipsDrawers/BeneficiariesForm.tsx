@@ -114,9 +114,11 @@ const beneficiariesDefaultValues = (
   thirdParty: beneficiariesData?.thirdParty ?? false,
   beneficiaries: beneficiariesData?.beneficiaries
     ? beneficiariesData?.beneficiaries.map(beneficiaryDefaultValues)
-    : ([beneficiaryDefaultValues()] as
-        | undefined
-        | ReturnType<typeof beneficiaryDefaultValues>[]),
+    : beneficiariesData?.nomination === "heirs"
+      ? undefined
+      : ([beneficiaryDefaultValues()] as
+          | undefined
+          | ReturnType<typeof beneficiaryDefaultValues>[]),
   thirdPartyContactPerson: (beneficiariesData?.thirdPartyContactPerson
     ? thirdPartDefaultValues(beneficiariesData.thirdPartyContactPerson)
     : undefined) as undefined | ReturnType<typeof thirdPartDefaultValues>,

@@ -131,7 +131,7 @@ function createDrawerState(state: State & Actions) {
       state.drawerStates.contractorContacts = undefined;
     }
 
-    // Attesa creazione aria Contraente
+    // Attesa creazione area Contraente
     if (state.drawerStates.contractorContacts?.variant === "success") {
       if (state.lip?.contractor.lastPrivacyEsignId === null) {
         state.drawerStates.contractorPersonalAreaActivation = {
@@ -201,6 +201,7 @@ function createDrawerState(state: State & Actions) {
       ) {
         state.drawerStates.den = {
           variant: "success",
+          ...(!atLeastOneESign && presetButtons.update),
         };
       } else {
         state.drawerStates.den = {variant: "danger"};
@@ -236,7 +237,10 @@ function createDrawerState(state: State & Actions) {
           ...presetButtons.compile,
         };
       } else {
-        state.drawerStates.healthQuestionnaire = {variant: "success"};
+        state.drawerStates.healthQuestionnaire = {
+          variant: "success",
+          ...(!atLeastOneESign && presetButtons.update),
+        };
       }
     }
 

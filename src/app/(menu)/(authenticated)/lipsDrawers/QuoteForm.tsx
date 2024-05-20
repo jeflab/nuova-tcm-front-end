@@ -38,6 +38,7 @@ export function QuoteForm() {
   const contractorBirthDate = useDrawerStore(
     (state) => state.lip?.contractor?.birthDate,
   );
+  const income = useDrawerStore((state) => state.lip?.den?.income);
   const lipId = useDrawerStore((state) => state.lip?.id);
   const closeModal = useDrawerStore((state) => state.closeModal);
 
@@ -81,6 +82,16 @@ export function QuoteForm() {
 
     if (clientResponse.status === "failed") {
       throw {root: {type: "server", message: clientResponse.message}};
+    }
+
+    if (clientResponse.quotazione.premium > parseInt(income ?? "0", 10) * 0.3) {
+      throw {
+        root: {
+          type: "server",
+          message:
+            "Il premio annuo preventivato è superiore al 30% del reddito annuo. Riduci il capitale assicurato o deseleziona alcune garanzie per procedere ad una nuova quotazione.",
+        },
+      };
     }
 
     setPremium(clientResponse.quotazione.premium);

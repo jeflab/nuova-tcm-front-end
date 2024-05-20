@@ -324,7 +324,9 @@ export function ContractorDataForm() {
                 <FieldError />
                 <SelectField
                   placeholder="Seleziona codice TAE attività..."
-                  options={tAECodeOptions}
+                  options={tAECodeOptions.toSorted((optionA, optionB) => {
+                    return optionA.label.localeCompare(optionB.label);
+                  })}
                   validation={{
                     required: "Seleziona codice TAE attività",
                   }}

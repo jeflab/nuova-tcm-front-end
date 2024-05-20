@@ -198,6 +198,7 @@ export async function updateContractorData(
       },
     }),
   };
+
   return patch(`/personal-datas/${contractorId}`, {
     data,
     tags: [Tags.getLip(lipId)],

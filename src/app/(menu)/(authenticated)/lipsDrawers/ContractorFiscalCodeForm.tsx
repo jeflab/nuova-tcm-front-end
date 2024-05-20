@@ -9,6 +9,7 @@ import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {cns} from "@/helpers/cns";
 import {dbDateString} from "@/helpers/dates";
 import {getOptionsValues} from "@/helpers/getOptionsLabel";
+import {User} from "@/models/entities/user";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {CheckGroup} from "@/ui/form/CheckGroup";
 import {ComuneProvAutocompleteField} from "@/ui/form/ComuneProvAutocompleteField";
@@ -116,7 +117,13 @@ const contractorFiscalCodeDefaultValues = {
   surname: "",
 };
 
-export function ContractorFiscalCodeForm() {
+interface ContractorFiscalCodeFormProps {
+  loggedUser: User;
+}
+
+export function ContractorFiscalCodeForm({
+  loggedUser,
+}: ContractorFiscalCodeFormProps) {
   const router = useRouter();
   const formMethods = useForm({
     mode: "onChange",
@@ -138,6 +145,15 @@ export function ContractorFiscalCodeForm() {
             let checkIfFiscalCodeExistsResponse: Awaited<
               ReturnType<typeof checkIfFiscalCodeExists>
             >;
+
+            if (loggedUser.fiscalCode === values.fiscalCode) {
+              throw {
+                root: {
+                  type: "server",
+                  message: "Non puoi effettuare una proposta a te stesso",
+                },
+              };
+            }
 
             try {
               checkIfFiscalCodeExistsResponse = await checkIfFiscalCodeExists(

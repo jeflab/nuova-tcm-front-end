@@ -1,10 +1,9 @@
 "use client";
 
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
-import {Profile} from "@/models/account";
+import {cns} from "@/helpers/cns";
 import {PDFType} from "@/models/entities/esign";
 import {Privacy} from "@/models/entities/privacy";
-import {cns} from "@/helpers/cns";
 import RequestOTPModal from "@/ui/eSign/RequestOTPModal";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {CheckboxField} from "@/ui/form/CheckboxField";
@@ -19,7 +18,6 @@ import {useForm} from "react-hook-form";
 import styles from "./ContractorPersonalAreaActivationLastPrivacyForm.module.scss";
 
 interface ContractorPersonalAreaActivationLastPrivacyFormProps {
-  profile: Profile;
   lastPrivacy: Privacy;
 }
 

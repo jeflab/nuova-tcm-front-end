@@ -27,6 +27,8 @@ import {
   YesNoAnswer,
   yesNoOptions,
 } from "@/helpers/getOptionsLabel";
+import {Nullish, Optional} from "@/helpers/TypesHelper";
+import {Den} from "@/models/entities/lip";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {CheckGroup} from "@/ui/form/CheckGroup";
 import {FieldError} from "@/ui/form/FieldError";
@@ -51,34 +53,39 @@ import {
 import {useForm} from "react-hook-form";
 import invariant from "tiny-invariant";
 
-const denDefaultValues = {
-  education: "" as EducationOptions,
-  educationOther: "",
-  job: "" as JobPosition,
-  family: "" as FamilyOptions,
-  dependentFamilyMembers: "" as DependentFamilyMembersOptions,
-  otherInsuranceProducts: "" as YesNoAnswer,
-  needsIntendToMeet: [] as NeedsToMeetOptions[],
-  savings: "",
-  income: "",
-  economicCondition: "" as EconomicConditionOptions,
-  fundSource: "" as FundSource,
-  fundSourceOther: "",
-  expectations: [] as ExpectationsOptions[],
-  duration: "" as DurationOptions,
-};
+const denDefaultValues = (job: Optional<JobPosition>, den: Nullish<Den>) => ({
+  education: (den?.education.response ?? "") as EducationOptions,
+  educationOther: den?.educationOther ?? "",
+  job: (job ?? "") as JobPosition,
+  family: (den?.family.response ?? "") as FamilyOptions,
+  dependentFamilyMembers: (den?.dependentFamilyMembers.response ??
+    "") as DependentFamilyMembersOptions,
+  otherInsuranceProducts: (den?.otherInsuranceProducts.response ??
+    "") as YesNoAnswer,
+  needsIntendToMeet: (den?.needsIntendToMeet.response ??
+    []) as NeedsToMeetOptions[],
+  savings: den?.savings ?? "",
+  income: den?.income ?? "",
+  economicCondition: (den?.economicCondition.response ??
+    "") as EconomicConditionOptions,
+  fundSource: (den?.fundSource ?? "") as FundSource,
+  fundSourceOther: den?.fundSourceOther ?? "",
+  expectations: (den?.expectations.response ?? []) as ExpectationsOptions[],
+  duration: (den?.duration.response ?? "") as DurationOptions,
+});
 
 export function DenForm() {
   const job = useDrawerStore(
     (state) => state.lip?.contractor.pep?.job.position.response,
   );
+  const den = useDrawerStore((state) => state.lip?.den);
   const jobOther = useDrawerStore(
     (state) => state.lip?.contractor.pep?.job.positionOther,
   );
 
   const formMethods = useForm({
     mode: "onChange",
-    defaultValues: {...denDefaultValues, ...(job && {job})},
+    defaultValues: {...denDefaultValues(job, den)},
   });
 
   const lipId = useDrawerStore((state) => state.lip?.id);
@@ -273,7 +280,7 @@ export function DenForm() {
                       validate: {
                         required: (
                           value,
-                          formValues: typeof denDefaultValues,
+                          formValues: ReturnType<typeof denDefaultValues>,
                         ) => {
                           if (
                             formValues.otherInsuranceProducts === "yes" &&

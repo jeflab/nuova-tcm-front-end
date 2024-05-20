@@ -16,8 +16,8 @@ import {
 } from "@fortawesome/pro-duotone-svg-icons";
 import {
   faCircle,
+  faHeartPulse,
   faSackDollar,
-  faUserMd,
 } from "@fortawesome/pro-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {ReactNode} from "react";
@@ -30,7 +30,7 @@ export const LipStatesIcons: Record<number, ReactNode> = {
   2: (
     <IconStack className="text-danger">
       <FontAwesomeIcon icon={faCircle} className="fa-stack-2x" opacity={0.4} />
-      <FontAwesomeIcon icon={faUserMd} className="fa-stack-1x" />
+      <FontAwesomeIcon icon={faHeartPulse} className="fa-stack-1x" />
     </IconStack>
   ),
   3: <FontAwesomeIcon icon={faCheckCircle} className="text-success" />,
@@ -86,6 +86,7 @@ const denSchema = z.object({
     response: z.string(),
   }),
 });
+export type Den = z.infer<typeof denSchema>;
 
 const quotationSchema = z.object({
   birthDate: z.string(),

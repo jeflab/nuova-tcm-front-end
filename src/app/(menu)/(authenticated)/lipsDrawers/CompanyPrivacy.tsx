@@ -87,7 +87,8 @@ export function CompanyPrivacy({onHide}: CompanyPrivacyProps) {
             <a href="mailto:info@lifestarinsurance.com">
               info@lifestarinsurance.com
             </a>{" "}
-            [TODO: aggiornare link]
+            [TODO: aggiornare link https://lifestarinsurance.com/privacy-policy/
+            deve puntare al pdf privacy estesa nostro]
           </p>
           <h4 className="text-primary">
             Che tipo di dati personali che mi riguardano sono raccolti e
@@ -381,7 +382,8 @@ export function CompanyPrivacy({onHide}: CompanyPrivacyProps) {
             <a href="mailto:info@lifestarinsurance.com">
               info@lifestarinsurance.com
             </a>{" "}
-            [TODO: aggiornare link]
+            [TODO: aggiornare link https://lifestarinsurance.com/privacy-policy/
+            deve puntare al pdf privacy estesa nostro]
           </p>
           <h4 className="text-primary">
             Che tipo di dati personali che mi riguardano sono raccolti e

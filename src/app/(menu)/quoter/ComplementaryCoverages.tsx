@@ -50,7 +50,7 @@ export function ComplementaryCoverages() {
           <CheckboxField
             disabled={isMoreThan75}
             type="switch"
-            label="Morte accidentale"
+            label="Morte da infortunio"
             validationStyle={watch("accidentalDeath")}
             stretchedLabel
           />

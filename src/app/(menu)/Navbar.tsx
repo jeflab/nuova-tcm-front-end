@@ -58,16 +58,15 @@ export async function Navbar() {
         <NavbarToggle aria-controls="basic-navbar-nav" />
         <NavbarCollapse id="basic-navbar-nav">
           <Nav className="ms-auto">
-            {(!loggedIn ||
-              permissions?.some(
-                (permission) => permission.name === "create-lip",
-              )) && (
-              <NavLink as={Link} href="/quoter">
-                Preventivatore
-              </NavLink>
-            )}
             {loggedIn ? (
               <>
+                {permissions?.some(
+                  (permission) => permission.name === "create-lip",
+                ) && (
+                  <NavLink as={Link} href="/quoter">
+                    Preventivatore
+                  </NavLink>
+                )}
                 {permissions.some(
                   (permission) => permission.name === "create-lip",
                 ) && (
