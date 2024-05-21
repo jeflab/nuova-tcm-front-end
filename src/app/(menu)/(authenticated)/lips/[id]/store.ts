@@ -204,7 +204,10 @@ function createDrawerState(state: State & Actions) {
           ...(!atLeastOneESign && presetButtons.update),
         };
       } else {
-        state.drawerStates.den = {variant: "danger"};
+        state.drawerStates.den = {
+          variant: "danger",
+          ...(!atLeastOneESign && presetButtons.update),
+        };
       }
     } else {
       state.drawerStates.den = undefined;

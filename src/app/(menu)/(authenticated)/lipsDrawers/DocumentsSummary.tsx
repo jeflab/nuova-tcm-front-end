@@ -103,6 +103,9 @@ const eSignsCount = (
 export function DocumentsSummary() {
   const [isConsentCheckOpen, setIsConsentCheckOpen] = useState(false);
   const lip = useDrawerStore((state) => state.lip);
+  // const isPaymentActive = useDrawerStore(
+  //   (state) => state.drawerStates.payment?.variant === "active",
+  // );
 
   if (!lip) {
     return null;
