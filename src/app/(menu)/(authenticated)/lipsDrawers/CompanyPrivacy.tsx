@@ -26,10 +26,18 @@ import {useForm} from "react-hook-form";
 import invariant from "tiny-invariant";
 
 interface CompanyPrivacyProps {
+  lipId: number;
+  agentId: number;
+  contractorId: number;
   onHide?: () => void;
 }
 
-export function CompanyPrivacy({onHide}: CompanyPrivacyProps) {
+export function CompanyPrivacy({
+  onHide,
+  lipId,
+  agentId,
+  contractorId,
+}: CompanyPrivacyProps) {
   const privacyCompany = useDrawerStore((state) =>
     state.lip?.privacyCompany?.at(-1),
   );
@@ -42,6 +50,8 @@ export function CompanyPrivacy({onHide}: CompanyPrivacyProps) {
 
   const oneESing = !!lip?.eSigns?.identificazione || !!lip?.eSigns?.polizza;
   const closeModal = onHide ?? closeModalFromStore;
+
+  const extendedPrivacyUrl = `${process.env.NEXT_PUBLIC_API_URL}/pdf-proposta-preview/?lipId=${lipId}&agentId=${agentId}&contractorId=${contractorId}`;
 
   return (
     <>
@@ -63,10 +73,8 @@ export function CompanyPrivacy({onHide}: CompanyPrivacyProps) {
             ”) sui trattamenti dei tuoi dati personali.
             <br />
             Ti ricordiamo di prendere visione della{" "}
-            <strong>Informativa estesa</strong> a questo specifico link:{" "}
-            <a href="https://lifestarinsurance.com/privacy-policy/">
-              https://lifestarinsurance.com/privacy-policy/
-            </a>
+            <strong>Informativa estesa</strong> cliccando{" "}
+            <a href={extendedPrivacyUrl}>qui</a>.
           </p>
           <h4 className="text-primary">Chi tratta i miei dati personali?</h4>
           <p>
@@ -86,9 +94,7 @@ export function CompanyPrivacy({onHide}: CompanyPrivacyProps) {
             <a href="tel:+35621342342">+356 21 342342</a> Email:{" "}
             <a href="mailto:info@lifestarinsurance.com">
               info@lifestarinsurance.com
-            </a>{" "}
-            [TODO: aggiornare link https://lifestarinsurance.com/privacy-policy/
-            deve puntare al pdf privacy estesa nostro]
+            </a>
           </p>
           <h4 className="text-primary">
             Che tipo di dati personali che mi riguardano sono raccolti e
@@ -357,11 +363,8 @@ export function CompanyPrivacy({onHide}: CompanyPrivacyProps) {
               </abbr>
             </strong>
             ”) sui trattamenti dei tuoi dati personali. Ti ricordiamo di
-            prendere visione della <strong>Informativa estesa</strong> a questo
-            specifico link:{" "}
-            <a href="https://lifestarinsurance.com/privacy-policy/">
-              https://lifestarinsurance.com/privacy-policy/
-            </a>
+            prendere visione della <strong>Informativa estesa</strong> cliccando{" "}
+            <a href={extendedPrivacyUrl}>qui</a>.
           </p>
           <h4 className="text-primary">Chi tratta i miei dati personali?</h4>
           <p>
@@ -381,9 +384,7 @@ export function CompanyPrivacy({onHide}: CompanyPrivacyProps) {
             <a href="tel:+35621342342">+356 21 342342</a> Email:{" "}
             <a href="mailto:info@lifestarinsurance.com">
               info@lifestarinsurance.com
-            </a>{" "}
-            [TODO: aggiornare link https://lifestarinsurance.com/privacy-policy/
-            deve puntare al pdf privacy estesa nostro]
+            </a>
           </p>
           <h4 className="text-primary">
             Che tipo di dati personali che mi riguardano sono raccolti e

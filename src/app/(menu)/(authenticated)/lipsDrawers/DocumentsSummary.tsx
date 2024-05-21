@@ -165,7 +165,12 @@ export function DocumentsSummary() {
         <ModalHeader closeButton>
           <Modal.Title>Privacy di compagnia</Modal.Title>
         </ModalHeader>
-        <CompanyPrivacy onHide={() => setIsConsentCheckOpen(false)} />
+        <CompanyPrivacy
+          onHide={() => setIsConsentCheckOpen(false)}
+          lipId={lip.id}
+          agentId={lip.agent.id}
+          contractorId={lip.contractor.id}
+        />
       </Modal>
 
       {documents.map((document) => {
