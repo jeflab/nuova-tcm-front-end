@@ -1,4 +1,4 @@
-import {QuoterFormValues} from "@/app/(menu)/quoter/QuoterForm";
+import {QuoterFormValues} from "@/app/(menu)/(authenticated)/quoter/QuoterForm";
 import {calendarYearAge} from "@/helpers/ages";
 import {dbDateString} from "@/helpers/dates";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";

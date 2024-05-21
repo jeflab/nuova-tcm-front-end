@@ -6,7 +6,7 @@ import {
   PaymentMethods,
   paymentMethodsOptions,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
-import {getCoverageDuration} from "@/app/(menu)/quoter/helpers";
+import {getCoverageDuration} from "@/app/(menu)/(authenticated)/quoter/helpers";
 import {Lip} from "@/models/entities/lip";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {CheckGroup} from "@/ui/form/CheckGroup";

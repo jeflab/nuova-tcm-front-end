@@ -1,6 +1,6 @@
 "use server";
 
-import {getCoverageDuration} from "@/app/(menu)/quoter/helpers";
+import {getCoverageDuration} from "@/app/(menu)/(authenticated)/quoter/helpers";
 import {calendarYearAge} from "@/helpers/ages";
 import {post} from "@/services/api";
 import {z} from "zod";
