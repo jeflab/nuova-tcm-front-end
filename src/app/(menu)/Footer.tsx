@@ -4,6 +4,7 @@ import {Broker} from "@/models/entities/broker";
 import {AppContainer} from "@/ui/AppContainer";
 import {faCopyright} from "@fortawesome/pro-duotone-svg-icons/faCopyright";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import styles from "./Footer.module.scss";
 
 export async function Footer() {
   const currentYear = new Date().getFullYear();
@@ -21,14 +22,17 @@ export async function Footer() {
 
   return (
     <AppContainer>
-      <div className="hstack gap-3 mb-3">
-        <div className="d-flex gap-2 align-items-center">
-          <FontAwesomeIcon icon={faCopyright} className="text-primary" /> 2024
-          {currentYear > 2024 ? ` - ${currentYear}` : ""} Piattaforma TCM
+      <div className="d-flex flex-wrap gap-3 mb-3 flex-column flex-sm-row">
+        <div className="d-flex gap-2 align-items-start align-items-sm-center flex-column flex-sm-row">
+          <span>
+            <FontAwesomeIcon icon={faCopyright} className="text-primary" /> 2024
+            {currentYear > 2023 ? ` - ${currentYear}` : ""} Smart Broker Space
+          </span>
           {broker?.information.footer ? (
             <>
-              <div> - </div>
+              <div className={styles.divider}> - </div>
               <div
+                className={styles.fromDb}
                 dangerouslySetInnerHTML={{
                   __html: broker.information.footer,
                 }}

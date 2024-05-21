@@ -1,6 +1,5 @@
 import {LoginButton} from "@/app/(menu)/LoginButton";
 import {getAccount, isLoggedIn} from "@/app/(no-menu)/(auth)/actions";
-import logo from "@/images/logo.png";
 import {Broker} from "@/models/entities/broker";
 import {AppContainer} from "@/ui/AppContainer";
 import {getTheme} from "@/ui/Theme/actions";
@@ -44,15 +43,17 @@ export async function Navbar() {
     >
       <AppContainer>
         <NavbarBrand href="/">
-          <Image
-            src={broker?.information.logo.url ?? logo}
-            height={broker?.information.logo.height ?? 30}
-            width={broker?.information.logo.width ?? undefined}
-            alt={`logo ${broker?.name ?? "Piattaforma TCM"}`}
-            className="d-inline-block align-top"
-          />{" "}
+          {broker?.information.logo && (
+            <Image
+              src={broker?.information.logo.url}
+              height={broker?.information.logo.height}
+              width={broker?.information.logo.width}
+              alt={`logo ${broker?.name ?? "Smart Broker Space"}`}
+              className="d-inline-block align-top"
+            />
+          )}{" "}
           <span className={styles.navbarBrandText}>
-            {broker?.name ?? "Piattaforma TCM"}
+            {broker?.name ?? "Smart Broker Space"}
           </span>
         </NavbarBrand>
         <NavbarToggle aria-controls="basic-navbar-nav" />

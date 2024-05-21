@@ -1,5 +1,4 @@
 import appInfo from "@/../package.json";
-import logo from "@/images/logo.png";
 import Image from "next/image";
 import {CSSProperties} from "react";
 import styles from "./CenterLogoContent.module.scss";
@@ -15,7 +14,13 @@ export default function CenterLogoContent({
 }: CenterLogoContentProps) {
   return (
     <div className={styles.centerContent} style={style as CSSProperties}>
-      <Image src={logo} height={200} alt={`logo ${appInfo.name}`} />
+      <h1 className={styles.brandName}>
+        Smart
+        <br />
+        Broker
+        <br />
+        Space
+      </h1>
       {children}
     </div>
   );
