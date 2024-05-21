@@ -1,5 +1,6 @@
 import {LoginButton} from "@/app/(menu)/LoginButton";
 import {getAccount, isLoggedIn} from "@/app/(no-menu)/(auth)/actions";
+import {cns} from "@/helpers/cns";
 import {Broker} from "@/models/entities/broker";
 import {AppContainer} from "@/ui/AppContainer";
 import {getTheme} from "@/ui/Theme/actions";
@@ -14,7 +15,7 @@ import {
   NavbarToggle,
   NavLink,
 } from "react-bootstrap";
-import styles from "./layout.module.scss";
+import styles from "./Navbar.module.scss";
 import {LogoutButton} from "./LogoutButton";
 import {Permission} from "@/models/account";
 
@@ -37,12 +38,12 @@ export async function Navbar() {
   return (
     <BSNavbar
       expand="md"
-      className="bg-body-tertiary"
+      className="bg-body-tertiary flex-no-wrap"
       fixed="top"
       collapseOnSelect
     >
-      <AppContainer>
-        <NavbarBrand href="/">
+      <AppContainer className="flex-nowrap">
+        <NavbarBrand href="/" className={styles.navbarBrandLink}>
           {broker?.information.logo && (
             <Image
               src={broker?.information.logo.url}
@@ -58,7 +59,7 @@ export async function Navbar() {
         </NavbarBrand>
         <NavbarToggle aria-controls="basic-navbar-nav" />
         <NavbarCollapse id="basic-navbar-nav">
-          <Nav className="ms-auto">
+          <Nav className={cns("ms-auto", styles.navbarNav)}>
             {loggedIn ? (
               <>
                 {permissions?.some(
