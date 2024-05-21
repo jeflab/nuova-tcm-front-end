@@ -1,6 +1,6 @@
 "use client";
 
-import {getCoverageDuration} from "@/app/(menu)/quoter/helpers";
+import {getCoverageDuration} from "@/app/(menu)/(authenticated)/quoter/helpers";
 import {calendarYearAge} from "@/helpers/ages";
 import {dateString} from "@/helpers/dates";
 import {Currency} from "@/ui/Currency";

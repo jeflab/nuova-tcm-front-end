@@ -1,5 +1,5 @@
-import {getCoverageDuration} from "@/app/(menu)/quoter/helpers";
-import {QuoterFormValues} from "@/app/(menu)/quoter/QuoterForm";
+import {getCoverageDuration} from "@/app/(menu)/(authenticated)/quoter/helpers";
+import {QuoterFormValues} from "@/app/(menu)/(authenticated)/quoter/QuoterForm";
 import {calendarYearAge} from "@/helpers/ages";
 import {Option} from "@/helpers/getOptionsLabel";
 import {toCurrency} from "@/helpers/numbers";

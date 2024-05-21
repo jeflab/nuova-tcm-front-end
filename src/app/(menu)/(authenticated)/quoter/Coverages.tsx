@@ -1,4 +1,4 @@
-import {getCoverageDuration} from "@/app/(menu)/quoter/helpers";
+import {getCoverageDuration} from "@/app/(menu)/(authenticated)/quoter/helpers";
 import {toCurrency} from "@/helpers/numbers";
 import {Currency} from "@/ui/Currency";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";

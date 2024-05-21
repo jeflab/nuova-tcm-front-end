@@ -1,9 +1,9 @@
 "use client";
 
 import {paymentMethodsOptions} from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
-import {getQuote} from "@/app/(menu)/quoter/actions";
-import {Advantages} from "@/app/(menu)/quoter/Advantages";
-import {getCoverageDuration} from "@/app/(menu)/quoter/helpers";
+import {getQuote} from "@/app/(menu)/(authenticated)/quoter/actions";
+import {Advantages} from "@/app/(menu)/(authenticated)/quoter/Advantages";
+import {getCoverageDuration} from "@/app/(menu)/(authenticated)/quoter/helpers";
 import {cns} from "@/helpers/cns";
 import {AppContainer} from "@/ui/AppContainer";
 import {Currency} from "@/ui/Currency";
