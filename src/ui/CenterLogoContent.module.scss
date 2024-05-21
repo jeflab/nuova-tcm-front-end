@@ -9,3 +9,16 @@
   margin: 0 auto;
   padding: 0 1rem;
 }
+
+.brandName {
+  animation: turn 5s linear;
+  font-weight: 700;
+  line-height: 0.8;
+  text-align: center;
+  font-size: 5rem;
+  padding-bottom: 1.5rem;
+  background: linear-gradient(90deg, var(--bs-primary), var(--bs-secondary));
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}

@@ -9,7 +9,7 @@ import "./globals.scss";
 config.autoAddCss = false;
 
 export const metadata: Metadata = {
-  title: "Piattaforma TCM",
+  title: "Smart Broker Space",
   description: "Web app per la gestione delle polizze TCM",
 };
 

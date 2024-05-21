@@ -103,6 +103,9 @@ const eSignsCount = (
 export function DocumentsSummary() {
   const [isConsentCheckOpen, setIsConsentCheckOpen] = useState(false);
   const lip = useDrawerStore((state) => state.lip);
+  // const isPaymentActive = useDrawerStore(
+  //   (state) => state.drawerStates.payment?.variant === "active",
+  // );
 
   if (!lip) {
     return null;
@@ -162,7 +165,12 @@ export function DocumentsSummary() {
         <ModalHeader closeButton>
           <Modal.Title>Privacy di compagnia</Modal.Title>
         </ModalHeader>
-        <CompanyPrivacy onHide={() => setIsConsentCheckOpen(false)} />
+        <CompanyPrivacy
+          onHide={() => setIsConsentCheckOpen(false)}
+          lipId={lip.id}
+          agentId={lip.agent.id}
+          contractorId={lip.contractor.id}
+        />
       </Modal>
 
       {documents.map((document) => {

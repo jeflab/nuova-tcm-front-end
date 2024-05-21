@@ -10,7 +10,13 @@ export function DocumentsModal() {
   if (!lip) return null;
 
   if (!lip.privacyCompany) {
-    return <CompanyPrivacy />;
+    return (
+      <CompanyPrivacy
+        lipId={lip.id}
+        agentId={lip.agent.id}
+        contractorId={lip.contractor.id}
+      />
+    );
   } else {
     return <DocumentsManagement />;
   }

@@ -291,6 +291,7 @@ interface UpdateQuotationParams {
 export async function updateQuotation(
   formData: UpdateQuotationParams,
   lipId: number,
+  shouldResetHealthQuestionnaire: boolean = false,
 ) {
   const data = {
     birthDate: formData.birthDate,
@@ -316,7 +317,12 @@ export async function updateQuotation(
 
   invalidateTag(Tags.getLip(lipId));
   return patch(`/lips/${lipId}`, {
-    data: {json_quotation: JSON.stringify(data)},
+    data: {
+      json_quotation: JSON.stringify(data),
+      ...(shouldResetHealthQuestionnaire && {
+        json_survey_healthcare: null,
+      }),
+    },
   });
 }
 export async function updateHealthQuestionnaire(

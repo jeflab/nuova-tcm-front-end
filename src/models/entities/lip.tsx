@@ -4,6 +4,7 @@ import {
   nominationOptions,
   paymentMethodsSimpleOptions,
   relationshipOptions,
+  sportRiskIndexOptions,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
 import {getOptionsValues, yesNoOptions} from "@/helpers/getOptionsLabel";
 import {agentSchema} from "@/models/entities/agent";
@@ -110,35 +111,55 @@ const healthcareQuestionnaireSchema = z.object({
   IMC: z.coerce.number(),
   hospitalization: z.object({
     check: z.enum(getOptionsValues(yesNoOptions)),
+    details: z.string().nullish(),
   }),
   diseases: z.object({
     check: z.enum(getOptionsValues(yesNoOptions)),
+    details: z.string().nullish(),
   }),
   drugTherapy: z.object({
     check: z.enum(getOptionsValues(yesNoOptions)),
+    details: z.string().nullish(),
   }),
   symptomatology: z.object({
     check: z.enum(getOptionsValues(yesNoOptions)),
+    details: z.string().nullish(),
   }),
   professionalRisk: z.object({
     check: z.enum(getOptionsValues(yesNoOptions)),
+    details: z.string().nullish(),
   }),
   sportRisk: z.object({
     check: z.enum(getOptionsValues(yesNoOptions)),
+    sport: z
+      .array(
+        z.object({
+          name: z.string(),
+          riskIndex: z.enum(getOptionsValues(sportRiskIndexOptions)),
+        }),
+      )
+      .nullish(),
   }),
   cancer: z.object({
     check: z.enum([...getOptionsValues(yesNoOptions), ""]),
+    details: z.string().nullish(),
   }),
   nervousSystemDiseases: z.object({
     check: z.enum([...getOptionsValues(yesNoOptions), ""]),
+    details: z.string().nullish(),
   }),
   invalidityPension: z.object({
     check: z.enum([...getOptionsValues(yesNoOptions), ""]),
+    details: z.string().nullish(),
   }),
   physicalImpairment: z.object({
     check: z.enum([...getOptionsValues(yesNoOptions), ""]),
+    details: z.string().nullish(),
   }),
 });
+export type HealthcareQuestionnaire = z.infer<
+  typeof healthcareQuestionnaireSchema
+>;
 
 const beneficiarySchema = z.object({
   name: z.string(),

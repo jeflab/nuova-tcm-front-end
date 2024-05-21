@@ -7,7 +7,8 @@ import {
   sportRiskIndexOptions,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
 import {YesNoAnswer, yesNoOptions} from "@/helpers/getOptionsLabel";
-import {backendUrl} from "@/services/const";
+import {Nullish} from "@/helpers/TypesHelper";
+import {HealthcareQuestionnaire} from "@/models/entities/lip";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {CheckGroup} from "@/ui/form/CheckGroup";
 import {FieldError} from "@/ui/form/FieldError";
@@ -39,45 +40,78 @@ const sportDefaultValues = {
   riskIndex: "" as "" | SportRiskIndex,
 };
 
-const healthQuestionnaireDefaultValues = {
-  weight: "",
-  height: "",
-  hospitalization: {check: "" as YesNoAnswer, details: ""},
-  diseases: {check: "" as YesNoAnswer, details: ""},
-  drugTherapy: {check: "" as YesNoAnswer, details: ""},
-  symptomatology: {check: "" as YesNoAnswer, details: ""},
-  professionalRisk: {check: "" as YesNoAnswer, details: ""},
-  sportRisk: {
-    check: "" as YesNoAnswer,
-    sport: [] as (typeof sportDefaultValues)[],
+const healthQuestionnaireDefaultValues = (
+  questionnaireData: Nullish<HealthcareQuestionnaire>,
+) => ({
+  weight: questionnaireData?.weight ?? "",
+  height: questionnaireData?.height ?? "",
+  hospitalization: {
+    check: (questionnaireData?.hospitalization.check ?? "") as YesNoAnswer,
+    details: questionnaireData?.hospitalization.details ?? "",
   },
-  cancer: {check: "" as YesNoAnswer, details: ""},
-  nervousSystemDiseases: {check: "" as YesNoAnswer, details: ""},
-  invalidityPension: {check: "" as YesNoAnswer, details: ""},
-  physicalImpairment: {check: "" as YesNoAnswer, details: ""},
-};
-export type HealthQuestionnaireFormValues =
-  typeof healthQuestionnaireDefaultValues;
+  diseases: {
+    check: (questionnaireData?.diseases.check ?? "") as YesNoAnswer,
+    details: questionnaireData?.diseases.details ?? "",
+  },
+  drugTherapy: {
+    check: (questionnaireData?.drugTherapy.check ?? "") as YesNoAnswer,
+    details: questionnaireData?.drugTherapy.details ?? "",
+  },
+  symptomatology: {
+    check: (questionnaireData?.symptomatology.check ?? "") as YesNoAnswer,
+    details: questionnaireData?.symptomatology.details ?? "",
+  },
+  professionalRisk: {
+    check: (questionnaireData?.professionalRisk.check ?? "") as YesNoAnswer,
+    details: questionnaireData?.professionalRisk.details ?? "",
+  },
+  sportRisk: {
+    check: (questionnaireData?.sportRisk.check ?? "") as YesNoAnswer,
+    sport: (questionnaireData?.sportRisk.sport ??
+      []) as (typeof sportDefaultValues)[],
+  },
+  cancer: {
+    check: (questionnaireData?.cancer.check ?? "") as YesNoAnswer,
+    details: questionnaireData?.cancer.details ?? "",
+  },
+  nervousSystemDiseases: {
+    check: (questionnaireData?.nervousSystemDiseases.check ??
+      "") as YesNoAnswer,
+    details: questionnaireData?.nervousSystemDiseases.details ?? "",
+  },
+  invalidityPension: {
+    check: (questionnaireData?.invalidityPension.check ?? "") as YesNoAnswer,
+    details: questionnaireData?.invalidityPension.details ?? "",
+  },
+  physicalImpairment: {
+    check: (questionnaireData?.physicalImpairment.check ?? "") as YesNoAnswer,
+    details: questionnaireData?.physicalImpairment.details ?? "",
+  },
+});
+export type HealthQuestionnaireFormValues = ReturnType<
+  typeof healthQuestionnaireDefaultValues
+>;
 
 const tableBgTransparent = {"--bs-table-bg": "transparent"} as CSSProperties;
 
 export function HealthQuestionnaireForm() {
-  const formMethods = useForm({
-    mode: "onChange",
-    defaultValues: healthQuestionnaireDefaultValues,
-  });
-
+  const healthQuestionnaireData = useDrawerStore(
+    (state) => state.lip?.healthcareQuestionnaire,
+  );
   const lipId = useDrawerStore((state) => state.lip?.id);
   const closeModal = useDrawerStore((state) => state.closeModal);
-
   const hasCancerCoverage = useDrawerStore(
     (state) => state.lip?.quotation?.cancer.enabled,
   );
-
   const hasTpiOrTpdCoverage = useDrawerStore(
     (state) =>
       state.lip?.quotation?.tpd.enabled || state.lip?.quotation?.tpi.enabled,
   );
+
+  const formMethods = useForm({
+    mode: "onChange",
+    defaultValues: healthQuestionnaireDefaultValues(healthQuestionnaireData),
+  });
 
   const hospitalizationCheckValue = formMethods.watch("hospitalization.check");
   const diseasesCheckValue = formMethods.watch("diseases.check");

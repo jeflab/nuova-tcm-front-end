@@ -1,12 +1,13 @@
 "use client";
 
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {imcInRange} from "@/helpers/imc";
 import {backendUrl} from "@/services/const";
 import {ButtonLink} from "@/ui/ButtonLink";
 import {Decimal} from "@/ui/Currency";
 import {faDownload} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {Alert} from "react-bootstrap";
+import {Alert, Stack} from "react-bootstrap";
 
 const professionalSportQuestionnaireUrl =
   backendUrl + "questionario_professionale_sportivo.pdf";
@@ -20,13 +21,23 @@ export function HealthQuestionnaireSummary() {
     return null;
   }
 
+  const oneYesInHealthcareQuestionnaire = Object.values(
+    healthQuestionnaireData ?? {},
+  ).some(
+    (question) => typeof question === "object" && question.check === "yes",
+  );
+  const isImcInRange = imcInRange(
+    parseInt(healthQuestionnaireData.weight, 10),
+    parseInt(healthQuestionnaireData.height, 10),
+  );
+
   const showProfessionalSportQuestionnaire =
     healthQuestionnaireData.professionalRisk.check === "yes" ||
     healthQuestionnaireData.sportRisk.check === "yes";
 
   return (
-    <>
-      <p>
+    <Stack gap={3}>
+      <p className="mb-0">
         L'indice di massa corporea dell'assicurato è di{" "}
         <Decimal>{healthQuestionnaireData.IMC}</Decimal>.
       </p>
@@ -43,6 +54,13 @@ export function HealthQuestionnaireSummary() {
           </ButtonLink>
         </Alert>
       )}
-    </>
+      {(oneYesInHealthcareQuestionnaire || !isImcInRange) && (
+        <Alert variant="warning" className="mb-0">
+          In virtù delle risposte fornite nella compilazione del questionario
+          sanitario la proposta di Polizza sarà soggetta ad ulteriori
+          approfondimenti.
+        </Alert>
+      )}
+    </Stack>
   );
 }
