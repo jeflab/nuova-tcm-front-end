@@ -14,6 +14,7 @@ import {cns} from "@/helpers/cns";
 import {dbDateString} from "@/helpers/dates";
 import {YesNoAnswer} from "@/helpers/getOptionsLabel";
 import {Currency} from "@/ui/Currency";
+import {Debug} from "@/ui/Debug";
 import {FieldError} from "@/ui/form/FieldError";
 import {Form} from "@/ui/form/Form";
 import {
@@ -41,6 +42,9 @@ export function QuoteForm() {
   const income = useDrawerStore((state) => state.lip?.den?.income);
   const lipId = useDrawerStore((state) => state.lip?.id);
   const closeModal = useDrawerStore((state) => state.closeModal);
+  const isHealthQuestionnaireCompiled = useDrawerStore(
+    (state) => state.lip?.healthcareQuestionnaire,
+  );
 
   const formMethods = useForm({
     mode: "onChange",
@@ -65,6 +69,12 @@ export function QuoteForm() {
       birthDate: dbDateString(contractorBirthDate),
     },
   });
+
+  const tpiTpdCancerDirty = !!(
+    formMethods.formState.dirtyFields.tpi ||
+    formMethods.formState.dirtyFields.tpd ||
+    formMethods.formState.dirtyFields.cancer
+  );
 
   const handleSubmit = async (values: QuoterFormValues) => {
     let clientResponse: Awaited<ReturnType<typeof getQuote>>;
@@ -109,6 +119,7 @@ export function QuoteForm() {
         premium,
       },
       lipId,
+      tpiTpdCancerDirty,
     );
 
     if (updateQuotationResponse.status === "failed") {
@@ -156,6 +167,14 @@ export function QuoteForm() {
             className="mb-0 w-100"
           />
         </Form>
+        {isHealthQuestionnaireCompiled && tpiTpdCancerDirty && (
+          <Alert variant="warning" className="mt-3">
+            <strong>Attenzione:</strong> Se modifichi le coperture{" "}
+            <em>invalidità permanente da infortunio o malattia</em>,{" "}
+            <em>cancro</em> o <em>perdita totale di autosufficienza</em>, dovrai
+            ricompilare il questionario sanitario.
+          </Alert>
+        )}
       </ModalBody>
       <ModalFooter>
         <div className="me-auto">

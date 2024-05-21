@@ -220,7 +220,7 @@ function createDrawerState(state: State & Actions) {
       } else if (state.lip?.quotation?.premium) {
         state.drawerStates.quote = {
           variant: "success",
-          ...(!healthQuestionnaireCompiled && presetButtons.update),
+          ...(!atLeastOneESign && presetButtons.update),
         };
       } else {
         state.drawerStates.quote = {variant: "danger"};
