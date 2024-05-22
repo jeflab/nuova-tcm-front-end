@@ -340,7 +340,7 @@ const privacyCompanySchema = z.array(
   }),
 );
 
-const lipStateSchema = z
+export const lipStateSchema = z
   .object({
     id: z.number(),
     label: z.string(),

@@ -1,4 +1,5 @@
 "use client";
+
 import {cns} from "@/helpers/cns";
 import {ButtonLink} from "@/ui/ButtonLink";
 import {CardCollapsable} from "@/ui/CardCollapsable";
@@ -82,8 +83,8 @@ export function DataTable<Row>({
     manualSorting: true,
     manualPagination: true,
     manualFiltering: true,
-    enableColumnFilters: false, // TODO: filtri disabilitati temporaneamente aspettando il backend
-    enableSorting: false, // TODO: ordinamento disabilitati temporaneamente aspettando il backend
+    enableColumnFilters: true,
+    enableSorting: true,
     getCoreRowModel: getCoreRowModel(),
     onSortingChange: (updaterFn) => {
       const oldSorting = table.getState().sorting;
@@ -165,7 +166,7 @@ export function DataTable<Row>({
   return (
     <>
       <CardCollapsable
-        className={cns("d-none", responsiveStyles.filterPanel)} // TODO: filtri disabilitati temporaneamente aspettando il backend
+        className={responsiveStyles.filterPanel}
         header={
           <div className="d-flex justify-content-between align-items-center">
             <span>
@@ -269,6 +270,7 @@ export function DataTable<Row>({
                     scope="col"
                     className={cns(
                       header.id === "actions" && styles.narrowColumn,
+                      "align-top",
                     )}
                   >
                     <div
