@@ -116,15 +116,18 @@ export function DocumentsSummary() {
       <Card>
         <CardHeader className={styles.documentHeader}>
           <strong>Privacy di compagnia</strong>
-          <Button
-            size="sm"
-            className="ms-sm-auto"
-            onClick={() => {
-              setIsConsentCheckOpen(true);
-            }}
-          >
-            <FontAwesomeIcon icon={faClipboardListCheck} /> Controlla i consensi
-          </Button>
+          {lip.privacyCompany && (
+            <Button
+              size="sm"
+              className="ms-sm-auto"
+              onClick={() => {
+                setIsConsentCheckOpen(true);
+              }}
+            >
+              <FontAwesomeIcon icon={faClipboardListCheck} /> Controlla i
+              consensi
+            </Button>
+          )}
         </CardHeader>
         <div className={styles.docTableActions}>
           <div>
