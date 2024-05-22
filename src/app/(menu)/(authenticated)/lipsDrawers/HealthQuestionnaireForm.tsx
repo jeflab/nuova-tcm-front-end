@@ -378,6 +378,13 @@ export function HealthQuestionnaireForm() {
                       Fornire dettagli relativi alla risposta affermativa
                       precedente
                     </FormLabel>
+                    <HelpText>
+                      Se ha risposto Sì, precisare quando, per quale motivo, per
+                      quanto tempo, con quale esito. Indicare tipo di
+                      accertamento diagnostico, esame effettuato, nome e
+                      indirizzo del medico curante/dell’ospedale, casa di cura,
+                      sanatorio o simili:
+                    </HelpText>
                     <FieldError />
                     <InputField
                       type="textarea"
@@ -426,6 +433,11 @@ export function HealthQuestionnaireForm() {
                       Fornire dettagli relativi alla risposta affermativa
                       precedente
                     </FormLabel>
+                    <HelpText>
+                      Fornire dettagli se ha risposto “Sì” (tipo di malattia, da
+                      quando, nome e indirizzo del medico curante /
+                      dell’ospedale, casa di cura, sanatorio o simili):
+                    </HelpText>
                     <FieldError />
                     <InputField
                       type="textarea"
@@ -474,6 +486,13 @@ export function HealthQuestionnaireForm() {
                       Fornire dettagli relativi alla risposta affermativa
                       precedente
                     </FormLabel>
+                    <HelpText>
+                      Se ha risposto “Sì”, indicare tipo di malattia, da quando,
+                      nome del farmaco, se è in cura con dei farmaci che
+                      riescono a controllare in modo efficace la patologia, da
+                      quando a quando, nome e indirizzo del medico
+                      curante/dell’ospedale, casa di cura o simili):
+                    </HelpText>
                     <FieldError />
                     <InputField
                       type="textarea"
@@ -521,6 +540,11 @@ export function HealthQuestionnaireForm() {
                       Fornire dettagli relativi alla risposta affermativa
                       precedente
                     </FormLabel>
+                    <HelpText>
+                      Se ha risposto “Sì”, indicare i sintomi, da quando, gli
+                      accertamenti, nome e indirizzo del medico
+                      curante/dell’ospedale, casa di cura o simili:
+                    </HelpText>
                     <FieldError />
                     <InputField
                       type="textarea"
@@ -572,6 +596,7 @@ export function HealthQuestionnaireForm() {
                       Fornire dettagli relativi alla risposta affermativa
                       precedente
                     </FormLabel>
+                    <HelpText>Se sì, quale(i)?</HelpText>
                     <FieldError />
                     <InputField
                       type="textarea"
@@ -615,14 +640,9 @@ export function HealthQuestionnaireForm() {
             </Col>
             <Collapse in={sportRiskCheckValue === "yes"}>
               <Col xs={12} as={Stack} gap={3}>
-                <Alert variant="info" className="mb-0">
-                  Chi pratica sport a livello agonistico o semi-professionale
-                  può percepire compensi per comparse, premi, sponsorizzazioni,
-                  donazioni di privati o sussidi da parte di associazioni
-                  nazionali e enti pubblici. Queste persone praticano lo sport a
-                  un livello agonistico più alto di un dilettante e, pertanto, è
-                  importante operare una differenziazione adeguata del rischio.
-                </Alert>
+                <p className="mb-0">
+                  Se sì, precisare quale/quali e il livello di pratica
+                </p>
                 <Row>
                   <Col className="d-flex" xs={6}>
                     <FormGroup
@@ -710,6 +730,14 @@ export function HealthQuestionnaireForm() {
                     </FormGroup>
                   </Col>
                 </Row>
+                <Alert variant="info" className="mb-0">
+                  Chi pratica sport a livello agonistico o semi-professionale
+                  può percepire compensi per comparse, premi, sponsorizzazioni,
+                  donazioni di privati o sussidi da parte di associazioni
+                  nazionali e enti pubblici. Queste persone praticano lo sport a
+                  un livello agonistico più alto di un dilettante e, pertanto, è
+                  importante operare una differenziazione adeguata del rischio.
+                </Alert>
               </Col>
             </Collapse>
             {hasCancerCoverage && (
@@ -744,6 +772,10 @@ export function HealthQuestionnaireForm() {
                           Fornire dettagli relativi alla risposta affermativa
                           precedente
                         </FormLabel>
+                        <HelpText>
+                          Se ha risposto Sì, indicare i gradi di parentela e
+                          diagnosi di ciascuno dei parenti
+                        </HelpText>
                         <FieldError />
                         <InputField
                           type="textarea"
@@ -803,6 +835,12 @@ export function HealthQuestionnaireForm() {
                           Fornire dettagli relativi alla risposta affermativa
                           precedente
                         </FormLabel>
+                        <HelpText>
+                          Fornire dettagli se ha risposto “Sì” (tipo di malattia
+                          o infortunio, difetti fisici, disturbi, etc., da
+                          quando, nome e indirizzo del medico curante /
+                          dell’ospedale, casa di cura o simili):
+                        </HelpText>
                         <FieldError />
                         <InputField
                           type="textarea"
@@ -851,6 +889,12 @@ export function HealthQuestionnaireForm() {
                           Fornire dettagli relativi alla risposta affermativa
                           precedente
                         </FormLabel>
+                        <HelpText>
+                          Fornire dettagli se ha risposto “Sì” (tipo di malattia
+                          o infortunio, difetti fisici, disturbi, etc., da
+                          quando, nome e indirizzo del medico curante /
+                          dell’ospedale, casa di cura o simili):
+                        </HelpText>
                         <FieldError />
                         <InputField
                           type="textarea"
@@ -905,6 +949,12 @@ export function HealthQuestionnaireForm() {
                           Fornire dettagli relativi alla risposta affermativa
                           precedente
                         </FormLabel>
+                        <HelpText>
+                          Fornire dettagli se ha risposto “Sì” (tipo di malattia
+                          o infortunio, difetti fisici, disturbi, etc., da
+                          quando, nome e indirizzo del medico curante /
+                          dell’ospedale, casa di cura o simili):
+                        </HelpText>
                         <FieldError />
                         <InputField
                           type="textarea"
@@ -918,13 +968,6 @@ export function HealthQuestionnaireForm() {
                     </Col>
                   </div>
                 </Collapse>
-                <Col className="d-flex" xs={12}>
-                  <Alert variant="info" className="mb-0">
-                    Fornire dettagli per ciascuna delle domande a cui ha
-                    risposto “Sì” (tipo di malattia, da quando, nome e indirizzo
-                    del medico curante/dell’ospedale)
-                  </Alert>
-                </Col>
               </>
             )}
           </Row>

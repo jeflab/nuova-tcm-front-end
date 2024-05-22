@@ -229,7 +229,7 @@ export const idTypeOptions = [
   {label: "Passaporto", value: "passport"},
   {label: "Carta d'identità", value: "identity_card"},
   {label: "Patente", value: "driving_license"},
-  {label: "Altro", value: "other"},
+  // {label: "Altro", value: "other"},
 ] as const;
 export type IdType = (typeof idTypeOptions)[number]["value"];
 
