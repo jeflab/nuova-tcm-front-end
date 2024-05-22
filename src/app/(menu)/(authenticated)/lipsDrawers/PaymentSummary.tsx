@@ -1,6 +1,7 @@
 "use client";
 
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {ButtonLink} from "@/ui/ButtonLink";
 import {Currency} from "@/ui/Currency";
 import {IconStack} from "@/ui/IconStack";
 import {
@@ -11,7 +12,7 @@ import {
 } from "@fortawesome/pro-duotone-svg-icons";
 import {faDollarSign} from "@fortawesome/pro-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {Button, Stack} from "react-bootstrap";
+import {Stack} from "react-bootstrap";
 
 export function PaymentSummary() {
   const paymentData = useDrawerStore((state) => state.lip?.payment);
@@ -19,6 +20,7 @@ export function PaymentSummary() {
   const extraPremium = useDrawerStore(
     (state) => state.lip?.quotation?.extraPremium,
   );
+  const lip = useDrawerStore((state) => state.lip);
 
   if (!paymentData || !premium) {
     return null;
@@ -123,9 +125,12 @@ export function PaymentSummary() {
           <p>
             <strong>Commento del master broker</strong>: {extraPremium.note}
           </p>
-          <Button>
+          <ButtonLink
+            href={`${process.env.NEXT_PUBLIC_API_URL}/pdf-underwriting-sanitario/?lipId=${lip?.id}&agentId=${lip?.agent?.id}&contractorId=${lip?.contractor?.id}`}
+            download
+          >
             <FontAwesomeIcon icon={faDownload} /> Scarica il documento
-          </Button>
+          </ButtonLink>
         </div>
       )}
       <div>
