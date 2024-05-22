@@ -7,14 +7,18 @@ import {
   faBank,
   faCalendar,
   faCirclePlay,
+  faDownload,
 } from "@fortawesome/pro-duotone-svg-icons";
 import {faDollarSign} from "@fortawesome/pro-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {Stack} from "react-bootstrap";
+import {Button, Stack} from "react-bootstrap";
 
 export function PaymentSummary() {
   const paymentData = useDrawerStore((state) => state.lip?.payment);
   const premium = useDrawerStore((state) => state.lip?.quotation?.premium);
+  const extraPremium = useDrawerStore(
+    (state) => state.lip?.quotation?.extraPremium,
+  );
 
   if (!paymentData || !premium) {
     return null;
@@ -78,6 +82,52 @@ export function PaymentSummary() {
           </p>
         ) : null}
       </div>
+      {extraPremium && (
+        <div>
+          <h4 className="w-100 text-primary">
+            <IconStack>
+              <FontAwesomeIcon icon={faCalendar} className="fa-stack-2x" />
+              <FontAwesomeIcon
+                icon={faDollarSign}
+                className="fa-stack-1x"
+                transform="down-5"
+              />
+            </IconStack>{" "}
+            Frazionamento del premio in seguito a underwriting
+          </h4>
+          {paymentData.paymentMethod === "monthly" ? (
+            <p>
+              Pagamento mensile di{" "}
+              <Currency>{extraPremium.value / 12}</Currency> con anticipo di 3
+              mesi (<Currency>{(extraPremium.value / 12) * 3}</Currency>)
+            </p>
+          ) : paymentData.paymentMethod === "annual" ? (
+            <p>
+              Pagamento annuale di <Currency>{extraPremium.value}</Currency>
+            </p>
+          ) : paymentData.paymentMethod === "3yearsAdvance" ? (
+            <p>
+              Pagamento anticipato di 3 anni (
+              <Currency>{extraPremium.value * 3}</Currency>) e a seguire
+              pagamento mensile di{" "}
+              <Currency>{extraPremium.value / 12}</Currency>
+            </p>
+          ) : paymentData.paymentMethod === "5yearsAdvance" ? (
+            <p>
+              Pagamento anticipato di 5 anni (
+              <Currency>{extraPremium.value * 5}</Currency>) e a seguire
+              pagamento mensile di{" "}
+              <Currency>{extraPremium.value / 12}</Currency>
+            </p>
+          ) : null}
+          <p>
+            <strong>Commento del master broker</strong>: {extraPremium.note}
+          </p>
+          <Button>
+            <FontAwesomeIcon icon={faDownload} /> Scarica il documento
+          </Button>
+        </div>
+      )}
       <div>
         <h4 className="w-100 text-primary">
           <FontAwesomeIcon icon={faBank} /> Dati bancari del Contraente:

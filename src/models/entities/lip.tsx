@@ -41,6 +41,13 @@ export const LipStatesIcons: Record<number, ReactNode> = {
       <FontAwesomeIcon icon={faSackDollar} className="fa-stack-1x" />
     </IconStack>
   ),
+  14: <FontAwesomeIcon icon={faCircleHalf} className="text-warning" />,
+  15: (
+    <IconStack className="text-danger">
+      <FontAwesomeIcon icon={faCircle} className="fa-stack-2x" opacity={0.4} />
+      <FontAwesomeIcon icon={faHeartPulse} className="fa-stack-1x" />
+    </IconStack>
+  ),
 } as const;
 
 const denSchema = z.object({
@@ -89,21 +96,34 @@ const denSchema = z.object({
 });
 export type Den = z.infer<typeof denSchema>;
 
-const quotationSchema = z.object({
-  birthDate: z.string(),
-  smoker: z.enum(getOptionsValues(yesNoOptions)),
-  death: z.number(),
-  accidentalDeath: z.boolean(),
-  trafficAccidentalDeath: z.boolean(),
-  exemptionFromPaying: z.boolean(),
-  tpi: z.object({enabled: z.boolean(), coverage: z.coerce.number().catch(0)}),
-  cancer: z.object({
-    enabled: z.boolean(),
-    coverage: z.coerce.number().catch(0),
-  }),
-  tpd: z.object({enabled: z.boolean(), coverage: z.coerce.number().catch(0)}),
-  premium: z.number(),
-});
+const quotationSchema = z
+  .object({
+    birthDate: z.string(),
+    smoker: z.enum(getOptionsValues(yesNoOptions)),
+    death: z.number(),
+    accidentalDeath: z.boolean(),
+    trafficAccidentalDeath: z.boolean(),
+    exemptionFromPaying: z.boolean(),
+    tpi: z.object({enabled: z.boolean(), coverage: z.coerce.number().catch(0)}),
+    cancer: z.object({
+      enabled: z.boolean(),
+      coverage: z.coerce.number().catch(0),
+    }),
+    tpd: z.object({enabled: z.boolean(), coverage: z.coerce.number().catch(0)}),
+    premium: z.number(),
+    extra_premium: z
+      .object({
+        value: z.coerce.number(),
+        note: z.string(),
+      })
+      .nullish(),
+    not_approve_underwriting: z.string().nullish(),
+  })
+  .transform(({extra_premium, not_approve_underwriting, ...data}) => ({
+    ...data,
+    extraPremium: extra_premium,
+    notApproveUnderwriting: not_approve_underwriting,
+  }));
 
 const healthcareQuestionnaireSchema = z.object({
   weight: z.string(),
