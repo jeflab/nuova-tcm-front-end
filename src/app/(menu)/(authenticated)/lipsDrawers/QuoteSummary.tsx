@@ -186,6 +186,9 @@ export function QuoteSummary() {
                 }
               },
             )}
+            <Col xs={12} className="w-100">
+              Premio annuo: <Currency>{quoteData.premium}</Currency>
+            </Col>
           </Row>
         ) : (
           <p className="mb-0">Nessuna copertura complementare selezionata</p>
