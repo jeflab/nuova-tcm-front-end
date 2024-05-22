@@ -26,7 +26,7 @@ export async function Footer() {
         <div className="d-flex gap-2 align-items-start align-items-sm-center flex-column flex-sm-row">
           <span>
             <FontAwesomeIcon icon={faCopyright} className="text-primary" /> 2024
-            {currentYear > 2023 ? ` - ${currentYear}` : ""} Smart Broker Space
+            {currentYear > 2024 ? ` - ${currentYear}` : ""} Smart Broker Space
           </span>
           {broker?.information.footer ? (
             <>

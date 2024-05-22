@@ -10,6 +10,24 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {ColumnDef, createColumnHelper} from "@tanstack/react-table";
 import {Button, FormControl, FormSelect, Placeholder} from "react-bootstrap";
 
+const lipstatus = [
+  {id: 1, label: "Incompleta"},
+  {id: 2, label: "Underwriting sanitario"},
+  {id: 3, label: "Completa"},
+  {id: 4, label: "Approvata dal broker"},
+  {id: 5, label: "Primo pagamento confermato"},
+  {id: 6, label: "Approvazione dal MasterBroker"},
+  {id: 7, label: "Inviata in compagnia"},
+  {id: 8, label: "Rifiutata"},
+  {id: 9, label: "Accettata"},
+  {id: 10, label: "Non approvata dal broker"},
+  {id: 11, label: "Non approvata dal Master Broker a livello finanziario"},
+  {id: 12, label: "Non approvata dal Master Broker a livello qualitativo"},
+  {id: 13, label: "Bloccata per AML"},
+  {id: 14, label: "Approvata dopo revisione undewriting sanitario"},
+  {id: 15, label: "Non approvata dopo revisione undewriting sanitario"},
+];
+
 const columnHelper = createColumnHelper<Lip>();
 export const columns = [
   columnHelper.accessor("lipNumber", {
@@ -71,6 +89,7 @@ export const columns = [
   }),
   columnHelper.accessor("lipStates", {
     header: "Stato",
+    enableColumnFilter: false,
     cell: (props) => (
       <>
         {LipStatesIcons[props.getValue().id] ?? LipStatesIcons[0]}{" "}
@@ -104,7 +123,7 @@ export const columns = [
     header: ({table}) => (
       <Button
         size="sm"
-        className="w-100 d-none" // TODO: filtri disabilitati temporaneamente aspettando il backend
+        className="w-100"
         onClick={() => table.resetColumnFilters()}
       >
         <FontAwesomeIcon icon={faFilterCircleXmark} />
@@ -204,6 +223,7 @@ export const skeletonColumns = [
   }),
   columnHelper.accessor("lipStates", {
     header: "Stato",
+    enableColumnFilter: false,
     cell: () => (
       <>
         <Placeholder as="span" animation="glow">
@@ -245,8 +265,7 @@ export const skeletonColumns = [
   columnHelper.display({
     id: "actions",
     header: () => (
-      <Placeholder as="div" animation="glow" className="d-none">
-        {/*TODO: filtri disabilitati temporaneamente aspettando il backend*/}
+      <Placeholder as="div" animation="glow">
         <Button size="sm" className="w-100 disabled placeholder">
           <FontAwesomeIcon icon={faFilterCircleXmark} />
           Reset filtri

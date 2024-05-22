@@ -6,14 +6,14 @@ import {DataTableSkeleton} from "@/ui/table/DataTableSkeleton";
 import {DataTableParams} from "@/ui/table/helpers";
 import {faPlus} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {Suspense} from "react";
+import {Suspense, useMemo} from "react";
 import {LipsTable} from "./LipsTable";
 
 interface LipsPageProps {
   searchParams: Partial<DataTableParams>;
 }
 
-export default function LipsPage({searchParams}: LipsPageProps) {
+export default async function LipsPage({searchParams}: LipsPageProps) {
   return (
     <AppContainer className="vstack gap-3">
       <PageTitle>

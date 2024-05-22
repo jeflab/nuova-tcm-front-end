@@ -112,7 +112,7 @@ export function DenSummary() {
           <Currency>{denData.income}</Currency>
         </p>
         <p className="mb-0">
-          <strong>Capacità di risparmio media annua:</strong>{" "}
+          <strong>Capacità di risparmio media mensile:</strong>{" "}
           <Currency>{denData.savings}</Currency>
         </p>
         <p className="mb-0">

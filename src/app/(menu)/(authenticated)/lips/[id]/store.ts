@@ -39,7 +39,12 @@ function createDrawerState(state: State & Actions) {
   const healthQuestionnaireCompiled = !!state.lip?.healthcareQuestionnaire;
   const privacyESigned = !!state.lip?.contractor?.lastPrivacyEsignId;
 
-  const underWritingBlocked = state.lip?.lipStates?.id === 2;
+  const underWritingBlocked =
+    state.lip?.lipStates?.id === 2
+      ? 2
+      : state.lip?.lipStates?.id === 15
+        ? 15
+        : false;
   const amlBlocked = state.lip?.aml?.blocked ?? false;
 
   if (isPreliminary) {
@@ -265,7 +270,10 @@ function createDrawerState(state: State & Actions) {
     // Pagamento
     if (state.drawerStates.beneficiaries?.variant === "success") {
       if (underWritingBlocked) {
-        state.drawerStates.payment = {variant: "waiting", isLocked: true};
+        state.drawerStates.payment = {
+          variant: underWritingBlocked === 2 ? "waiting" : "danger",
+          isLocked: true,
+        };
       } else if (state.lip?.payment === null) {
         state.drawerStates.payment = {
           variant: "active",

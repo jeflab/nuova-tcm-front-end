@@ -1,6 +1,6 @@
 "use server";
 
-import {lipSchema} from "@/models/entities/lip";
+import {lipSchema, lipStateSchema} from "@/models/entities/lip";
 import {get} from "@/services/api";
 import {z} from "zod";
 
