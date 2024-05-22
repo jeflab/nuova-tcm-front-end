@@ -12,13 +12,17 @@ import {personalDataSchema} from "@/models/entities/personalData";
 import {IconStack} from "@/ui/IconStack";
 import {
   faCheckCircle,
+  faCircleEuro,
   faCircleHalf,
+  faCircleXmark,
   faQuestionCircle,
 } from "@fortawesome/pro-duotone-svg-icons";
 import {
   faCircle,
   faHeartPulse,
+  faPaperPlane,
   faSackDollar,
+  faStar,
 } from "@fortawesome/pro-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {ReactNode} from "react";
@@ -26,22 +30,61 @@ import {z} from "zod";
 import {zu} from "zod_utilz";
 
 export const LipStatesIcons: Record<number, ReactNode> = {
+  // 0: Sconosciuto
   0: <FontAwesomeIcon icon={faQuestionCircle} className="text-primary" />,
+  // 1: Incompleta
   1: <FontAwesomeIcon icon={faCircleHalf} className="text-warning" />,
+  // 2: Underwriting sanitario
   2: (
     <IconStack className="text-danger">
       <FontAwesomeIcon icon={faCircle} className="fa-stack-2x" opacity={0.4} />
       <FontAwesomeIcon icon={faHeartPulse} className="fa-stack-1x" />
     </IconStack>
   ),
+  // 3: Completa
   3: <FontAwesomeIcon icon={faCheckCircle} className="text-success" />,
+  // 4: Approvata dal broker
+  4: <FontAwesomeIcon icon={faCheckCircle} className="text-success" />,
+  // 5: Primo pagamento confermato
+  5: <FontAwesomeIcon icon={faCircleEuro} className="text-success" />,
+  // 6: Approvazione dal MasterBroker
+  6: <FontAwesomeIcon icon={faCheckCircle} className="text-success" />,
+  // 7: Inviata in compagnia
+  7: (
+    <IconStack className="text-success">
+      <FontAwesomeIcon icon={faCircle} className="fa-stack-2x" opacity={0.4} />
+      <FontAwesomeIcon
+        icon={faPaperPlane}
+        className="fa-stack-1x"
+        transform="left-1"
+      />
+    </IconStack>
+  ),
+  // 8: Rifiutata
+  8: <FontAwesomeIcon icon={faCircleXmark} className="text-danger" />,
+  // 9: Accettata
+  9: <FontAwesomeIcon icon={faCheckCircle} className="text-success" />,
+  // 10: Non approvata dal broker
+  10: <FontAwesomeIcon icon={faCircleXmark} className="text-danger" />,
+  // 11: Non approvata dal Master Broker a livello finanziario
+  11: <FontAwesomeIcon icon={faCircleEuro} className="text-danger" />,
+  // 12: Non approvata dal Master Broker a livello qualitativo
+  12: (
+    <IconStack className="text-danger">
+      <FontAwesomeIcon icon={faCircle} className="fa-stack-2x" opacity={0.4} />
+      <FontAwesomeIcon icon={faStar} className="fa-stack-1x" />
+    </IconStack>
+  ),
+  // 13: Bloccata per AML
   13: (
     <IconStack className="text-danger">
       <FontAwesomeIcon icon={faCircle} className="fa-stack-2x" opacity={0.4} />
       <FontAwesomeIcon icon={faSackDollar} className="fa-stack-1x" />
     </IconStack>
   ),
+  // 14: Approvata dopo revisione undewriting sanitario
   14: <FontAwesomeIcon icon={faCircleHalf} className="text-warning" />,
+  // 15: Non approvata dopo revisione undewriting sanitario
   15: (
     <IconStack className="text-danger">
       <FontAwesomeIcon icon={faCircle} className="fa-stack-2x" opacity={0.4} />
