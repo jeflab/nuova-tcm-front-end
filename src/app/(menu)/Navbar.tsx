@@ -38,11 +38,11 @@ export async function Navbar() {
   return (
     <BSNavbar
       expand="md"
-      className="bg-body-tertiary flex-no-wrap"
+      className="bg-body-tertiary"
       fixed="top"
       collapseOnSelect
     >
-      <AppContainer className="flex-nowrap">
+      <AppContainer>
         <NavbarBrand href="/" className={styles.navbarBrandLink}>
           {broker?.information.logo && (
             <Image

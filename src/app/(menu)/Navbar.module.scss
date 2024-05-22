@@ -10,6 +10,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   color: var(--bs-primary);
+  max-width: calc(100% - 16px - 56px); // 100% - margin - toggle button width
 }
 
 .navbarNav :global(.nav-link) {
