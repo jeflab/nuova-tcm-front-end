@@ -7,6 +7,7 @@ import {Currency} from "@/ui/Currency";
 import {IconStack} from "@/ui/IconStack";
 import {
   faCheck,
+  faDollar as faDollarDuotone,
   faShield,
   faShieldPlus,
   faUser,
@@ -186,13 +187,16 @@ export function QuoteSummary() {
                 }
               },
             )}
-            <Col xs={12} className="w-100">
-              Premio annuo: <Currency>{quoteData.premium}</Currency>
-            </Col>
           </Row>
         ) : (
           <p className="mb-0">Nessuna copertura complementare selezionata</p>
         )}
+      </Col>
+      <Col xs={12} className="w-100">
+        <h4 className="text-primary">
+          <FontAwesomeIcon icon={faDollarDuotone} /> Premio annuo
+        </h4>
+        Premio annuo: <Currency>{quoteData.premium}</Currency>
       </Col>
     </Row>
   );
