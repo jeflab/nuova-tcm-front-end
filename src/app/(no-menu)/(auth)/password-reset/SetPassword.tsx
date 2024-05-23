@@ -1,6 +1,7 @@
 "use client";
 
 import {SetPasswordForm} from "@/app/(no-menu)/(auth)/password-reset/SetPasswordForm";
+import {backendUrl} from "@/services/const";
 import {ButtonLink} from "@/ui/ButtonLink";
 import autoAnimate from "@formkit/auto-animate";
 import {useEffect, useRef, useState} from "react";
@@ -27,8 +28,11 @@ export function SetPassword(props: SetPasswordProps) {
             La tua password è stata impostata con successo. Ora puoi effettuare
             il login.
           </p>
-          <ButtonLink href="/login" className="w-100">
+          <ButtonLink href="/login" className="w-100 mb-3">
             Login
+          </ButtonLink>
+          <ButtonLink href={`${backendUrl}admin/login`} className="w-100">
+            Login Admin
           </ButtonLink>
         </Alert>
       ) : (

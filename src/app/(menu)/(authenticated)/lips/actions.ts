@@ -5,9 +5,10 @@ import {get} from "@/services/api";
 import {z} from "zod";
 
 interface GetLipsListOptions {
-  query: string;
+  columnFilters: string;
   page: number;
   perPage: number;
+  query: string;
   sorting: string;
 }
 
@@ -31,17 +32,19 @@ const getLipsShape = {
 };
 
 export async function getLipsList({
-  query,
+  columnFilters,
   page,
   perPage,
+  query,
   sorting,
 }: GetLipsListOptions) {
   return get("/lips", {
     payloadShape: getLipsShape,
     searchParams: {
-      query,
+      columnFilters,
       page: page.toString(),
       per_page: perPage.toString(),
+      query,
       sorting,
     },
   });
