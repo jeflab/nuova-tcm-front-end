@@ -32,6 +32,8 @@ import {
 } from "react-bootstrap";
 import {useForm} from "react-hook-form";
 import invariant from "tiny-invariant";
+import {Currency} from "@/ui/Currency";
+import {toCurrency} from "@/helpers/numbers";
 
 const paymentDefaultValues = (paymentData?: Lip["payment"]) => ({
   effectiveDate: paymentData?.effectiveDate ?? "",
@@ -69,6 +71,10 @@ export function PaymentForm() {
 
   const closeModal = useDrawerStore((state) => state.closeModal);
   const premium = useDrawerStore((state) => state.lip?.quotation?.premium)!;
+  const extraPremium = useDrawerStore(
+    (state) => state.lip?.quotation?.extraPremium?.value,
+  );
+  const realPremium = extraPremium ?? premium;
 
   return (
     <>
@@ -122,13 +128,23 @@ export function PaymentForm() {
                 </p>
               </Alert>
             </Col>
+            {extraPremium &&
+            toCurrency(extraPremium) !== toCurrency(premium) ? (
+              <Col className="col-12">
+                <Alert variant="warning">
+                  In seguito a underwriting si applica il premio di{" "}
+                  <Currency>{extraPremium}</Currency> anziché di{" "}
+                  <Currency>{premium}</Currency>.
+                </Alert>
+              </Col>
+            ) : null}
             <Col className="d-flex">
               <FormGroup controlId="paymentMethod" as={BorderFeedback}>
                 <FormLabel>Frazionamento del premio</FormLabel>
                 <FieldError />
                 <CheckGroup
                   type="radio-switch"
-                  options={paymentMethodsOptions(premium)}
+                  options={paymentMethodsOptions(realPremium)}
                   validation={{
                     required: "Seleziona un frazionamento di pagamento",
                   }}
