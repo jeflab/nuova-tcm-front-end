@@ -361,6 +361,7 @@ export const lipSchema = z
       .stringToJSON()
       .pipe(healthcareQuestionnaireSchema)
       .nullish(),
+    must_ask_underwriting: z.boolean(),
     json_beneficiary: zu.stringToJSON().pipe(beneficiariesSchema).nullish(),
     json_payment: zu.stringToJSON().pipe(paymentSchema).nullish(),
     json_esign: zu.stringToJSON().pipe(eSignSchema).nullish(),
@@ -386,6 +387,7 @@ export const lipSchema = z
       json_den,
       json_quotation,
       json_survey_healthcare,
+      must_ask_underwriting,
       json_beneficiary,
       json_payment,
       json_esign,
@@ -401,6 +403,7 @@ export const lipSchema = z
         den: json_den,
         quotation: json_quotation,
         healthcareQuestionnaire: json_survey_healthcare,
+        mustAskUnderwriting: must_ask_underwriting,
         beneficiaries: json_beneficiary,
         payment: json_payment,
         eSigns: json_esign,

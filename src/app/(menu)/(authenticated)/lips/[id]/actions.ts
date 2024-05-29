@@ -145,6 +145,12 @@ export async function getLastPrivacy() {
   return get("/last-privacy", {payloadShape: lastPrivacyShape});
 }
 
+export async function updateUnderwriting(lipId: number) {
+  return patch(`/lips/${lipId}/underwriting`, {
+    tags: [Tags.getLip(lipId)],
+  });
+}
+
 interface updateContractorDataParams {
   residence: {
     place: {
