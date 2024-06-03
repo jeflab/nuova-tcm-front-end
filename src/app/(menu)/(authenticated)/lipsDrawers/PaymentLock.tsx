@@ -65,7 +65,8 @@ export function PaymentLock() {
       <Alert className="mb-0" variant="danger">
         La proposta di Polizza non può essere emessa direttamente in virtù delle
         risposte fornite nella compilazione del questionario sanitario/non
-        sanitario. Per procedere è necessario richiedere l'underwriting.
+        sanitario. Per procedere è necessario richiedere
+        <br />
         <strong>
           Dopo aver richiesto l'underwriting i dati inseriti non saranno più
           modificabili.
