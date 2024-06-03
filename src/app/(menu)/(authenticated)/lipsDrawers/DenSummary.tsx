@@ -28,6 +28,7 @@ import {Col, Row} from "react-bootstrap";
 
 export function DenSummary() {
   const denData = useDrawerStore((state) => state.lip?.den);
+  const job = useDrawerStore((state) => state.lip?.contractor.pep?.job);
 
   if (!denData) {
     return null;
@@ -65,11 +66,17 @@ export function DenSummary() {
         </h4>
         <p className="mb-0">
           <strong>Titolo di studio:</strong>{" "}
-          {getOptionsLabel(educationOptions, denData.education.response)}
+          {denData.education.response === "other"
+            ? denData.educationOther
+            : getOptionsLabel(educationOptions, denData.education.response)}
         </p>
         <p className="mb-0">
           <strong>Occupazione:</strong>{" "}
-          {getOptionsLabel(jobPositionOptions, denData.job.response)}
+          {job
+            ? job.position.response === "other"
+              ? job?.positionOther
+              : getOptionsLabel(jobPositionOptions, job.position.response)
+            : ""}
         </p>
         <p className="mb-0">
           <strong>

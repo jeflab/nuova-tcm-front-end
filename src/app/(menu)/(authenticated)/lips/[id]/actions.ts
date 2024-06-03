@@ -234,6 +234,7 @@ export async function identificationContractor(
 
 interface UpdateDenParams {
   education: EducationOptions;
+  educationOther: string;
   job: JobPosition;
   family: FamilyOptions;
   dependentFamilyMembers: DependentFamilyMembersOptions;
@@ -250,6 +251,7 @@ interface UpdateDenParams {
 export async function updateDen(formData: UpdateDenParams, lipId: number) {
   const data = {
     education: {options: educationOptions, response: formData.education},
+    educationOther: formData.educationOther,
     job: {options: jobPositionOptions, response: formData.job},
     family: {options: familyOptions, response: formData.family},
     dependentFamilyMembers: {
