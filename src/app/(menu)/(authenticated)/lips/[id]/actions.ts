@@ -240,6 +240,7 @@ interface UpdateDenParams {
   dependentFamilyMembers: DependentFamilyMembersOptions;
   otherInsuranceProducts: YesNoAnswer;
   needsIntendToMeet: NeedsToMeetOptions[];
+  needsIntendToMeetOther: string;
   savings: string;
   income: string;
   economicCondition: EconomicConditionOptions;
@@ -266,6 +267,7 @@ export async function updateDen(formData: UpdateDenParams, lipId: number) {
       options: needsToMeetOptions,
       response: formData.needsIntendToMeet,
     },
+    needsIntendToMeetOther: formData.needsIntendToMeetOther,
     savings: formData.savings,
     income: formData.income,
     economicCondition: {

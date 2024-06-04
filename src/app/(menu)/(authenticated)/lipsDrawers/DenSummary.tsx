@@ -103,7 +103,9 @@ export function DenSummary() {
             ? denData.needsIntendToMeet.response.map((value) => (
                 <li key={value} className="d-flex">
                   <FontAwesomeIcon icon={faSquareCheck} className="me-2 mt-1" />
-                  {getOptionsLabel(needsToMeetOptions, value)}
+                  {value === "other"
+                    ? denData.needsIntendToMeetOther
+                    : getOptionsLabel(needsToMeetOptions, value)}
                 </li>
               ))
             : "Nessuno"}
