@@ -24,7 +24,7 @@ export function Policy({lip, contractor}: PolicyProps) {
               <strong>Proposta di Polizza n°:</strong> {lip.lipNumber}
             </p>
             <p className="mb-0">
-              <strong>Stipulata il:</strong> {dateString(lip.createdAt)}
+              <strong>Creata il:</strong> {dateString(lip.createdAt)}
             </p>
             <p className="mb-0">
               <strong>Agente:</strong> {lip.agent.name} {lip.agent.surname}
@@ -47,7 +47,7 @@ export function Policy({lip, contractor}: PolicyProps) {
     >
       <div className="vstack gap-3">
         <p className="mb-0">
-          <strong>Stipulata il:</strong> {dateString(lip.createdAt)}
+          <strong>Creata il:</strong> {dateString(lip.createdAt)}
         </p>
         <p className="mb-0">
           <strong>Contraente / Assicurato:</strong> {contractor.name}{" "}
