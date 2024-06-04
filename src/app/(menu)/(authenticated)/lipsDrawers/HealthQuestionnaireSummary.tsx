@@ -49,8 +49,8 @@ export function HealthQuestionnaireSummary() {
             questionario aggiuntivo.
           </p>
           <ButtonLink href={professionalSportQuestionnaireUrl} download>
-            <FontAwesomeIcon icon={faDownload} /> Scarica il questionario
-            professionale sportivo
+            <FontAwesomeIcon icon={faDownload} /> Scarica i questionari per il
+            rischio professionale e sportivo
           </ButtonLink>
         </Alert>
       )}
