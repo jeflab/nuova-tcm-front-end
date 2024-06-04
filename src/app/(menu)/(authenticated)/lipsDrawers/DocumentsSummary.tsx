@@ -20,6 +20,7 @@ import {
   Stack,
 } from "react-bootstrap";
 import styles from "./DocumentsManagement.module.scss";
+import {LipValidator} from "@/helpers/lip-validator";
 
 interface Esign {
   key: string;
@@ -111,6 +112,8 @@ export function DocumentsSummary() {
     return null;
   }
 
+  const lipValidator = new LipValidator(lip);
+
   return (
     <Stack gap={3}>
       <Card>
@@ -193,6 +196,13 @@ export function DocumentsSummary() {
           partialAdvisorESign < totalAdvisorESign
         ) {
           return null;
+        }
+
+        // L'allegato 4 è da visualizzare solo se il questionario di coerenza è valido
+        if (document.type === PDFType.Allegato4) {
+          if (!lipValidator.den.valid) {
+            return null;
+          }
         }
 
         return (
