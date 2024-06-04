@@ -21,7 +21,7 @@ export function Policy({lip, contractor}: PolicyProps) {
         <Stack direction="horizontal" gap={3}>
           <div className="flex-grow-1">
             <p className="mb-0">
-              <strong>Polizza n°:</strong> {lip.lipNumber}
+              <strong>Proposta di Polizza n°:</strong> {lip.lipNumber}
             </p>
             <p className="mb-0">
               <strong>Stipulata il:</strong> {dateString(lip.createdAt)}
