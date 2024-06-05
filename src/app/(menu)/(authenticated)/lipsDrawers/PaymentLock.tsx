@@ -7,7 +7,13 @@ import {faSquareArrowUpRight} from "@fortawesome/pro-solid-svg-icons";
 import {updateUnderwriting} from "@/app/(menu)/(authenticated)/lips/[id]/actions";
 import {notFound} from "next/navigation";
 
-export function PaymentLock() {
+interface PaymentLockProps {
+  hideUnderwritingAction?: boolean;
+}
+
+export function PaymentLock({
+  hideUnderwritingAction = false,
+}: PaymentLockProps) {
   const isPaymentLocked = useDrawerStore(
     (state) => state.drawerStates.payment?.isLocked,
   );
@@ -27,7 +33,12 @@ export function PaymentLock() {
     lip?.beneficiaries &&
     // se lo stato è sconosciuto, o incompleto)
     (lipState.id === 0 || lipState.id === 1);
-  const underwritingUnderInvestigation = lipState.id === 2;
+
+  // mostro il messaggio di underwriting in corso solo se lo stato è quello
+  // dedicato o se è explicitato di nascondere l'azione di underwriting (per l'area cliente)
+  const underwritingUnderInvestigation =
+    lipState.id === 2 || hideUnderwritingAction;
+
   const underwritingNotApproved = lipState.id === 15;
 
   if (underwritingNotApproved) {
@@ -65,7 +76,7 @@ export function PaymentLock() {
       <Alert className="mb-0" variant="danger">
         La proposta di Polizza non può essere emessa direttamente in virtù delle
         risposte fornite nella compilazione del questionario sanitario/non
-        sanitario. Per procedere è necessario richiedere
+        sanitario. Per procedere è necessario richiedere l'underwriting.
         <br />
         <strong>
           Dopo aver richiesto l'underwriting i dati inseriti non saranno più

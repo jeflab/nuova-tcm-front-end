@@ -80,7 +80,7 @@ export const drawers: DrawerConfig[] = [
     name: "payment",
     title: "Pagamento",
     summaryContent: <PaymentSummary />,
-    lock: <PaymentLock />,
+    lock: <PaymentLock hideUnderwritingAction={true} />,
   },
   {
     name: "documentation",
