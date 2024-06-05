@@ -446,7 +446,7 @@ export function ComplementaryCoverages() {
           <FieldError name="tpd.coverage" />
           <div className="d-flex flex-column flex-md-row align-items-md-center column-gap-3 row-gap-1">
             <FormLabel className="text-nowrap mb-sm-0" htmlFor="tpd-coverage">
-              Capitale assicurato
+              Rendita mensile
             </FormLabel>
             <SelectField
               id="tpd-coverage"
