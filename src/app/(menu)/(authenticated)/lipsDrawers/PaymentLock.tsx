@@ -86,7 +86,6 @@ export function PaymentLock({
           <Button
             type="button"
             variant="primary"
-            size="sm"
             onClick={() => lip && setUnderwriting(lip?.id)}
           >
             <FontAwesomeIcon icon={faSquareArrowUpRight} className="me-2" />

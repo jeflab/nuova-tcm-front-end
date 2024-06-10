@@ -1,10 +1,10 @@
 import {DrawerName} from "@/app/(menu)/(authenticated)/lips/[id]/drawers";
+import {validateDen} from "@/helpers/lip-validator";
 import {Lip} from "@/models/entities/lip";
 import {PreliminaryData} from "@/models/preliminaryData";
 import {DrawerState, presetButtons} from "@/ui/drawer/types";
 import {create} from "zustand";
 import {immer} from "zustand/middleware/immer";
-import {LipValidator} from "@/helpers/lip-validator";
 
 interface State {
   drawerStates: Partial<Record<DrawerName, DrawerState>>;
@@ -31,8 +31,6 @@ function createDrawerState(state: State & Actions) {
   // Dati preliminari
   const isPreliminary = !state.lip;
   state.drawerStates = {...initialState.drawerStates};
-
-  const lipValidator = new LipValidator(state.lip);
 
   const atLeastOneESign =
     (state.lip?.eSigns?.polizza &&
@@ -217,7 +215,7 @@ function createDrawerState(state: State & Actions) {
     if (state.drawerStates.identification?.variant === "success") {
       if (state.lip?.den === null) {
         state.drawerStates.den = {variant: "active", ...presetButtons.compile};
-      } else if (lipValidator.den.valid) {
+      } else if (validateDen(state.lip?.den)) {
         state.drawerStates.den = {
           variant: "success",
           ...(allowUpdatesBeforePayment && presetButtons.update),

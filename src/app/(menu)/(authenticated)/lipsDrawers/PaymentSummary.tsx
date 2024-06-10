@@ -122,7 +122,7 @@ export function PaymentSummary() {
               <Currency>{extraPremium.value / 12}</Currency>
             </p>
           ) : null}
-          <Alert variant={"info"}>{extraPremium.note}</Alert>
+          <Alert variant="info">{extraPremium.note}</Alert>
           <ButtonLink
             href={`${process.env.NEXT_PUBLIC_API_URL}/pdf-underwriting-sanitario/?lipId=${lip?.id}&agentId=${lip?.agent?.id}&contractorId=${lip?.contractor?.id}`}
             download
