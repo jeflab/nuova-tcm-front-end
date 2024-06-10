@@ -48,9 +48,13 @@ export function HealthQuestionnaireSummary() {
             sanitario, il Contraente è tenuto alla compilazione del seguente
             questionario aggiuntivo.
           </p>
-          <ButtonLink href={professionalSportQuestionnaireUrl} download>
-            <FontAwesomeIcon icon={faDownload} /> Scarica il questionario
-            professionale sportivo
+          <ButtonLink
+            href={professionalSportQuestionnaireUrl}
+            download
+            target="_blank"
+          >
+            <FontAwesomeIcon icon={faDownload} /> Scarica i questionari per il
+            rischio professionale e sportivo
           </ButtonLink>
         </Alert>
       )}

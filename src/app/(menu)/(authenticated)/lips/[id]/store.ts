@@ -4,6 +4,7 @@ import {PreliminaryData} from "@/models/preliminaryData";
 import {DrawerState, presetButtons} from "@/ui/drawer/types";
 import {create} from "zustand";
 import {immer} from "zustand/middleware/immer";
+import {LipValidator} from "@/helpers/lip-validator";
 
 interface State {
   drawerStates: Partial<Record<DrawerName, DrawerState>>;
@@ -31,6 +32,8 @@ function createDrawerState(state: State & Actions) {
   const isPreliminary = !state.lip;
   state.drawerStates = {...initialState.drawerStates};
 
+  const lipValidator = new LipValidator(state.lip);
+
   const atLeastOneESign =
     (state.lip?.eSigns?.polizza &&
       Object.keys(state.lip?.eSigns?.polizza).length > 0) ||
@@ -39,10 +42,27 @@ function createDrawerState(state: State & Actions) {
   const healthQuestionnaireCompiled = !!state.lip?.healthcareQuestionnaire;
   const privacyESigned = !!state.lip?.contractor?.lastPrivacyEsignId;
 
-  const underWritingBlocked =
-    state.lip?.lipStates?.id === 2
+  const askForUnderwriting =
+    // se le condizioni sanitarie non sono rispettate
+    (state.lip?.mustAskUnderwriting ?? false) &&
+    // e abbiamo i beneficiari, quindi siamo pre-pagamento
+    state.lip &&
+    state.lip?.beneficiaries &&
+    // se lo stato è sconosciuto, o incompleto)
+    (state.lip?.lipStates?.id === 0 || state.lip?.lipStates.id === 1);
+  const underwritingUnderInvestigation = state.lip?.lipStates?.id === 2;
+  const underwritingNotApproved = state.lip?.lipStates?.id === 15;
+  const underwritingApproved = state.lip?.lipStates?.id === 14;
+  const allowUpdatesBeforePayment =
+    !atLeastOneESign &&
+    !underwritingUnderInvestigation &&
+    !underwritingNotApproved &&
+    !underwritingApproved;
+
+  const blockPayment =
+    askForUnderwriting || underwritingUnderInvestigation
       ? 2
-      : state.lip?.lipStates?.id === 15
+      : underwritingNotApproved
         ? 15
         : false;
   const amlBlocked = state.lip?.aml?.blocked ?? false;
@@ -164,7 +184,7 @@ function createDrawerState(state: State & Actions) {
       } else {
         state.drawerStates.contractorData = {
           variant: "success",
-          ...(!atLeastOneESign && presetButtons.update),
+          ...(allowUpdatesBeforePayment && presetButtons.update),
         };
       }
     } else {
@@ -184,7 +204,7 @@ function createDrawerState(state: State & Actions) {
       } else if (state.lip.contractor.identitydocument.length > 0) {
         state.drawerStates.identification = {
           variant: "success",
-          ...(!atLeastOneESign && presetButtons.update),
+          ...(allowUpdatesBeforePayment && presetButtons.update),
         };
       } else {
         state.drawerStates.identification = {variant: "danger"};
@@ -197,21 +217,15 @@ function createDrawerState(state: State & Actions) {
     if (state.drawerStates.identification?.variant === "success") {
       if (state.lip?.den === null) {
         state.drawerStates.den = {variant: "active", ...presetButtons.compile};
-      } else if (
-        state.lip?.den &&
-        state.lip.den.duration.response === "long_term" &&
-        (["capital_and_personal_protection"] as const).some((value) =>
-          state.lip?.den?.expectations.response.includes(value),
-        )
-      ) {
+      } else if (lipValidator.den.valid) {
         state.drawerStates.den = {
           variant: "success",
-          ...(!atLeastOneESign && presetButtons.update),
+          ...(allowUpdatesBeforePayment && presetButtons.update),
         };
       } else {
         state.drawerStates.den = {
           variant: "danger",
-          ...(!atLeastOneESign && presetButtons.update),
+          ...(allowUpdatesBeforePayment && presetButtons.update),
         };
       }
     } else {
@@ -228,7 +242,7 @@ function createDrawerState(state: State & Actions) {
       } else if (state.lip?.quotation?.premium) {
         state.drawerStates.quote = {
           variant: "success",
-          ...(!atLeastOneESign && presetButtons.update),
+          ...(allowUpdatesBeforePayment && presetButtons.update),
         };
       } else {
         state.drawerStates.quote = {variant: "danger"};
@@ -247,7 +261,7 @@ function createDrawerState(state: State & Actions) {
       } else {
         state.drawerStates.healthQuestionnaire = {
           variant: "success",
-          ...(!atLeastOneESign && presetButtons.update),
+          ...(allowUpdatesBeforePayment && presetButtons.update),
         };
       }
     }
@@ -262,16 +276,16 @@ function createDrawerState(state: State & Actions) {
       } else {
         state.drawerStates.beneficiaries = {
           variant: "success",
-          ...(!atLeastOneESign && presetButtons.update),
+          ...(allowUpdatesBeforePayment && presetButtons.update),
         };
       }
     }
 
     // Pagamento
     if (state.drawerStates.beneficiaries?.variant === "success") {
-      if (underWritingBlocked) {
+      if (blockPayment) {
         state.drawerStates.payment = {
-          variant: underWritingBlocked === 2 ? "waiting" : "danger",
+          variant: blockPayment === 2 ? "waiting" : "danger",
           isLocked: true,
         };
       } else if (state.lip?.payment === null) {

@@ -21,10 +21,10 @@ export function Policy({lip, contractor}: PolicyProps) {
         <Stack direction="horizontal" gap={3}>
           <div className="flex-grow-1">
             <p className="mb-0">
-              <strong>Polizza n°:</strong> {lip.lipNumber}
+              <strong>Proposta di Polizza n°:</strong> {lip.lipNumber}
             </p>
             <p className="mb-0">
-              <strong>Stipulata il:</strong> {dateString(lip.createdAt)}
+              <strong>Creata il:</strong> {dateString(lip.createdAt)}
             </p>
             <p className="mb-0">
               <strong>Agente:</strong> {lip.agent.name} {lip.agent.surname}
@@ -47,7 +47,7 @@ export function Policy({lip, contractor}: PolicyProps) {
     >
       <div className="vstack gap-3">
         <p className="mb-0">
-          <strong>Stipulata il:</strong> {dateString(lip.createdAt)}
+          <strong>Creata il:</strong> {dateString(lip.createdAt)}
         </p>
         <p className="mb-0">
           <strong>Contraente / Assicurato:</strong> {contractor.name}{" "}

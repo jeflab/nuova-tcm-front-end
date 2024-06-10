@@ -35,7 +35,7 @@ export function Coverages() {
                 onChange={(event) => {
                   const value = parseInt(event.target.value, 10);
                   if (value < 24_000) {
-                    setValue("tpd.enabled", "", {shouldValidate: true});
+                    setValue("tpd.enabled", false, {shouldValidate: true});
                     setValue("tpd.coverage", "", {shouldValidate: true});
                   }
                 }}

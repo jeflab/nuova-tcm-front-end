@@ -25,15 +25,20 @@ import {
 } from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Col, Row} from "react-bootstrap";
+import {LipValidator} from "@/helpers/lip-validator";
 
 export function DenSummary() {
+  const lip = useDrawerStore((state) => state.lip);
   const denData = useDrawerStore((state) => state.lip?.den);
+  const job = useDrawerStore((state) => state.lip?.contractor.pep?.job);
 
   if (!denData) {
     return null;
   }
 
-  if (denData.duration.response !== "long_term") {
+  const lipValidator = new LipValidator(lip);
+
+  if (!lipValidator.den.validDuration) {
     return (
       <p className="mb-0">
         Non è possibile continuare la consulenza poiché le aspettative del
@@ -43,11 +48,7 @@ export function DenSummary() {
     );
   }
 
-  if (
-    !(["capital_and_personal_protection"] as const).some((value) =>
-      denData.expectations.response.includes(value),
-    )
-  ) {
+  if (!lipValidator.den.validExpectation) {
     return (
       <p className="mb-0">
         Non è possibile continuare la consulenza poiché le aspettative del
@@ -65,11 +66,17 @@ export function DenSummary() {
         </h4>
         <p className="mb-0">
           <strong>Titolo di studio:</strong>{" "}
-          {getOptionsLabel(educationOptions, denData.education.response)}
+          {denData.education.response === "other"
+            ? denData.educationOther
+            : getOptionsLabel(educationOptions, denData.education.response)}
         </p>
         <p className="mb-0">
           <strong>Occupazione:</strong>{" "}
-          {getOptionsLabel(jobPositionOptions, denData.job.response)}
+          {job
+            ? job.position.response === "other"
+              ? job?.positionOther
+              : getOptionsLabel(jobPositionOptions, job.position.response)
+            : ""}
         </p>
         <p className="mb-0">
           <strong>
@@ -96,7 +103,9 @@ export function DenSummary() {
             ? denData.needsIntendToMeet.response.map((value) => (
                 <li key={value} className="d-flex">
                   <FontAwesomeIcon icon={faSquareCheck} className="me-2 mt-1" />
-                  {getOptionsLabel(needsToMeetOptions, value)}
+                  {value === "other"
+                    ? denData.needsIntendToMeetOther
+                    : getOptionsLabel(needsToMeetOptions, value)}
                 </li>
               ))
             : "Nessuno"}

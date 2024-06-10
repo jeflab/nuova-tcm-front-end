@@ -64,6 +64,7 @@ const denDefaultValues = (job: Optional<JobPosition>, den: Nullish<Den>) => ({
     "") as YesNoAnswer,
   needsIntendToMeet: (den?.needsIntendToMeet.response ??
     []) as NeedsToMeetOptions[],
+  needsIntendToMeetOther: den?.needsIntendToMeetOther ?? "",
   savings: den?.savings ?? "",
   income: den?.income ?? "",
   economicCondition: (den?.economicCondition.response ??

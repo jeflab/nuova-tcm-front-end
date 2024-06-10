@@ -21,31 +21,42 @@ const complementaryCoverages = [
   {
     key: "accidentalDeath",
     label: "Morte da infortunio",
+    valueLabel: "Capitale assicurato",
     maxDuration: 30,
     maxAge: 85,
   },
   {
     key: "trafficAccidentalDeath",
     label: "Morte per incidente stradale",
+    valueLabel: "Capitale assicurato",
     maxDuration: 30,
     maxAge: 85,
   },
   {
     key: "exemptionFromPaying",
     label: "Esenzione dal pagamento dei premi",
+    valueLabel: "",
     maxDuration: 30,
     maxAge: 65,
   },
   {
     key: "tpi",
     label: "Invalidità permanente da infortunio o malattia",
+    valueLabel: "Capitale assicurato",
     maxDuration: 10,
     maxAge: 65,
   },
-  {key: "cancer", label: "Cancro", maxDuration: 10, maxAge: 85},
+  {
+    key: "cancer",
+    label: "Cancro",
+    valueLabel: "Capitale assicurato",
+    maxDuration: 10,
+    maxAge: 85,
+  },
   {
     key: "tpd",
     label: "Perdita totale di autosufficienza",
+    valueLabel: "Rendita mensile",
     maxDuration: 30,
     maxAge: 85,
   },
@@ -109,7 +120,7 @@ export function QuoteSummary() {
         {filteredComplementaryCoverages.length > 0 ? (
           <Row xs={1} sm={2} md={1} lg={2} className="row-gap-3 d-flex">
             {filteredComplementaryCoverages.map(
-              ({key, label, maxDuration, maxAge}) => {
+              ({key, label, valueLabel, maxDuration, maxAge}) => {
                 const coverage = quoteData[key];
                 if (typeof coverage === "boolean") {
                   if (!coverage) {
@@ -129,12 +140,12 @@ export function QuoteSummary() {
                         <p className="mb-0">
                           {key === "accidentalDeath" ? (
                             <>
-                              <strong>Capitale assicurato:</strong>{" "}
+                              <strong>{valueLabel}:</strong>{" "}
                               <Currency>{quoteData.death * 2}</Currency>
                             </>
                           ) : key === "trafficAccidentalDeath" ? (
                             <>
-                              <strong>Capitale assicurato:</strong>{" "}
+                              <strong>{valueLabel}:</strong>{" "}
                               <Currency>{quoteData.death * 3}</Currency>
                             </>
                           ) : (
@@ -169,7 +180,7 @@ export function QuoteSummary() {
                           {label}
                         </h5>
                         <p className="mb-0">
-                          <strong>Capitale assicurato:</strong>{" "}
+                          <strong>{valueLabel}:</strong>{" "}
                           <Currency>{coverage.coverage}</Currency>
                         </p>
                         <p className="mb-0">

@@ -145,6 +145,12 @@ export async function getLastPrivacy() {
   return get("/last-privacy", {payloadShape: lastPrivacyShape});
 }
 
+export async function updateUnderwriting(lipId: number) {
+  return patch(`/lips/${lipId}/underwriting`, {
+    tags: [Tags.getLip(lipId)],
+  });
+}
+
 interface updateContractorDataParams {
   residence: {
     place: {
@@ -228,11 +234,13 @@ export async function identificationContractor(
 
 interface UpdateDenParams {
   education: EducationOptions;
+  educationOther: string;
   job: JobPosition;
   family: FamilyOptions;
   dependentFamilyMembers: DependentFamilyMembersOptions;
   otherInsuranceProducts: YesNoAnswer;
   needsIntendToMeet: NeedsToMeetOptions[];
+  needsIntendToMeetOther: string;
   savings: string;
   income: string;
   economicCondition: EconomicConditionOptions;
@@ -244,6 +252,7 @@ interface UpdateDenParams {
 export async function updateDen(formData: UpdateDenParams, lipId: number) {
   const data = {
     education: {options: educationOptions, response: formData.education},
+    educationOther: formData.educationOther,
     job: {options: jobPositionOptions, response: formData.job},
     family: {options: familyOptions, response: formData.family},
     dependentFamilyMembers: {
@@ -258,6 +267,7 @@ export async function updateDen(formData: UpdateDenParams, lipId: number) {
       options: needsToMeetOptions,
       response: formData.needsIntendToMeet,
     },
+    needsIntendToMeetOther: formData.needsIntendToMeetOther,
     savings: formData.savings,
     income: formData.income,
     economicCondition: {

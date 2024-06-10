@@ -12,7 +12,7 @@ import {
 } from "@fortawesome/pro-duotone-svg-icons";
 import {faDollarSign} from "@fortawesome/pro-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {Stack} from "react-bootstrap";
+import {Alert, Stack} from "react-bootstrap";
 
 export function PaymentSummary() {
   const paymentData = useDrawerStore((state) => state.lip?.payment);
@@ -122,9 +122,7 @@ export function PaymentSummary() {
               <Currency>{extraPremium.value / 12}</Currency>
             </p>
           ) : null}
-          <p>
-            <strong>Commento del master broker</strong>: {extraPremium.note}
-          </p>
+          <Alert variant={"info"}>{extraPremium.note}</Alert>
           <ButtonLink
             href={`${process.env.NEXT_PUBLIC_API_URL}/pdf-underwriting-sanitario/?lipId=${lip?.id}&agentId=${lip?.agent?.id}&contractorId=${lip?.contractor?.id}`}
             download
