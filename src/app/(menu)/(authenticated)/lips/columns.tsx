@@ -24,8 +24,8 @@ const lipstatus = [
   {id: 11, label: "Non approvata dal Master Broker a livello finanziario"},
   {id: 12, label: "Non approvata dal Master Broker a livello qualitativo"},
   {id: 13, label: "Bloccata per AML"},
-  {id: 14, label: "Approvata dopo revisione undewriting sanitario"},
-  {id: 15, label: "Non approvata dopo revisione undewriting sanitario"},
+  {id: 14, label: "Approvata dopo revisione underwriting sanitario"},
+  {id: 15, label: "Non approvata dopo revisione underwriting sanitario"},
 ];
 
 const columnHelper = createColumnHelper<Lip>();

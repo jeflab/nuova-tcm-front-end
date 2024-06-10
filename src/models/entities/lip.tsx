@@ -82,9 +82,14 @@ export const LipStatesIcons: Record<number, ReactNode> = {
       <FontAwesomeIcon icon={faSackDollar} className="fa-stack-1x" />
     </IconStack>
   ),
-  // 14: Approvata dopo revisione undewriting sanitario
-  14: <FontAwesomeIcon icon={faCircleHalf} className="text-warning" />,
-  // 15: Non approvata dopo revisione undewriting sanitario
+  // 14: Approvata dopo revisione underwriting sanitario
+  14: (
+    <IconStack className="text-success">
+      <FontAwesomeIcon icon={faCircle} className="fa-stack-2x" opacity={0.4} />
+      <FontAwesomeIcon icon={faHeartPulse} className="fa-stack-1x" />
+    </IconStack>
+  ),
+  // 15: Non approvata dopo revisione underwriting sanitario
   15: (
     <IconStack className="text-danger">
       <FontAwesomeIcon icon={faCircle} className="fa-stack-2x" opacity={0.4} />
