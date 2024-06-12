@@ -29,8 +29,6 @@ const lipStates = [
   {id: 15, label: "Non approvata dopo revisione underwriting sanitario"},
 ];
 
-console.log(lipStates);
-
 const columnHelper = createColumnHelper<Lip>();
 export const columns = [
   columnHelper.accessor("lipNumber", {
@@ -92,6 +90,7 @@ export const columns = [
   }),
   columnHelper.accessor("lipStates", {
     header: "Stato",
+    enableColumnFilter: false,
     cell: (props) => (
       <>
         {LipStatesIcons[props.getValue().id] ?? LipStatesIcons[0]}{" "}
@@ -225,6 +224,7 @@ export const skeletonColumns = [
   }),
   columnHelper.accessor("lipStates", {
     header: "Stato",
+    enableColumnFilter: false,
     cell: () => (
       <>
         <Placeholder as="span" animation="glow">
