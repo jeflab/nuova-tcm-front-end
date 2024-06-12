@@ -118,7 +118,7 @@ export function DenSummary() {
           Situazione finanziaria
         </h4>
         <p className="mb-0">
-          <strong>Reddito medio annuale:</strong>{" "}
+          <strong>Reddito medio annuale netto:</strong>{" "}
           <Currency>{denData.income}</Currency>
         </p>
         <p className="mb-0">

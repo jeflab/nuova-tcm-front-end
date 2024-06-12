@@ -99,7 +99,7 @@ export function QuoteForm() {
         root: {
           type: "server",
           message:
-            "Il premio annuo preventivato è superiore al 30% del reddito annuo. Riduci il capitale assicurato o deseleziona alcune garanzie per procedere ad una nuova quotazione.",
+            "Il premio annuo preventivato è superiore al 30% del reddito annuo netto. Riduci il capitale assicurato o deseleziona alcune garanzie per procedere ad una nuova quotazione.",
         },
       };
     }

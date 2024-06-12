@@ -319,15 +319,16 @@ export function DenForm() {
             <Col className="d-flex" xs={12} sm={4}>
               <FormGroup controlId="income" as={BorderFeedback}>
                 <FormLabel>
-                  A quanto ammonta attualmente il suo reddito medio annuo?
+                  A quanto ammonta attualmente il suo reddito medio annuo netto?
                 </FormLabel>
                 <FieldError />
                 <InputGroup>
                   <InputField
                     type="number"
-                    placeholder="Reddito medio annuo"
+                    placeholder="Reddito medio annuo netto"
                     validation={{
-                      required: "Inserisci il tuo reddito medio annuo attuale",
+                      required:
+                        "Inserisci il tuo reddito medio annuo netto attuale",
                     }}
                   />
                   <InputGroup.Text>,00 €</InputGroup.Text>
