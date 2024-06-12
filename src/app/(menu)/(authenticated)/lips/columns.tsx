@@ -10,9 +10,10 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {ColumnDef, createColumnHelper} from "@tanstack/react-table";
 import {Button, FormControl, FormSelect, Placeholder} from "react-bootstrap";
 
-const lipstatus = [
+// TODO: trovare il modo di prenderli dal backend
+const lipStates = [
   {id: 1, label: "Incompleta"},
-  {id: 2, label: "Underwriting sanitario"},
+  {id: 2, label: "Underwriting"},
   {id: 3, label: "Completa"},
   {id: 4, label: "Approvata dal broker"},
   {id: 5, label: "Primo pagamento confermato"},
@@ -27,6 +28,8 @@ const lipstatus = [
   {id: 14, label: "Approvata dopo revisione underwriting sanitario"},
   {id: 15, label: "Non approvata dopo revisione underwriting sanitario"},
 ];
+
+console.log(lipStates);
 
 const columnHelper = createColumnHelper<Lip>();
 export const columns = [
@@ -89,7 +92,6 @@ export const columns = [
   }),
   columnHelper.accessor("lipStates", {
     header: "Stato",
-    enableColumnFilter: false,
     cell: (props) => (
       <>
         {LipStatesIcons[props.getValue().id] ?? LipStatesIcons[0]}{" "}
@@ -108,11 +110,11 @@ export const columns = [
             <option key="all" value="all">
               Tutti
             </option>
-            {/*{lipStatuses.map((status) => (*/}
-            {/*  <option key={status} value={status}>*/}
-            {/*    {lipStatusesLabels[status]}*/}
-            {/*  </option>*/}
-            {/*))}*/}
+            {lipStates.map(({id, label}) => (
+              <option key={id} value={id}>
+                {label}
+              </option>
+            ))}
           </FormSelect>
         );
       },
@@ -223,7 +225,6 @@ export const skeletonColumns = [
   }),
   columnHelper.accessor("lipStates", {
     header: "Stato",
-    enableColumnFilter: false,
     cell: () => (
       <>
         <Placeholder as="span" animation="glow">
@@ -252,11 +253,11 @@ export const skeletonColumns = [
             <option key="all" value="all">
               Tutti
             </option>
-            {/*{lipStatuses.map((status) => (*/}
-            {/*  <option key={status} value={status}>*/}
-            {/*    {lipStatusesLabels[status]}*/}
-            {/*  </option>*/}
-            {/*))}*/}
+            {lipStates.map(({id, label}) => (
+              <option key={id} value={id}>
+                {label}
+              </option>
+            ))}
           </FormSelect>
         );
       },
