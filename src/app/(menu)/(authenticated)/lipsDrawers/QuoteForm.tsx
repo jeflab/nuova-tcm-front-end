@@ -14,7 +14,6 @@ import {cns} from "@/helpers/cns";
 import {dbDateString} from "@/helpers/dates";
 import {YesNoAnswer} from "@/helpers/getOptionsLabel";
 import {Currency} from "@/ui/Currency";
-import {Debug} from "@/ui/Debug";
 import {FieldError} from "@/ui/form/FieldError";
 import {Form} from "@/ui/form/Form";
 import {
