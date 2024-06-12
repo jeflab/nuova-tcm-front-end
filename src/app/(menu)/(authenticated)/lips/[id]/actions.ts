@@ -173,6 +173,10 @@ interface updateContractorDataParams {
     province: string;
     country: string;
   };
+  contact: {
+    phone: string;
+    email: string;
+  };
 }
 export async function updateContractorData(
   contractorId: number,
@@ -203,6 +207,8 @@ export async function updateContractorData(
         country: formData.job.country,
       },
     }),
+    phone: formData.contact.phone,
+    email: formData.contact.email,
   };
 
   return patch(`/personal-datas/${contractorId}`, {
