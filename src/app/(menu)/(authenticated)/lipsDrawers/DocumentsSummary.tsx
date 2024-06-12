@@ -2,6 +2,7 @@
 
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {CompanyPrivacy} from "@/app/(menu)/(authenticated)/lipsDrawers/CompanyPrivacy";
+import {validateDen} from "@/helpers/lip-validator";
 import {PDFType} from "@/models/entities/esign";
 import {
   faCheckCircle,
@@ -20,7 +21,6 @@ import {
   Stack,
 } from "react-bootstrap";
 import styles from "./DocumentsManagement.module.scss";
-import {LipValidator} from "@/helpers/lip-validator";
 
 interface Esign {
   key: string;
@@ -104,15 +104,11 @@ const eSignsCount = (
 export function DocumentsSummary() {
   const [isConsentCheckOpen, setIsConsentCheckOpen] = useState(false);
   const lip = useDrawerStore((state) => state.lip);
-  // const isPaymentActive = useDrawerStore(
-  //   (state) => state.drawerStates.payment?.variant === "active",
-  // );
+  const denValid = useDrawerStore((state) => validateDen(state.lip?.den));
 
-  if (!lip) {
+  if (!lip || !denValid) {
     return null;
   }
-
-  const lipValidator = new LipValidator(lip);
 
   return (
     <Stack gap={3}>
@@ -196,13 +192,6 @@ export function DocumentsSummary() {
           partialAdvisorESign < totalAdvisorESign
         ) {
           return null;
-        }
-
-        // L'allegato 4 è da visualizzare solo se il questionario di coerenza è valido
-        if (document.type === PDFType.Allegato4) {
-          if (!lipValidator.den.valid) {
-            return null;
-          }
         }
 
         return (

@@ -1,32 +1,27 @@
-//@Fabio: non so se sia il posto migliore dove inserire questo helper
-// L'obiettivo sarebbe avere un punto dove inserire alcune logiche di validazione
-// di una lip per evitare duplicazione del codice
-
 import {Lip} from "@/models/entities/lip";
 
-export class LipValidator {
-  den = new LipDenValidator(this.lip);
+export function validateDenDuration(den?: Lip["den"]): boolean {
+  if (!den) return false;
 
-  constructor(private lip?: Lip | null) {}
+  return den.duration.response === "long_term";
 }
 
-class LipDenValidator {
-  constructor(private lip?: Lip | null) {}
+export function validateDenExpectation(den?: Lip["den"]): boolean {
+  if (!den) return false;
 
-  get valid() {
-    return this.validDuration && this.validExpectation;
-  }
+  return (["capital_and_personal_protection"] as const).some((value) =>
+    den.expectations.response.includes(value),
+  );
+}
 
-  get validDuration(): boolean {
-    return !!this.lip?.den && this.lip?.den.duration.response === "long_term";
-  }
+export function validateDen(den: Lip["den"] | null): boolean {
+  if (!den) return false;
 
-  get validExpectation(): boolean {
-    return (
-      !!this.lip?.den &&
-      (["capital_and_personal_protection"] as const).some((value) =>
-        this.lip?.den?.expectations.response.includes(value),
-      )
-    );
-  }
+  return validateDenDuration(den) && validateDenExpectation(den);
+}
+
+export function validateLip(lip: Lip | null): boolean {
+  if (!lip) return false;
+
+  return validateDen(lip.den);
 }

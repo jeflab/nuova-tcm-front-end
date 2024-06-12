@@ -1,12 +1,12 @@
 import {Providers} from "@/ui/Providers";
 import {getTheme} from "@/ui/Theme/actions";
-import {config} from "@fortawesome/fontawesome-svg-core";
+import {config as fontAwesomeConfig} from "@fortawesome/fontawesome-svg-core";
 import type {Metadata} from "next";
 import {ReactNode} from "react";
 import "./globals.scss";
 
 // Fix icone giganti: non importiamo qui ma importiamo manualmente i css in globals.scss
-config.autoAddCss = false;
+fontAwesomeConfig.autoAddCss = false;
 
 export const metadata: Metadata = {
   title: "Smart Broker Space",

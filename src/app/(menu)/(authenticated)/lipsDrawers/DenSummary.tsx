@@ -13,6 +13,10 @@ import {
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {getOptionsLabel} from "@/helpers/getOptionsLabel";
+import {
+  validateDenDuration,
+  validateDenExpectation,
+} from "@/helpers/lip-validator";
 import {Currency} from "@/ui/Currency";
 import {
   faCalendarClock,
@@ -25,7 +29,6 @@ import {
 } from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Col, Row} from "react-bootstrap";
-import {LipValidator} from "@/helpers/lip-validator";
 
 export function DenSummary() {
   const lip = useDrawerStore((state) => state.lip);
@@ -36,9 +39,7 @@ export function DenSummary() {
     return null;
   }
 
-  const lipValidator = new LipValidator(lip);
-
-  if (!lipValidator.den.validDuration) {
+  if (!validateDenDuration(lip?.den)) {
     return (
       <p className="mb-0">
         Non è possibile continuare la consulenza poiché le aspettative del
@@ -48,7 +49,7 @@ export function DenSummary() {
     );
   }
 
-  if (!lipValidator.den.validExpectation) {
+  if (!validateDenExpectation(lip?.den)) {
     return (
       <p className="mb-0">
         Non è possibile continuare la consulenza poiché le aspettative del
@@ -117,7 +118,7 @@ export function DenSummary() {
           Situazione finanziaria
         </h4>
         <p className="mb-0">
-          <strong>Reddito medio annuale:</strong>{" "}
+          <strong>Reddito medio annuale netto:</strong>{" "}
           <Currency>{denData.income}</Currency>
         </p>
         <p className="mb-0">

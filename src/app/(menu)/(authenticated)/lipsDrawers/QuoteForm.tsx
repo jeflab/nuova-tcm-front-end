@@ -14,7 +14,6 @@ import {cns} from "@/helpers/cns";
 import {dbDateString} from "@/helpers/dates";
 import {YesNoAnswer} from "@/helpers/getOptionsLabel";
 import {Currency} from "@/ui/Currency";
-import {Debug} from "@/ui/Debug";
 import {FieldError} from "@/ui/form/FieldError";
 import {Form} from "@/ui/form/Form";
 import {
@@ -99,7 +98,7 @@ export function QuoteForm() {
         root: {
           type: "server",
           message:
-            "Il premio annuo preventivato è superiore al 30% del reddito annuo. Riduci il capitale assicurato o deseleziona alcune garanzie per procedere ad una nuova quotazione.",
+            "Il premio annuo preventivato è superiore al 30% del reddito annuo netto. Riduci il capitale assicurato o deseleziona alcune garanzie per procedere ad una nuova quotazione.",
         },
       };
     }

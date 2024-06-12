@@ -10,6 +10,8 @@ $secondary: #c42f57;
 
 $zindex-modal-backdrop: 1055 !default; // per supportare modali innestate
 
+$logo-gradient: linear-gradient(90deg, var(--bs-primary), var(--bs-secondary));
+
 @import "bootstrap/scss/variables";
 @import "bootstrap/scss/variables-dark";
 

@@ -1,3 +1,5 @@
+@import "../../src/app/variables";
+
 .centerContent {
   display: flex;
   flex-direction: column;
@@ -17,7 +19,7 @@
   text-align: center;
   font-size: 5rem;
   padding-bottom: 1.5rem;
-  background: linear-gradient(90deg, var(--bs-primary), var(--bs-secondary));
+  background: $logo-gradient;
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;

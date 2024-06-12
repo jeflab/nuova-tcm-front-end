@@ -69,12 +69,12 @@ export function PolicySkeleton() {
         <Stack direction="horizontal" gap={3}>
           <Placeholder as="div" className="flex-grow-1" animation="glow">
             <p className="mb-0">
-              <Placeholder style={{width: "70px"}}></Placeholder>{" "}
+              <Placeholder style={{width: "165px"}}></Placeholder>{" "}
               <Placeholder style={{width: "100px"}}></Placeholder>
             </p>
             <p className="mb-0">
-              <Placeholder style={{width: "80px"}}></Placeholder>{" "}
-              <Placeholder style={{width: "130px"}}></Placeholder>
+              <Placeholder style={{width: "70px"}}></Placeholder>{" "}
+              <Placeholder style={{width: "120px"}}></Placeholder>
             </p>
             <p className="mb-0">
               <Placeholder style={{width: "60px"}}></Placeholder>{" "}

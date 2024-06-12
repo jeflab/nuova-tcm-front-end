@@ -3,8 +3,8 @@
 import {getProfile} from "@/app/(no-menu)/(auth)/actions";
 import {esignSchema, PDFType} from "@/models/entities/esign";
 import {lipSchema} from "@/models/entities/lip";
-import {post, put} from "@/services/api";
-import {Tag} from "@/services/const";
+import {patch, post, put} from "@/services/api";
+import {Tag, Tags} from "@/services/const";
 
 const createFEATransactionSchema = {
   esign: esignSchema,
@@ -59,5 +59,22 @@ export async function signFEADoc<TPayload>({
       ...payload,
     },
     ...(tagToRevalidate && {tags: [tagToRevalidate]}),
+  });
+}
+
+export async function updateContractorPhone(
+  personalDataId: number,
+  lipId: number,
+  phone: string,
+) {
+  return patch(`/personal-datas/${personalDataId}`, {
+    data: {phone},
+    tags: [Tags.getLip(lipId)],
+  });
+}
+
+export async function updateAgentPhone(agentId: number, phone: string) {
+  return patch(`/agents/${agentId}/update-phone`, {
+    data: {phone},
   });
 }
