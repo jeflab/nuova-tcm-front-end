@@ -1,16 +1,17 @@
 import {Profile} from "@/models/account";
 import {PersonalData} from "@/models/entities/personalData";
 import {cns} from "@/helpers/cns";
+import {updateAgentPhone, updateContractorPhone} from "@/ui/eSign/actions";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {FieldError} from "@/ui/form/FieldError";
 import {Form} from "@/ui/form/Form";
 import {InputField} from "@/ui/form/InputField";
 import {onlyNumbersNormalizer} from "@/ui/form/normalizers";
 import {SubmitButton} from "@/ui/form/SubmitButton";
-import {faSpinner} from "@fortawesome/pro-duotone-svg-icons";
-import {faSignInAlt} from "@fortawesome/pro-duotone-svg-icons/faSignInAlt";
+import {faCheck, faSpinner, faXmark} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {Alert, Button, FormGroup, FormLabel} from "react-bootstrap";
+import {Alert, Button, FormGroup, FormLabel, Stack} from "react-bootstrap";
+import invariant from "tiny-invariant";
 
 export interface InsertPhoneFormData {
   phone: string;
@@ -19,7 +20,9 @@ export interface InsertPhoneFormData {
 interface InsertPhoneFormProps {
   closeEditNumberForm: () => void;
   defaultValues: InsertPhoneFormData;
+  lipId: number;
   onCancel: () => void;
+  onNumberUpdated?: () => void;
   personalData?: PersonalData;
   profile: Profile;
 }
@@ -27,21 +30,49 @@ interface InsertPhoneFormProps {
 export function InsertPhoneForm({
   closeEditNumberForm,
   defaultValues,
+  lipId,
   onCancel,
+  onNumberUpdated,
   personalData,
   profile,
 }: InsertPhoneFormProps) {
   return (
     <Form
-      onSubmit={(values) => {
+      onSubmit={async (values) => {
         if (personalData) {
-          console.log(
-            `Aggiorno il personalData ${personalData.name} ${personalData.surname} con il numero di cellulare ${values.phone}`,
+          const updateContractorPhoneResponse = await updateContractorPhone(
+            personalData.id,
+            lipId,
+            values.phone,
           );
+          if (updateContractorPhoneResponse.status !== "success") {
+            throw {
+              root: {
+                type: "server",
+                message: updateContractorPhoneResponse.message,
+              },
+            };
+          }
+          onNumberUpdated?.();
+          closeEditNumberForm();
         } else {
-          console.log(
-            `Aggiorno il profilo ${profile.agent?.name ?? profile.contractor?.name} ${profile.agent?.surname ?? profile.contractor?.surname} con il numero di cellulare ${values.phone}`,
+          invariant(profile.agent?.id, "Agent ID is missing");
+          const updateAgentPhoneResponse = await updateAgentPhone(
+            profile.agent.id,
+            values.phone,
           );
+
+          if (updateAgentPhoneResponse.status !== "success") {
+            throw {
+              root: {
+                type: "server",
+                message: updateAgentPhoneResponse.message,
+              },
+            };
+          }
+
+          onNumberUpdated?.();
+          closeEditNumberForm();
         }
       }}
       defaultValues={defaultValues}
@@ -71,22 +102,23 @@ export function InsertPhoneForm({
         variant="danger"
         className="mb-0 w-100"
       />
-      <div>
+      <Stack direction="horizontal" gap={2}>
         <SubmitButton>
           {(isLoggingIn) => (
             <>
               <FontAwesomeIcon
-                icon={isLoggingIn ? faSpinner : faSignInAlt}
+                icon={isLoggingIn ? faSpinner : faCheck}
                 className={cns("me-2", isLoggingIn && "fa-spin")}
               />
               Conferma
             </>
           )}
-        </SubmitButton>{" "}
+        </SubmitButton>
         <Button variant="cancel" type="button" onClick={onCancel}>
+          <FontAwesomeIcon icon={faXmark} className="me-2" />
           Annulla
         </Button>
-      </div>
+      </Stack>
     </Form>
   );
 }

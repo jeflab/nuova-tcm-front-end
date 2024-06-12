@@ -156,8 +156,13 @@ export function RequestOTPModalContent<TPayload>({
       closeEditNumberForm={() => {
         setUpdatePhoneOpen(false);
       }}
-      defaultValues={{phone: createdFEATransaction.profile.user.phone ?? ""}}
+      defaultValues={{
+        phone:
+          personalData?.phone ?? createdFEATransaction.profile.user.phone ?? "",
+      }}
+      lipId={lipId}
       onCancel={onCancel}
+      onNumberUpdated={requestOTP}
       personalData={personalData}
       profile={createdFEATransaction.profile}
     />

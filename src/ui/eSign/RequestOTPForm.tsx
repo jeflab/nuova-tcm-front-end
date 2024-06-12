@@ -119,8 +119,7 @@ export function RequestOTPForm<TPayload>({
             </div>
           ) : (
             <p>
-              Per modificare il numero di cellulare consulta{" "}
-              <a href="/user/profile">'Gestione del profilo'</a>
+              Per modificare il tuo numero di cellulare{" "}
               <Button
                 variant="link"
                 onClick={openEditNumberForm}
@@ -130,7 +129,7 @@ export function RequestOTPForm<TPayload>({
                   verticalAlign: "baseline",
                 }}
               >
-                Test cambia numero Intermediario
+                clicca qui
               </Button>
             </p>
           )}
