@@ -104,11 +104,9 @@ const eSignsCount = (
 export function DocumentsSummary() {
   const [isConsentCheckOpen, setIsConsentCheckOpen] = useState(false);
   const lip = useDrawerStore((state) => state.lip);
-  // const isPaymentActive = useDrawerStore(
-  //   (state) => state.drawerStates.payment?.variant === "active",
-  // );
+  const denValid = useDrawerStore((state) => validateDen(state.lip?.den));
 
-  if (!lip) {
+  if (!lip || !denValid) {
     return null;
   }
 
@@ -194,13 +192,6 @@ export function DocumentsSummary() {
           partialAdvisorESign < totalAdvisorESign
         ) {
           return null;
-        }
-
-        // L'allegato 4 è da visualizzare solo se il questionario di coerenza è valido
-        if (document.type === PDFType.Allegato4) {
-          if (!validateDen(lip.den)) {
-            return null;
-          }
         }
 
         return (
