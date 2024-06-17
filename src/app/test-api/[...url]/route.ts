@@ -16,8 +16,6 @@ export async function GET(
     ? `?${queryParams.toString()}`
     : "";
 
-  console.log("url:", `${apiUrl}/${params.url.join("/")}${queryParamsString}`);
-
   return await fetch(`${apiUrl}/${params.url.join("/")}${queryParamsString}`, {
     headers: {
       ...contentJsonHeader,
