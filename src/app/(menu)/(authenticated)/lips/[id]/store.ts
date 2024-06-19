@@ -75,7 +75,7 @@ function createDrawerState(state: State & Actions) {
     ) {
       state.drawerStates.fatca = {variant: "success"};
     } else {
-      state.drawerStates.fatca = {variant: "danger"};
+      state.drawerStates.fatca = {variant: "danger", ...presetButtons.update};
     }
 
     // contractor fiscal code
