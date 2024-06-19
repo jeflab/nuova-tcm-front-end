@@ -33,22 +33,33 @@ export function PaymentSummary() {
           <FontAwesomeIcon icon={faCirclePlay} /> Decorrenza assicurazione
         </h4>
         <p>
-          Il contratto si intende <strong>perfezionato e concluso</strong> nel
-          momento in cui avvengono entrambi gli eventi qui elencati:
+          Il <strong>Contratto si intende perfezionato e concluso</strong> nel
+          momento in cui avvengono contestualmente tutti gli eventi qui
+          elencati:
         </p>
-        <ol>
+        <ol type="a">
           <li>
-            la <strong>sottoscrizione della proposta/polizza</strong> da parte
-            del Contraente
+            la{" "}
+            <strong>
+              sottoscrizione della proposta/polizza da parte del Contraente
+            </strong>
+            ;
           </li>
           <li>
-            il <strong>pagamento del Premio Annuo Costante</strong> alla data di
-            perfezionamento.
+            il <strong>pagamento del Premio</strong> Annuo Costante o rata di
+            Premio alla data di perfezionamento;
+          </li>
+          <li>
+            la ricezione da parte del Contraente della comunicazione scritta di{" "}
+            <strong>
+              accettazione della Proposta da parte della Compagnia
+            </strong>
+            .
           </li>
         </ol>
         <p className="mb-0">
-          Il contratto entra in vigore alle ore 24 della data di perfezionamento
-          e conclusione dello stesso.
+          Il contratto entra in vigore (Decorrenza) alle ore 24 della data di
+          perfezionamento e conclusione dello stesso.
         </p>
       </div>
       <div>
