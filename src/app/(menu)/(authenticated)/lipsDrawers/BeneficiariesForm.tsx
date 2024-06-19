@@ -158,20 +158,35 @@ export function BeneficiariesForm() {
           id="healt-questionnaire-form"
           onSubmit={async (values) => {
             invariant(lipId, "lipId is required");
-            if (
-              values.nomination === "beneficiaries" &&
-              values.beneficiaries?.reduce(
-                (acc, curr) => acc + parseInt(curr.share, 10),
-                0,
-              ) !== 100
-            ) {
-              throw {
-                root: {
-                  type: "shareSum",
-                  message:
-                    "La somma delle quote dei Beneficiari deve essere uguale a 100",
-                },
-              };
+            if (values.nomination === "beneficiaries") {
+              if (
+                values.beneficiaries?.reduce(
+                  (acc, curr) => acc + parseInt(curr.share, 10),
+                  0,
+                ) !== 100
+              ) {
+                throw {
+                  root: {
+                    type: "shareSum",
+                    message:
+                      "La somma delle quote dei Beneficiari deve essere uguale a 100",
+                  },
+                };
+              }
+
+              const fiscalCodes = new Set<string>();
+              values.beneficiaries.forEach((beneficiary) => {
+                if (fiscalCodes.has(beneficiary.fiscalCode)) {
+                  throw {
+                    root: {
+                      type: "duplicate",
+                      message:
+                        "Due Beneficiari non possono avere lo stesso codice fiscale",
+                    },
+                  };
+                }
+                fiscalCodes.add(beneficiary.fiscalCode);
+              });
             }
 
             const updatedContractor = await updateBeneficiaries(values, lipId);

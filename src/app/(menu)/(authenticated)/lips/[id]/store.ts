@@ -37,7 +37,6 @@ function createDrawerState(state: State & Actions) {
       Object.keys(state.lip?.eSigns?.polizza).length > 0) ||
     (state.lip?.eSigns?.identificazione &&
       Object.keys(state.lip?.eSigns?.identificazione).length > 0);
-  const healthQuestionnaireCompiled = !!state.lip?.healthcareQuestionnaire;
   const privacyESigned = !!state.lip?.contractor?.lastPrivacyEsignId;
 
   const askForUnderwriting =
