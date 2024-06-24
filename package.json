@@ -15,6 +15,7 @@
     "chalk": "^5.3.0",
     "codice-fiscale-js": "^2.3.20",
     "date-fns": "^3.0.0",
+    "eslint-plugin-react-compiler": "^0.0.0-experimental-51a85ea-20240601",
     "ibantools": "^4.5.0",
     "immer": "^10.0.3",
     "js-cookie": "^3.0.5",

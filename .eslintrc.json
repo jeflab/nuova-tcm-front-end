@@ -8,6 +8,7 @@
     "next/core-web-vitals",
     "prettier"
   ],
+  "plugins": ["react-compiler"],
   "parserOptions": {
     "ecmaVersion": 2020,
     "sourceType": "module",
@@ -15,6 +16,7 @@
   },
   "root": true,
   "rules": {
+    "react-compiler/react-compiler": "error",
     "react/no-unescaped-entities": [
       "error",
       {
