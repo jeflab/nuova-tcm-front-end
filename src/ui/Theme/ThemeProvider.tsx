@@ -17,10 +17,15 @@ export function ThemeProvider({children}: WithChildren) {
 
   const setTheme = useCallback((theme: string) => {
     const parsedTheme = themeSchema.parse(theme);
-    Cookies.set(THEME_COOKIE_NAME, parsedTheme);
-    window.document.documentElement.dataset.bsTheme = parsedTheme;
     setThemeState(parsedTheme);
   }, []);
+
+  useEffect(() => {
+    if (theme) {
+      Cookies.set(THEME_COOKIE_NAME, theme);
+      window.document.documentElement.dataset.bsTheme = theme;
+    }
+  }, [theme]);
 
   const providerValue = useMemo(
     () => ({theme, isThemeSafe, setTheme}) as ThemeContext,

@@ -27,9 +27,9 @@ function authorizationHeader() {
 function parseLaravelErrorPage(text: string) {
   let ok = false;
   let noScript = "";
-  const noScriptMatch = text.match(/<noscript>(.+)<\/noscript>/gis);
+  const noScriptMatch = text.match(/<noscript>(.+)<\/noscript>/gi);
   let title = "";
-  const titleMatch = text.match(/<title>(.+)<\/title>/gis);
+  const titleMatch = text.match(/<title>(.+)<\/title>/gi);
 
   if (titleMatch) {
     ok = true;
