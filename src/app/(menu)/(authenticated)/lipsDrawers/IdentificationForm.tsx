@@ -332,14 +332,12 @@ export function IdentificationForm() {
               </FormGroup>
             </Col>
           </Row>
-          <Col>
-            <FieldError
-              name="root"
-              as={Alert}
-              variant="danger"
-              className="mb-0 w-100 px-3"
-            />
-          </Col>
+          <FieldError
+            name="root"
+            as={Alert}
+            variant="danger"
+            className="mb-0 w-100 px-3"
+          />
         </Form>
       </ModalBody>
       <ModalFooter>
