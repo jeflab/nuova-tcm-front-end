@@ -1,11 +1,20 @@
 "use client";
 
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {backendUrl} from "@/services/const";
+import {ButtonLink} from "@/ui/ButtonLink";
 import {Alert, Button} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faSquareArrowUpRight} from "@fortawesome/pro-solid-svg-icons";
 import {updateUnderwriting} from "@/app/(menu)/(authenticated)/lips/[id]/actions";
 import {notFound} from "next/navigation";
+import {
+  faArrowUpRightFromSquare,
+  faDownload,
+} from "@fortawesome/pro-duotone-svg-icons";
+
+const professionalSportQuestionnaireUrl =
+  backendUrl + "questionario_professionale_sportivo.pdf";
 
 interface PaymentLockProps {
   hideUnderwritingAction?: boolean;
@@ -38,6 +47,10 @@ export function PaymentLock({
   // dedicato o se è explicitato di nascondere l'azione di underwriting (per l'area cliente)
   const underwritingUnderInvestigation =
     lipState.id === 2 || hideUnderwritingAction;
+
+  const showProfessionalSportQuestionnaire =
+    lip?.healthcareQuestionnaire?.professionalRisk.check === "yes" ||
+    lip?.healthcareQuestionnaire?.sportRisk.check === "yes";
 
   const underwritingNotApproved = lipState.id === 15;
 
@@ -73,16 +86,50 @@ export function PaymentLock({
     };
 
     return (
-      <Alert className="mb-0" variant="danger">
-        La proposta di Polizza non può essere emessa direttamente in virtù delle
-        risposte fornite nella compilazione del questionario sanitario/non
-        sanitario. Per procedere è necessario richiedere l'underwriting.
-        <br />
-        <strong>
-          Dopo aver richiesto l'underwriting i dati inseriti non saranno più
-          modificabili.
-        </strong>
-        <div className="mt-2  d-flex justify-content-end">
+      <>
+        {showProfessionalSportQuestionnaire && (
+          <Alert variant="info" className="mb-0">
+            <p>
+              In virtù delle risposte fornite nella compilazione del
+              questionario sanitario, il Contraente è tenuto alla compilazione
+              del seguente questionario aggiuntivo. È obbligatorio utilizzare{" "}
+              <strong>Adobe Acrobat Reader</strong> (
+              <a
+                href="https://get.adobe.com/it/reader/"
+                target="_blank"
+                className="alert-link"
+              >
+                Scarica <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
+              </a>
+              ) per la compilazione del modulo. Una volta compilato, deve essere
+              inviato via email all'indirizzo{" "}
+              <a href="mailto:xxxx@brightlife.it" className="alert-link">
+                xxxx@brightlife.it
+              </a>
+              .
+            </p>
+            <ButtonLink
+              href={professionalSportQuestionnaireUrl}
+              download
+              target="_blank"
+            >
+              <FontAwesomeIcon icon={faDownload} /> Scarica i questionari per il
+              rischio professionale e sportivo
+            </ButtonLink>
+          </Alert>
+        )}
+        <Alert className="mb-0" variant="danger">
+          <p>
+            La proposta di Polizza non può essere emessa direttamente in virtù
+            delle risposte fornite nella compilazione del questionario
+            sanitario/non sanitario. Per procedere è necessario richiedere
+            l'underwriting.
+            <br />
+            <strong>
+              Dopo aver richiesto l'underwriting i dati inseriti non saranno più
+              modificabili.
+            </strong>
+          </p>
           <Button
             type="button"
             variant="primary"
@@ -91,8 +138,8 @@ export function PaymentLock({
             <FontAwesomeIcon icon={faSquareArrowUpRight} className="me-2" />
             Richiedi underwriting
           </Button>
-        </div>
-      </Alert>
+        </Alert>
+      </>
     );
   }
 }
