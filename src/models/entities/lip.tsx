@@ -33,10 +33,10 @@ export const LipStatesIcons: Record<number, ReactNode> = {
   // 0: Sconosciuto
   0: <FontAwesomeIcon icon={faQuestionCircle} className="text-primary" />,
   // 1: Incompleta
-  1: <FontAwesomeIcon icon={faCircleHalf} className="text-warning" />,
+  1: <FontAwesomeIcon icon={faCircleHalf} className="text-primary" />,
   // 2: Underwriting sanitario
   2: (
-    <IconStack className="text-danger">
+    <IconStack className="text-warning">
       <FontAwesomeIcon icon={faCircle} className="fa-stack-2x" opacity={0.4} />
       <FontAwesomeIcon icon={faHeartPulse} className="fa-stack-1x" />
     </IconStack>
