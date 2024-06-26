@@ -15,8 +15,6 @@ export async function LipsTable({searchParams}: LipsTableProps) {
     throw new Error("Impossibile caricare le polizze, riprovare più tardi");
   }
 
-  console.log({columns});
-
   return (
     <DataTable
       columns={columns}
