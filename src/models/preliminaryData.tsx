@@ -1,5 +1,7 @@
-import {Gender} from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
-import {YesNoAnswer} from "@/helpers/getOptionsLabel";
+import {
+  Gender,
+  YesNoAnswer,
+} from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
 
 export interface PreliminaryData {
   fatca?: YesNoAnswer;

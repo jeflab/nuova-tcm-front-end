@@ -20,13 +20,11 @@ import {
   jobPositionOptions,
   needsToMeetOptions,
   NeedsToMeetOptions,
-} from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
-import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
-import {
-  getOptionsLabel,
   YesNoAnswer,
   yesNoOptions,
-} from "@/helpers/getOptionsLabel";
+} from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
+import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {getOptionsLabel} from "@/helpers/getOptionsLabel";
 import {Nullish, Optional} from "@/helpers/TypesHelper";
 import {Den} from "@/models/entities/lip";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
