@@ -5,8 +5,9 @@ import {
   paymentMethodsSimpleOptions,
   relationshipOptions,
   sportRiskIndexOptions,
+  yesNoOptions,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
-import {getOptionsValues, yesNoOptions} from "@/helpers/getOptionsLabel";
+import {getOptionsValues} from "@/helpers/getOptionsLabel";
 import {agentSchema} from "@/models/entities/agent";
 import {personalDataSchema} from "@/models/entities/personalData";
 import {IconStack} from "@/ui/IconStack";

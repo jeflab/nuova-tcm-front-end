@@ -28,10 +28,12 @@ import {
   publicOfficesOptions,
   TAECode,
   tAECodeOptions,
+  YesNoAnswer,
+  yesNoOptions,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
 import {lipSchema} from "@/models/entities/lip";
 import {privacySchema} from "@/models/entities/privacy";
-import {Option, YesNoAnswer, yesNoOptions} from "@/helpers/getOptionsLabel";
+import {Option} from "@/helpers/getOptionsLabel";
 import {get, patch, post} from "@/services/api";
 import {Tags} from "@/services/const";
 import {invalidateTag} from "@/services/helpers";

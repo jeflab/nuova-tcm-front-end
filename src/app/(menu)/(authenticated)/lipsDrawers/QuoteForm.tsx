@@ -2,6 +2,7 @@
 
 import {updateQuotation} from "@/app/(menu)/(authenticated)/lips/[id]/actions";
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {YesNoAnswer} from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
 import {getQuote} from "@/app/(menu)/(authenticated)/quoter/actions";
 import {Advantages} from "@/app/(menu)/(authenticated)/quoter/Advantages";
 import {ComplementaryCoverages} from "@/app/(menu)/(authenticated)/quoter/ComplementaryCoverages";
@@ -12,7 +13,6 @@ import {QuoterFormValues} from "@/app/(menu)/(authenticated)/quoter/QuoterForm";
 import styles from "@/app/(menu)/(authenticated)/quoter/QuoterForm.module.scss";
 import {cns} from "@/helpers/cns";
 import {dbDateString} from "@/helpers/dates";
-import {YesNoAnswer} from "@/helpers/getOptionsLabel";
 import {Currency} from "@/ui/Currency";
 import {FieldError} from "@/ui/form/FieldError";
 import {Form} from "@/ui/form/Form";
