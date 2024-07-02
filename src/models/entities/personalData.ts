@@ -2,9 +2,10 @@ import {
   jobPositionOptions,
   publicOfficesOptions,
   tAECodeOptions,
+  yesNoOptions,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
 import {identityDocumentSchema} from "@/models/entities/identityDocument";
-import {getOptionsValues, yesNoOptions} from "@/helpers/getOptionsLabel";
+import {getOptionsValues} from "@/helpers/getOptionsLabel";
 import {Prettify} from "@/helpers/TypesHelper";
 import {z} from "zod";
 import {zu} from "zod_utilz";

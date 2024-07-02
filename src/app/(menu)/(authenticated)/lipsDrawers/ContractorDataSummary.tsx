@@ -5,10 +5,11 @@ import {
   jobPositionOptions,
   publicOfficesOptions,
   tAECodeOptions,
+  yesNoOptions,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {dateString} from "@/helpers/dates";
-import {getOptionsLabel, yesNoOptions} from "@/helpers/getOptionsLabel";
+import {getOptionsLabel} from "@/helpers/getOptionsLabel";
 import {
   faAddressBook,
   faBriefcase,

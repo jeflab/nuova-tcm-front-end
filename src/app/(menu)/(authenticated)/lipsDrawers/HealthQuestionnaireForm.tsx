@@ -5,8 +5,9 @@ import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {
   SportRiskIndex,
   sportRiskIndexOptions,
+  YesNoAnswer,
+  yesNoOptions,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
-import {YesNoAnswer, yesNoOptions} from "@/helpers/getOptionsLabel";
 import {Nullish} from "@/helpers/TypesHelper";
 import {HealthcareQuestionnaire} from "@/models/entities/lip";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";

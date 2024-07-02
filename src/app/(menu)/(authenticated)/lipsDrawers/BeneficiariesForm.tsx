@@ -9,9 +9,10 @@ import {
   nominationOptions,
   Relationship,
   relationshipOptions,
+  YesNoAnswer,
+  yesNoOptions,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
 import {dbDateString} from "@/helpers/dates";
-import {YesNoAnswer, yesNoOptions} from "@/helpers/getOptionsLabel";
 import {Beneficiary, Lip, ThirdParty} from "@/models/entities/lip";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {CheckboxField} from "@/ui/form/CheckboxField";
