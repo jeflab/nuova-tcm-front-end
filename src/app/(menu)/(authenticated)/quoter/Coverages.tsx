@@ -16,7 +16,7 @@ export function Coverages() {
       <Col className="vstack gap-3">
         <h3>Coperture assicurative</h3>
         <FormGroup controlId="death" as={BorderFeedback}>
-          <p className="mb-2 input-heading">Caso mortee</p>
+          <p className="mb-2 input-heading">Caso morte</p>
           <HelpText hideOnError="min" id="death-help-text">
             Il capitale assicurato deve essere maggiore o uguale a{" "}
             <Currency>{20_000}</Currency> e minore o uguale a{" "}
