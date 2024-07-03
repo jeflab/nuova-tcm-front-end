@@ -1,6 +1,7 @@
 "use client";
 
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {YesNoAnswer} from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {CheckGroup} from "@/ui/form/CheckGroup";
 import {FieldError} from "@/ui/form/FieldError";
@@ -30,17 +31,31 @@ export const fatcaQuestions = {
   },
 } as const;
 
-const fatcaDefaultValues = {
-  fatcaCheck:
-    "" as (typeof fatcaQuestions)["fatcaCheck"]["options"][number]["value"],
-  residencyCheck:
-    "" as (typeof fatcaQuestions)["residencyCheck"]["options"][number]["value"],
-};
+const fatcaDefaultValues = ({
+  fatca,
+  italianResidency,
+}: {
+  fatca?: YesNoAnswer;
+  italianResidency?: YesNoAnswer;
+}) => ({
+  fatcaCheck: (fatca ??
+    "") as (typeof fatcaQuestions)["fatcaCheck"]["options"][number]["value"],
+  residencyCheck: (italianResidency ??
+    "") as (typeof fatcaQuestions)["residencyCheck"]["options"][number]["value"],
+});
 
 export function FatcaForm() {
+  const fatcaData = useDrawerStore((state) => state.preliminaryData.fatca);
+  const italianResidencyData = useDrawerStore(
+    (state) => state.preliminaryData.italianResidency,
+  );
+
   const formMethods = useForm({
     mode: "onChange",
-    defaultValues: fatcaDefaultValues,
+    defaultValues: fatcaDefaultValues({
+      fatca: fatcaData,
+      italianResidency: italianResidencyData,
+    }),
   });
 
   const closeModal = useDrawerStore((state) => state.closeModal);

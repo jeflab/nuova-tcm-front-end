@@ -37,7 +37,6 @@ function createDrawerState(state: State & Actions) {
       Object.keys(state.lip?.eSigns?.polizza).length > 0) ||
     (state.lip?.eSigns?.identificazione &&
       Object.keys(state.lip?.eSigns?.identificazione).length > 0);
-  const healthQuestionnaireCompiled = !!state.lip?.healthcareQuestionnaire;
   const privacyESigned = !!state.lip?.contractor?.lastPrivacyEsignId;
 
   const askForUnderwriting =
@@ -75,7 +74,7 @@ function createDrawerState(state: State & Actions) {
     ) {
       state.drawerStates.fatca = {variant: "success"};
     } else {
-      state.drawerStates.fatca = {variant: "danger"};
+      state.drawerStates.fatca = {variant: "danger", ...presetButtons.update};
     }
 
     // contractor fiscal code

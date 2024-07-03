@@ -32,7 +32,7 @@ const lipStates = [
 const columnHelper = createColumnHelper<Lip>();
 export const columns = [
   columnHelper.accessor("lipNumber", {
-    header: "Numero",
+    header: "Numero proposta",
   }),
   columnHelper.accessor((row) => `${row.agent.surname} ${row.agent.name}`, {
     id: "agent",
@@ -90,7 +90,7 @@ export const columns = [
   }),
   columnHelper.accessor("lipStates", {
     header: "Stato",
-    enableColumnFilter: false,
+    enableColumnFilter: true,
     cell: (props) => (
       <>
         {LipStatesIcons[props.getValue().id] ?? LipStatesIcons[0]}{" "}
@@ -149,7 +149,7 @@ export const columns = [
 // TODO: Facciamo in modo che in skeletonColumns ci siano solo le proprietà che cambiano da columns
 export const skeletonColumns = [
   columnHelper.accessor("lipNumber", {
-    header: "Numero polizza",
+    header: "Numero proposta",
     cell: () => (
       <Placeholder as="span" animation="glow">
         <Placeholder as="span" style={{width: `84px`}} />
@@ -224,7 +224,7 @@ export const skeletonColumns = [
   }),
   columnHelper.accessor("lipStates", {
     header: "Stato",
-    enableColumnFilter: false,
+    enableColumnFilter: true,
     cell: () => (
       <>
         <Placeholder as="span" animation="glow">

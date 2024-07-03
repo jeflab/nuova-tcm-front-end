@@ -1,5 +1,12 @@
-// Generic
 import {toCurrency} from "@/helpers/numbers";
+
+// Generic
+
+export const yesNoOptions = [
+  {value: "yes", label: "Si"},
+  {value: "no", label: "No"},
+] as const;
+export type YesNoAnswer = (typeof yesNoOptions)[number]["value"];
 
 export const genderOptions = [
   {label: "Maschio", value: "male"},
@@ -225,6 +232,7 @@ export const fundSourceOptions = [
 export type FundSource = (typeof fundSourceOptions)[number]["value"];
 
 // Identification
+
 export const idTypeOptions = [
   {label: "Passaporto", value: "passport"},
   {label: "Carta d'identità", value: "identity_card"},
@@ -401,6 +409,8 @@ export type PaymentMethods = ReturnType<
   typeof paymentMethodsOptions
 >[number]["value"];
 
+// Company privacy
+
 export const consentOptions = [
   {
     label:
@@ -424,6 +434,8 @@ export const consentOptions = [
   },
 ] as const;
 export type ConsentOptions = (typeof consentOptions)[number]["value"];
+
+// Health questionnaire
 
 export const sportRiskIndexOptions = [
   {label: "Dilettante", value: "amateur"},

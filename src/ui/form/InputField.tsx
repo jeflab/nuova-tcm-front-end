@@ -4,6 +4,8 @@ import {
   ComponentProps,
   KeyboardEventHandler,
   useContext,
+  useEffect,
+  useRef,
 } from "react";
 import {FormControl} from "react-bootstrap";
 import FormContext from "react-bootstrap/FormContext";
@@ -50,10 +52,24 @@ export function InputField<
   validationStyle = true,
   ...inputProps
 }: InputFieldProps<TFieldValues, TFieldName>) {
+  const inputRef = useRef<HTMLInputElement>(null);
   const {setValue, register} = useFormContext<TFieldValues>();
   const {controlId} = useContext<{controlId?: TFieldName}>(FormContext);
   const controlName = name ?? controlId;
   invariant(controlName, "name or controlId is required");
+
+  useEffect(() => {
+    const handleWheel = (e: Event) => {
+      if (document.activeElement === inputRef.current && type === "number") {
+        e.preventDefault();
+      }
+    };
+    const currentNumberInput = inputRef.current;
+    currentNumberInput?.addEventListener("wheel", handleWheel, {
+      passive: false,
+    });
+    return () => currentNumberInput?.removeEventListener("wheel", handleWheel);
+  }, [type]);
 
   const {isInvalid, isValid} = useValidationState(controlName);
   const normalization = normalize && {
@@ -71,15 +87,23 @@ export function InputField<
     }) as KeyboardEventHandler<HTMLInputElement>,
   };
 
+  const {ref, ...reactHookFormProps} = register(controlName, {
+    onChange,
+    ...validation,
+    ...normalization,
+  });
+
   return (
     <FormControl
       type={type}
       as={type === "textarea" ? "textarea" : undefined}
-      {...register(controlName, {
-        onChange,
-        ...validation,
-        ...normalization,
-      })}
+      {...reactHookFormProps}
+      ref={(instance: HTMLTextAreaElement) => {
+        ref(instance);
+        // @ts-ignore-next-line
+        // noinspection JSConstantReassignment
+        inputRef.current = instance;
+      }}
       isInvalid={validationStyle && isInvalid}
       isValid={validationStyle && isValid}
       aria-invalid={isInvalid}

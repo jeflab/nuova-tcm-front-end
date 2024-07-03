@@ -10,10 +10,10 @@ import {
   publicOfficesOptions,
   TAECode,
   tAECodeOptions,
+  YesNoAnswer,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
 import {cns} from "@/helpers/cns";
 import {dbDateString} from "@/helpers/dates";
-import {YesNoAnswer} from "@/helpers/getOptionsLabel";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {CheckGroup} from "@/ui/form/CheckGroup";
 import {ComuneProvAutocompleteField} from "@/ui/form/ComuneProvAutocompleteField";
