@@ -6,8 +6,8 @@ import {
   IdType,
   idTypeOptions,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
+import {createDocumentImageUrl} from "@/helpers/createDocumentImageUrl";
 import {dbDateString} from "@/helpers/dates";
-import {apiUrl} from "@/services/const";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {CheckboxField} from "@/ui/form/CheckboxField";
 import {DropzoneField} from "@/ui/form/DropzoneField";
@@ -71,17 +71,21 @@ export function IdentificationForm() {
   const lipId = useDrawerStore((state) => state.lip?.id);
   const closeModal = useDrawerStore((state) => state.closeModal);
 
-  // TODO: creare una funzione che genera gli url da inserire nel componente IdImage ed esportarla qui
-  const existingFrontImageUrl =
-    identityDocument?.identification?.fileIdFrontName &&
-    encodeURI(
-      `${apiUrl}/personal-datas/${contractorId}/get-image?filename=${identityDocument.identification.fileIdFrontName}&agentId=${agentId}&size=thumbnail`,
-    );
-  const existingBackImageUrl =
-    identityDocument?.identification?.fileIdBackName &&
-    encodeURI(
-      `${apiUrl}/personal-datas/${contractorId}/get-image?filename=${identityDocument.identification.fileIdBackName}&agentId=${agentId}&size=thumbnail`,
-    );
+  const existingFrontImageUrl = createDocumentImageUrl({
+    contractorId,
+    agentId,
+    fileName: identityDocument?.identification?.fileIdFrontName,
+    size: "full",
+  });
+
+  const existingBackImageUrl = createDocumentImageUrl({
+    contractorId,
+    agentId,
+    fileName: identityDocument?.identification?.fileIdBackName,
+    size: "full",
+  });
+
+  console.log({existingFrontImageUrl, existingBackImageUrl});
 
   return (
     <>
