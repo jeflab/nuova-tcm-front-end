@@ -72,7 +72,7 @@ export function PaymentForm() {
   const closeModal = useDrawerStore((state) => state.closeModal);
   const premium = useDrawerStore((state) => state.lip?.quotation?.premium)!;
   const extraPremium = useDrawerStore(
-    (state) => state.lip?.quotation?.extraPremium?.value,
+    (state) => state.lip?.quotation?.underwriting?.extraPremium?.value,
   );
   const realPremium = extraPremium ?? premium;
 

@@ -17,8 +17,8 @@ import {Alert, Stack} from "react-bootstrap";
 export function PaymentSummary() {
   const paymentData = useDrawerStore((state) => state.lip?.payment);
   const premium = useDrawerStore((state) => state.lip?.quotation?.premium);
-  const extraPremium = useDrawerStore(
-    (state) => state.lip?.quotation?.extraPremium,
+  const underwriting = useDrawerStore(
+    (state) => state.lip?.quotation?.underwriting,
   );
   const lip = useDrawerStore((state) => state.lip);
 
@@ -95,7 +95,7 @@ export function PaymentSummary() {
           </p>
         ) : null}
       </div>
-      {extraPremium && (
+      {underwriting && (
         <div>
           <h4 className="w-100 text-primary">
             <IconStack>
@@ -111,29 +111,31 @@ export function PaymentSummary() {
           {paymentData.paymentMethod === "monthly" ? (
             <p>
               Pagamento mensile di{" "}
-              <Currency>{extraPremium.value / 12}</Currency> con anticipo di 3
-              mesi (<Currency>{(extraPremium.value / 12) * 3}</Currency>)
+              <Currency>{underwriting.extraPremium.value / 12}</Currency> con
+              anticipo di 3 mesi (
+              <Currency>{(underwriting.extraPremium.value / 12) * 3}</Currency>)
             </p>
           ) : paymentData.paymentMethod === "annual" ? (
             <p>
-              Pagamento annuale di <Currency>{extraPremium.value}</Currency>
+              Pagamento annuale di{" "}
+              <Currency>{underwriting.extraPremium.value}</Currency>
             </p>
           ) : paymentData.paymentMethod === "3yearsAdvance" ? (
             <p>
               Pagamento anticipato di 3 anni (
-              <Currency>{extraPremium.value * 3}</Currency>) e a seguire
-              pagamento mensile di{" "}
-              <Currency>{extraPremium.value / 12}</Currency>
+              <Currency>{underwriting.extraPremium.value * 3}</Currency>) e a
+              seguire pagamento mensile di{" "}
+              <Currency>{underwriting.extraPremium.value / 12}</Currency>
             </p>
           ) : paymentData.paymentMethod === "5yearsAdvance" ? (
             <p>
               Pagamento anticipato di 5 anni (
-              <Currency>{extraPremium.value * 5}</Currency>) e a seguire
-              pagamento mensile di{" "}
-              <Currency>{extraPremium.value / 12}</Currency>
+              <Currency>{underwriting.extraPremium.value * 5}</Currency>) e a
+              seguire pagamento mensile di{" "}
+              <Currency>{underwriting.extraPremium.value / 12}</Currency>
             </p>
           ) : null}
-          <Alert variant="info">{extraPremium.note}</Alert>
+          <Alert variant="info">{underwriting.extraPremium.note}</Alert>
           <ButtonLink
             href={`${process.env.NEXT_PUBLIC_API_URL}/pdf-underwriting-sanitario/?lipId=${lip?.id}&agentId=${lip?.agent?.id}&contractorId=${lip?.contractor?.id}`}
             download

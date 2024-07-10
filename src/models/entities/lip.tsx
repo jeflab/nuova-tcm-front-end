@@ -145,6 +145,29 @@ const denSchema = z.object({
 });
 export type Den = z.infer<typeof denSchema>;
 
+const underwritingSchema = z
+  .object({
+    extra_premium: z.object({value: z.number(), note: z.string()}),
+    exclusions: z.array(
+      z
+        .object({
+          name: z.string(),
+          decline: z.boolean(),
+          exclusion: z.string(),
+          reason_of_loading: z.string(),
+          comment: z.string(),
+        })
+        .transform(({reason_of_loading, ...data}) => ({
+          ...data,
+          reasonOfLoading: reason_of_loading,
+        })),
+    ),
+  })
+  .transform(({extra_premium, ...data}) => ({
+    ...data,
+    extraPremium: extra_premium,
+  }));
+
 const quotationSchema = z
   .object({
     birthDate: z.string(),
@@ -160,17 +183,11 @@ const quotationSchema = z
     }),
     tpd: z.object({enabled: z.boolean(), coverage: z.coerce.number().catch(0)}),
     premium: z.number(),
-    extra_premium: z
-      .object({
-        value: z.coerce.number(),
-        note: z.string(),
-      })
-      .nullish(),
+    underwriting: underwritingSchema.nullish(),
     not_approve_underwriting: z.string().nullish(),
   })
-  .transform(({extra_premium, not_approve_underwriting, ...data}) => ({
+  .transform(({not_approve_underwriting, ...data}) => ({
     ...data,
-    extraPremium: extra_premium,
     notApproveUnderwriting: not_approve_underwriting,
   }));
 
