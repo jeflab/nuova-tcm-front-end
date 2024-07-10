@@ -8,6 +8,7 @@ import {
   faBank,
   faCalendar,
   faCirclePlay,
+  faCreditCard,
   faDownload,
 } from "@fortawesome/pro-duotone-svg-icons";
 import {faDollarSign} from "@fortawesome/pro-solid-svg-icons";
@@ -158,6 +159,34 @@ export function PaymentSummary() {
           <br />
           <strong>IBAN</strong>: {paymentData.iban}
         </p>
+      </div>
+      <div>
+        <h4 className="w-100 text-primary">
+          <FontAwesomeIcon icon={faCreditCard} /> Modalità di pagamento
+        </h4>
+        <dl>
+          <dt>Primo pagamento tramite bonifico bancario:</dt>
+          <dd>
+            il pagamento andrà effettuato a favore di Bright Life. sul c/c
+            italiano aperto presso Banca Intesa-Sanpaolo - Via Cesare Battisti
+            n. 11 - Milano 20122 Filiale: 1886 IBAN
+            IT26W03069909483100000019829, indicando nella causale il numero
+            della presente Proposta: {lip?.lipNumber}
+          </dd>
+          <dt>
+            Pagamenti successivi tramite mandato per addebito diretto SEPA -
+            S.D.D.
+          </dt>
+          <dd>
+            Il riferimento di Mandato coincide con il numero della presente
+            proposta di polizza: ({lip?.lipNumber})
+          </dd>
+          <dt>Creditore:</dt>
+          <dd>
+            Bright Life, Viale Bianca Maria, 9 – 20122 – Milano (MI) Codice
+            identificativo del creditore: IT11ZZZ0000013276280966
+          </dd>
+        </dl>
       </div>
     </Stack>
   );
