@@ -1,8 +1,9 @@
 "use client";
 
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {PaymentMethod} from "@/app/(menu)/(authenticated)/lipsDrawers/PaymentsSummary/PaymentMethod";
+import {ExclusionList} from "@/app/(menu)/(authenticated)/lipsDrawers/PaymentsSummary/ExclusionList";
 import {ButtonLink} from "@/ui/ButtonLink";
-import {Currency} from "@/ui/Currency";
 import {IconStack} from "@/ui/IconStack";
 import {
   faBank,
@@ -75,26 +76,11 @@ export function PaymentSummary() {
           </IconStack>{" "}
           Frazionamento del premio
         </h4>
-        {paymentData.paymentMethod === "monthly" ? (
-          <p className="mb-0">
-            Pagamento mensile di <Currency>{premium / 12}</Currency> con
-            anticipo di 3 mesi (<Currency>{(premium / 12) * 3}</Currency>)
-          </p>
-        ) : paymentData.paymentMethod === "annual" ? (
-          <p className="mb-0">
-            Pagamento annuale di <Currency>{premium}</Currency>
-          </p>
-        ) : paymentData.paymentMethod === "3yearsAdvance" ? (
-          <p className="mb-0">
-            Pagamento anticipato di 3 anni (<Currency>{premium * 3}</Currency>)
-            e a seguire pagamento mensile di <Currency>{premium / 12}</Currency>
-          </p>
-        ) : paymentData.paymentMethod === "5yearsAdvance" ? (
-          <p className="mb-0">
-            Pagamento anticipato di 5 anni (<Currency>{premium * 5}</Currency>)
-            e a seguire pagamento mensile di <Currency>{premium / 12}</Currency>
-          </p>
-        ) : null}
+        <PaymentMethod
+          className="mb-0"
+          paymentMethod={paymentData.paymentMethod}
+          premium={premium}
+        />
       </div>
       {underwriting && (
         <div>
@@ -109,33 +95,11 @@ export function PaymentSummary() {
             </IconStack>{" "}
             Frazionamento del premio in seguito a underwriting
           </h4>
-          {paymentData.paymentMethod === "monthly" ? (
-            <p>
-              Pagamento mensile di{" "}
-              <Currency>{underwriting.extraPremium.value / 12}</Currency> con
-              anticipo di 3 mesi (
-              <Currency>{(underwriting.extraPremium.value / 12) * 3}</Currency>)
-            </p>
-          ) : paymentData.paymentMethod === "annual" ? (
-            <p>
-              Pagamento annuale di{" "}
-              <Currency>{underwriting.extraPremium.value}</Currency>
-            </p>
-          ) : paymentData.paymentMethod === "3yearsAdvance" ? (
-            <p>
-              Pagamento anticipato di 3 anni (
-              <Currency>{underwriting.extraPremium.value * 3}</Currency>) e a
-              seguire pagamento mensile di{" "}
-              <Currency>{underwriting.extraPremium.value / 12}</Currency>
-            </p>
-          ) : paymentData.paymentMethod === "5yearsAdvance" ? (
-            <p>
-              Pagamento anticipato di 5 anni (
-              <Currency>{underwriting.extraPremium.value * 5}</Currency>) e a
-              seguire pagamento mensile di{" "}
-              <Currency>{underwriting.extraPremium.value / 12}</Currency>
-            </p>
-          ) : null}
+          <PaymentMethod
+            paymentMethod={paymentData.paymentMethod}
+            premium={underwriting.extraPremium.value}
+          />
+          <ExclusionList exclusions={underwriting.exclusions} />
           <Alert variant="info">{underwriting.extraPremium.note}</Alert>
           <ButtonLink
             href={`${process.env.NEXT_PUBLIC_API_URL}/pdf-underwriting-sanitario/?lipId=${lip?.id}&agentId=${lip?.agent?.id}&contractorId=${lip?.contractor?.id}`}

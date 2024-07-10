@@ -1,3 +1,4 @@
+import {complementaryCoverages} from "@/app/(menu)/(authenticated)/lipsDrawers/QuoteSummary";
 import {
   fundSourceOptions,
   genderOptions,
@@ -7,7 +8,7 @@ import {
   sportRiskIndexOptions,
   yesNoOptions,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
-import {getOptionsValues} from "@/helpers/getOptionsLabel";
+import {extractValuesByKey, getOptionsValues} from "@/helpers/getOptionsLabel";
 import {agentSchema} from "@/models/entities/agent";
 import {personalDataSchema} from "@/models/entities/personalData";
 import {IconStack} from "@/ui/IconStack";
@@ -151,7 +152,7 @@ const underwritingSchema = z
     exclusions: z.array(
       z
         .object({
-          name: z.string(),
+          name: z.enum(extractValuesByKey(complementaryCoverages, "key")),
           decline: z.boolean(),
           exclusion: z.string(),
           reason_of_loading: z.string(),
@@ -167,6 +168,7 @@ const underwritingSchema = z
     ...data,
     extraPremium: extra_premium,
   }));
+export type Underwriting = z.infer<typeof underwritingSchema>;
 
 const quotationSchema = z
   .object({

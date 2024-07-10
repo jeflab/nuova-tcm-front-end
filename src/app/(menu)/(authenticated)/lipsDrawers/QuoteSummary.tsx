@@ -17,7 +17,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Card, Col, Row} from "react-bootstrap";
 import {useDrawerStore} from "../lips/[id]/store";
 
-const complementaryCoverages = [
+export const complementaryCoverages = [
   {
     key: "accidentalDeath",
     label: "Morte da infortunio",
