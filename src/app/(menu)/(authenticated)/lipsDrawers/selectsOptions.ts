@@ -17,7 +17,7 @@ export type Gender = (typeof genderOptions)[number]["value"];
 export const relationshipOptions = [
   {label: "Parente", value: "relative"},
   {label: "Affinità", value: "affinity"},
-  {label: "Coniugio", value: "marriage"},
+  {label: "Coniuge", value: "marriage"},
   {label: "Unione civile", value: "civil_union"},
   {label: "Convivenza di fatto", value: "de_facto"},
   {label: "Altro", value: "other"},

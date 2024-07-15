@@ -1,4 +1,4 @@
-import {apiUrl} from "@/services/const";
+import {createDocumentImageUrl} from "@/helpers/createDocumentImageUrl";
 
 //TODO: pensare a come inviare il bearer token per le richieste di immagini
 
@@ -14,9 +14,12 @@ export function IdImage({
   filename,
   size = "thumbnail",
 }: IdImageProps) {
-  const imageUrl = encodeURI(
-    `${apiUrl}/personal-datas/${contractorId}/get-image?filename=${filename}&agentId=${agentId}&size=${size}`,
-  );
+  const imageUrl = createDocumentImageUrl({
+    contractorId,
+    agentId,
+    fileName: filename,
+    size,
+  });
 
   return (
     <div

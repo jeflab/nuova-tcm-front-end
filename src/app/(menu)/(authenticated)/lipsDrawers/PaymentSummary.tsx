@@ -1,14 +1,18 @@
 "use client";
 
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {PaymentMethod} from "@/app/(menu)/(authenticated)/lipsDrawers/PaymentsSummary/PaymentMethod";
+import {ExclusionList} from "@/app/(menu)/(authenticated)/lipsDrawers/PaymentsSummary/ExclusionList";
 import {ButtonLink} from "@/ui/ButtonLink";
-import {Currency} from "@/ui/Currency";
 import {IconStack} from "@/ui/IconStack";
 import {
   faBank,
   faCalendar,
   faCirclePlay,
+  faCreditCard,
   faDownload,
+  faShieldMinus,
+  faShieldXmark,
 } from "@fortawesome/pro-duotone-svg-icons";
 import {faDollarSign} from "@fortawesome/pro-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
@@ -17,8 +21,8 @@ import {Alert, Stack} from "react-bootstrap";
 export function PaymentSummary() {
   const paymentData = useDrawerStore((state) => state.lip?.payment);
   const premium = useDrawerStore((state) => state.lip?.quotation?.premium);
-  const extraPremium = useDrawerStore(
-    (state) => state.lip?.quotation?.extraPremium,
+  const underwriting = useDrawerStore(
+    (state) => state.lip?.quotation?.underwriting,
   );
   const lip = useDrawerStore((state) => state.lip);
 
@@ -74,28 +78,13 @@ export function PaymentSummary() {
           </IconStack>{" "}
           Frazionamento del premio
         </h4>
-        {paymentData.paymentMethod === "monthly" ? (
-          <p className="mb-0">
-            Pagamento mensile di <Currency>{premium / 12}</Currency> con
-            anticipo di 3 mesi (<Currency>{(premium / 12) * 3}</Currency>)
-          </p>
-        ) : paymentData.paymentMethod === "annual" ? (
-          <p className="mb-0">
-            Pagamento annuale di <Currency>{premium}</Currency>
-          </p>
-        ) : paymentData.paymentMethod === "3yearsAdvance" ? (
-          <p className="mb-0">
-            Pagamento anticipato di 3 anni (<Currency>{premium * 3}</Currency>)
-            e a seguire pagamento mensile di <Currency>{premium / 12}</Currency>
-          </p>
-        ) : paymentData.paymentMethod === "5yearsAdvance" ? (
-          <p className="mb-0">
-            Pagamento anticipato di 5 anni (<Currency>{premium * 5}</Currency>)
-            e a seguire pagamento mensile di <Currency>{premium / 12}</Currency>
-          </p>
-        ) : null}
+        <PaymentMethod
+          className="mb-0"
+          paymentMethod={paymentData.paymentMethod}
+          premium={premium}
+        />
       </div>
-      {extraPremium && (
+      {underwriting && (
         <div>
           <h4 className="w-100 text-primary">
             <IconStack>
@@ -108,32 +97,16 @@ export function PaymentSummary() {
             </IconStack>{" "}
             Frazionamento del premio in seguito a underwriting
           </h4>
-          {paymentData.paymentMethod === "monthly" ? (
-            <p>
-              Pagamento mensile di{" "}
-              <Currency>{extraPremium.value / 12}</Currency> con anticipo di 3
-              mesi (<Currency>{(extraPremium.value / 12) * 3}</Currency>)
-            </p>
-          ) : paymentData.paymentMethod === "annual" ? (
-            <p>
-              Pagamento annuale di <Currency>{extraPremium.value}</Currency>
-            </p>
-          ) : paymentData.paymentMethod === "3yearsAdvance" ? (
-            <p>
-              Pagamento anticipato di 3 anni (
-              <Currency>{extraPremium.value * 3}</Currency>) e a seguire
-              pagamento mensile di{" "}
-              <Currency>{extraPremium.value / 12}</Currency>
-            </p>
-          ) : paymentData.paymentMethod === "5yearsAdvance" ? (
-            <p>
-              Pagamento anticipato di 5 anni (
-              <Currency>{extraPremium.value * 5}</Currency>) e a seguire
-              pagamento mensile di{" "}
-              <Currency>{extraPremium.value / 12}</Currency>
-            </p>
-          ) : null}
-          <Alert variant="info">{extraPremium.note}</Alert>
+          <PaymentMethod
+            paymentMethod={paymentData.paymentMethod}
+            premium={underwriting.extraPremium.value}
+          />
+          <h4 className="w-100 text-primary">
+            <FontAwesomeIcon icon={faShieldXmark} /> Coperture escluse a seguito
+            di underwriting
+          </h4>
+          <ExclusionList exclusions={underwriting.exclusions} />
+          <Alert variant="info">{underwriting.extraPremium.note}</Alert>
           <ButtonLink
             href={`${process.env.NEXT_PUBLIC_API_URL}/pdf-underwriting-sanitario/?lipId=${lip?.id}&agentId=${lip?.agent?.id}&contractorId=${lip?.contractor?.id}`}
             download
@@ -156,6 +129,34 @@ export function PaymentSummary() {
           <br />
           <strong>IBAN</strong>: {paymentData.iban}
         </p>
+      </div>
+      <div>
+        <h4 className="w-100 text-primary">
+          <FontAwesomeIcon icon={faCreditCard} /> Modalità di pagamento
+        </h4>
+        <dl>
+          <dt>Primo pagamento tramite bonifico bancario:</dt>
+          <dd>
+            il pagamento andrà effettuato a favore di Bright Life. sul c/c
+            italiano aperto presso Banca Intesa-Sanpaolo - Via Cesare Battisti
+            n. 11 - Milano 20122 Filiale: 1886 IBAN
+            IT26W03069909483100000019829, indicando nella causale il numero
+            della presente Proposta: {lip?.lipNumber}
+          </dd>
+          <dt>
+            Pagamenti successivi tramite mandato per addebito diretto SEPA -
+            S.D.D.
+          </dt>
+          <dd>
+            Il riferimento di Mandato coincide con il numero della presente
+            proposta di polizza: ({lip?.lipNumber})
+          </dd>
+          <dt>Creditore:</dt>
+          <dd>
+            Bright Life, Viale Bianca Maria, 9 – 20122 – Milano (MI) Codice
+            identificativo del creditore: IT11ZZZ0000013276280966
+          </dd>
+        </dl>
       </div>
     </Stack>
   );

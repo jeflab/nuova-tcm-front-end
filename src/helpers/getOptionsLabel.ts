@@ -21,3 +21,14 @@ export function getOptionsValues<TValue extends string>(
   invariant(firstValue, "Options should have at least one value");
   return [firstValue, ...otherValues];
 }
+
+export function extractValuesByKey<TObject, TKey extends keyof TObject>(
+  objects: readonly TObject[],
+  key: TKey,
+): [TObject[TKey], ...TObject[TKey][]] {
+  const values = objects.map((object) => object[key]);
+  if (values.length === 0) {
+    throw new Error("Array must not be empty");
+  }
+  return [values[0], ...values.slice(1)] as [TObject[TKey], ...TObject[TKey][]];
+}

@@ -4,6 +4,7 @@ import styles from "@/app/(no-menu)/layout.module.scss";
 import {ButtonLink} from "@/ui/ButtonLink";
 import CenterLogoContent from "@/ui/CenterLogoContent";
 import {Debug} from "@/ui/Debug";
+import {RetryOnErrorButton} from "@/ui/RetryOnErrorButton";
 import {
   faArrowRotateBack,
   faHouseChimney,
@@ -23,29 +24,17 @@ export default function Error({
   error: Error & {digest?: string};
   reset: () => void;
 }) {
-  const router = useRouter();
-
   useEffect(() => {
     if (process.env.NODE_ENV === "production") {
       Sentry.captureException(error);
     }
   }, [error]);
 
-  const refresh = () => {
-    router.refresh();
-    startTransition(() => {
-      reset();
-    });
-  };
-
   return (
     <main className={styles.publicMain}>
       <CenterLogoContent style={containerStyle}>
         <h2>Qualcosa è andato storto 😕</h2>
-        <Button onClick={refresh} type="button" className="w-100">
-          <FontAwesomeIcon icon={faArrowRotateBack} className="me-2" />
-          Riprova
-        </Button>
+        <RetryOnErrorButton onReset={reset} />
         <ButtonLink href="/" type="button" className="w-100">
           <FontAwesomeIcon icon={faHouseChimney} className="me-2" />
           Torna alla pagina principale

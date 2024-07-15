@@ -72,7 +72,7 @@ export function PaymentForm() {
   const closeModal = useDrawerStore((state) => state.closeModal);
   const premium = useDrawerStore((state) => state.lip?.quotation?.premium)!;
   const extraPremium = useDrawerStore(
-    (state) => state.lip?.quotation?.extraPremium?.value,
+    (state) => state.lip?.quotation?.underwriting?.extraPremium?.value,
   );
   const realPremium = extraPremium ?? premium;
 
@@ -106,7 +106,7 @@ export function PaymentForm() {
           <Row className="row-gap-3">
             <h4>Decorrenza assicurazione e premio</h4>
             <Col className="col-12">
-              <Alert variant="info">
+              <Alert variant="info" className="mb-0">
                 <p>
                   Il{" "}
                   <strong>Contratto si intende perfezionato e concluso</strong>{" "}
@@ -144,7 +144,7 @@ export function PaymentForm() {
             {extraPremium &&
             toCurrency(extraPremium) !== toCurrency(premium) ? (
               <Col className="col-12">
-                <Alert variant="warning">
+                <Alert variant="warning" className="mb-0">
                   In seguito a underwriting si applica il premio di{" "}
                   <Currency>{extraPremium}</Currency> anziché di{" "}
                   <Currency>{premium}</Currency>.

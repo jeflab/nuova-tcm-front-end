@@ -48,8 +48,8 @@ export function DocumentsChapterDetails({
       onHide={onHide}
       backdrop="static"
       keyboard={false}
-      size="xl"
-      className="mt-4 pe-3"
+      size="lg"
+      className="mt-4"
     >
       <ModalHeader closeButton>Firma il documento</ModalHeader>
       <ModalBody>
