@@ -9,6 +9,8 @@ export function ExclusionList({exclusions}: ExclusionListProps) {
     <li key={exclusion.name}>{exclusion.name}</li>
   ));
 
+  // stilizzare le esclusioni come fatto per le coperture. Abbiamo tutte le info nell'oggetto complementaryCoverages
+
   if (exclusionsJsx.length === 0) {
     return null;
   }

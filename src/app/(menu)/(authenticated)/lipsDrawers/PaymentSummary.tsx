@@ -11,6 +11,8 @@ import {
   faCirclePlay,
   faCreditCard,
   faDownload,
+  faShieldMinus,
+  faShieldXmark,
 } from "@fortawesome/pro-duotone-svg-icons";
 import {faDollarSign} from "@fortawesome/pro-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
@@ -99,6 +101,10 @@ export function PaymentSummary() {
             paymentMethod={paymentData.paymentMethod}
             premium={underwriting.extraPremium.value}
           />
+          <h4 className="w-100 text-primary">
+            <FontAwesomeIcon icon={faShieldXmark} /> Coperture escluse a seguito
+            di underwriting
+          </h4>
           <ExclusionList exclusions={underwriting.exclusions} />
           <Alert variant="info">{underwriting.extraPremium.note}</Alert>
           <ButtonLink

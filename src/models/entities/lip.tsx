@@ -1,4 +1,4 @@
-import {complementaryCoverages} from "@/app/(menu)/(authenticated)/lipsDrawers/QuoteSummary";
+import {complementaryCoverages} from "@/app/(menu)/(authenticated)/lipsDrawers/ComplementaryCoverages";
 import {
   fundSourceOptions,
   genderOptions,
