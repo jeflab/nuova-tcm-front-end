@@ -4,15 +4,11 @@ import {AppContainer} from "@/ui/AppContainer";
 import {ButtonLink} from "@/ui/ButtonLink";
 import {PageTitle} from "@/ui/PageTitle";
 import {RetryOnErrorButton} from "@/ui/RetryOnErrorButton";
-import {
-  faArrowRotateBack,
-  faHouseChimney,
-} from "@fortawesome/pro-duotone-svg-icons";
+import {faHouseChimney} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import * as Sentry from "@sentry/nextjs";
-import {useRouter} from "next/navigation";
-import {startTransition, useEffect} from "react";
-import {Alert, AlertHeading, Button} from "react-bootstrap";
+import {useEffect} from "react";
+import {Alert, AlertHeading} from "react-bootstrap";
 
 export default function ContractorLipsErrorPage({
   error,

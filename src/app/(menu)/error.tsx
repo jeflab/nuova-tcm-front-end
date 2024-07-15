@@ -1,18 +1,13 @@
 "use client";
 
-import {RetryOnErrorButton} from "@/ui/RetryOnErrorButton";
-import {useRouter} from "next/navigation";
 import {ButtonLink} from "@/ui/ButtonLink";
 import CenterLogoContent from "@/ui/CenterLogoContent";
 import {Debug} from "@/ui/Debug";
-import {
-  faArrowRotateBack,
-  faHouseChimney,
-} from "@fortawesome/pro-duotone-svg-icons";
+import {RetryOnErrorButton} from "@/ui/RetryOnErrorButton";
+import {faHouseChimney} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import * as Sentry from "@sentry/nextjs";
-import {startTransition, useEffect} from "react";
-import {Button} from "react-bootstrap";
+import {useEffect} from "react";
 
 const containerStyle = {"--content-width": "max-content"};
 
