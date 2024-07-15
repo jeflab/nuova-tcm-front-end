@@ -48,7 +48,12 @@ export function CompanyPrivacy({
     defaultValues: {flags: privacyCompany?.flags ?? ([] as ConsentOptions[])},
   });
 
-  const oneESing = !!lip?.eSigns?.identificazione || !!lip?.eSigns?.polizza;
+  const oneESing =
+    !!lip?.eSigns?.identificazione ||
+    (lip?.eSigns?.polizza &&
+      Object.keys(lip?.eSigns?.polizza).some(
+        (key) => key !== "esign_contraente_underwriting",
+      ));
   const closeModal = onHide ?? closeModalFromStore;
 
   const extendedPrivacyUrl = `${process.env.NEXT_PUBLIC_API_URL}/pdf-proposta-preview/?lipId=${lipId}&agentId=${agentId}&contractorId=${contractorId}`;
