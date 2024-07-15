@@ -2,7 +2,7 @@
 
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {PDFType} from "@/models/entities/esign";
-import {backendUrl} from "@/services/const";
+import {backendUrl, Tags} from "@/services/const";
 import {ButtonLink} from "@/ui/ButtonLink";
 import RequestOTPModal from "@/ui/eSign/RequestOTPModal";
 import {
@@ -57,16 +57,8 @@ export function PaymentLock({
 
   const underwritingNotApproved = lipState.id === 15;
 
-  const setUnderwriting = async (lipId: number) => {
+  const setUnderwriting = async () => {
     setIsUnderwritingOpen(true);
-
-    // const response = await updateUnderwriting(lipId);
-    // if (response.status === "failed") {
-    //   if (response.responseStatus === 404) {
-    //     notFound();
-    //   }
-    //   throw new Error(response.message);
-    // }
   };
 
   if (underwritingNotApproved) {
@@ -135,11 +127,7 @@ export function PaymentLock({
               modificabili.
             </strong>
           </p>
-          <Button
-            type="button"
-            variant="primary"
-            onClick={() => lip && setUnderwriting(lip?.id)}
-          >
+          <Button type="button" variant="primary" onClick={setUnderwriting}>
             <FontAwesomeIcon icon={faSquareArrowUpRight} className="me-2" />
             Richiedi underwriting
           </Button>
@@ -147,8 +135,12 @@ export function PaymentLock({
             lipId={lip.id}
             onHide={() => setIsUnderwritingOpen(false)}
             pdfType={PDFType.Underwriting}
+            onEsignComplete={async () => {
+              setIsUnderwritingOpen(false);
+            }}
             show={isUnderwritingOpen}
             personalData={lip.contractor}
+            tagToRevalidate={Tags.getLip(lip.id)}
           />
         </Alert>
       </>
