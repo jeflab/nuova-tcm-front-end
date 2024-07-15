@@ -148,6 +148,7 @@ export function PaymentLock({
             onHide={() => setIsUnderwritingOpen(false)}
             pdfType={PDFType.Underwriting}
             show={isUnderwritingOpen}
+            personalData={lip.contractor}
           />
         </Alert>
       </>
