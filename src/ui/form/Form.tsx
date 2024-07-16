@@ -51,7 +51,9 @@ export function Form<TFieldValues extends FieldValues>({
         } catch (e) {
           if (isSubmitErrors(data)(e)) {
             Object.entries(e).forEach(([key, value]) => {
-              formMethods.setError(key as "root" | Path<TFieldValues>, value);
+              formMethods.setError(key as "root" | Path<TFieldValues>, value, {
+                shouldFocus: true,
+              });
             });
           } else {
             throw e;

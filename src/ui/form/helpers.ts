@@ -1,10 +1,11 @@
 import {FieldValues} from "react-hook-form";
 import {z} from "zod";
+import {flatten} from "flat";
 
 export const isSubmitErrors = <TFieldValues extends FieldValues>(
   data: TFieldValues,
 ) => {
-  const keys = ["root", ...Object.keys(data)] as [string, ...string[]];
+  const keys = ["root", ...Object.keys(flatten(data))] as [string, ...string[]];
 
   const SubmitErrorsSchema = z
     .record(z.enum(keys), z.object({type: z.string(), message: z.string()}))
