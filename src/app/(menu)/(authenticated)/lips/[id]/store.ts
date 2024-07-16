@@ -324,7 +324,7 @@ function createDrawerState(state: State & Actions) {
       }
     }
 
-    // state.drawerStates.beneficiaries = {
+    // state.drawerStates.quote = {
     //   variant: "active",
     //   buttonLabel: "Test",
     // };

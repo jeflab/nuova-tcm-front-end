@@ -1,17 +1,18 @@
 "use client";
 
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
-import {backendUrl} from "@/services/const";
+import {PDFType} from "@/models/entities/esign";
+import {backendUrl, Tags} from "@/services/const";
 import {ButtonLink} from "@/ui/ButtonLink";
-import {Alert, Button} from "react-bootstrap";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faSquareArrowUpRight} from "@fortawesome/pro-solid-svg-icons";
-import {updateUnderwriting} from "@/app/(menu)/(authenticated)/lips/[id]/actions";
-import {notFound} from "next/navigation";
+import RequestOTPModal from "@/ui/eSign/RequestOTPModal";
 import {
   faArrowUpRightFromSquare,
   faDownload,
 } from "@fortawesome/pro-duotone-svg-icons";
+import {faSquareArrowUpRight} from "@fortawesome/pro-solid-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {useState} from "react";
+import {Alert, Button} from "react-bootstrap";
 
 const professionalSportQuestionnaireUrl =
   backendUrl + "questionario_professionale_sportivo.pdf";
@@ -23,6 +24,8 @@ interface PaymentLockProps {
 export function PaymentLock({
   hideUnderwritingAction = false,
 }: PaymentLockProps) {
+  const [isUnderwritingOpen, setIsUnderwritingOpen] = useState(false);
+
   const isPaymentLocked = useDrawerStore(
     (state) => state.drawerStates.payment?.isLocked,
   );
@@ -54,6 +57,10 @@ export function PaymentLock({
 
   const underwritingNotApproved = lipState.id === 15;
 
+  const setUnderwriting = async () => {
+    setIsUnderwritingOpen(true);
+  };
+
   if (underwritingNotApproved) {
     return (
       <Alert className="mb-0" variant="danger">
@@ -75,16 +82,6 @@ export function PaymentLock({
   }
 
   if (askForUnderwriting) {
-    const setUnderwriting = async (lipId: number) => {
-      const response = await updateUnderwriting(lipId);
-      if (response.status === "failed") {
-        if (response.responseStatus === 404) {
-          notFound();
-        }
-        throw new Error(response.message);
-      }
-    };
-
     return (
       <>
         {showProfessionalSportQuestionnaire && (
@@ -130,16 +127,25 @@ export function PaymentLock({
               modificabili.
             </strong>
           </p>
-          <Button
-            type="button"
-            variant="primary"
-            onClick={() => lip && setUnderwriting(lip?.id)}
-          >
+          <Button type="button" variant="primary" onClick={setUnderwriting}>
             <FontAwesomeIcon icon={faSquareArrowUpRight} className="me-2" />
             Richiedi underwriting
           </Button>
+          <RequestOTPModal
+            lipId={lip.id}
+            onHide={() => setIsUnderwritingOpen(false)}
+            pdfType={PDFType.Underwriting}
+            onEsignComplete={async () => {
+              setIsUnderwritingOpen(false);
+            }}
+            show={isUnderwritingOpen}
+            personalData={lip.contractor}
+            tagToRevalidate={Tags.getLip(lip.id)}
+          />
         </Alert>
       </>
     );
   }
+
+  return null;
 }

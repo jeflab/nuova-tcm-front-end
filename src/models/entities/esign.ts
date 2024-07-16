@@ -6,6 +6,7 @@ export enum PDFType {
   Proposal = "templateProposta",
   Allegato4 = "templateAllegato4",
   SetInformativo = "templateSetInformativo",
+  Underwriting = "templatePropostaUnderwriting",
 }
 
 export const esignSchema = z

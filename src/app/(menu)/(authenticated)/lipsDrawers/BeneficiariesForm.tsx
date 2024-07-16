@@ -28,7 +28,10 @@ import {
 } from "@/ui/form/normalizers";
 import {SelectField} from "@/ui/form/SelectField";
 import {emailValidator} from "@/ui/form/validators/email";
-import {fiscalCodeValidator} from "@/ui/form/validators/fiscalCode";
+import {
+  fiscalCodeMatchDataValidator,
+  fiscalCodeValidator,
+} from "@/ui/form/validators/fiscalCode";
 import autoAnimate from "@formkit/auto-animate";
 import {
   faSave,
@@ -38,6 +41,9 @@ import {
   faXmark,
 } from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {getDate} from "date-fns/getDate";
+import {getMonth} from "date-fns/getMonth";
+import {getYear} from "date-fns/getYear";
 import {Fragment, useEffect, useRef} from "react";
 import {
   Alert,
@@ -175,6 +181,32 @@ export function BeneficiariesForm() {
                 };
               }
 
+              values.beneficiaries.forEach((beneficiary, index) => {
+                if (
+                  !fiscalCodeMatchDataValidator(
+                    {
+                      name: beneficiary.name,
+                      surname: beneficiary.surname,
+                      gender: beneficiary.gender === "male" ? "M" : "F",
+                      day: getDate(beneficiary.birthDate),
+                      month: getMonth(beneficiary.birthDate) + 1,
+                      year: getYear(beneficiary.birthDate),
+                      birthplace: beneficiary.birthPlace.city,
+                      birthplaceProvincia: beneficiary.birthPlace.province,
+                    },
+                    beneficiary.fiscalCode,
+                  )
+                ) {
+                  throw {
+                    [`beneficiaries.${index}.fiscalCode`]: {
+                      type: "fcMatch",
+                      message:
+                        "Il codice fiscale non corrisponde ai dati inseriti",
+                    },
+                  };
+                }
+              });
+
               const fiscalCodes = new Set<string>();
               values.beneficiaries.forEach((beneficiary) => {
                 if (fiscalCodes.has(beneficiary.fiscalCode)) {
@@ -188,6 +220,37 @@ export function BeneficiariesForm() {
                 }
                 fiscalCodes.add(beneficiary.fiscalCode);
               });
+            }
+
+            if (values.thirdParty && values.thirdPartyContactPerson) {
+              if (
+                !fiscalCodeMatchDataValidator(
+                  {
+                    name: values.thirdPartyContactPerson.name,
+                    surname: values.thirdPartyContactPerson.surname,
+                    gender:
+                      values.thirdPartyContactPerson.gender === "male"
+                        ? "M"
+                        : "F",
+                    day: getDate(values.thirdPartyContactPerson.birthDate),
+                    month:
+                      getMonth(values.thirdPartyContactPerson.birthDate) + 1,
+                    year: getYear(values.thirdPartyContactPerson.birthDate),
+                    birthplace: values.thirdPartyContactPerson.birthPlace.city,
+                    birthplaceProvincia:
+                      values.thirdPartyContactPerson.birthPlace.province,
+                  },
+                  values.thirdPartyContactPerson.fiscalCode,
+                )
+              ) {
+                throw {
+                  ["thirdPartyContactPerson.fiscalCode"]: {
+                    type: "fcMatch",
+                    message:
+                      "Il codice fiscale non corrisponde ai dati inseriti",
+                  },
+                };
+              }
             }
 
             const updatedContractor = await updateBeneficiaries(values, lipId);

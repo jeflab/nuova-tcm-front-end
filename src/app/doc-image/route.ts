@@ -28,9 +28,20 @@ export const GET = async (request: NextRequest) => {
   const image = await fetch(
     `${apiUrl}/personal-datas/${searchParams.contractorId}/get-image?filename=${searchParams.filename}&agentId=${searchParams.agentId}&size=${searchParams.size}`,
     {
+      redirect: "manual",
       headers,
     },
   );
+  if (image.status !== 200) {
+    return new NextResponse(
+      JSON.stringify({
+        status: "failed",
+        message: "Impossibile caricare l'immagine",
+      }),
+      {status: 500},
+    );
+  }
+
   const blob = await image.arrayBuffer();
 
   const responseHeaders = new Headers();

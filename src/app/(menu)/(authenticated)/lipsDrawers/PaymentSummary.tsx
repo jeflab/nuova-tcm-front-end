@@ -1,8 +1,12 @@
 "use client";
 
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {
+  ExclusionList,
+  getExcludedCoverages,
+} from "@/app/(menu)/(authenticated)/lipsDrawers/PaymentsSummary/ExclusionList";
+import {PaymentMethod} from "@/app/(menu)/(authenticated)/lipsDrawers/PaymentsSummary/PaymentMethod";
 import {ButtonLink} from "@/ui/ButtonLink";
-import {Currency} from "@/ui/Currency";
 import {IconStack} from "@/ui/IconStack";
 import {
   faBank,
@@ -10,18 +14,20 @@ import {
   faCirclePlay,
   faCreditCard,
   faDownload,
+  faShieldXmark,
 } from "@fortawesome/pro-duotone-svg-icons";
 import {faDollarSign} from "@fortawesome/pro-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Alert, Stack} from "react-bootstrap";
 
 export function PaymentSummary() {
+  const lip = useDrawerStore((state) => state.lip);
   const paymentData = useDrawerStore((state) => state.lip?.payment);
   const premium = useDrawerStore((state) => state.lip?.quotation?.premium);
-  const underwriting = useDrawerStore(
+  const quoteData = useDrawerStore((state) => state.lip?.quotation);
+  const underwritingData = useDrawerStore(
     (state) => state.lip?.quotation?.underwriting,
   );
-  const lip = useDrawerStore((state) => state.lip);
 
   if (!paymentData || !premium) {
     return null;
@@ -75,75 +81,50 @@ export function PaymentSummary() {
           </IconStack>{" "}
           Frazionamento del premio
         </h4>
-        {paymentData.paymentMethod === "monthly" ? (
-          <p className="mb-0">
-            Pagamento mensile di <Currency>{premium / 12}</Currency> con
-            anticipo di 3 mesi (<Currency>{(premium / 12) * 3}</Currency>)
-          </p>
-        ) : paymentData.paymentMethod === "annual" ? (
-          <p className="mb-0">
-            Pagamento annuale di <Currency>{premium}</Currency>
-          </p>
-        ) : paymentData.paymentMethod === "3yearsAdvance" ? (
-          <p className="mb-0">
-            Pagamento anticipato di 3 anni (<Currency>{premium * 3}</Currency>)
-            e a seguire pagamento mensile di <Currency>{premium / 12}</Currency>
-          </p>
-        ) : paymentData.paymentMethod === "5yearsAdvance" ? (
-          <p className="mb-0">
-            Pagamento anticipato di 5 anni (<Currency>{premium * 5}</Currency>)
-            e a seguire pagamento mensile di <Currency>{premium / 12}</Currency>
-          </p>
-        ) : null}
+        <PaymentMethod
+          paymentMethod={paymentData.paymentMethod}
+          premium={premium}
+        />
       </div>
-      {underwriting && (
-        <div>
-          <h4 className="w-100 text-primary">
-            <IconStack>
-              <FontAwesomeIcon icon={faCalendar} className="fa-stack-2x" />
-              <FontAwesomeIcon
-                icon={faDollarSign}
-                className="fa-stack-1x"
-                transform="down-5"
-              />
-            </IconStack>{" "}
-            Frazionamento del premio in seguito a underwriting
-          </h4>
-          {paymentData.paymentMethod === "monthly" ? (
-            <p>
-              Pagamento mensile di{" "}
-              <Currency>{underwriting.extraPremium.value / 12}</Currency> con
-              anticipo di 3 mesi (
-              <Currency>{(underwriting.extraPremium.value / 12) * 3}</Currency>)
-            </p>
-          ) : paymentData.paymentMethod === "annual" ? (
-            <p>
-              Pagamento annuale di{" "}
-              <Currency>{underwriting.extraPremium.value}</Currency>
-            </p>
-          ) : paymentData.paymentMethod === "3yearsAdvance" ? (
-            <p>
-              Pagamento anticipato di 3 anni (
-              <Currency>{underwriting.extraPremium.value * 3}</Currency>) e a
-              seguire pagamento mensile di{" "}
-              <Currency>{underwriting.extraPremium.value / 12}</Currency>
-            </p>
-          ) : paymentData.paymentMethod === "5yearsAdvance" ? (
-            <p>
-              Pagamento anticipato di 5 anni (
-              <Currency>{underwriting.extraPremium.value * 5}</Currency>) e a
-              seguire pagamento mensile di{" "}
-              <Currency>{underwriting.extraPremium.value / 12}</Currency>
-            </p>
-          ) : null}
-          <Alert variant="info">{underwriting.extraPremium.note}</Alert>
-          <ButtonLink
-            href={`${process.env.NEXT_PUBLIC_API_URL}/pdf-underwriting-sanitario/?lipId=${lip?.id}&agentId=${lip?.agent?.id}&contractorId=${lip?.contractor?.id}`}
-            download
-          >
-            <FontAwesomeIcon icon={faDownload} /> Scarica il documento
-          </ButtonLink>
-        </div>
+      {underwritingData && (
+        <>
+          <div>
+            <h4 className="w-100 text-primary">
+              <IconStack>
+                <FontAwesomeIcon icon={faCalendar} className="fa-stack-2x" />
+                <FontAwesomeIcon
+                  icon={faDollarSign}
+                  className="fa-stack-1x"
+                  transform="down-5"
+                />
+              </IconStack>{" "}
+              Frazionamento del premio in seguito a underwriting
+            </h4>
+            <PaymentMethod
+              paymentMethod={paymentData.paymentMethod}
+              premium={underwritingData.extraPremium.value}
+            />
+          </div>
+          {getExcludedCoverages(underwritingData.exclusions, quoteData).length >
+            0 && (
+            <div>
+              <h4 className="w-100 text-primary">
+                <FontAwesomeIcon icon={faShieldXmark} /> Coperture escluse a
+                seguito di underwriting
+              </h4>
+              <ExclusionList exclusions={underwritingData.exclusions} />
+            </div>
+          )}
+          <div>
+            <Alert variant="info">{underwritingData.extraPremium.note}</Alert>
+            <ButtonLink
+              href={`${process.env.NEXT_PUBLIC_API_URL}/pdf-underwriting-sanitario/?lipId=${lip?.id}&agentId=${lip?.agent?.id}&contractorId=${lip?.contractor?.id}`}
+              download
+            >
+              <FontAwesomeIcon icon={faDownload} /> Scarica il documento
+            </ButtonLink>
+          </div>
+        </>
       )}
       <div>
         <h4 className="w-100 text-primary">
