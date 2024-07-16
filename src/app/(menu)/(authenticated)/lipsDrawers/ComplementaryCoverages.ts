@@ -16,7 +16,7 @@ export const complementaryCoverages = [
   {
     key: "exemptionFromPaying",
     label: "Esenzione dal pagamento dei premi",
-    valueLabel: "",
+    valueLabel: "Attiva",
     maxDuration: 30,
     maxAge: 65,
   },

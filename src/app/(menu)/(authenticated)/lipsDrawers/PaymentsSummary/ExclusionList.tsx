@@ -1,19 +1,53 @@
-import {Underwriting} from "@/models/entities/lip";
+import {complementaryCoverages} from "@/app/(menu)/(authenticated)/lipsDrawers/ComplementaryCoverages";
+import {Coverage} from "@/app/(menu)/(authenticated)/lipsDrawers/QuoteSummary/Coverage";
+import {Lip, Underwriting} from "@/models/entities/lip";
+import {Row} from "react-bootstrap";
+import {useDrawerStore} from "../../lips/[id]/store";
 
 interface ExclusionListProps {
   exclusions: Underwriting["exclusions"];
 }
 
-export function ExclusionList({exclusions}: ExclusionListProps) {
-  const exclusionsJsx = exclusions.map((exclusion) => (
-    <li key={exclusion.name}>{exclusion.name}</li>
-  ));
+export function getExcludedCoverages(
+  exclusions: Underwriting["exclusions"],
+  quoteData: Lip["quotation"],
+) {
+  if (!quoteData) {
+    return [];
+  }
 
-  // stilizzare le esclusioni come fatto per le coperture. Abbiamo tutte le info nell'oggetto complementaryCoverages
+  return complementaryCoverages
+    .filter(({key}) => {
+      const coverage = quoteData[key];
+      return typeof coverage === "boolean" ? coverage : coverage.enabled;
+    })
+    .filter(({key}) => {
+      const exclusion = exclusions.find((exclusion) => exclusion.name === key);
+      return exclusion?.decline;
+    });
+}
+
+export function ExclusionList({exclusions}: ExclusionListProps) {
+  const quoteData = useDrawerStore((state) => state.lip?.quotation);
+  if (!quoteData) {
+    return null;
+  }
+
+  const filteredExcludedCoverages = getExcludedCoverages(exclusions, quoteData);
+
+  const exclusionsJsx = filteredExcludedCoverages.map((exclusion) => (
+    <td key={exclusion.key}>
+      <Coverage complementaryCoverage={exclusion} enabled={false} />
+    </td>
+  ));
 
   if (exclusionsJsx.length === 0) {
     return null;
   }
 
-  return <ul>{exclusionsJsx}</ul>;
+  return (
+    <Row xs={1} sm={2} md={1} lg={2} className="row-gap-3 d-flex">
+      {exclusionsJsx}
+    </Row>
+  );
 }

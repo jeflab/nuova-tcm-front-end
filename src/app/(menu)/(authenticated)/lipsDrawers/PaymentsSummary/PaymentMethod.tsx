@@ -2,18 +2,13 @@ import {PaymentMethodsSimple} from "@/app/(menu)/(authenticated)/lipsDrawers/sel
 import {Currency} from "@/ui/Currency";
 
 interface PaymentMethodProps {
-  className?: string;
   paymentMethod: PaymentMethodsSimple;
   premium: number;
 }
 
-export function PaymentMethod({
-  className,
-  paymentMethod,
-  premium,
-}: PaymentMethodProps) {
+export function PaymentMethod({paymentMethod, premium}: PaymentMethodProps) {
   return (
-    <p className={className}>
+    <p className="mb-0">
       {paymentMethod === "monthly" ? (
         <>
           Pagamento mensile di <Currency>{premium / 12}</Currency> con anticipo
