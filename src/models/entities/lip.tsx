@@ -2,6 +2,7 @@ import {complementaryCoverages} from "@/app/(menu)/(authenticated)/lipsDrawers/C
 import {
   fundSourceOptions,
   genderOptions,
+  idTypeOptions,
   nominationOptions,
   paymentMethodsSimpleOptions,
   relationshipOptions,
@@ -249,6 +250,15 @@ export type HealthcareQuestionnaire = z.infer<
   typeof healthcareQuestionnaireSchema
 >;
 
+const identityDocumentSchema = z.object({
+  idType: z.enum(getOptionsValues(idTypeOptions)),
+  number: z.string(),
+  issuedBy: z.string(),
+  issuedByOrg: z.string(),
+  issuedDate: z.coerce.date(),
+  expiringDate: z.coerce.date(),
+});
+
 const beneficiarySchema = z.object({
   name: z.string(),
   surname: z.string(),
@@ -260,6 +270,7 @@ const beneficiarySchema = z.object({
   }),
   fiscalCode: z.string(),
   gender: z.enum(getOptionsValues(genderOptions)),
+  identityDocument: identityDocumentSchema.optional(),
   place: z.object({
     city: z.string(),
     province: z.string(),
@@ -291,6 +302,7 @@ const thirdPartySchema = z.object({
   }),
   fiscalCode: z.string(),
   gender: z.enum(getOptionsValues(genderOptions)),
+  identityDocument: identityDocumentSchema.optional(),
   place: z.object({
     city: z.string(),
     province: z.string(),

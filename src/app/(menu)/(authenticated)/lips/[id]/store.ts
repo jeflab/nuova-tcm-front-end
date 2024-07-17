@@ -324,9 +324,9 @@ function createDrawerState(state: State & Actions) {
       }
     }
 
-    // state.drawerStates.quote = {
-    //   variant: "active",
-    //   buttonLabel: "Test",
+    // state.drawerStates.beneficiaries = {
+    //   variant: "waiting",
+    //   buttonLabel: "Debug",
     // };
   }
 }
