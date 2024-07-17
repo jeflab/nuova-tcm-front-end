@@ -19,9 +19,9 @@ import {IdentificationForm} from "@/app/(menu)/(authenticated)/lipsDrawers/Ident
 import {IdentificationDataSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/IdentificationSummary";
 import {PaymentForm} from "@/app/(menu)/(authenticated)/lipsDrawers/PaymentForm";
 import {PaymentLock} from "@/app/(menu)/(authenticated)/lipsDrawers/PaymentLock";
-import {PaymentSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/PaymentSummary";
+import {PaymentSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/PaymentSummary/PaymentSummary";
 import {QuoteForm} from "@/app/(menu)/(authenticated)/lipsDrawers/QuoteForm";
-import {QuoteSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/QuoteSummary";
+import {QuoteSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/QuoteSummary/QuoteSummary";
 import {ReactNode} from "react";
 import {ContractorPersonalAreaActivationLastPrivacy} from "../../lipsDrawers/ContractorPersonalAreaActivationLastPrivacy";
 import {ContractorContactsForm} from "../../lipsDrawers/ContractorContactsForm";

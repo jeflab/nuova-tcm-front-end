@@ -4,8 +4,8 @@ import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {
   ExclusionList,
   getExcludedCoverages,
-} from "@/app/(menu)/(authenticated)/lipsDrawers/PaymentsSummary/ExclusionList";
-import {PaymentMethod} from "@/app/(menu)/(authenticated)/lipsDrawers/PaymentsSummary/PaymentMethod";
+} from "@/app/(menu)/(authenticated)/lipsDrawers/PaymentSummary/ExclusionList";
+import {PaymentMethod} from "@/app/(menu)/(authenticated)/lipsDrawers/PaymentSummary/PaymentMethod";
 import {ButtonLink} from "@/ui/ButtonLink";
 import {IconStack} from "@/ui/IconStack";
 import {
