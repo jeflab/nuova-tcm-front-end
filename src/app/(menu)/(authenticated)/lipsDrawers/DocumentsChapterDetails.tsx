@@ -4,6 +4,7 @@ import {
 } from "@/app/(menu)/(authenticated)/lipsDrawers/DocumentsManagement";
 import {dateTimeString} from "@/helpers/dates";
 import {Lip} from "@/models/entities/lip";
+import {Tags} from "@/services/const";
 import RequestOTPModal from "@/ui/eSign/RequestOTPModal";
 import {
   faCheckCircle,
@@ -48,8 +49,8 @@ export function DocumentsChapterDetails({
       onHide={onHide}
       backdrop="static"
       keyboard={false}
-      size="xl"
-      className="mt-4 pe-3"
+      size="lg"
+      className="mt-4"
     >
       <ModalHeader closeButton>Firma il documento</ModalHeader>
       <ModalBody>
@@ -108,7 +109,7 @@ export function DocumentsChapterDetails({
                     payload={{esignIndex: eSign.eSignIndex}}
                     show={esignModalOpen === eSign.eSignIndex}
                     lipId={lip.id}
-                    tagToRevalidate={`getLip-${lip.id}`}
+                    tagToRevalidate={Tags.getLip(lip.id)}
                   />
                 </>
               )}

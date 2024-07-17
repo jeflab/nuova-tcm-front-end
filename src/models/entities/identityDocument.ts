@@ -1,3 +1,5 @@
+import {idTypeOptions} from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
+import {getOptionsValues} from "@/helpers/getOptionsLabel";
 import {z} from "zod";
 import {zu} from "zod_utilz";
 
@@ -9,7 +11,7 @@ const identificationSchema = z.object({
 
 export const identityDocumentSchema = z
   .object({
-    type: z.string(),
+    type: z.enum(getOptionsValues(idTypeOptions)),
     number: z.string(),
     issued_by: z.string(),
     issued_by_org: z.string(),

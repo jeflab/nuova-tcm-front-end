@@ -4,6 +4,7 @@ import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {cns} from "@/helpers/cns";
 import {PDFType} from "@/models/entities/esign";
 import {Privacy} from "@/models/entities/privacy";
+import {Tags} from "@/services/const";
 import RequestOTPModal from "@/ui/eSign/RequestOTPModal";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {CheckboxField} from "@/ui/form/CheckboxField";
@@ -100,7 +101,7 @@ export function ContractorPersonalAreaActivationLastPrivacyForm({
             show={esignModalOpen}
             payload={{values: formMethods.watch()}}
             lipId={lip.id}
-            tagToRevalidate={`getLip-${lip.id}`}
+            tagToRevalidate={Tags.getLip(lip.id)}
           />
         )}
       </div>

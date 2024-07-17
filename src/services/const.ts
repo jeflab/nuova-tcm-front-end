@@ -17,6 +17,6 @@ export const contentMultipartHeader = {
 
 export const Tags = {
   me: () => "me" as const,
-  getLip: (id: number) => `getLip-${id}` as const,
+  getLip: <T extends number>(id: T) => `getLip-${id}` as const,
 } as const;
 export type Tag = ReturnType<(typeof Tags)[keyof typeof Tags]>;

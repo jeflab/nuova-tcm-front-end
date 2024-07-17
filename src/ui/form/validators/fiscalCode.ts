@@ -49,7 +49,7 @@ interface FiscalCodeData {
   birthplace: string;
   birthplaceProvincia: string;
 }
-export const fiscalCodeMatchDataSuperRefines = (
+export const fiscalCodeMatchDataValidator = (
   data: FiscalCodeData,
   code: string,
 ) => {

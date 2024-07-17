@@ -325,8 +325,8 @@ function createDrawerState(state: State & Actions) {
     }
 
     // state.drawerStates.beneficiaries = {
-    //   variant: "active",
-    //   buttonLabel: "Test",
+    //   variant: "waiting",
+    //   buttonLabel: "Debug",
     // };
   }
 }

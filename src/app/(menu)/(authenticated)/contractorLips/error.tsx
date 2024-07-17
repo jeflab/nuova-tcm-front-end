@@ -3,15 +3,12 @@
 import {AppContainer} from "@/ui/AppContainer";
 import {ButtonLink} from "@/ui/ButtonLink";
 import {PageTitle} from "@/ui/PageTitle";
-import {
-  faArrowRotateBack,
-  faHouseChimney,
-} from "@fortawesome/pro-duotone-svg-icons";
+import {RetryOnErrorButton} from "@/ui/RetryOnErrorButton";
+import {faHouseChimney} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import * as Sentry from "@sentry/nextjs";
-import {useRouter} from "next/navigation";
-import {startTransition, useEffect} from "react";
-import {Alert, AlertHeading, Button} from "react-bootstrap";
+import {useEffect} from "react";
+import {Alert, AlertHeading} from "react-bootstrap";
 
 export default function ContractorLipsErrorPage({
   error,
@@ -20,18 +17,9 @@ export default function ContractorLipsErrorPage({
   error: Error & {digest?: string};
   reset: () => void;
 }) {
-  const router = useRouter();
-
   useEffect(() => {
     Sentry.captureException(error);
   }, [error]);
-
-  const refresh = () => {
-    router.refresh();
-    startTransition(() => {
-      reset();
-    });
-  };
 
   return (
     <AppContainer className="vstack gap-3">
@@ -41,10 +29,7 @@ export default function ContractorLipsErrorPage({
         <p className="mb-0">{error.message}</p>
       </Alert>
       <div>
-        <Button onClick={refresh} type="button" className="me-2">
-          <FontAwesomeIcon icon={faArrowRotateBack} className="me-2" />
-          Riprova
-        </Button>
+        <RetryOnErrorButton onReset={reset} />
         <ButtonLink href="/" type="button">
           <FontAwesomeIcon icon={faHouseChimney} className="me-2" />
           Torna alla pagina principale

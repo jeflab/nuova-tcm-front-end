@@ -8,8 +8,8 @@ import {FatcaSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/FatcaSummar
 import {HealthQuestionnaireSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/HealthQuestionnaireSummary";
 import {IdentificationDataSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/IdentificationSummary";
 import {PaymentLock} from "@/app/(menu)/(authenticated)/lipsDrawers/PaymentLock";
-import {PaymentSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/PaymentSummary";
-import {QuoteSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/QuoteSummary";
+import {PaymentSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/PaymentSummary/PaymentSummary";
+import {QuoteSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/QuoteSummary/QuoteSummary";
 import {ReactNode} from "react";
 import {ContractorContactsSummary} from "../../lipsDrawers/ContractorContactsSummary";
 import {DrawerName} from "../../lips/[id]/drawers";
