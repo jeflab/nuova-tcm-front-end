@@ -162,7 +162,7 @@ export async function apiCall<ResponsePayloadShape extends ZodRawShape>(
     >;
   }
 
-  if (serverResponseJson.status === "failed") {
+  if (serverResponseJson.status !== "success") {
     console.error(
       chalk.red.inverse("Errore nella risposta del server"),
       chalk.redBright(serverResponseJson.message),

@@ -89,7 +89,7 @@ export function QuoteForm() {
       };
     }
 
-    if (clientResponse.status === "failed") {
+    if (clientResponse.status !== "success") {
       throw {root: {type: "server", message: clientResponse.message}};
     }
 
@@ -121,7 +121,7 @@ export function QuoteForm() {
       tpiTpdCancerDirty,
     );
 
-    if (updateQuotationResponse.status === "failed") {
+    if (updateQuotationResponse.status !== "success") {
       formMethods.setError("root", {
         type: "server",
         message: updateQuotationResponse.message,

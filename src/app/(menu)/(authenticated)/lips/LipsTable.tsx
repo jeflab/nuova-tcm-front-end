@@ -11,7 +11,7 @@ export async function LipsTable({searchParams}: LipsTableProps) {
   const parsedSearchParams = dataTableParamsSchema.parse(searchParams);
   const lips = await getLipsList(parsedSearchParams);
 
-  if (lips.status === "failed") {
+  if (lips.status !== "success") {
     throw new Error("Impossibile caricare le polizze, riprovare più tardi");
   }
 

@@ -5,7 +5,7 @@ import {PageTitle} from "@/ui/PageTitle";
 export default async function OperatingManualPage() {
   const account = await getAccount();
 
-  if (account.status === "failed") {
+  if (account.status !== "success") {
     throw new Error(account.message);
   }
 

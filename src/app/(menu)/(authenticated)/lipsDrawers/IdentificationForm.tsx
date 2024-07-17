@@ -98,7 +98,7 @@ export function IdentificationForm() {
             const identificationContractorResponse =
               await identificationContractor(formData, lipId);
 
-            if (identificationContractorResponse.status === "failed") {
+            if (identificationContractorResponse.status !== "success") {
               throw {
                 root: {
                   type: "server",

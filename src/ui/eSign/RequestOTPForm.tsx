@@ -74,7 +74,7 @@ export function RequestOTPForm<TPayload>({
           tagToRevalidate,
         });
 
-        if (response.status === "failed") {
+        if (response.status !== "success") {
           throw {
             root: {
               type: "server",

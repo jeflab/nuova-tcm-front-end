@@ -53,7 +53,7 @@ export function SetPasswordForm({
           };
         }
 
-        if (setPasswordResponse.status === "failed") {
+        if (setPasswordResponse.status !== "success") {
           throw {root: {type: "server", message: setPasswordResponse.message}};
         }
 

@@ -38,7 +38,7 @@ export function ForgotPasswordForm({onResetSuccess}: ForgotPasswordFormProps) {
       };
     }
 
-    if (forgotPasswordResponse.status === "failed") {
+    if (forgotPasswordResponse.status !== "success") {
       throw {root: {type: "server", message: forgotPasswordResponse.message}};
     }
 

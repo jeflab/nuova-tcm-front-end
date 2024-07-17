@@ -6,7 +6,7 @@ import {getAccount} from "@/app/(no-menu)/(auth)/actions";
 export async function ContractorFiscalCodeModal() {
   const account = await getAccount();
 
-  if (account.status === "failed") {
+  if (account.status !== "success") {
     throw new Error(account.message);
   }
 
