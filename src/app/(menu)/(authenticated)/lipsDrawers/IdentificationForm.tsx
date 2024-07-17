@@ -3,18 +3,15 @@
 import {identificationContractor} from "@/app/(menu)/(authenticated)/lips/[id]/actions";
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {
-  IdType,
-  idTypeOptions,
-} from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
+  getIdentityDocumentDefaultValues,
+  IdentityDocumentForm,
+} from "@/app/(menu)/(authenticated)/lipsDrawers/IdentityDocumentForm/IdentityDocumentForm";
 import {createDocumentImageUrl} from "@/helpers/createDocumentImageUrl";
-import {dbDateString} from "@/helpers/dates";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {CheckboxField} from "@/ui/form/CheckboxField";
 import {DropzoneField} from "@/ui/form/DropzoneField";
 import {FieldError} from "@/ui/form/FieldError";
 import {Form} from "@/ui/form/Form";
-import {InputField} from "@/ui/form/InputField";
-import {SelectField} from "@/ui/form/SelectField";
 import {
   faCreditCard,
   faIdCard,
@@ -46,16 +43,7 @@ export function IdentificationForm() {
   const formMethods = useForm({
     mode: "onChange",
     defaultValues: {
-      idType: identityDocument?.idType ?? ("" as IdType),
-      number: identityDocument?.number ?? "",
-      issuedBy: identityDocument?.issuedBy ?? "",
-      issuedByOrg: identityDocument?.issuedByOrg ?? "",
-      issuedDate: identityDocument?.issuedDate
-        ? dbDateString(identityDocument.issuedDate)
-        : "",
-      expiringDate: identityDocument?.expiringDate
-        ? dbDateString(identityDocument.expiringDate)
-        : "",
+      ...getIdentityDocumentDefaultValues(identityDocument),
       frontPicture: null as unknown as File,
       backPicture: null as unknown as File,
       metContractorInPerson: !!identityDocument,
@@ -126,94 +114,7 @@ export function IdentificationForm() {
         >
           <Row className="row-gap-3">
             <h4>Documento d'identità:</h4>
-            <Col className="d-flex" xs={12}>
-              <FormGroup controlId="idType" as={BorderFeedback}>
-                <FormLabel>Tipo di documento</FormLabel>
-                <FieldError />
-                <SelectField
-                  options={idTypeOptions}
-                  placeholder="Seleziona il tipo di documento"
-                  validation={{
-                    required: "Seleziona il tipo di documento",
-                  }}
-                />
-              </FormGroup>
-            </Col>
-            <Col className="d-flex" xs={12} sm={4}>
-              <FormGroup controlId="number" as={BorderFeedback}>
-                <FormLabel>Numero documento</FormLabel>
-                <FieldError />
-                <InputField
-                  type="text"
-                  placeholder="Numero documento"
-                  validation={{
-                    required: "Inserisci il numero del documento",
-                  }}
-                />
-              </FormGroup>
-            </Col>
-            <Col className="d-flex" xs={12} sm={4}>
-              <FormGroup controlId="issuedByOrg" as={BorderFeedback}>
-                <FormLabel>Rilasciato da</FormLabel>
-                <FieldError />
-                <InputField
-                  type="text"
-                  placeholder="Rilasciato da"
-                  validation={{
-                    required: "Inserisci l'ente di rilascio",
-                  }}
-                />
-              </FormGroup>
-            </Col>
-            <Col className="d-flex" xs={12} sm={4}>
-              <FormGroup controlId="issuedBy" as={BorderFeedback}>
-                <FormLabel>Luogo di rilascio</FormLabel>
-                <FieldError />
-                <InputField
-                  type="text"
-                  placeholder="Luogo di rilascio"
-                  validation={{
-                    required: "Inserisci il luogo di rilascio",
-                  }}
-                />
-              </FormGroup>
-            </Col>
-            <Col className="d-flex" xs={12} sm={6}>
-              <FormGroup controlId="issuedDate" as={BorderFeedback}>
-                <FormLabel>Data di rilascio</FormLabel>
-                <FieldError />
-                <InputField
-                  type="date"
-                  placeholder="Data di rilascio"
-                  max={dbDateString()}
-                  validation={{
-                    required: "Inserisci la data di rilascio",
-                    max: {
-                      value: dbDateString(),
-                      message: "La data di rilascio non può essere nel futuro",
-                    },
-                  }}
-                />
-              </FormGroup>
-            </Col>
-            <Col className="d-flex" xs={12} sm={6}>
-              <FormGroup controlId="expiringDate" as={BorderFeedback}>
-                <FormLabel>Data di scadenza</FormLabel>
-                <FieldError />
-                <InputField
-                  type="date"
-                  placeholder="Data di scadenza"
-                  min={dbDateString()}
-                  validation={{
-                    min: {
-                      value: dbDateString(),
-                      message: "La data di scadenza non può essere nel passato",
-                    },
-                    required: "Inserisci la data di scadenza",
-                  }}
-                />
-              </FormGroup>
-            </Col>
+            <IdentityDocumentForm />
             <Col className="d-flex" xs={12} sm={6}>
               <FormGroup controlId="frontPicture" as={BorderFeedback}>
                 <FormLabel>Documento fronte</FormLabel>
