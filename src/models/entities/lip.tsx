@@ -32,7 +32,7 @@ import {ReactNode} from "react";
 import {z} from "zod";
 import {zu} from "zod_utilz";
 
-export const LipStatesIcons: Record<number, ReactNode> = {
+const LipStatesIcons: Record<number, ReactNode> = {
   // 0: Sconosciuto
   0: <FontAwesomeIcon icon={faQuestionCircle} className="text-primary" />,
   // 1: Incompleta
@@ -387,7 +387,12 @@ export const lipStateSchema = z
     id: z.number(),
     label: z.string(),
   })
-  .default({id: 1, label: "Incompleta"});
+  .default({id: 0, label: "Sconosciuto"})
+  .transform(({id, label}) => ({
+    id,
+    label,
+    icon: LipStatesIcons[id] ?? LipStatesIcons[0],
+  }));
 
 export const lipSchema = z
   .object({
@@ -416,9 +421,7 @@ export const lipSchema = z
       .array(lipStateSchema)
       .nullish()
       .transform((states) => {
-        return (
-          states?.[states.length - 1] ?? lipStateSchema._def.defaultValue()
-        );
+        return states?.[states.length - 1] ?? lipStateSchema.parse(undefined);
       }),
   })
   .transform(
@@ -455,3 +458,5 @@ export const lipSchema = z
     },
   );
 export type Lip = z.infer<typeof lipSchema>;
+
+console.log(lipStateSchema.parse(undefined));

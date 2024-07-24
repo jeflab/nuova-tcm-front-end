@@ -15,7 +15,7 @@ export function LipStatesSelectorFilter({
   if (!lipStates) {
     return (
       <FormSelect size="sm" key="loading">
-        <option key="loading">{filterValue}</option>
+        <option key="loading">{filterValue || "Tutti"}</option>
       </FormSelect>
     );
   }

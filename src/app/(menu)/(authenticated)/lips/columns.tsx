@@ -3,32 +3,13 @@
 import {LipStatesSelectorFilter} from "@/app/(menu)/(authenticated)/lips/LipStatesSelectorFilter";
 import {cns} from "@/helpers/cns";
 import {dateString, dbDateString} from "@/helpers/dates";
-import {Lip, LipStatesIcons} from "@/models/entities/lip";
+import {Lip} from "@/models/entities/lip";
 import {ButtonLink} from "@/ui/ButtonLink";
 import dataTableStyles from "@/ui/table/DataTable.module.scss";
 import {faEye, faFilterCircleXmark} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {ColumnDef, createColumnHelper} from "@tanstack/react-table";
 import {Button, FormControl, FormSelect, Placeholder} from "react-bootstrap";
-
-// TODO: trovare il modo di prenderli dal backend
-const lipStates = [
-  {id: 1, label: "Incompleta"},
-  {id: 2, label: "Underwriting"},
-  {id: 3, label: "Completa"},
-  {id: 4, label: "Approvata dal broker"},
-  {id: 5, label: "Primo pagamento confermato"},
-  {id: 6, label: "Approvazione dal MasterBroker"},
-  {id: 7, label: "Inviata in compagnia"},
-  {id: 8, label: "Rifiutata"},
-  {id: 9, label: "Accettata"},
-  {id: 10, label: "Non approvata dal broker"},
-  {id: 11, label: "Non approvata dal Master Broker a livello finanziario"},
-  {id: 12, label: "Non approvata dal Master Broker a livello qualitativo"},
-  {id: 13, label: "Bloccata per AML"},
-  {id: 14, label: "Approvata dopo revisione underwriting sanitario"},
-  {id: 15, label: "Non approvata dopo revisione underwriting sanitario"},
-];
 
 const columnHelper = createColumnHelper<Lip>();
 export const columns = [
@@ -94,8 +75,7 @@ export const columns = [
     enableColumnFilter: true,
     cell: (props) => (
       <>
-        {LipStatesIcons[props.getValue().id] ?? LipStatesIcons[0]}{" "}
-        {props.getValue().label}
+        {props.getValue().icon} {props.getValue().label}
       </>
     ),
     meta: {
@@ -231,7 +211,7 @@ export const skeletonColumns = [
       </>
     ),
     meta: {
-      filterComponent: ({disabled, filterValue, setFilterValue}) => {
+      filterComponent: ({disabled, filterValue}) => {
         return (
           <FormSelect
             defaultValue={filterValue}
@@ -240,7 +220,7 @@ export const skeletonColumns = [
             aria-label="Filtra per stato"
           >
             <option key="all" value="">
-              {filterValue}
+              {filterValue || "Tutti"}
             </option>
           </FormSelect>
         );
