@@ -12,6 +12,14 @@ export function LipStatesSelectorFilter({
 }: LipStatesSelectorFilterProps) {
   const lipStates = useDrawerStore((state) => state.tableContext);
 
+  if (!lipStates) {
+    return (
+      <FormSelect size="sm" key="loading">
+        <option key="loading">{filterValue}</option>
+      </FormSelect>
+    );
+  }
+
   return (
     <FormSelect
       defaultValue={filterValue}
@@ -23,7 +31,7 @@ export function LipStatesSelectorFilter({
         Tutti
       </option>
       {lipStates?.map(({id, label}) => (
-        <option key={id} value={id}>
+        <option key={id} value={label}>
           {label}
         </option>
       ))}

@@ -236,18 +236,12 @@ export const skeletonColumns = [
           <FormSelect
             defaultValue={filterValue}
             disabled={disabled}
-            onChange={(e) => setFilterValue(e.target.value)}
             size="sm"
             aria-label="Filtra per stato"
           >
-            <option key="all" value="all">
-              Tutti
+            <option key="all" value="">
+              {filterValue}
             </option>
-            {lipStates.map(({id, label}) => (
-              <option key={id} value={id}>
-                {label}
-              </option>
-            ))}
           </FormSelect>
         );
       },
