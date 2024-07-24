@@ -109,7 +109,7 @@ export function DenForm() {
             invariant(lipId, "lipId is required");
             const updateDenResponse = await updateDen(values, lipId);
 
-            if (updateDenResponse.status === "failed") {
+            if (updateDenResponse.status !== "success") {
               throw {
                 root: {
                   type: "server",

@@ -30,7 +30,7 @@ const minWidthHack = {minWidth: "1px"};
 export default async function NewLipPage({params}: NewLipPageProps) {
   await sleep(5000);
   const lipResponse = await getLip(parseInt(params.id, 10));
-  if (lipResponse.status === "failed") {
+  if (lipResponse.status !== "success") {
     if (lipResponse.responseStatus === 404) {
       notFound();
     }

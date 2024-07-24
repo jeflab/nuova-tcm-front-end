@@ -5,7 +5,7 @@ import {Alert} from "react-bootstrap";
 export async function ContractorPersonalAreaActivationLastPrivacy() {
   const lastPrivacy = await getLastPrivacy();
 
-  if (lastPrivacy.status === "failed") {
+  if (lastPrivacy.status !== "success") {
     return (
       <Alert variant="danger">
         Impossibile caricare l'ultima privacy, riprovare più tardi

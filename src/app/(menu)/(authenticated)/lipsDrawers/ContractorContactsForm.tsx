@@ -92,7 +92,7 @@ export function ContractorContactsForm() {
                 };
               }
 
-              if (activateContractorResponse.status === "failed") {
+              if (activateContractorResponse.status !== "success") {
                 throw {
                   root: {
                     type: "server",
@@ -113,7 +113,7 @@ export function ContractorContactsForm() {
                 values,
               );
 
-              if (updatedContractor.status === "failed") {
+              if (updatedContractor.status !== "success") {
                 throw {
                   root: {
                     type: "server",

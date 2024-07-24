@@ -10,14 +10,9 @@ import {FieldError} from "@/ui/form/FieldError";
 import {Form} from "@/ui/form/Form";
 import {HelpText} from "@/ui/form/HelpText";
 import {InputField} from "@/ui/form/InputField";
-import {
-  emailNormalizer,
-  onlyNumbersNormalizer,
-  upperCaseNormalizer,
-} from "@/ui/form/normalizers";
+import {emailNormalizer, onlyNumbersNormalizer} from "@/ui/form/normalizers";
 import {ReverseFormGroup} from "@/ui/form/ReverseFormGroup";
 import {emailValidator} from "@/ui/form/validators/email";
-import {fiscalCodeValidator} from "@/ui/form/validators/fiscalCode";
 import {password} from "@/ui/form/validators/password";
 import {IconStack} from "@/ui/IconStack";
 import autoAnimate from "@formkit/auto-animate";
@@ -84,7 +79,7 @@ export function AccountProfile({user}: AccountProfileProps) {
             onSubmit={async (values) => {
               const updateAccountResponse = await updateAccount(values);
 
-              if (updateAccountResponse.status === "failed") {
+              if (updateAccountResponse.status !== "success") {
                 throw {
                   root: {
                     type: "server",
@@ -168,7 +163,7 @@ export function AccountProfile({user}: AccountProfileProps) {
                 }
                 const updatePasswordResponse = await updatePassword(values);
 
-                if (updatePasswordResponse.status === "failed") {
+                if (updatePasswordResponse.status !== "success") {
                   throw {
                     root: {
                       type: "server",

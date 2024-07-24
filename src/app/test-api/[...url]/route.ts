@@ -11,18 +11,28 @@ export async function GET(
   request: NextRequest,
   {params}: {params: {url: string[]}},
 ) {
+  console.time("test-api response time");
   const queryParams = new URLSearchParams(request.nextUrl.searchParams);
   const queryParamsString = queryParams.toString()
     ? `?${queryParams.toString()}`
     : "";
 
-  return await fetch(`${apiUrl}/${params.url.join("/")}${queryParamsString}`, {
-    headers: {
-      ...contentJsonHeader,
-      ...acceptJsonHeader,
-      ...authorizationHeader(),
+  const response = await fetch(
+    `${apiUrl}/${params.url.join("/")}${queryParamsString}`,
+    {
+      headers: {
+        ...contentJsonHeader,
+        ...acceptJsonHeader,
+        ...authorizationHeader(),
+        "cache-control": "no-transform",
+        "accept-encoding": "gzip, br",
+      },
+      method: "GET",
+      credentials: "include",
     },
-    method: "GET",
-    credentials: "include",
-  });
+  );
+
+  console.timeEnd("test-api response time");
+
+  return response;
 }

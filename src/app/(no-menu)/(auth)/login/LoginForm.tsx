@@ -34,7 +34,7 @@ export function LoginForm() {
       };
     }
 
-    if (loginResponse.status === "failed") {
+    if (loginResponse.status !== "success") {
       throw {root: {type: "server", message: loginResponse.message}};
     }
   };

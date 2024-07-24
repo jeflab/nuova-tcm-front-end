@@ -106,7 +106,7 @@ export const columns = [
             size="sm"
             aria-label="Filtra per stato"
           >
-            <option key="all" value="all">
+            <option key="all" value="">
               Tutti
             </option>
             {lipStates.map(({id, label}) => (

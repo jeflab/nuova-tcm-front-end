@@ -71,7 +71,7 @@ export function QuoterForm() {
       };
     }
 
-    if (clientResponse.status === "failed") {
+    if (clientResponse.status !== "success") {
       throw {root: {type: "server", message: clientResponse.message}};
     }
 

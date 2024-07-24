@@ -268,7 +268,7 @@ export function BeneficiariesForm() {
 
             const updatedContractor = await updateBeneficiaries(values, lipId);
 
-            if (updatedContractor.status === "failed") {
+            if (updatedContractor.status !== "success") {
               throw {
                 root: {
                   type: "server",
