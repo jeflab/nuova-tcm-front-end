@@ -1,8 +1,9 @@
 "use client";
 
-import {Lip, LipStatesIcons} from "@/models/entities/lip";
+import {LipStatesSelectorFilter} from "@/app/(menu)/(authenticated)/lips/LipStatesSelectorFilter";
 import {cns} from "@/helpers/cns";
 import {dateString, dbDateString} from "@/helpers/dates";
+import {Lip, LipStatesIcons} from "@/models/entities/lip";
 import {ButtonLink} from "@/ui/ButtonLink";
 import dataTableStyles from "@/ui/table/DataTable.module.scss";
 import {faEye, faFilterCircleXmark} from "@fortawesome/pro-duotone-svg-icons";
@@ -100,21 +101,10 @@ export const columns = [
     meta: {
       filterComponent: ({filterValue, setFilterValue}) => {
         return (
-          <FormSelect
-            defaultValue={filterValue}
-            onChange={(e) => setFilterValue(e.target.value)}
-            size="sm"
-            aria-label="Filtra per stato"
-          >
-            <option key="all" value="">
-              Tutti
-            </option>
-            {lipStates.map(({id, label}) => (
-              <option key={id} value={id}>
-                {label}
-              </option>
-            ))}
-          </FormSelect>
+          <LipStatesSelectorFilter
+            filterValue={filterValue}
+            setFilterValue={setFilterValue}
+          />
         );
       },
     },

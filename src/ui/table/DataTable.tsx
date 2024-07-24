@@ -1,9 +1,11 @@
 "use client";
 
+import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {cns} from "@/helpers/cns";
 import {ButtonLink} from "@/ui/ButtonLink";
 import {CardCollapsable} from "@/ui/CardCollapsable";
 import {Filter} from "@/ui/table/Filter";
+import {TableContext} from "@/ui/table/react-table";
 import {
   faArrowDownShortWide,
   faArrowUpWideShort,
@@ -24,7 +26,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import {usePathname, useRouter} from "next/navigation";
-import {Fragment, ReactNode} from "react";
+import {Fragment, ReactNode, useEffect} from "react";
 import {
   Button,
   FormControl,
@@ -50,6 +52,7 @@ interface DataTableProps<Row extends RowData> {
   data: Row[];
   pageCount: number;
   searchParams: DataTableParams;
+  contextValue?: TableContext;
 }
 
 export const sortIcon: Record<SortDirection | "unsorted", ReactNode> = {
@@ -63,9 +66,17 @@ export function DataTable<Row>({
   data,
   pageCount,
   searchParams,
+  contextValue,
 }: DataTableProps<Row>) {
   const pathname = usePathname();
   const router = useRouter();
+
+  const updateTableContext = useDrawerStore(
+    (state) => state.updateTableContext,
+  );
+  useEffect(() => {
+    updateTableContext(contextValue);
+  }, [contextValue, updateTableContext]);
 
   const mobileReset = () => {
     const newPath = createPageURL({

@@ -21,6 +21,7 @@ export async function LipsTable({searchParams}: LipsTableProps) {
       data={lips.lips.data}
       pageCount={lips.lips.lastPage}
       searchParams={parsedSearchParams}
+      contextValue={lips.lipstates}
     />
   );
 }

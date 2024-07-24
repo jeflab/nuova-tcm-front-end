@@ -28,7 +28,7 @@ const getLipsShape = {
         lastPage: last_page,
       };
     }),
-  // lipStates: z.array(lipStatesSchema), // TODO: questa chiamata servirà per i filtri
+  lipstates: z.array(lipStateSchema),
 };
 
 export async function getLipsList({
