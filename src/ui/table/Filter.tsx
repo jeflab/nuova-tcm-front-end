@@ -1,3 +1,4 @@
+import {TableContext} from "@/ui/table/react-table";
 import {Column} from "@tanstack/table-core";
 import {FormControl} from "react-bootstrap";
 import useDebouncedCallback from "beautiful-react-hooks/useDebouncedCallback";
@@ -31,9 +32,15 @@ interface FilterProps<Row> {
   column: Column<Row>;
   disabled?: boolean;
   idPrefix?: string;
+  tableContext?: TableContext;
 }
 
-export function Filter<Row>({column, disabled, idPrefix}: FilterProps<Row>) {
+export function Filter<Row>({
+  column,
+  disabled,
+  idPrefix,
+  tableContext,
+}: FilterProps<Row>) {
   const filterValue = column.getFilterValue() as string;
 
   const setFilterValueDebounced = useDebouncedCallback(
@@ -54,6 +61,7 @@ export function Filter<Row>({column, disabled, idPrefix}: FilterProps<Row>) {
       idPrefix,
       setFilterValue,
       setFilterValueDebounced,
+      tableContext,
     });
   }
 

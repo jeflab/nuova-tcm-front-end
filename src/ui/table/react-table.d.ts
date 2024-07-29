@@ -7,6 +7,7 @@ interface FilterComponentProps {
   idPrefix?: string;
   setFilterValue: (value: string) => void;
   setFilterValueDebounced: (value: string) => void;
+  tableContext?: TableContext;
 }
 
 type TableContext = z.infer<typeof lipStateSchema>[];

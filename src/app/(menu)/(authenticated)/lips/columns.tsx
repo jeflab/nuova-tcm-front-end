@@ -79,11 +79,12 @@ export const columns = [
       </>
     ),
     meta: {
-      filterComponent: ({filterValue, setFilterValue}) => {
+      filterComponent: ({filterValue, setFilterValue, tableContext}) => {
         return (
           <LipStatesSelectorFilter
             filterValue={filterValue}
             setFilterValue={setFilterValue}
+            tableContext={tableContext}
           />
         );
       },

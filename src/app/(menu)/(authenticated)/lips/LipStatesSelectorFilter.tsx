@@ -1,18 +1,18 @@
-import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {TableContext} from "@/ui/table/react-table";
 import {FormSelect} from "react-bootstrap";
 
 interface LipStatesSelectorFilterProps {
   filterValue: string;
   setFilterValue: (value: string) => void;
+  tableContext: TableContext | undefined;
 }
 
 export function LipStatesSelectorFilter({
   filterValue,
   setFilterValue,
+  tableContext,
 }: LipStatesSelectorFilterProps) {
-  const lipStates = useDrawerStore((state) => state.tableContext);
-
-  if (!lipStates) {
+  if (!tableContext) {
     return (
       <FormSelect size="sm" key="loading">
         <option key="loading">{filterValue || "Tutti"}</option>
@@ -30,7 +30,7 @@ export function LipStatesSelectorFilter({
       <option key="all" value="">
         Tutti
       </option>
-      {lipStates?.map(({id, label}) => (
+      {tableContext.map(({id, label}) => (
         <option key={id} value={label}>
           {label}
         </option>

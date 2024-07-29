@@ -458,5 +458,3 @@ export const lipSchema = z
     },
   );
 export type Lip = z.infer<typeof lipSchema>;
-
-console.log(lipStateSchema.parse(undefined));

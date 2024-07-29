@@ -1,6 +1,5 @@
 "use client";
 
-import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {cns} from "@/helpers/cns";
 import {ButtonLink} from "@/ui/ButtonLink";
 import {CardCollapsable} from "@/ui/CardCollapsable";
@@ -26,7 +25,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import {usePathname, useRouter} from "next/navigation";
-import {Fragment, ReactNode, useEffect} from "react";
+import {Fragment, ReactNode} from "react";
 import {
   Button,
   FormControl,
@@ -70,13 +69,6 @@ export function DataTable<Row>({
 }: DataTableProps<Row>) {
   const pathname = usePathname();
   const router = useRouter();
-
-  const updateTableContext = useDrawerStore(
-    (state) => state.updateTableContext,
-  );
-  useEffect(() => {
-    updateTableContext(contextValue);
-  }, [contextValue, updateTableContext]);
 
   const mobileReset = () => {
     const newPath = createPageURL({
@@ -245,7 +237,11 @@ export function DataTable<Row>({
                 )}
               </FormLabel>
               <div className="mt-2">
-                <Filter column={header.column} idPrefix="mobile" />
+                <Filter
+                  column={header.column}
+                  idPrefix="mobile"
+                  tableContext={contextValue}
+                />
               </div>
             </FormGroup>
           ) : null;
@@ -303,7 +299,10 @@ export function DataTable<Row>({
                     </div>
                     {header.column.getCanFilter() ? (
                       <div className="mt-2">
-                        <Filter column={header.column} />
+                        <Filter
+                          column={header.column}
+                          tableContext={contextValue}
+                        />
                       </div>
                     ) : null}
                   </th>
