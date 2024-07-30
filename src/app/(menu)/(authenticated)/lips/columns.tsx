@@ -5,6 +5,7 @@ import {cns} from "@/helpers/cns";
 import {dateString, dbDateString} from "@/helpers/dates";
 import {Lip} from "@/models/entities/lip";
 import {ButtonLink} from "@/ui/ButtonLink";
+import {LipStateBadge, LipStateBadgeSkeleton} from "@/ui/LipStateBadge";
 import dataTableStyles from "@/ui/table/DataTable.module.scss";
 import {faEye, faFilterCircleXmark} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
@@ -73,11 +74,7 @@ export const columns = [
   columnHelper.accessor("lipStates", {
     header: "Stato",
     enableColumnFilter: true,
-    cell: (props) => (
-      <>
-        {props.getValue().icon} {props.getValue().label}
-      </>
-    ),
+    cell: (props) => <LipStateBadge lipState={props.getValue()} />,
     meta: {
       filterComponent: ({filterValue, setFilterValue, tableContext}) => {
         return (
@@ -196,21 +193,7 @@ export const skeletonColumns = [
   columnHelper.accessor("lipStates", {
     header: "Stato",
     enableColumnFilter: true,
-    cell: () => (
-      <>
-        <Placeholder as="span" animation="glow">
-          <Placeholder
-            as="span"
-            className="rounded-circle"
-            style={{width: "1em"}}
-          />{" "}
-          <Placeholder
-            as="span"
-            style={{width: `${45 + Math.random() * 115}px`}}
-          />
-        </Placeholder>
-      </>
-    ),
+    cell: () => <LipStateBadgeSkeleton />,
     meta: {
       filterComponent: ({disabled, filterValue}) => {
         return (

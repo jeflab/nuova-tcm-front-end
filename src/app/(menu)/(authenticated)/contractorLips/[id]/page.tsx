@@ -4,6 +4,7 @@ import {AppContainer} from "@/ui/AppContainer";
 import {ButtonLink} from "@/ui/ButtonLink";
 import {Drawer} from "@/ui/drawer/Drawer";
 import {NavDrawer} from "@/ui/drawer/NavDrawer";
+import {LipStateBadge} from "@/ui/LipStateBadge";
 import {PageTitle} from "@/ui/PageTitle";
 import {
   faArrowLeft,
@@ -40,11 +41,14 @@ export default async function NewLipPage({params}: NewLipPageProps) {
 
   return (
     <AppContainer className="vstack gap-3 align-items-start">
-      <PageTitle>
-        {lip?.lipNumber
-          ? `Polizza n° ${lip?.lipNumber}`
-          : "Caricamento polizza"}
-      </PageTitle>
+      <div>
+        <PageTitle>
+          {lip?.lipNumber
+            ? `Polizza n° ${lip?.lipNumber}`
+            : "Caricamento polizza"}
+        </PageTitle>
+        {lip?.lipStates && <LipStateBadge lipState={lip.lipStates} />}
+      </div>
       <ButtonLink href="/contractorLips">
         <FontAwesomeIcon icon={faArrowLeft} /> Torna alle tue polizze
       </ButtonLink>
