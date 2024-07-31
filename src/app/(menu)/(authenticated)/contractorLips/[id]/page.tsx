@@ -1,5 +1,4 @@
 import {cns} from "@/helpers/cns";
-import {sleep} from "@/helpers/sleep";
 import {AppContainer} from "@/ui/AppContainer";
 import {ButtonLink} from "@/ui/ButtonLink";
 import {Drawer} from "@/ui/drawer/Drawer";
@@ -29,7 +28,6 @@ interface NewLipPageProps {
 const minWidthHack = {minWidth: "1px"};
 
 export default async function NewLipPage({params}: NewLipPageProps) {
-  await sleep(5000);
   const lipResponse = await getLip(parseInt(params.id, 10));
   if (lipResponse.status !== "success") {
     if (lipResponse.responseStatus === 404) {
