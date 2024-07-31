@@ -393,6 +393,7 @@ export const lipStateSchema = z
     label,
     icon: LipStatesIcons[id] ?? LipStatesIcons[0],
   }));
+export type LipState = z.infer<typeof lipStateSchema>;
 
 export const lipSchema = z
   .object({

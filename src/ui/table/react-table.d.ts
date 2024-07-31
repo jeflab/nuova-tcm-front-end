@@ -1,5 +1,5 @@
 import "@tanstack/react-table";
-import {lipStateSchema} from "@/models/entities/lip";
+import {LipState} from "@/models/entities/lip";
 
 interface FilterComponentProps {
   disabled?: boolean;
@@ -10,7 +10,7 @@ interface FilterComponentProps {
   tableContext?: TableContext;
 }
 
-type TableContext = z.infer<typeof lipStateSchema>[];
+type TableContext = LipState[];
 
 declare module "@tanstack/table-core" {
   interface ColumnMeta<TData extends RowData, TValue> {
