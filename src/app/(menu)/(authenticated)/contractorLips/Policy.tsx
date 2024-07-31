@@ -5,6 +5,7 @@ import {Lip} from "@/models/entities/lip";
 import {dateString} from "@/helpers/dates";
 import {ButtonLink} from "@/ui/ButtonLink";
 import {CardCollapsable} from "@/ui/CardCollapsable";
+import {LipStateBadge, LipStateBadgeSkeleton} from "@/ui/LipStateBadge";
 import {faEye} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Button, Placeholder, Stack} from "react-bootstrap";
@@ -22,6 +23,10 @@ export function Policy({lip, contractor}: PolicyProps) {
           <div className="flex-grow-1">
             <p className="mb-0">
               <strong>Proposta di Polizza n°:</strong> {lip.lipNumber}
+            </p>
+            <p className="mb-0">
+              <strong>Stato proposta:</strong>{" "}
+              <LipStateBadge lipState={lip.lipStates} />
             </p>
             <p className="mb-0">
               <strong>Creata il:</strong> {dateString(lip.createdAt)}
@@ -71,6 +76,10 @@ export function PolicySkeleton() {
             <p className="mb-0">
               <Placeholder style={{width: "165px"}}></Placeholder>{" "}
               <Placeholder style={{width: "100px"}}></Placeholder>
+            </p>
+            <p className="mb-0">
+              <Placeholder style={{width: "115px"}}></Placeholder>{" "}
+              <LipStateBadgeSkeleton />
             </p>
             <p className="mb-0">
               <Placeholder style={{width: "70px"}}></Placeholder>{" "}

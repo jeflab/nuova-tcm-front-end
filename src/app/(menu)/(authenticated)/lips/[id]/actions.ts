@@ -31,6 +31,10 @@ import {
   YesNoAnswer,
   yesNoOptions,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
+import {
+  getTypedFormDataFromObject,
+  TypedFormData,
+} from "@/helpers/typedFormData";
 import {lipSchema} from "@/models/entities/lip";
 import {privacySchema} from "@/models/entities/privacy";
 import {Option} from "@/helpers/getOptionsLabel";
@@ -228,12 +232,23 @@ interface IdentificationContractorParams {
   issuedByOrg: string;
   issuedDate: string;
   expiringDate: string;
-  fiscalCode: string;
 }
 export async function identificationContractor(
-  formData: FormData,
+  documentFormData: TypedFormData<IdentificationContractorParams>,
+  fiscalCode: string,
   lipId: number,
 ) {
+  const formData = getTypedFormDataFromObject({
+    idFront: documentFormData.get("frontPicture"),
+    idBack: documentFormData.get("backPicture"),
+    type: documentFormData.get("idType"),
+    number: documentFormData.get("number"),
+    issued_by: documentFormData.get("issuedBy"),
+    issued_by_org: documentFormData.get("issuedByOrg"),
+    issuing_date: documentFormData.get("issuedDate"),
+    expiring_date: documentFormData.get("expiringDate"),
+    fiscal_code: fiscalCode,
+  });
   return post("/identification-contractor", {
     data: formData,
     tags: [Tags.getLip(lipId)],

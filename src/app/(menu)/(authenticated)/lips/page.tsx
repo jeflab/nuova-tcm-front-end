@@ -6,7 +6,7 @@ import {DataTableSkeleton} from "@/ui/table/DataTableSkeleton";
 import {DataTableParams} from "@/ui/table/helpers";
 import {faPlus} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {Suspense, useMemo} from "react";
+import {Suspense} from "react";
 import {LipsTable} from "./LipsTable";
 
 interface LipsPageProps {

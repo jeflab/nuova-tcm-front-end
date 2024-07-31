@@ -3,6 +3,7 @@ import {validateDen} from "@/helpers/lip-validator";
 import {Lip} from "@/models/entities/lip";
 import {PreliminaryData} from "@/models/preliminaryData";
 import {DrawerState, presetButtons} from "@/ui/drawer/types";
+import {TableContext} from "@/ui/table/react-table";
 import {create} from "zustand";
 import {immer} from "zustand/middleware/immer";
 
@@ -11,6 +12,7 @@ interface State {
   lip: Lip | null;
   modalOpen: DrawerName | null;
   preliminaryData: PreliminaryData;
+  tableContext?: TableContext;
 }
 interface Actions {
   closeModal: () => void;
@@ -18,6 +20,7 @@ interface Actions {
   resetState: () => void;
   updateLip: (lip: Lip | null) => void;
   updatePreliminaryData: (data: Partial<PreliminaryData> | null) => void;
+  updateTableContext: (tableContext?: TableContext) => void;
 }
 
 const initialState: State = {
@@ -358,6 +361,10 @@ export const useDrawerStore = create<State & Actions>()(
       set((state) => {
         state.lip = lip;
         createDrawerState(state);
+      }),
+    updateTableContext: (tableContext?: TableContext) =>
+      set((state) => {
+        state.tableContext = tableContext;
       }),
     resetState: () => {
       set(initialState);

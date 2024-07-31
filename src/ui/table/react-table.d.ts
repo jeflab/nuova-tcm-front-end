@@ -1,4 +1,5 @@
 import "@tanstack/react-table";
+import {LipState} from "@/models/entities/lip";
 
 interface FilterComponentProps {
   disabled?: boolean;
@@ -6,7 +7,10 @@ interface FilterComponentProps {
   idPrefix?: string;
   setFilterValue: (value: string) => void;
   setFilterValueDebounced: (value: string) => void;
+  tableContext?: TableContext;
 }
+
+type TableContext = LipState[];
 
 declare module "@tanstack/table-core" {
   interface ColumnMeta<TData extends RowData, TValue> {
