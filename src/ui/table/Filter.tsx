@@ -1,7 +1,8 @@
 import {TableContext} from "@/ui/table/react-table";
 import {Column} from "@tanstack/table-core";
-import {FormControl} from "react-bootstrap";
 import useDebouncedCallback from "beautiful-react-hooks/useDebouncedCallback";
+import {ReactNode} from "react";
+import {FormControl} from "react-bootstrap";
 
 interface DefaultFilterComponentProps {
   ariaLabel: string;
@@ -62,12 +63,12 @@ export function Filter<Row>({
       setFilterValue,
       setFilterValueDebounced,
       tableContext,
-    });
+    }) as ReactNode;
   }
 
   return (
     <DefaultFilterComponent
-      ariaLabel={`Filtra per ${column.columnDef.header}`}
+      ariaLabel={`Filtra per ${String(column.columnDef.header)}`}
       disabled={disabled}
       filterValue={filterValue}
       setFilterValueDebounced={setFilterValueDebounced}

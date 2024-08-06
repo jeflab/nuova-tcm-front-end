@@ -7,7 +7,7 @@ import {
   getIdentityDocumentDefaultValues,
   IdentityDocumentForm,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/IdentityDocumentForm/IdentityDocumentForm";
-import {createDocumentImageUrl} from "@/helpers/createDocumentImageUrl";
+import {createIDImageUrl} from "@/helpers/createResourcesUrl";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {CheckboxField} from "@/ui/form/CheckboxField";
 import {DropzoneField} from "@/ui/form/DropzoneField";
@@ -61,14 +61,14 @@ export function IdentificationForm() {
   const lipId = useDrawerStore((state) => state.lip?.id);
   const closeModal = useDrawerStore((state) => state.closeModal);
 
-  const existingFrontImageUrl = createDocumentImageUrl({
+  const existingFrontImageUrl = createIDImageUrl({
     contractorId,
     agentId,
     fileName: identityDocument?.identification?.fileIdFrontName,
     size: "full",
   });
 
-  const existingBackImageUrl = createDocumentImageUrl({
+  const existingBackImageUrl = createIDImageUrl({
     contractorId,
     agentId,
     fileName: identityDocument?.identification?.fileIdBackName,

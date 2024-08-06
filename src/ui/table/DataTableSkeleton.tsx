@@ -25,7 +25,6 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import {Fragment} from "react";
 import {
   Button,
   Card,
@@ -38,21 +37,21 @@ import {
 } from "react-bootstrap";
 import responsiveStyles from "./ResponsiveTable.module.scss";
 
-interface DataTableSkeletonProps {
-  columns: ColumnDef<any>[];
+interface DataTableSkeletonProps<Row> {
+  columns: ColumnDef<Row>[];
   searchParams: Partial<DataTableParams>;
 }
-export function DataTableSkeleton({
+export function DataTableSkeleton<Row>({
   columns,
   searchParams,
-}: DataTableSkeletonProps) {
+}: DataTableSkeletonProps<Row>) {
   const {page, perPage, sorting, columnFilters} =
     dataTableParamsSchema.parse(searchParams);
   const table = useReactTable({
     columns,
     enableColumnFilters: true,
     enableSorting: true,
-    data: Array.from({length: perPage}, () => ({})),
+    data: Array.from({length: perPage}, () => ({})) as Row[],
     state: {
       pagination: {
         pageIndex: page - 1,

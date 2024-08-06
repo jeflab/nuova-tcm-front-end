@@ -2,6 +2,7 @@ import {
   Document,
   ESign,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/DocumentsManagement";
+import {createDocumentUrl} from "@/helpers/createResourcesUrl";
 import {dateTimeString} from "@/helpers/dates";
 import {Lip} from "@/models/entities/lip";
 import {Tags} from "@/services/const";
@@ -59,7 +60,12 @@ export function DocumentsChapterDetails({
             as="a"
             download
             className="align-self-start"
-            href={`${process.env.NEXT_PUBLIC_API_URL}/${document.urlPreview}/?lipId=${lip.id}&agentId=${lip.agent.id}&contractorId=${lip.contractor.id}`}
+            href={createDocumentUrl({
+              uri: document.urlPreview,
+              lipId: lip.id,
+              agentId: lip.agent.id,
+              contractorId: lip.contractor.id,
+            })}
           >
             <FontAwesomeIcon icon={faEye} /> Visualizza anteprima del documento
           </Button>

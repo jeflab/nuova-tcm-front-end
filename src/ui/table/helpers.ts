@@ -33,7 +33,7 @@ export function sortingStringToObject<Type extends Record<string, unknown>>(
 export function columnFiltersObjectToString(columnFilters: ColumnFiltersState) {
   return columnFilters
     .map(({id, value}) => {
-      return `${id}:${value}`;
+      return `${id}:${String(value)}`;
     })
     .join(",");
 }

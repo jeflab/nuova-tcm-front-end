@@ -6,6 +6,7 @@ import {
   getExcludedCoverages,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/PaymentSummary/ExclusionList";
 import {PaymentMethod} from "@/app/(menu)/(authenticated)/lipsDrawers/PaymentSummary/PaymentMethod";
+import {createDocumentUrl} from "@/helpers/createResourcesUrl";
 import {ButtonLink} from "@/ui/ButtonLink";
 import {IconStack} from "@/ui/IconStack";
 import {
@@ -117,12 +118,19 @@ export function PaymentSummary() {
           )}
           <div>
             <Alert variant="info">{underwritingData.extraPremium.note}</Alert>
-            <ButtonLink
-              href={`${process.env.NEXT_PUBLIC_API_URL}/pdf-underwriting-sanitario/?lipId=${lip?.id}&agentId=${lip?.agent?.id}&contractorId=${lip?.contractor?.id}`}
-              download
-            >
-              <FontAwesomeIcon icon={faDownload} /> Scarica il documento
-            </ButtonLink>
+            {lip && (
+              <ButtonLink
+                href={createDocumentUrl({
+                  uri: "pdf-underwriting-sanitario",
+                  lipId: lip.id,
+                  agentId: lip.agent.id,
+                  contractorId: lip.contractor.id,
+                })}
+                download
+              >
+                <FontAwesomeIcon icon={faDownload} /> Scarica il documento
+              </ButtonLink>
+            )}
           </div>
         </>
       )}

@@ -1,7 +1,7 @@
 "use client";
 
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
-import {apiUrl} from "@/services/const";
+import {createDocumentUrl} from "@/helpers/createResourcesUrl";
 import {ButtonLink} from "@/ui/ButtonLink";
 import {faDownload} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
@@ -30,32 +30,54 @@ export function ContractorPersonalAreaActivationSummary() {
       <h4 className="w-100 text-primary">
         <FontAwesomeIcon icon={faDownload} /> Documenti preliminari
       </h4>
-      <Stack direction="horizontal" gap={2} className="flex-wrap">
-        <ButtonLink
-          href={`${apiUrl}/pdf-privacy?lipId=${lipId}&agentId=${agentId}&contractorId=${contractor.id}`}
-          download
-        >
-          <FontAwesomeIcon icon={faDownload} /> Privacy e consensi
-        </ButtonLink>
-        <ButtonLink
-          href={`${apiUrl}/pdf-allegato3?lipId=${lipId}&agentId=${agentId}`}
-          download
-        >
-          <FontAwesomeIcon icon={faDownload} /> Allegato 3
-        </ButtonLink>
-        <ButtonLink
-          href={`${apiUrl}/pdf-allegato4ter?lipId=${lipId}&agentId=${agentId}`}
-          download
-        >
-          <FontAwesomeIcon icon={faDownload} /> Allegato 4 TER
-        </ButtonLink>
-        <ButtonLink
-          href={`${apiUrl}/pdf-elenco-compagnie?lipId=${lipId}&agentId=${agentId}`}
-          download
-        >
-          <FontAwesomeIcon icon={faDownload} /> Elenco compagnie
-        </ButtonLink>
-      </Stack>
+      {lipId && agentId && (
+        <Stack direction="horizontal" gap={2} className="flex-wrap">
+          <ButtonLink
+            href={createDocumentUrl({
+              uri: "pdf-privacy",
+              lipId,
+              agentId,
+              contractorId: contractor.id,
+            })}
+            download
+            target="_blank"
+          >
+            <FontAwesomeIcon icon={faDownload} /> Privacy e consensi
+          </ButtonLink>
+          <ButtonLink
+            href={createDocumentUrl({
+              uri: "pdf-allegato3",
+              lipId,
+              agentId,
+            })}
+            download
+            target="_blank"
+          >
+            <FontAwesomeIcon icon={faDownload} /> Allegato 3
+          </ButtonLink>
+          <ButtonLink
+            href={createDocumentUrl({
+              uri: "pdf-allegato4ter",
+              lipId,
+              agentId,
+            })}
+            download
+            target="_blank"
+          >
+            <FontAwesomeIcon icon={faDownload} /> Allegato 4 TER
+          </ButtonLink>
+          <ButtonLink
+            href={createDocumentUrl({
+              uri: "pdf-elenco-compagnie",
+              lipId,
+              agentId,
+            })}
+            download
+          >
+            <FontAwesomeIcon icon={faDownload} /> Elenco compagnie
+          </ButtonLink>
+        </Stack>
+      )}
     </Stack>
   );
 }

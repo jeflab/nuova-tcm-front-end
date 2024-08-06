@@ -287,7 +287,7 @@ export function DataTable<Row>({
                       )}
                       title={
                         header.column.getCanSort()
-                          ? `Ordina per ${header.column.columnDef.header}`
+                          ? `Ordina per ${String(header.column.columnDef.header)}`
                           : undefined
                       }
                     >
