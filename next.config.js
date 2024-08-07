@@ -14,6 +14,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "api.tcm-dev.prevision.family",
       },
+      {
+        protocol: "https",
+        hostname: "api.smartbroker.space",
+      },
     ],
   },
 };
