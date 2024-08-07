@@ -1,12 +1,13 @@
 "use client";
 
+import omit from "lodash/omit";
 import {identificationContractor} from "@/app/(menu)/(authenticated)/lips/[id]/actions";
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {
   getIdentityDocumentDefaultValues,
   IdentityDocumentForm,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/IdentityDocumentForm/IdentityDocumentForm";
-import {createDocumentImageUrl} from "@/helpers/createDocumentImageUrl";
+import {createIDImageUrl} from "@/helpers/createResourcesUrl";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {CheckboxField} from "@/ui/form/CheckboxField";
 import {DropzoneField} from "@/ui/form/DropzoneField";
@@ -32,6 +33,7 @@ import {
 } from "react-bootstrap";
 import {useForm} from "react-hook-form";
 import invariant from "tiny-invariant";
+import {getTypedFormDataFromObject} from "@/helpers/typedFormData";
 
 export function IdentificationForm() {
   const agentId = useDrawerStore((state) => state.lip?.agent.id);
@@ -59,21 +61,19 @@ export function IdentificationForm() {
   const lipId = useDrawerStore((state) => state.lip?.id);
   const closeModal = useDrawerStore((state) => state.closeModal);
 
-  const existingFrontImageUrl = createDocumentImageUrl({
+  const existingFrontImageUrl = createIDImageUrl({
     contractorId,
     agentId,
     fileName: identityDocument?.identification?.fileIdFrontName,
     size: "full",
   });
 
-  const existingBackImageUrl = createDocumentImageUrl({
+  const existingBackImageUrl = createIDImageUrl({
     contractorId,
     agentId,
     fileName: identityDocument?.identification?.fileIdBackName,
     size: "full",
   });
-
-  console.log({existingFrontImageUrl, existingBackImageUrl});
 
   return (
     <>
@@ -83,20 +83,20 @@ export function IdentificationForm() {
           onSubmit={async (values) => {
             invariant(fiscalCode, "Fiscal code is required");
             invariant(lipId, "lipId is required");
-            // TODO: Sistemare stammerda
-            const formData = new FormData();
-            formData.append("idFront", values.frontPicture);
-            formData.append("idBack", values.backPicture);
-            formData.append("type", values.idType);
-            formData.append("number", values.number);
-            formData.append("issued_by", values.issuedBy);
-            formData.append("issued_by_org", values.issuedByOrg);
-            formData.append("issuing_date", values.issuedDate);
-            formData.append("expiring_date", values.expiringDate);
-            formData.append("fiscal_code", fiscalCode);
 
             const identificationContractorResponse =
-              await identificationContractor(formData, lipId);
+              await identificationContractor(
+                getTypedFormDataFromObject(
+                  omit(values, [
+                    "metContractorInPerson",
+                    "documentIsCopyShownByContractor",
+                    "photoIsOfContractor",
+                    "contractorHasBeenIdentified",
+                  ]),
+                ),
+                fiscalCode,
+                lipId,
+              );
 
             if (identificationContractorResponse.status !== "success") {
               throw {

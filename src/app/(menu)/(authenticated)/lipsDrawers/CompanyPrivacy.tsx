@@ -5,6 +5,7 @@ import {
   ConsentOptions,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
 import {cns} from "@/helpers/cns";
+import {createDocumentUrl} from "@/helpers/createResourcesUrl";
 import {CheckGroup} from "@/ui/form/CheckGroup";
 import {FieldError} from "@/ui/form/FieldError";
 import {Form} from "@/ui/form/Form";
@@ -56,7 +57,12 @@ export function CompanyPrivacy({
       ));
   const closeModal = onHide ?? closeModalFromStore;
 
-  const extendedPrivacyUrl = `${process.env.NEXT_PUBLIC_API_URL}/pdf-proposta-preview/?lipId=${lipId}&agentId=${agentId}&contractorId=${contractorId}`;
+  const extendedPrivacyUrl = createDocumentUrl({
+    uri: "pdf-proposta-preview",
+    lipId,
+    agentId,
+    contractorId,
+  });
 
   return (
     <>

@@ -4,6 +4,7 @@ import {AppContainer} from "@/ui/AppContainer";
 import {ButtonLink} from "@/ui/ButtonLink";
 import {DrawerSkeleton} from "@/ui/drawer/Drawer";
 import {NavDrawerSkeleton} from "@/ui/drawer/NavDrawer";
+import {LipStateBadgeSkeleton} from "@/ui/LipStateBadge";
 import {PageTitle} from "@/ui/PageTitle";
 import {
   faArrowLeft,
@@ -18,7 +19,10 @@ const minWidthHack = {minWidth: "1px"};
 export default async function NewLipPage() {
   return (
     <AppContainer className="vstack gap-3 align-items-start">
-      <PageTitle>Caricamento polizza</PageTitle>
+      <div>
+        <PageTitle>Caricamento polizza</PageTitle>
+        <LipStateBadgeSkeleton />
+      </div>
       <ButtonLink href="/lips">
         <FontAwesomeIcon icon={faArrowLeft} /> Torna all'elenco
       </ButtonLink>

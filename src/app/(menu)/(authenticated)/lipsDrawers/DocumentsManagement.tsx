@@ -2,6 +2,8 @@
 
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {DocumentsChapterDetails} from "@/app/(menu)/(authenticated)/lipsDrawers/DocumentsChapterDetails";
+import {DownloadDocumentsSearchParams} from "@/app/download-doc/schema";
+import {createDocumentUrl} from "@/helpers/createResourcesUrl";
 import {PDFType} from "@/models/entities/esign";
 import {
   faCheckCircle,
@@ -33,8 +35,8 @@ export interface ESign {
 export interface Document {
   key: "allegato4" | "setInformativo" | "identificazione" | "polizza";
   fileName: string;
-  urlPreview: string;
-  urlDownload: string;
+  urlPreview: DownloadDocumentsSearchParams["uri"];
+  urlDownload: DownloadDocumentsSearchParams["uri"];
   type: PDFType;
   eSigns: ESign[];
 }
@@ -147,7 +149,7 @@ export function DocumentsManagement() {
     [[], []] as [ESign[], ESign[]],
   );
 
-  // Ripensare all'auto-chiusura
+  // TODO: Ripensare all'auto-chiusura
   const lastESign = partialESign.length === totalESign.length - 1;
 
   return (
@@ -177,7 +179,12 @@ export function DocumentsManagement() {
                     size="sm"
                     download
                     className="ms-sm-auto"
-                    href={`${process.env.NEXT_PUBLIC_API_URL}/${document.urlDownload}/?lipId=${lip.id}&agentId=${lip.agent.id}&contractorId=${lip.contractor.id}`}
+                    href={createDocumentUrl({
+                      uri: document.urlDownload,
+                      lipId: lip.id,
+                      agentId: lip.agent.id,
+                      contractorId: lip.contractor.id,
+                    })}
                   >
                     <FontAwesomeIcon icon={faDownload} /> Scarica il documento
                     firmato
@@ -188,7 +195,12 @@ export function DocumentsManagement() {
                     size="sm"
                     download
                     className="ms-sm-auto"
-                    href={`${process.env.NEXT_PUBLIC_API_URL}/${document.urlPreview}/?lipId=${lip.id}&agentId=${lip.agent.id}&contractorId=${lip.contractor.id}`}
+                    href={createDocumentUrl({
+                      uri: document.urlPreview,
+                      lipId: lip.id,
+                      agentId: lip.agent.id,
+                      contractorId: lip.contractor.id,
+                    })}
                   >
                     <FontAwesomeIcon icon={faEye} /> Visualizza anteprima del
                     documento

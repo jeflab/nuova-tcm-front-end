@@ -4,6 +4,7 @@ import {AppContainer} from "@/ui/AppContainer";
 import {ButtonLink} from "@/ui/ButtonLink";
 import {DrawerSkeleton} from "@/ui/drawer/Drawer";
 import {NavDrawerSkeleton} from "@/ui/drawer/NavDrawer";
+import {LipStateBadgeSkeleton} from "@/ui/LipStateBadge";
 import {PageTitle} from "@/ui/PageTitle";
 import {
   faArrowLeft,
@@ -16,7 +17,10 @@ import styles from "./page.module.scss";
 export default async function NewLipPage() {
   return (
     <AppContainer className="vstack gap-3 align-items-start">
-      <PageTitle>Caricamento polizza</PageTitle>
+      <div>
+        <PageTitle>Caricamento polizza</PageTitle>
+        <LipStateBadgeSkeleton />
+      </div>
       <ButtonLink href="/contractorLips">
         <FontAwesomeIcon icon={faArrowLeft} /> Torna alle tue polizze
       </ButtonLink>

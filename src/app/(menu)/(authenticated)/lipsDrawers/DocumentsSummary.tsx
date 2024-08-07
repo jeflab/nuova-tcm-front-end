@@ -2,6 +2,7 @@
 
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {CompanyPrivacy} from "@/app/(menu)/(authenticated)/lipsDrawers/CompanyPrivacy";
+import {createDocumentUrl} from "@/helpers/createResourcesUrl";
 import {validateDen} from "@/helpers/lip-validator";
 import {PDFType} from "@/models/entities/esign";
 import {
@@ -36,7 +37,7 @@ interface Document {
   type: PDFType;
   eSigns: Esign[];
 }
-const documents: Document[] = [
+const documents = [
   {
     key: "identificazione",
     fileName: "File di identificazione",
@@ -78,7 +79,7 @@ const documents: Document[] = [
       {key: "esign_contraente_sepa", whoEsign: "contractor"} as Esign,
     ],
   },
-];
+] as const satisfies Document[];
 
 const eSignsCount = (
   documentESigns: Esign[],
@@ -203,7 +204,12 @@ export function DocumentsSummary() {
                 size="sm"
                 download
                 className="ms-sm-auto"
-                href={`${process.env.NEXT_PUBLIC_API_URL}/${document.urlDownload}/?lipId=${lip.id}&agentId=${lip.agent.id}&contractorId=${lip.contractor.id}`}
+                href={createDocumentUrl({
+                  uri: document.urlDownload,
+                  lipId: lip.id,
+                  agentId: lip.agent.id,
+                  contractorId: lip.contractor.id,
+                })}
               >
                 <FontAwesomeIcon icon={faDownload} /> Scarica il documento
                 {document.eSigns.length > 0 ? " firmato" : ""}

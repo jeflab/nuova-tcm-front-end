@@ -40,9 +40,7 @@ export async function Footer() {
             </>
           ) : null}
         </div>
-        <span className="ms-auto text-muted small">
-          Versione {getVersion()}
-        </span>
+        <small className="ms-auto text-muted">Versione {getVersion()}</small>
       </div>
     </AppContainer>
   );

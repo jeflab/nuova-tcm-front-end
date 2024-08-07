@@ -4,6 +4,7 @@ import {cns} from "@/helpers/cns";
 import {ButtonLink} from "@/ui/ButtonLink";
 import {CardCollapsable} from "@/ui/CardCollapsable";
 import {Filter} from "@/ui/table/Filter";
+import {TableContext} from "@/ui/table/react-table";
 import {
   faArrowDownShortWide,
   faArrowUpWideShort,
@@ -50,6 +51,7 @@ interface DataTableProps<Row extends RowData> {
   data: Row[];
   pageCount: number;
   searchParams: DataTableParams;
+  contextValue?: TableContext;
 }
 
 export const sortIcon: Record<SortDirection | "unsorted", ReactNode> = {
@@ -63,6 +65,7 @@ export function DataTable<Row>({
   data,
   pageCount,
   searchParams,
+  contextValue,
 }: DataTableProps<Row>) {
   const pathname = usePathname();
   const router = useRouter();
@@ -234,7 +237,11 @@ export function DataTable<Row>({
                 )}
               </FormLabel>
               <div className="mt-2">
-                <Filter column={header.column} idPrefix="mobile" />
+                <Filter
+                  column={header.column}
+                  idPrefix="mobile"
+                  tableContext={contextValue}
+                />
               </div>
             </FormGroup>
           ) : null;
@@ -280,7 +287,7 @@ export function DataTable<Row>({
                       )}
                       title={
                         header.column.getCanSort()
-                          ? `Ordina per ${header.column.columnDef.header}`
+                          ? `Ordina per ${String(header.column.columnDef.header)}`
                           : undefined
                       }
                     >
@@ -292,7 +299,10 @@ export function DataTable<Row>({
                     </div>
                     {header.column.getCanFilter() ? (
                       <div className="mt-2">
-                        <Filter column={header.column} />
+                        <Filter
+                          column={header.column}
+                          tableContext={contextValue}
+                        />
                       </div>
                     ) : null}
                   </th>

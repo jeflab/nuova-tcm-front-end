@@ -139,9 +139,9 @@ const beneficiariesDefaultValues = (
       : ([beneficiaryDefaultValues()] as
           | undefined
           | ReturnType<typeof beneficiaryDefaultValues>[]),
-  thirdPartyContactPerson: (beneficiariesData?.thirdPartyContactPerson
+  thirdPartyContactPerson: beneficiariesData?.thirdPartyContactPerson
     ? thirdPartDefaultValues(beneficiariesData.thirdPartyContactPerson)
-    : undefined) as undefined | ReturnType<typeof thirdPartDefaultValues>,
+    : undefined,
 });
 export type BeneficiariesFormValues = ReturnType<
   typeof beneficiariesDefaultValues

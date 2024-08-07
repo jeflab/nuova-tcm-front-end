@@ -1,4 +1,4 @@
-import {createDocumentImageUrl} from "@/helpers/createDocumentImageUrl";
+import {createIDImageUrl} from "@/helpers/createResourcesUrl";
 
 //TODO: pensare a come inviare il bearer token per le richieste di immagini
 
@@ -14,7 +14,7 @@ export function IdImage({
   filename,
   size = "thumbnail",
 }: IdImageProps) {
-  const imageUrl = createDocumentImageUrl({
+  const imageUrl = createIDImageUrl({
     contractorId,
     agentId,
     fileName: filename,
