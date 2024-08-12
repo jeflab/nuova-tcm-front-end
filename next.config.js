@@ -3,6 +3,7 @@ const nextConfig = {
   logging: {fetches: {fullUrl: true}},
   experimental: {
     instrumentationHook: true,
+    typedRoutes: true,
   },
   images: {
     remotePatterns: [
