@@ -5,6 +5,7 @@ import {Drawer} from "@/ui/drawer/Drawer";
 import {NavDrawer} from "@/ui/drawer/NavDrawer";
 import {LipStateBadge} from "@/ui/LipStateBadge";
 import {PageTitle} from "@/ui/PageTitle";
+import ScrollReveal from "@/ui/ScrollReveal/ScrollReveal";
 import {
   faArrowLeft,
   faTriangleExclamation,
@@ -40,12 +41,8 @@ export default async function NewLipPage({params}: NewLipPageProps) {
   return (
     <AppContainer className="vstack gap-3 align-items-start">
       <div>
-        <PageTitle>
-          {lip?.lipNumber
-            ? `Polizza n° ${lip?.lipNumber}`
-            : "Caricamento polizza..."}
-        </PageTitle>
-        {lip?.lipStates && <LipStateBadge lipState={lip.lipStates} />}
+        <PageTitle>Polizza n° {lip.lipNumber}</PageTitle>
+        {lip.lipStates && <LipStateBadge lipState={lip.lipStates} />}
       </div>
       <ButtonLink href="/contractorLips">
         <FontAwesomeIcon icon={faArrowLeft} /> Torna alle tue polizze
@@ -54,6 +51,16 @@ export default async function NewLipPage({params}: NewLipPageProps) {
       <Row className="flex-row-reverse gy-3">
         <Col md="auto">
           <Nav className={cns("flex-column", styles.connectedList)}>
+            <ScrollReveal revealThreshold={70}>
+              <div>
+                <PageTitle>
+                  Polizza n°
+                  <br />
+                  {lip.lipNumber}
+                </PageTitle>
+                <LipStateBadge lipState={lip.lipStates} />
+              </div>
+            </ScrollReveal>
             {drawers.map(({name, title, shortTitle}) => (
               <NavDrawer name={name} key={name}>
                 {shortTitle ?? title}
