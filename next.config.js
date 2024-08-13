@@ -6,20 +6,12 @@ const nextConfig = {
     typedRoutes: true,
   },
   images: {
-    remotePatterns: [
-      {
-        protocol: "http",
-        hostname: "127.0.0.1",
+    remotePatterns: process.env.IMAGE_REMOTE_PATTERN.split(",").map(
+      (pattern) => {
+        const [protocol, hostname] = pattern.split("://");
+        return {protocol, hostname};
       },
-      {
-        protocol: "https",
-        hostname: "api.tcm-dev.prevision.family",
-      },
-      {
-        protocol: "https",
-        hostname: "api.smartbroker.space",
-      },
-    ],
+    ),
   },
 };
 module.exports = nextConfig;
