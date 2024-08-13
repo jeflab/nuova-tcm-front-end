@@ -29,7 +29,7 @@ export default function ContractorLipsErrorPage({
         <p className="mb-0">{error.message}</p>
       </Alert>
       <div>
-        <RetryOnErrorButton onReset={reset} />
+        <RetryOnErrorButton onReset={reset} className="me-2" />
         <ButtonLink href="/" type="button">
           <FontAwesomeIcon icon={faHouseChimney} className="me-2" />
           Torna alla pagina principale

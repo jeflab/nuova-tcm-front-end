@@ -27,7 +27,7 @@ export default function Error({
   return (
     <CenterLogoContent style={containerStyle}>
       <h2>Qualcosa è andato storto 😕</h2>
-      <RetryOnErrorButton onReset={reset} />
+      <RetryOnErrorButton onReset={reset} className="w-100" />
       <ButtonLink href="/" type="button" className="w-100">
         <FontAwesomeIcon icon={faHouseChimney} className="me-2" />
         Torna alla pagina principale

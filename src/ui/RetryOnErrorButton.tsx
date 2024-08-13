@@ -6,10 +6,14 @@ import {useTransition} from "react";
 import {Button} from "react-bootstrap";
 
 interface RetryOnErrorButtonProps {
+  className?: string;
   onReset: () => void;
 }
 
-export function RetryOnErrorButton({onReset}: RetryOnErrorButtonProps) {
+export function RetryOnErrorButton({
+  className,
+  onReset,
+}: RetryOnErrorButtonProps) {
   const [isRetrying, startTransition] = useTransition();
   const router = useRouter();
 
@@ -24,7 +28,7 @@ export function RetryOnErrorButton({onReset}: RetryOnErrorButtonProps) {
     <Button
       onClick={refresh}
       type="button"
-      className="w-100"
+      className={className}
       disabled={isRetrying}
     >
       <FontAwesomeIcon
