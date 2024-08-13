@@ -47,7 +47,7 @@ export default async function NewLipPage({params}: NewLipPageProps) {
         <PageTitle>
           {lip?.lipNumber
             ? `Polizza n° ${lip?.lipNumber}`
-            : "Caricamento polizza..."}
+            : "Nuova proposta di polizza"}
         </PageTitle>
         {lip && lip?.lipStates && <LipStateBadge lipState={lip.lipStates} />}
       </div>
