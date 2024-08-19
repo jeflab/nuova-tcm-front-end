@@ -1,5 +1,10 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
+
+import {withSentryConfig} from "@sentry/nextjs";
+import {getRelease} from "./src/helpers/release.esmodule.mjs";
+import withBundleAnalyzer from "@next/bundle-analyzer";
+
+let nextConfig = {
   logging: {fetches: {fullUrl: true}},
   experimental: {
     instrumentationHook: true,
@@ -14,14 +19,8 @@ const nextConfig = {
     ),
   },
 };
-module.exports = nextConfig;
 
-// Injected content via Sentry wizard below
-
-const {withSentryConfig} = require("@sentry/nextjs");
-const {getRelease} = require("./src/helpers/releaseCommon.ts");
-
-module.exports = withSentryConfig(module.exports, {
+nextConfig = withSentryConfig(nextConfig, {
   // For all available options, see:
   // https://github.com/getsentry/sentry-webpack-plugin#options
 
@@ -37,6 +36,11 @@ module.exports = withSentryConfig(module.exports, {
 
   // Upload a larger set of source maps for prettier stack traces (increases build time)
   widenClientFileUpload: true,
+
+  // Automatically annotate React components to show their full name in breadcrumbs and session replay
+  reactComponentAnnotation: {
+    enabled: true,
+  },
 
   // Route browser requests to Sentry through a Next.js rewrite to circumvent ad-blockers.
   // This can increase your server load as well as your hosting bill.
@@ -57,7 +61,10 @@ module.exports = withSentryConfig(module.exports, {
   automaticVercelMonitors: true,
 });
 
-const withBundleAnalyzer = require("@next/bundle-analyzer")({
+const bundleAnalyzer = withBundleAnalyzer({
   enabled: process.env.ANALYZE === "true",
 });
-module.exports = withBundleAnalyzer(module.exports);
+
+nextConfig = bundleAnalyzer(nextConfig);
+
+export default nextConfig;
