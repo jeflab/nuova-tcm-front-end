@@ -22,12 +22,13 @@ interface GetQuoteParams {
   trafficAccidentalDeath: boolean;
 }
 export async function getQuote(quoterData: GetQuoteParams) {
+  const monthInFourYears = 48;
   const data = {
     sumInsured: parseInt(quoterData.death),
     age: calendarYearAge(quoterData.birthDate),
     duration: getCoverageDuration(quoterData.birthDate),
     sumInsuredForTotalPermanentDisability: quoterData.tpd.enabled
-      ? parseInt(quoterData.tpd.coverage, 10)
+      ? parseInt(quoterData.tpd.coverage, 10) * monthInFourYears
       : 0,
     sumInsuredForTotalPermanentInvalidity:
       quoterData.tpi.enabled && calendarYearAge(quoterData.birthDate) <= 55
