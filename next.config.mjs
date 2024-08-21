@@ -3,6 +3,9 @@
 import {withSentryConfig} from "@sentry/nextjs";
 import {getRelease} from "./src/helpers/release.esmodule.mjs";
 import withBundleAnalyzer from "@next/bundle-analyzer";
+import process from "node:process";
+
+process.env.SENTRY_RELEASE = getRelease();
 
 let nextConfig = {
   logging: {fetches: {fullUrl: true}},
@@ -29,7 +32,6 @@ nextConfig = withSentryConfig(nextConfig, {
 
   org: "fabio-lazzaroni",
   project: "piattaforma-tcm",
-  release: getRelease(),
 
   // For all available options, see:
   // https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/
