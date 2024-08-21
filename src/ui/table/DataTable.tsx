@@ -45,6 +45,7 @@ import {
   sortingStringToObject,
 } from "./helpers";
 import responsiveStyles from "./ResponsiveTable.module.scss";
+import {Route} from "next";
 
 interface DataTableProps<Row extends RowData> {
   columns: ColumnDef<Row>[];
@@ -67,7 +68,7 @@ export function DataTable<Row>({
   searchParams,
   contextValue,
 }: DataTableProps<Row>) {
-  const pathname = usePathname();
+  const pathname = usePathname() as Route;
   const router = useRouter();
 
   const mobileReset = () => {
@@ -155,7 +156,7 @@ export function DataTable<Row>({
 
     return `${pathname}${
       newSearchParamsString && `?${newSearchParams.toString()}`
-    }`;
+    }` as Route;
   };
 
   const getActiveFilterCount = () => {

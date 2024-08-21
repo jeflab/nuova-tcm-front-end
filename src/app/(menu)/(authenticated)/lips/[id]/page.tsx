@@ -18,6 +18,7 @@ import {getLip} from "./actions";
 import {drawers} from "./drawers";
 import {InitStoreWithServerData} from "./InitStoreWithServerData";
 import styles from "./page.module.scss";
+import ScrollReveal from "@/ui/ScrollReveal/ScrollReveal";
 
 // TODO: abbassare il fetch dei dati, o in un sotto-componente client o addirittura nel drawer (fetch è cachata)
 //  Fatto ciò la pagina può tornare server component
@@ -55,9 +56,31 @@ export default async function NewLipPage({params}: NewLipPageProps) {
         <FontAwesomeIcon icon={faArrowLeft} /> Torna all'elenco
       </ButtonLink>
       <InitStoreWithServerData lip={lip} />
-      <Row className="flex-row-reverse">
+      <Row className="flex-row-reverse gy-3">
         <Col md="auto">
           <Nav className={cns("flex-column", styles.connectedList)}>
+            <ScrollReveal revealThreshold={70}>
+              <div>
+                <PageTitle>
+                  {lip?.lipNumber ? (
+                    <>
+                      Polizza n°
+                      <br />
+                      {lip?.lipNumber}
+                    </>
+                  ) : (
+                    <>
+                      Nuova proposta
+                      <br />
+                      di polizza
+                    </>
+                  )}
+                </PageTitle>
+                {lip && lip?.lipStates && (
+                  <LipStateBadge lipState={lip.lipStates} />
+                )}
+              </div>
+            </ScrollReveal>
             {drawers.map(({name, title, shortTitle}) => (
               <NavDrawer name={name} key={name}>
                 {shortTitle ?? title}

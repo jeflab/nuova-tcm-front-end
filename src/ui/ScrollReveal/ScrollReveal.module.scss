@@ -1,0 +1,28 @@
+@import "@/app/variables";
+@import "bootstrap/scss/mixins";
+
+.scrollReveal {
+  display: none;
+}
+
+@include media-breakpoint-up(md) {
+  .scrollReveal {
+    display: block;
+    transition: all 0.3s;
+
+    pointer-events: none;
+    user-select: none;
+    opacity: 0;
+    margin-top: calc(-1 * var(--element-height, 101px));
+  }
+
+  .visible {
+    transition: all 0.6s;
+
+    pointer-events: auto;
+    user-select: auto;
+    opacity: 1;
+    margin-top: 0;
+    margin-bottom: 1rem;
+  }
+}

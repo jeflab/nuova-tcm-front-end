@@ -1,34 +1,30 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
+
+import {withSentryConfig} from "@sentry/nextjs";
+import {getRelease} from "./src/helpers/release.esmodule.mjs";
+import withBundleAnalyzer from "@next/bundle-analyzer";
+import process from "node:process";
+
+process.env.SENTRY_RELEASE = getRelease();
+console.info(`Sentry release: ${process.env.SENTRY_RELEASE}`);
+
+let nextConfig = {
   logging: {fetches: {fullUrl: true}},
   experimental: {
     instrumentationHook: true,
+    typedRoutes: true,
   },
   images: {
-    remotePatterns: [
-      {
-        protocol: "http",
-        hostname: "127.0.0.1",
+    remotePatterns: process.env.IMAGE_REMOTE_PATTERN.split(",").map(
+      (pattern) => {
+        const [protocol, hostname] = pattern.split("://");
+        return {protocol, hostname};
       },
-      {
-        protocol: "https",
-        hostname: "api.tcm-dev.prevision.family",
-      },
-      {
-        protocol: "https",
-        hostname: "api.smartbroker.space",
-      },
-    ],
+    ),
   },
 };
-module.exports = nextConfig;
 
-// Injected content via Sentry wizard below
-
-const {withSentryConfig} = require("@sentry/nextjs");
-const {getRelease} = require("./src/helpers/releaseCommon.ts");
-
-module.exports = withSentryConfig(module.exports, {
+nextConfig = withSentryConfig(nextConfig, {
   // For all available options, see:
   // https://github.com/getsentry/sentry-webpack-plugin#options
 
@@ -37,13 +33,17 @@ module.exports = withSentryConfig(module.exports, {
 
   org: "fabio-lazzaroni",
   project: "piattaforma-tcm",
-  release: getRelease(),
 
   // For all available options, see:
   // https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/
 
   // Upload a larger set of source maps for prettier stack traces (increases build time)
   widenClientFileUpload: true,
+
+  // Automatically annotate React components to show their full name in breadcrumbs and session replay
+  reactComponentAnnotation: {
+    enabled: true,
+  },
 
   // Route browser requests to Sentry through a Next.js rewrite to circumvent ad-blockers.
   // This can increase your server load as well as your hosting bill.
@@ -64,7 +64,10 @@ module.exports = withSentryConfig(module.exports, {
   automaticVercelMonitors: true,
 });
 
-const withBundleAnalyzer = require("@next/bundle-analyzer")({
+const bundleAnalyzer = withBundleAnalyzer({
   enabled: process.env.ANALYZE === "true",
 });
-module.exports = withBundleAnalyzer(module.exports);
+
+nextConfig = bundleAnalyzer(nextConfig);
+
+export default nextConfig;
