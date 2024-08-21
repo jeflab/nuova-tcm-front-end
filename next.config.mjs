@@ -6,6 +6,7 @@ import withBundleAnalyzer from "@next/bundle-analyzer";
 import process from "node:process";
 
 process.env.SENTRY_RELEASE = getRelease();
+console.info(`Sentry release: ${process.env.SENTRY_RELEASE}`);
 
 let nextConfig = {
   logging: {fetches: {fullUrl: true}},
