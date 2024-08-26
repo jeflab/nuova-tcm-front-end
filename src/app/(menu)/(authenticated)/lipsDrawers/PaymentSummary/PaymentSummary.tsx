@@ -131,6 +131,22 @@ export function PaymentSummary() {
                 <FontAwesomeIcon icon={faDownload} /> Scarica il documento
               </ButtonLink>
             )}
+            {(lip?.healthcareQuestionnaire?.sportRisk.check === "yes" ||
+              lip?.healthcareQuestionnaire?.professionalRisk.check ===
+                "yes") && (
+              <ButtonLink
+                href={createDocumentUrl({
+                  uri: "pdf-underwriting-sportivo",
+                  lipId: lip.id,
+                  agentId: lip.agent.id,
+                  contractorId: lip.contractor.id,
+                })}
+                download
+              >
+                <FontAwesomeIcon icon={faDownload} /> Scarica il questionario
+                aggiuntivo
+              </ButtonLink>
+            )}
           </div>
         </>
       )}
