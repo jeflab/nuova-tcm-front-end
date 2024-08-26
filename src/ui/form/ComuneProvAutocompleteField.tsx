@@ -50,7 +50,7 @@ export function ComuneProvAutocompleteField({
   invariant(controlName, "name or controlId is required");
 
   const {
-    field: {onBlur, onChange, value},
+    field: {onBlur, onChange, value, ref},
   } = useController({name: `${controlName}.city`, rules: validation});
 
   const {isInvalid, isValid} = useValidationState(controlName);
@@ -132,6 +132,7 @@ export function ComuneProvAutocompleteField({
             ),
             readOnly,
           }}
+          ref={ref}
           isInvalid={validationStyle && isInvalid}
           isValid={validationStyle && isValid}
           renderMenuItemChildren={(option, {text}) => {
