@@ -15,10 +15,15 @@ export default async function ContractorLipsPage() {
   return (
     <AppContainer className="vstack gap-3">
       <PageTitle>Le tue polizze</PageTitle>
-      {contractorLips.lips.map((lip) => (
-        <Policy key={lip.id} lip={lip} contractor={contractorLips.contractor} />
-      ))}
-      {contractorLips.lips.length === 0 && (
+      {contractorLips.contractor &&
+        contractorLips.lips.map((lip) => (
+          <Policy
+            key={lip.id}
+            lip={lip}
+            contractor={contractorLips.contractor!}
+          />
+        ))}
+      {(!contractorLips.contractor || contractorLips.lips.length === 0) && (
         <Alert variant="info">Non hai ancora nessuna polizza</Alert>
       )}
     </AppContainer>
