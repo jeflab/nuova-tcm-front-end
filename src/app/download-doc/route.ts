@@ -32,17 +32,18 @@ const mimeTypes: Record<
   "application/pdf" | "application/zip"
 > = {
   "pdf-allegato3": "application/pdf",
+  "pdf-allegato4": "application/pdf",
   "pdf-allegato4ter": "application/pdf",
+  "pdf-certificato": "application/zip",
   "pdf-elenco-compagnie": "application/pdf",
-  "pdf-privacy": "application/pdf",
   "pdf-identificazione": "application/pdf",
   "pdf-identificazione-preview": "application/pdf",
+  "pdf-privacy": "application/pdf",
   "pdf-proposta": "application/pdf",
   "pdf-proposta-preview": "application/pdf",
-  "pdf-allegato4": "application/pdf",
-  "set-informativo": "application/zip",
   "pdf-underwriting-sanitario": "application/pdf",
-  "pdf-certificato": "application/zip",
+  "pdf-underwriting-sportivo": "application/pdf",
+  "set-informativo": "application/zip",
 };
 
 export const GET = async (request: NextRequest) => {

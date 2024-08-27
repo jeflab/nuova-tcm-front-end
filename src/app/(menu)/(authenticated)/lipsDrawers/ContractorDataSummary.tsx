@@ -42,6 +42,9 @@ export function ContractorDataSummary() {
           {contractor.zipCode} {contractor.city} ({contractor.region})
         </p>
         <p className="mb-0">
+          <strong>Nazionalità:</strong> {contractor.citizenship}
+        </p>
+        <p className="mb-0">
           <strong>Genere:</strong>{" "}
           {getOptionsLabel(genderOptions, contractor.gender)}
         </p>

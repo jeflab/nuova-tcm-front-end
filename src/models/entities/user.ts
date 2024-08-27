@@ -6,11 +6,9 @@ export const userSchema = z
     fiscal_code: z.string(),
     email: z.string(),
     phone: z.string().nullable(),
-    email_verified_at: z.string(),
   })
-  .transform(({email_verified_at, fiscal_code, ...data}) => ({
+  .transform(({fiscal_code, ...data}) => ({
     ...data,
     fiscalCode: fiscal_code,
-    isEmailVerified: email_verified_at !== null,
   }));
 export type User = z.infer<typeof userSchema>;

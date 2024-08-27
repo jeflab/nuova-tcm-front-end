@@ -23,6 +23,10 @@ export function ComplementaryCoverages() {
     !!birthDateValue &&
     calendarYearAge(birthDateValue) > 75 &&
     calendarYearAge(birthDateValue) <= 85; // per escludere date erronee tipo 0001-06-24
+  const isMoreThan65 =
+    !!birthDateValue &&
+    calendarYearAge(birthDateValue) > 65 &&
+    calendarYearAge(birthDateValue) <= 85; // per escludere date erronee tipo 0001-06-24
   const isMoreThan55 =
     !!birthDateValue &&
     calendarYearAge(birthDateValue) > 55 &&
@@ -139,16 +143,16 @@ export function ComplementaryCoverages() {
             stretchedLabel
           />
           <HelpText>
-            Fino all'età assicurativa di 65 anni, se l'assicurato subisce
-            un'invalidità totale e permanente, la compagnia esonera il
-            Contraente/assicurato dall'obbligo di pagamento dei premi per il
+            Se, entro i primi 10 anni di Durata del Contratto, l’Assicurato
+            subisce un’Invalidità totale e Permanente, la Compagnia esonera il
+            Contraente/Assicurato dall’obbligo di pagamento dei Premi per il
             resto della durata del contratto.
           </HelpText>
           <div>
             {!isMoreThan55 ? (
               <strong>
-                Durata: {getCoverageDuration(watch("birthDate"), 30, 65)}{" "}
-                {getCoverageDuration(watch("birthDate"), 30, 65) === 1
+                Durata: {getCoverageDuration(watch("birthDate"), 10, 65)}{" "}
+                {getCoverageDuration(watch("birthDate"), 10, 65) === 1
                   ? "anno"
                   : "anni"}
               </strong>
@@ -188,10 +192,11 @@ export function ComplementaryCoverages() {
             stretchedLabel
           />
           <HelpText>
-            Fino all'età assicurativa di 65 anni, in caso di invalidità
-            permanente dell'assicurato, la compagnia liquida il 100% del
-            capitale assicurato (dev'essere compreso tra{" "}
-            <Currency>{20_000}</Currency> e{" "}
+            Se, entro i primi 10 anni di Durata del Contratto, l’Assicurato
+            subisce un’Invalidità totale e Permanente, la Compagnia liquida al
+            Beneficiario una somma pari al 100% del Capitale Assicurato indicato
+            in Polizza per l’Assicurazione Complementare Invalidità Totale e
+            Permanente. Dev'essere compreso tra <Currency>{20_000}</Currency> e{" "}
             <Currency>
               {Math.min(parseInt(watch("death"), 10), 100_000)}
             </Currency>
@@ -285,11 +290,11 @@ export function ComplementaryCoverages() {
           controlId="cancer"
           as={BorderFeedback}
           validationStyle={watch("cancer.enabled")}
-          disabled={isMoreThan75}
+          disabled={isMoreThan65}
           className="position-relative"
         >
           <CheckboxField
-            disabled={isMoreThan75}
+            disabled={isMoreThan65}
             type="switch"
             label="Cancro"
             name="cancer.enabled"
@@ -314,9 +319,9 @@ export function ComplementaryCoverages() {
             ).
           </HelpText>
           <div>
-            {!isMoreThan75 ? (
+            {!isMoreThan65 ? (
               <strong>
-                Durata: {getCoverageDuration(watch("birthDate"), 10)} anni
+                Durata: {getCoverageDuration(watch("birthDate"), 10, 75)} anni
               </strong>
             ) : (
               <strong className="text-warning">
@@ -324,7 +329,7 @@ export function ComplementaryCoverages() {
                   icon={faTriangleExclamation}
                   className="me-2"
                 />
-                Opzione non attivabile per gli assicurati con più di 75 anni
+                Opzione non attivabile per gli assicurati con più di 65 anni
               </strong>
             )}
           </div>

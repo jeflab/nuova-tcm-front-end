@@ -21,6 +21,7 @@ import {FieldError} from "@/ui/form/FieldError";
 import {Form} from "@/ui/form/Form";
 import {HelpText} from "@/ui/form/HelpText";
 import {InputField} from "@/ui/form/InputField";
+import {NationalityAutocompleteField} from "@/ui/form/NationalityAutocompleteField";
 import {emailNormalizer, onlyNumbersNormalizer} from "@/ui/form/normalizers";
 import {SelectField} from "@/ui/form/SelectField";
 import {emailValidator} from "@/ui/form/validators/email";
@@ -62,6 +63,7 @@ export function ContractorDataForm() {
         phone: contractor?.phone ?? "",
         email: contractor?.email ?? "",
       },
+      citizenship: contractor?.citizenship ?? "",
       residence: {
         place: {
           city: contractor?.city ?? "",
@@ -213,6 +215,19 @@ export function ContractorDataForm() {
                     },
                   }}
                   normalize={emailNormalizer}
+                />
+              </FormGroup>
+            </Col>
+            <h4 className="w-100">Nazionalità</h4>
+            <Col className="d-flex" xs={12}>
+              <FormGroup controlId="citizenship" as={BorderFeedback}>
+                <FormLabel>Nazionalità</FormLabel>
+                <FieldError />
+                <NationalityAutocompleteField
+                  placeholder="Nazionalità"
+                  validation={{
+                    required: "Inserisci la nazionalità del Contraente",
+                  }}
                 />
               </FormGroup>
             </Col>

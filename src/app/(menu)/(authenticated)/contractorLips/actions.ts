@@ -7,7 +7,7 @@ import {personalDataSchema} from "@/models/entities/personalData";
 
 const getContractorLipsShape = {
   lips: z.array(lipSchema),
-  contractor: personalDataSchema,
+  contractor: personalDataSchema.nullable(),
 };
 
 export async function getContractorLips() {

@@ -327,7 +327,7 @@ function createDrawerState(state: State & Actions) {
       }
     }
 
-    // state.drawerStates.beneficiaries = {
+    // state.drawerStates.contractorData = {
     //   variant: "waiting",
     //   buttonLabel: "Debug",
     // };

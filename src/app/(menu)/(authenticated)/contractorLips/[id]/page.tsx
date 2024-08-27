@@ -52,7 +52,7 @@ export default async function NewLipPage({params}: NewLipPageProps) {
         <Col md="auto">
           <Nav className={cns("flex-column", styles.connectedList)}>
             <ScrollReveal revealThreshold={70}>
-              <div>
+              <div className="mb-3 pb-2 border-bottom">
                 <PageTitle>
                   Polizza n°
                   <br />

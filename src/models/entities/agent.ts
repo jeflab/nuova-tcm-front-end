@@ -9,7 +9,7 @@ export const agentSchema = z
     street_number: z.string(),
     city: z.string(),
     zip_code: z.string(),
-    region: z.string(),
+    region: z.string().nullable(),
     rui_code: z.string(),
     rui_date: z.coerce.date(),
   })

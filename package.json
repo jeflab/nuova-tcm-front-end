@@ -1,6 +1,6 @@
 {
   "name": "nuova-tcm-front-end",
-  "version": "0.7.3",
+  "version": "0.7.4",
   "dependencies": {
     "@formkit/auto-animate": "^0.8.1",
     "@fortawesome/fontawesome-svg-core": "^6.4.2",
@@ -15,7 +15,7 @@
     "chalk": "^5.3.0",
     "codice-fiscale-js": "^2.3.20",
     "date-fns": "^3.0.0",
-    "eslint-plugin-react-compiler": "^0.0.0-experimental-0998c1e-20240625",
+    "eslint-plugin-react-compiler": "0.0.0-experimental-9aef357-20240815",
     "flat": "^6.0.1",
     "ibantools": "^4.5.0",
     "immer": "^10.0.3",

@@ -16,6 +16,7 @@ export const searchPramsSchema = z.discriminatedUnion("uri", [
       "pdf-allegato4",
       "set-informativo",
       "pdf-underwriting-sanitario",
+      "pdf-underwriting-sportivo",
       "pdf-certificato",
     ]),
     lipId: z.coerce.number(),

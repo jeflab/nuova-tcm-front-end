@@ -32,22 +32,19 @@ export const columns = [
     header: "Data",
     cell: (props) => dateString(props.getValue()),
     meta: {
-      filterComponent: ({
-        disabled,
-        filterValue,
-        idPrefix,
-        setFilterValueDebounced,
-      }) => {
+      filterComponent: ({disabled, filterValue, idPrefix, setFilterValue}) => {
         const [from, to] = filterValue?.split(">") ?? [undefined, undefined];
         return (
-          <div className="hstack gap-2">
+          <div className="hstack gap-2 date-filter">
             <FormControl
               type="date"
               size="sm"
               defaultValue={from && dbDateString(new Date(from))}
-              onChange={(event) => {
-                setFilterValueDebounced(
-                  [event.target.value, to].sort().join(">"),
+              onBlur={(event) => {
+                setFilterValue(
+                  to
+                    ? [event.target.value, to].sort().join(">")
+                    : `${event.target.value}>`,
                 );
               }}
               disabled={disabled}
@@ -57,9 +54,11 @@ export const columns = [
               type="date"
               size="sm"
               defaultValue={to && dbDateString(new Date(to))}
-              onChange={(event) => {
-                setFilterValueDebounced(
-                  [from, event.target.value].sort().join(">"),
+              onBlur={(event) => {
+                setFilterValue(
+                  from
+                    ? [from, event.target.value].sort().join(">")
+                    : `>${event.target.value}`,
                 );
               }}
               disabled={disabled}
@@ -92,10 +91,10 @@ export const columns = [
     header: ({table}) => (
       <Button
         size="sm"
-        className="w-100"
+        className="w-100 text-nowrap"
         onClick={() => table.resetColumnFilters()}
       >
-        <FontAwesomeIcon icon={faFilterCircleXmark} />
+        <FontAwesomeIcon icon={faFilterCircleXmark} className="me-2" />
         Reset filtri
       </Button>
     ),
@@ -105,7 +104,7 @@ export const columns = [
           variant="primary"
           size="sm"
           href={`/lips/${row.original.id}`}
-          className={cns("text-nowrap", dataTableStyles.rowDefaultLink)}
+          className={cns("w-100 text-nowrap", dataTableStyles.rowDefaultLink)}
         >
           <FontAwesomeIcon icon={faEye} /> Visualizza
         </ButtonLink>
@@ -215,8 +214,8 @@ export const skeletonColumns = [
     id: "actions",
     header: () => (
       <Placeholder as="div" animation="glow">
-        <Button size="sm" className="w-100 disabled placeholder">
-          <FontAwesomeIcon icon={faFilterCircleXmark} />
+        <Button size="sm" className="w-100 text-nowrap disabled placeholder">
+          <FontAwesomeIcon icon={faFilterCircleXmark} className="me-2" />
           Reset filtri
         </Button>
       </Placeholder>
@@ -230,7 +229,7 @@ export const skeletonColumns = [
         <Button
           variant="primary"
           size="sm"
-          className="text-nowrap disabled placeholder"
+          className="w-100 text-nowrap disabled placeholder"
         >
           <FontAwesomeIcon icon={faEye} /> Visualizza
         </Button>
