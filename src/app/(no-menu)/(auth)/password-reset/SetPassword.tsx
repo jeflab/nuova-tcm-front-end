@@ -31,7 +31,7 @@ export function SetPassword(props: SetPasswordProps) {
           <ButtonLink href="/login" className="w-100 mb-3">
             Login
           </ButtonLink>
-          <ButtonLink href={`${backendUrl}admin/login`} className="w-100">
+          <ButtonLink href={`${backendUrl}`} className="w-100">
             Login Admin
           </ButtonLink>
         </Alert>
