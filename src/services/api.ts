@@ -64,7 +64,10 @@ export async function apiCall<ResponsePayloadShape extends ZodRawShape>(
     searchParams,
     tags,
   }: ApiCallOptions<ResponsePayloadShape>,
-) {
+): Promise<
+  z.infer<typeof serverSuccessSchema> | z.infer<typeof serverErrorSchema>
+  // | undefined
+> {
   const payloadShapeOrDefault: ResponsePayloadShape =
     payloadShape ?? ({} as ResponsePayloadShape);
   const body = data instanceof FormData ? data : JSON.stringify(data);

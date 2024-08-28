@@ -1,6 +1,6 @@
 import {getContractorLips} from "@/app/(menu)/(authenticated)/contractorLips/actions";
 import {Policy} from "@/app/(menu)/(authenticated)/contractorLips/Policy";
-import {normalizeErrorMessage} from "@/helpers/errors";
+import {normalizeError} from "@/helpers/errors";
 import {AppContainer} from "@/ui/AppContainer";
 import {PageTitle} from "@/ui/PageTitle";
 import {Alert} from "react-bootstrap";
@@ -9,7 +9,7 @@ export default async function ContractorLipsPage() {
   const contractorLips = await getContractorLips();
 
   if (contractorLips.status !== "success") {
-    throw normalizeErrorMessage(contractorLips);
+    throw normalizeError(contractorLips);
   }
 
   return (

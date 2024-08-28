@@ -59,7 +59,7 @@ export const errors: Record<ErrorCodes, AppError> = {
   },
 };
 
-export function normalizeErrorMessage(error: unknown): Error {
+export function normalizeError(error: unknown): Error {
   let message: string;
 
   if (!error) {
@@ -79,4 +79,8 @@ export function normalizeErrorMessage(error: unknown): Error {
   }
 
   return new Error(message);
+}
+
+export function normalizeErrorMessage(error: unknown): string {
+  return normalizeError(error).message;
 }

@@ -1,5 +1,5 @@
 import {cns} from "@/helpers/cns";
-import {getNationalities} from "@/services/nationalities";
+import {normalizeErrorMessage} from "@/helpers/errors";
 import {InputField} from "@/ui/form/InputField";
 import {upperCaseWordsNormalizer} from "@/ui/form/normalizers";
 import {faExclamationTriangle} from "@fortawesome/pro-duotone-svg-icons";
@@ -9,6 +9,7 @@ import {Highlighter, Typeahead} from "react-bootstrap-typeahead";
 import FormContext from "react-bootstrap/esm/FormContext";
 import {RegisterOptions, useController} from "react-hook-form";
 import invariant from "tiny-invariant";
+import {getCitizenships} from "./actions";
 import {useValidationState} from "./hooks";
 import styles from "./NationalityAutocompleteField.module.scss";
 
@@ -22,7 +23,12 @@ interface NationalityAutocompleteProps {
   validationStyle?: boolean;
 }
 
-export function NationalityAutocompleteField({
+interface CitizenshipOption {
+  alpha3: string;
+  citizenship: string;
+}
+
+export function CitizenshipAutocompleteField({
   disabled,
   name,
   placeholder,
@@ -32,7 +38,8 @@ export function NationalityAutocompleteField({
   validationStyle = true,
 }: NationalityAutocompleteProps) {
   const [isLoadingNationalities, setIsLoadingNationalities] = useState(false);
-  const [nationalities, setNationalities] = useState<string[]>([]);
+  const [error, setError] = useState("");
+  const [nationalities, setNationalities] = useState<CitizenshipOption[]>([]);
   const [query, setQuery] = useState("");
   const {controlId} = useContext(FormContext);
   const controlName = name || controlId;
@@ -47,12 +54,52 @@ export function NationalityAutocompleteField({
   useEffect(() => {
     const getOptions = async () => {
       setIsLoadingNationalities(true);
-      setNationalities(await getNationalities());
-      setIsLoadingNationalities(false);
+      try {
+        const citizenships = await getCitizenships();
+        if (citizenships?.status !== "success") {
+          setError("Impossibile recuperare l'elenco nazionalità");
+          return;
+        }
+
+        setNationalities(citizenships.citizenships);
+      } catch (error) {
+        setError(normalizeErrorMessage(error));
+      } finally {
+        setIsLoadingNationalities(false);
+      }
     };
 
     void getOptions();
   }, []);
+
+  if (error) {
+    return <div className="alert alert-danger">{error}</div>;
+  }
+
+  if (isLoadingNationalities) {
+    return <div>Caricamento...</div>;
+  }
+
+  const transform = {
+    input(alpha3: string) {
+      if (!alpha3) {
+        return "";
+      }
+      return (
+        nationalities.find((option) => option.alpha3 === alpha3)?.citizenship ??
+        alpha3
+      );
+    },
+    output(citizenship: string) {
+      if (!citizenship) {
+        return "";
+      }
+      return (
+        nationalities.find((option) => option.citizenship === citizenship)
+          ?.alpha3 ?? citizenship
+      );
+    },
+  };
 
   return (
     <div className="hstack gap-3">
@@ -66,7 +113,7 @@ export function NationalityAutocompleteField({
       ) : (
         <Typeahead
           className={styles.cityInputWrapper}
-          defaultInputValue={value}
+          defaultInputValue={transform.input(value)}
           disabled={disabled}
           emptyLabel={
             <span className="dropdown-item-text text-center">
@@ -91,9 +138,14 @@ export function NationalityAutocompleteField({
           isInvalid={validationStyle && isInvalid}
           isLoading={isLoadingNationalities}
           isValid={validationStyle && isValid}
+          labelKey={(option) => (option as CitizenshipOption).citizenship}
           onBlur={onBlur}
           onChange={(selected) => {
-            onChange(upperCaseWordsNormalizer((selected[0] as string) ?? ""));
+            onChange(
+              transform.output(
+                (selected[0] as CitizenshipOption).citizenship ?? "",
+              ),
+            );
             onBlur();
           }}
           onInputChange={(text) => {
@@ -106,7 +158,9 @@ export function NationalityAutocompleteField({
             return (
               <span>
                 <Highlighter search={text}>
-                  {upperCaseWordsNormalizer(option as string)}
+                  {upperCaseWordsNormalizer(
+                    (option as CitizenshipOption).citizenship,
+                  )}
                 </Highlighter>
               </span>
             );
