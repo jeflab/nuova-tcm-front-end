@@ -14,6 +14,7 @@ import {
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
 import {cns} from "@/helpers/cns";
 import {dbDateString} from "@/helpers/dates";
+import {Debug} from "@/ui/Debug";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {CheckGroup} from "@/ui/form/CheckGroup";
 import {ComuneProvAutocompleteField} from "@/ui/form/ComuneProvAutocompleteField";
@@ -21,7 +22,7 @@ import {FieldError} from "@/ui/form/FieldError";
 import {Form} from "@/ui/form/Form";
 import {HelpText} from "@/ui/form/HelpText";
 import {InputField} from "@/ui/form/InputField";
-import {NationalityAutocompleteField} from "@/ui/form/NationalityAutocompleteField";
+import {CitizenshipAutocompleteField} from "@/ui/form/CitizenshipAutocompleteField";
 import {emailNormalizer, onlyNumbersNormalizer} from "@/ui/form/normalizers";
 import {SelectField} from "@/ui/form/SelectField";
 import {emailValidator} from "@/ui/form/validators/email";
@@ -219,11 +220,12 @@ export function ContractorDataForm() {
               </FormGroup>
             </Col>
             <h4 className="w-100">Nazionalità</h4>
+            <Debug>{formMethods.watch("citizenship")}</Debug>
             <Col className="d-flex" xs={12}>
               <FormGroup controlId="citizenship" as={BorderFeedback}>
                 <FormLabel>Nazionalità</FormLabel>
                 <FieldError />
-                <NationalityAutocompleteField
+                <CitizenshipAutocompleteField
                   placeholder="Nazionalità"
                   validation={{
                     required: "Inserisci la nazionalità del Contraente",

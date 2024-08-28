@@ -1,5 +1,6 @@
 "use client";
 
+import {CitizenshipText} from "@/app/(menu)/(authenticated)/lipsDrawers/ContractorDataSummary/CitizenshipText";
 import {
   genderOptions,
   jobPositionOptions,
@@ -42,7 +43,8 @@ export function ContractorDataSummary() {
           {contractor.zipCode} {contractor.city} ({contractor.region})
         </p>
         <p className="mb-0">
-          <strong>Nazionalità:</strong> {contractor.citizenship}
+          <strong>Nazionalità:</strong>{" "}
+          <CitizenshipText alpha3={contractor.citizenship} />
         </p>
         <p className="mb-0">
           <strong>Genere:</strong>{" "}
