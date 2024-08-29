@@ -138,12 +138,12 @@ export function CitizenshipAutocompleteField({
           isInvalid={validationStyle && isInvalid}
           isLoading={isLoadingNationalities}
           isValid={validationStyle && isValid}
-          labelKey={(option) => (option as CitizenshipOption).citizenship}
+          labelKey={(option) => (option as CitizenshipOption)?.citizenship}
           onBlur={onBlur}
           onChange={(selected) => {
             onChange(
               transform.output(
-                (selected[0] as CitizenshipOption).citizenship ?? "",
+                (selected[0] as CitizenshipOption)?.citizenship ?? "",
               ),
             );
             onBlur();
@@ -159,7 +159,7 @@ export function CitizenshipAutocompleteField({
               <span>
                 <Highlighter search={text}>
                   {upperCaseWordsNormalizer(
-                    (option as CitizenshipOption).citizenship,
+                    (option as CitizenshipOption)?.citizenship,
                   )}
                 </Highlighter>
               </span>
