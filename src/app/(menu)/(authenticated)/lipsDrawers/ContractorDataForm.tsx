@@ -14,7 +14,6 @@ import {
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
 import {cns} from "@/helpers/cns";
 import {dbDateString} from "@/helpers/dates";
-import {Debug} from "@/ui/Debug";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {CheckGroup} from "@/ui/form/CheckGroup";
 import {ComuneProvAutocompleteField} from "@/ui/form/ComuneProvAutocompleteField";
@@ -220,7 +219,6 @@ export function ContractorDataForm() {
               </FormGroup>
             </Col>
             <h4 className="w-100">Nazionalità</h4>
-            <Debug>{formMethods.watch("citizenship")}</Debug>
             <Col className="d-flex" xs={12}>
               <FormGroup controlId="citizenship" as={BorderFeedback}>
                 <FormLabel>Nazionalità</FormLabel>

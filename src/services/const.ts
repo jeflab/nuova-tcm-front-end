@@ -1,3 +1,14 @@
+import invariant from "tiny-invariant";
+
+invariant(
+  process?.env?.NEXT_PUBLIC_API_URL,
+  "NEXT_PUBLIC_API_URL is not defined",
+);
+invariant(
+  process?.env?.NEXT_PUBLIC_BE_URL,
+  "NEXT_PUBLIC_BE_URL is not defined",
+);
+
 export const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 export const backendUrl = process.env.NEXT_PUBLIC_BE_URL;
 
