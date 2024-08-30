@@ -176,9 +176,9 @@ export function PaymentSummary() {
           <dd>
             il pagamento andrà effettuato a favore di Bright Life. sul c/c
             italiano aperto presso Banca Intesa-Sanpaolo - Via Cesare Battisti
-            n. 11 - Milano 20122 Filiale: 1886 IBAN
-            IT26W03069909483100000019829, indicando nella causale il numero
-            della presente Proposta: {lip?.lipNumber}
+            n. 11 - Milano 20122 Filiale: 1886 IBAN IT26W0306909483100000019829,
+            indicando nella causale il numero della presente Proposta:{" "}
+            {lip?.lipNumber}
           </dd>
           <dt>
             Pagamenti successivi tramite mandato per addebito diretto SEPA -
