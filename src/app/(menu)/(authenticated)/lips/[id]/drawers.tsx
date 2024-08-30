@@ -1,5 +1,6 @@
 import {BeneficiariesForm} from "@/app/(menu)/(authenticated)/lipsDrawers/BeneficiariesForm";
 import {BeneficiariesSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/BeneficiariesSummary";
+import {ContractorContactsFormWrapper} from "@/app/(menu)/(authenticated)/lipsDrawers/ContractorContacts/ContractorContactsFormWrapper";
 import {ContractorDataForm} from "@/app/(menu)/(authenticated)/lipsDrawers/ContractorDataForm";
 import {ContractorDataSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/ContractorDataSummary/ContractorDataSummary";
 import {ContractorFiscalCodeModal} from "@/app/(menu)/(authenticated)/lipsDrawers/ContractorFiscalCodeModal";
@@ -23,9 +24,8 @@ import {PaymentSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/PaymentSu
 import {QuoteForm} from "@/app/(menu)/(authenticated)/lipsDrawers/QuoteForm";
 import {QuoteSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/QuoteSummary/QuoteSummary";
 import {ReactNode} from "react";
+import {ContractorContactsSummary} from "../../lipsDrawers/ContractorContacts/ContractorContactsSummary";
 import {ContractorPersonalAreaActivationLastPrivacy} from "../../lipsDrawers/ContractorPersonalAreaActivationLastPrivacy";
-import {ContractorContactsForm} from "../../lipsDrawers/ContractorContactsForm";
-import {ContractorContactsSummary} from "../../lipsDrawers/ContractorContactsSummary";
 
 export type DrawerName =
   | "fatca"
@@ -65,7 +65,7 @@ export const drawers: DrawerConfig[] = [
   {
     name: "contractorContacts",
     title: "Contatti Contraente",
-    modalContent: <ContractorContactsForm />,
+    modalContent: <ContractorContactsFormWrapper />,
     summaryContent: <ContractorContactsSummary />,
   },
   {
