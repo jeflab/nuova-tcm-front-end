@@ -7,7 +7,9 @@ import {
 import {fatcaQuestions} from "@/app/(menu)/(authenticated)/lipsDrawers/FatcaForm";
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {cns} from "@/helpers/cns";
+import {Role} from "@/models/account";
 import {PersonalData} from "@/models/entities/personalData";
+import {User} from "@/models/entities/user";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {CheckboxField} from "@/ui/form/CheckboxField";
 import {FieldError} from "@/ui/form/FieldError";
@@ -38,7 +40,15 @@ const contractorPersonalAreaActivationDefaultValues = (
   email: contractorData?.email ?? "",
 });
 
-export function ContractorContactsForm() {
+interface ContractorContactsFormProps {
+  loggedUser: User;
+  loggedUserRoles: Role[];
+}
+
+export function ContractorContactsForm({
+  loggedUser,
+  loggedUserRoles,
+}: ContractorContactsFormProps) {
   const router = useRouter();
 
   const contractor = useDrawerStore((state) => state.lip?.contractor);
@@ -139,6 +149,18 @@ export function ContractorContactsForm() {
                   placeholder="Cellulare del Contraente"
                   validation={{
                     required: "Inserisci il Cellulare del Contraente",
+                    validate: {
+                      notAgent: (value) => {
+                        if (
+                          !loggedUserRoles.some(
+                            (role) => role.name === "SuperAdmin",
+                          ) &&
+                          value === loggedUser.phone
+                        ) {
+                          return "Il numero di telefono inserito non può essere uguale a quello dell'Advisor";
+                        }
+                      },
+                    },
                   }}
                   normalize={onlyNumbersNormalizer}
                 />
@@ -152,15 +174,21 @@ export function ContractorContactsForm() {
                   type="email"
                   placeholder="Email del Contraente"
                   validation={{
+                    required: "Inserisci l'email del Contraente",
                     validate: {
-                      required: (value) => {
-                        if (!value) {
-                          return "Inserisci l'email del Contraente";
-                        }
-                      },
                       pattern: (value) => {
                         if (!emailValidator(value)) {
                           return "L'email inserita non è valida";
+                        }
+                      },
+                      notAgent: (value) => {
+                        if (
+                          !loggedUserRoles.some(
+                            (role) => role.name === "SuperAdmin",
+                          ) &&
+                          value === loggedUser.email
+                        ) {
+                          return "L'email inserita non può essere uguale a quella dell'Advisor";
                         }
                       },
                     },

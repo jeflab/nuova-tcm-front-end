@@ -11,7 +11,7 @@ import {PaymentLock} from "@/app/(menu)/(authenticated)/lipsDrawers/PaymentLock"
 import {PaymentSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/PaymentSummary/PaymentSummary";
 import {QuoteSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/QuoteSummary/QuoteSummary";
 import {ReactNode} from "react";
-import {ContractorContactsSummary} from "../../lipsDrawers/ContractorContactsSummary";
+import {ContractorContactsSummary} from "../../lipsDrawers/ContractorContacts/ContractorContactsSummary";
 import {DrawerName} from "../../lips/[id]/drawers";
 
 interface DrawerConfig {
