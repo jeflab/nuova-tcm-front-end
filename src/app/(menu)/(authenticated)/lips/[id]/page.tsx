@@ -44,6 +44,8 @@ export default async function NewLipPage({params}: NewLipPageProps) {
 
   return (
     <AppContainer className="vstack gap-3 align-items-start">
+      <InitStoreWithServerData lip={lip} />
+      {/*<ScrollToHashOnMount />*/}
       <div>
         <PageTitle>
           {lip?.lipNumber
@@ -55,7 +57,6 @@ export default async function NewLipPage({params}: NewLipPageProps) {
       <ButtonLink href="/lips">
         <FontAwesomeIcon icon={faArrowLeft} /> Torna all'elenco
       </ButtonLink>
-      <InitStoreWithServerData lip={lip} />
       <Row className="flex-row-reverse gy-3">
         <Col md="auto">
           <Nav className={cns("flex-column", styles.connectedList)}>
