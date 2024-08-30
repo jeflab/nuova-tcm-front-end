@@ -118,35 +118,37 @@ export function PaymentSummary() {
           )}
           <div>
             <Alert variant="info">{underwritingData.extraPremium.note}</Alert>
-            {lip && (
-              <ButtonLink
-                href={createDocumentUrl({
-                  uri: "pdf-underwriting-sanitario",
-                  lipId: lip.id,
-                  agentId: lip.agent.id,
-                  contractorId: lip.contractor.id,
-                })}
-                download
-              >
-                <FontAwesomeIcon icon={faDownload} /> Scarica il documento
-              </ButtonLink>
-            )}
-            {(lip?.healthcareQuestionnaire?.sportRisk.check === "yes" ||
-              lip?.healthcareQuestionnaire?.professionalRisk.check ===
-                "yes") && (
-              <ButtonLink
-                href={createDocumentUrl({
-                  uri: "pdf-underwriting-sportivo",
-                  lipId: lip.id,
-                  agentId: lip.agent.id,
-                  contractorId: lip.contractor.id,
-                })}
-                download
-              >
-                <FontAwesomeIcon icon={faDownload} /> Scarica il questionario
-                aggiuntivo
-              </ButtonLink>
-            )}
+            <Stack direction="horizontal" gap={2}>
+              {lip && (
+                <ButtonLink
+                  href={createDocumentUrl({
+                    uri: "pdf-underwriting-sanitario",
+                    lipId: lip.id,
+                    agentId: lip.agent.id,
+                    contractorId: lip.contractor.id,
+                  })}
+                  download
+                >
+                  <FontAwesomeIcon icon={faDownload} /> Scarica il documento
+                </ButtonLink>
+              )}
+              {(lip?.healthcareQuestionnaire?.sportRisk.check === "yes" ||
+                lip?.healthcareQuestionnaire?.professionalRisk.check ===
+                  "yes") && (
+                <ButtonLink
+                  href={createDocumentUrl({
+                    uri: "pdf-underwriting-sportivo",
+                    lipId: lip.id,
+                    agentId: lip.agent.id,
+                    contractorId: lip.contractor.id,
+                  })}
+                  download
+                >
+                  <FontAwesomeIcon icon={faDownload} /> Scarica il questionario
+                  aggiuntivo
+                </ButtonLink>
+              )}
+            </Stack>
           </div>
         </>
       )}
