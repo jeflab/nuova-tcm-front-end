@@ -32,7 +32,7 @@ export const complementaryCoverages = [
     label: "Cancro",
     valueLabel: "Capitale assicurato",
     maxDuration: 10,
-    maxAge: 85,
+    maxAge: 65,
   },
   {
     key: "tpd",
