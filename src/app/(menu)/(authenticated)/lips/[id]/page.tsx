@@ -45,7 +45,6 @@ export default async function NewLipPage({params}: NewLipPageProps) {
   return (
     <AppContainer className="vstack gap-3 align-items-start">
       <InitStoreWithServerData lip={lip} />
-      {/*<ScrollToHashOnMount />*/}
       <div>
         <PageTitle>
           {lip?.lipNumber

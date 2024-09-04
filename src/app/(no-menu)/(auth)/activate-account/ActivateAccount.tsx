@@ -29,10 +29,10 @@ export function ActivateAccount(props: ActivateAccountParams) {
             login.
           </p>
           <ButtonLink href="/login" className="w-100 mb-3">
-            Login
+            Accesso Agenti e Clienti
           </ButtonLink>
           <ButtonLink href={backendUrl} className="w-100">
-            Login Admin
+            Accesso area Admin
           </ButtonLink>
         </Alert>
       ) : (
