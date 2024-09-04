@@ -1,5 +1,11 @@
 # Changelog
 
+#### v1.0.2 (2024-09-04)
+
+##### Fixed:
+
+- Modificato il testo dei link alle pagine di login dopo reset password
+
 #### v1.0.1 (2024-08-30)
 
 ##### Fixed:
