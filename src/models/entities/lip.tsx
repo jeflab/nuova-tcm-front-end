@@ -87,7 +87,7 @@ const LipStatesIcons: Record<number, ReactNode> = {
   ),
   // 14: Approvata dopo revisione underwriting sanitario
   14: (
-    <IconStack className="text-success">
+    <IconStack className="text-primary">
       <FontAwesomeIcon icon={faCircle} className="fa-stack-2x" opacity={0.4} />
       <FontAwesomeIcon icon={faHeartPulse} className="fa-stack-1x" />
     </IconStack>
