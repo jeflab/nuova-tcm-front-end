@@ -65,6 +65,7 @@
     "build": "next build",
     "check-format": "prettier --check .",
     "check-types": "tsc --noEmit",
+    "clean-cache": "rm -rf ./.next/",
     "dev": "next dev",
     "dev-only": "next dev",
     "format": "prettier --write .",
@@ -76,6 +77,6 @@
     "start": "next start",
     "turbo": "next dev --turbo",
     "u": "npm update && npm run validate",
-    "validate": "npm-run-all --print-label --parallel check-format lint check-types --sequential build"
+    "validate": "npm-run-all --print-label --sequential clean-cache --parallel check-format lint check-types --sequential build"
   }
 }
