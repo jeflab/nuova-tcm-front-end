@@ -15,7 +15,6 @@
     "chalk": "^5.3.0",
     "codice-fiscale-js": "^2.3.20",
     "date-fns": "^3.0.0",
-    "eslint-plugin-react-compiler": "0.0.0-experimental-9aef357-20240815",
     "flat": "^6.0.1",
     "ibantools": "^4.5.0",
     "immer": "^10.0.3",
@@ -36,7 +35,7 @@
     "zustand": "^4.4.7"
   },
   "devDependencies": {
-    "@faker-js/faker": "^8.3.1",
+    "@faker-js/faker": "^9.0.0",
     "@hookform/devtools": "^4.3.1",
     "@next/bundle-analyzer": "^14.1.0",
     "@types/js-cookie": "^3.0.6",
@@ -47,6 +46,7 @@
     "eslint": "^8",
     "eslint-config-next": "^14.1.2",
     "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-react-compiler": "^0.0.0-experimental-8d8bd53-20240905",
     "husky": "^9.0.11",
     "lint-staged": "^15.2.2",
     "npm-run-all": "^4.1.5",
