@@ -1,18 +1,30 @@
 # Changelog
 
-#### v1.0.2 (2024-09-04)
+### v1.0.3 (2024-09-09)
 
-##### Fixed:
+#### Fixed:
+
+- Corretto errore stato cassetto documenti quando la lip è in underwriting
+
+#### Changed:
+
+- Migliorato lo script di validazione codice
+- Lo stato "Esito underwriting positivo" è ora in primary
+- Modificato l'aspect ratio delle immagini dei documenti
+
+### v1.0.2 (2024-09-04)
+
+#### Fixed:
 
 - Modificato il testo dei link alle pagine di login dopo reset password
 
-#### v1.0.1 (2024-08-30)
+### v1.0.1 (2024-08-30)
 
-##### Fixed:
+#### Fixed:
 
 - Corretto IBAN Brightlife
 - Corretto controllo sull'univocità del numero di telefono e dell'email
 
-## v1.0.0 (2024-08-30)
+# v1.0.0 (2024-08-30)
 
 Release iniziale
