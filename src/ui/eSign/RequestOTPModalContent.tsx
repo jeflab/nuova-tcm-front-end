@@ -6,10 +6,9 @@ import {InsertPhoneForm} from "@/ui/eSign/InsertPhoneForm";
 import {RequestOTPForm} from "@/ui/eSign/RequestOTPForm";
 import {faRotate, faSpinner, faXmark} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import useMountEffect from "@restart/hooks/useMountEffect";
-import {useCallback, useRef, useState} from "react";
-import {Alert, Button} from "react-bootstrap";
 import useInterval from "@restart/hooks/useInterval";
+import {useCallback, useEffect, useRef, useState} from "react";
+import {Alert, Button} from "react-bootstrap";
 
 interface RequestOTPModalContentProps<TPayload> {
   lipId: number;
@@ -45,37 +44,40 @@ export function RequestOTPModalContent<TPayload>({
   useInterval(() => setCounter((counter) => counter - 1), 1000, counter <= 0);
 
   // TODO: Da sostituire con tanstack-query o rtk-query per ora usiamo il ref
-  const requestOTP = useCallback(async () => {
-    if (!callingServer.current) {
-      setIsRequestOTPLoading(true);
-      callingServer.current = true;
-      setCounter(60);
-      const response = await createFEATransaction({
-        contractorId: personalData?.id,
-        lipId: lipId,
-      });
+  const requestOTP = useCallback(() => {
+    const makeRequest = async () => {
+      if (!callingServer.current) {
+        setIsRequestOTPLoading(true);
+        callingServer.current = true;
+        setCounter(60);
+        const response = await createFEATransaction({
+          contractorId: personalData?.id,
+          lipId: lipId,
+        });
 
-      if (response.featTransaction?.status !== "success") {
-        setRequestOTPError(response.featTransaction.message);
+        if (response.featTransaction?.status !== "success") {
+          setRequestOTPError(response.featTransaction.message);
+          setIsRequestOTPLoading(false);
+          callingServer.current = false;
+          return;
+        } else if (response.profile?.status !== "success") {
+          setRequestOTPError(response.profile.message);
+          setIsRequestOTPLoading(false);
+          callingServer.current = false;
+          return;
+        }
+
+        setCreatedFEATransaction(response);
         setIsRequestOTPLoading(false);
         callingServer.current = false;
-        return;
-      } else if (response.profile?.status !== "success") {
-        setRequestOTPError(response.profile.message);
-        setIsRequestOTPLoading(false);
-        callingServer.current = false;
-        return;
       }
-
-      setCreatedFEATransaction(response);
-      setIsRequestOTPLoading(false);
-      callingServer.current = false;
-    }
+    };
+    void makeRequest();
   }, [lipId, personalData?.id]);
 
-  useMountEffect(() => {
-    void requestOTP();
-  });
+  useEffect(() => {
+    requestOTP();
+  }, [requestOTP]);
 
   if (isRequestOTPLoading) {
     return (

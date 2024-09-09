@@ -1,5 +1,6 @@
 "use client";
 
+import {HelpText} from "@/ui/form/HelpText";
 import omit from "lodash/omit";
 import {identificationContractor} from "@/app/(menu)/(authenticated)/lips/[id]/actions";
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
@@ -118,6 +119,11 @@ export function IdentificationForm() {
             <Col className="d-flex" xs={12} sm={6}>
               <FormGroup controlId="frontPicture" as={BorderFeedback}>
                 <FormLabel>Documento fronte</FormLabel>
+                <HelpText>
+                  Importante! Il documento deve essere ben leggibile. Caricare
+                  una foto del documento in primo piano e orizzontale, in modo
+                  che riempia lo spazio disponibile.
+                </HelpText>
                 <FieldError />
                 <DropzoneField
                   preselectedImageUrl={existingFrontImageUrl}
@@ -142,6 +148,11 @@ export function IdentificationForm() {
             <Col className="d-flex" xs={12} sm={6}>
               <FormGroup controlId="backPicture" as={BorderFeedback}>
                 <FormLabel>Documento retro</FormLabel>
+                <HelpText>
+                  Importante! Il documento deve essere ben leggibile. Caricare
+                  una foto del documento in primo piano e orizzontale, in modo
+                  che riempia lo spazio disponibile.
+                </HelpText>
                 <FieldError />
                 <DropzoneField
                   preselectedImageUrl={existingBackImageUrl}

@@ -84,7 +84,7 @@ export function DropzoneField({
           <div
             {...getRootProps()}
             className={cns(
-              "ratio ratio-1x1",
+              "ratio ratio-4x3 p-3",
               styles.dropzoneField,
               isDragActive && styles.isDragActive,
               isDragReject && styles.isDragReject,

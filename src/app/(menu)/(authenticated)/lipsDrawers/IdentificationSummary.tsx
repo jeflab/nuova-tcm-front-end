@@ -52,7 +52,7 @@ export function IdentificationDataSummary() {
         </p>
       </Col>
       <Col xs={6} sm={3} md={6} lg={3}>
-        <div className="ratio ratio-1x1">
+        <div className="ratio ratio-4x3 p-3">
           {agentId &&
             contractorId &&
             identification.identification?.fileIdFrontName && (
@@ -65,7 +65,7 @@ export function IdentificationDataSummary() {
         </div>
       </Col>
       <Col xs={6} sm={3} md={6} lg={3}>
-        <div className="ratio ratio-1x1">
+        <div className="ratio ratio-4x3 p-3">
           {agentId &&
             contractorId &&
             identification.identification?.fileIdBackName && (

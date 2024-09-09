@@ -302,12 +302,14 @@ function createDrawerState(state: State & Actions) {
     }
 
     // Documentazione
+    const requiredProposalESign = state.lip?.mustAskUnderwriting ? 4 : 3;
     if (state.drawerStates.payment?.variant === "success") {
       if (amlBlocked) {
         state.drawerStates.documentation = {variant: "waiting", isLocked: true};
       } else if (
         state.lip?.eSigns?.polizza &&
-        Object.keys(state.lip?.eSigns?.polizza).length === 3 &&
+        Object.keys(state.lip?.eSigns?.polizza).length ===
+          requiredProposalESign &&
         state.lip.eSigns.identificazione
       ) {
         state.drawerStates.documentation = {variant: "success"};
