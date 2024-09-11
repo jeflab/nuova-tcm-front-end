@@ -93,12 +93,15 @@ export function QuoteForm() {
       throw {root: {type: "server", message: clientResponse.message}};
     }
 
-    if (clientResponse.quotazione.premium > parseInt(income ?? "0", 10) * 0.3) {
+    if (
+      clientResponse.quotazione.premium >
+      parseInt(income ?? "0", 10) * 0.125
+    ) {
       throw {
         root: {
           type: "server",
           message:
-            "Il premio annuo preventivato è superiore al 30% del reddito annuo netto. Riduci il capitale assicurato o deseleziona alcune garanzie per procedere ad una nuova quotazione.",
+            "Il premio annuo preventivato è superiore al 12,50% del reddito annuo netto. Riduci il capitale assicurato o deseleziona alcune garanzie per procedere ad una nuova quotazione.",
         },
       };
     }

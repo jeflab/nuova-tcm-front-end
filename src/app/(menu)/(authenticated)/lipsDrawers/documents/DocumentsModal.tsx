@@ -2,7 +2,7 @@
 
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {CompanyPrivacy} from "@/app/(menu)/(authenticated)/lipsDrawers/CompanyPrivacy";
-import {DocumentsManagement} from "@/app/(menu)/(authenticated)/lipsDrawers/DocumentsManagement";
+import {DocumentsManagement} from "@/app/(menu)/(authenticated)/lipsDrawers/documents/DocumentsManagement";
 
 export function DocumentsModal() {
   const lip = useDrawerStore((state) => state.lip);

@@ -1,6 +1,6 @@
 "use client";
 
-import {IdImage} from "@/app/(menu)/(authenticated)/lipsDrawers/IdImage";
+import {IdImage} from "@/app/(menu)/(authenticated)/lipsDrawers/identification/IdImage";
 import {idTypeOptions} from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {dateString} from "@/helpers/dates";

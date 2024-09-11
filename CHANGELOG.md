@@ -1,5 +1,13 @@
 # Changelog
 
+### v1.0.4 (2024-09-11)
+
+#### Changed:
+
+- Eliminato codice TAE = 999
+- Reso obbligatorio codice TAE solo per alcune posizioni lavorative, disabilitato per gli altri
+- Modificato rapporto premio/reddito minimo al 12,5%
+
 ### v1.0.3 (2024-09-09)
 
 #### Fixed:

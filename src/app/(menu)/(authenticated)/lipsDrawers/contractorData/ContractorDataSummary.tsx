@@ -1,6 +1,6 @@
 "use client";
 
-import {CitizenshipText} from "@/app/(menu)/(authenticated)/lipsDrawers/ContractorDataSummary/CitizenshipText";
+import {CitizenshipText} from "@/app/(menu)/(authenticated)/lipsDrawers/contractorData/CitizenshipText";
 import {
   genderOptions,
   jobPositionOptions,
@@ -80,11 +80,16 @@ export function ContractorDataSummary() {
               )
             : contractor.pep.job.positionOther}
         </p>
-        <p className="mb-0">
-          <strong>Codice TAE attività:</strong>{" "}
-          {getOptionsLabel(tAECodeOptions, contractor.pep.job.tAECode.response)}{" "}
-          (codice: {contractor.pep.job.tAECode.response})
-        </p>
+        {contractor.pep.job.tAECode.response && (
+          <p className="mb-0">
+            <strong>Codice TAE attività:</strong>{" "}
+            {getOptionsLabel(
+              tAECodeOptions,
+              contractor.pep.job.tAECode.response,
+            )}{" "}
+            (codice: {contractor.pep.job.tAECode.response})
+          </p>
+        )}
         <p className="mb-0">
           <strong>Provincia attività prevalente:</strong>{" "}
           {contractor.pep.job.province || contractor.region}

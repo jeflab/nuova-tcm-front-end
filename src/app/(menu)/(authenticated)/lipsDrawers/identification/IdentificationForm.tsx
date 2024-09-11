@@ -7,7 +7,7 @@ import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {
   getIdentityDocumentDefaultValues,
   IdentityDocumentForm,
-} from "@/app/(menu)/(authenticated)/lipsDrawers/IdentityDocumentForm/IdentityDocumentForm";
+} from "@/app/(menu)/(authenticated)/lipsDrawers/IdentityDocumentForm";
 import {createIDImageUrl} from "@/helpers/createResourcesUrl";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {CheckboxField} from "@/ui/form/CheckboxField";
