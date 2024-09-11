@@ -310,6 +310,17 @@ export function ContractorDataForm() {
                     validation={{
                       required: "Seleziona l'attività e professione esercitata",
                     }}
+                    onChange={(event) => {
+                      if (
+                        ![
+                          "entrepreneur",
+                          "freelancer",
+                          "selfEmployed",
+                        ].includes(event.target.value)
+                      ) {
+                        formMethods.setValue("job.tAECode", "" as TAECode);
+                      }
+                    }}
                   />
                 </FormGroup>
                 {jobPositionValue === "other" && (
@@ -339,12 +350,22 @@ export function ContractorDataForm() {
                 <FieldError />
                 <SelectField
                   placeholder="Seleziona codice TAE attività..."
-                  options={tAECodeOptions.toSorted((optionA, optionB) => {
-                    return optionA.label.localeCompare(optionB.label);
-                  })}
+                  options={tAECodeOptions
+                    .filter(({value}) => value !== "999")
+                    .toSorted((optionA, optionB) => {
+                      return optionA.label.localeCompare(optionB.label);
+                    })}
                   validation={{
-                    required: "Seleziona codice TAE attività",
+                    required:
+                      ["entrepreneur", "freelancer", "selfEmployed"].includes(
+                        jobPositionValue,
+                      ) && "Seleziona codice TAE attività",
                   }}
+                  disabled={
+                    !["entrepreneur", "freelancer", "selfEmployed"].includes(
+                      jobPositionValue,
+                    )
+                  }
                 />
               </FormGroup>
             </Col>

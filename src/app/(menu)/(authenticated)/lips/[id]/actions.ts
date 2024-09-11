@@ -176,7 +176,7 @@ interface updateContractorDataParams {
   job: {
     position: JobPosition;
     positionOther: string;
-    tAECode: TAECode;
+    tAECode: "" | TAECode;
     province: string;
     country: string;
   };

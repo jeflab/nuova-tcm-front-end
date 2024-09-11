@@ -1,6 +1,7 @@
 import {
   jobPositionOptions,
   publicOfficesOptions,
+  TAECode,
   tAECodeOptions,
   yesNoOptions,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
@@ -45,7 +46,7 @@ const jobSchema = z.object({
         value: z.enum(getOptionsValues(tAECodeOptions)),
       }),
     ),
-    response: z.enum(getOptionsValues(tAECodeOptions)),
+    response: z.enum([...getOptionsValues(tAECodeOptions), ""]),
   }),
   province: z.string().optional(),
   country: z.string().optional(),
