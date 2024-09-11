@@ -1,6 +1,11 @@
 import {normalizeErrorMessage} from "@/helpers/errors";
 import {Nullable} from "@/helpers/TypesHelper";
-import {getCitizenships} from "@/ui/form/actions";
+import {
+  getCitizenships,
+  getCitizenshipsQuery,
+} from "@/services/actions/citizenships";
+import {Debug} from "@/ui/Debug";
+import {useQuery} from "@tanstack/react-query";
 import {useEffect, useState} from "react";
 
 interface NationalityAutocompleteProps {
@@ -16,6 +21,12 @@ export function CitizenshipText({alpha2}: NationalityAutocompleteProps) {
   const [isLoadingNationalities, setIsLoadingNationalities] = useState(false);
   const [error, setError] = useState("");
   const [nationalities, setNationalities] = useState<CitizenshipOption[]>([]);
+
+  const citizenships = useQuery({
+    queryKey: ["citizenships"],
+    queryFn: () => getCitizenshipsQuery(),
+  });
+  console.log("citizenships", citizenships);
 
   useEffect(() => {
     const getOptions = async () => {
@@ -67,5 +78,10 @@ export function CitizenshipText({alpha2}: NationalityAutocompleteProps) {
     },
   };
 
-  return <span>{transform.input(alpha2)}</span>;
+  return (
+    <>
+      <Debug>{citizenships}</Debug>
+      <span>{transform.input(alpha2)}</span>
+    </>
+  );
 }

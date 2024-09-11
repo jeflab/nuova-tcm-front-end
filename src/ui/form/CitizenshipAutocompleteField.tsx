@@ -9,7 +9,7 @@ import {Highlighter, Typeahead} from "react-bootstrap-typeahead";
 import FormContext from "react-bootstrap/esm/FormContext";
 import {RegisterOptions, useController} from "react-hook-form";
 import invariant from "tiny-invariant";
-import {getCitizenships} from "./actions";
+import {getCitizenships} from "@/services/actions/citizenships";
 import {useValidationState} from "./hooks";
 import styles from "./NationalityAutocompleteField.module.scss";
 
