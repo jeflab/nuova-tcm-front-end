@@ -1,7 +1,7 @@
 "use client";
 
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
-import {DocumentsChapterDetails} from "@/app/(menu)/(authenticated)/lipsDrawers/DocumentsChapterDetails";
+import {DocumentsChapterDetails} from "@/app/(menu)/(authenticated)/lipsDrawers/documents/DocumentsChapterDetails";
 import {DownloadDocumentsSearchParams} from "@/app/download-doc/schema";
 import {createDocumentUrl} from "@/helpers/createResourcesUrl";
 import {PDFType} from "@/models/entities/esign";

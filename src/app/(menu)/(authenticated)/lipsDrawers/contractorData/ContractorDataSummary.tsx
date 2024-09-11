@@ -1,6 +1,6 @@
 "use client";
 
-import {CitizenshipText} from "@/app/(menu)/(authenticated)/lipsDrawers/ContractorDataSummary/CitizenshipText";
+import {CitizenshipText} from "@/app/(menu)/(authenticated)/lipsDrawers/contractorData/CitizenshipText";
 import {
   genderOptions,
   jobPositionOptions,

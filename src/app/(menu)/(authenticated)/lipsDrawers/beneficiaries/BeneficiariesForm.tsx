@@ -5,7 +5,7 @@ import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {
   getIdentityDocumentDefaultValues,
   IdentityDocumentForm,
-} from "@/app/(menu)/(authenticated)/lipsDrawers/IdentityDocumentForm/IdentityDocumentForm";
+} from "@/app/(menu)/(authenticated)/lipsDrawers/IdentityDocumentForm";
 import {
   Gender,
   genderOptions,

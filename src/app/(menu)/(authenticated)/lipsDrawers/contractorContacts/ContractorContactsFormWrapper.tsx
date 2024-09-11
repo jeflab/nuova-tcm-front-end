@@ -1,4 +1,4 @@
-import {ContractorContactsForm} from "@/app/(menu)/(authenticated)/lipsDrawers/ContractorContacts/ContractorContactsForm";
+import {ContractorContactsForm} from "@/app/(menu)/(authenticated)/lipsDrawers/contractorContacts/ContractorContactsForm";
 import {getAccount} from "@/app/(no-menu)/(auth)/actions";
 
 export async function ContractorContactsFormWrapper() {

@@ -1,7 +1,7 @@
 import {
   Document,
   ESign,
-} from "@/app/(menu)/(authenticated)/lipsDrawers/DocumentsManagement";
+} from "@/app/(menu)/(authenticated)/lipsDrawers/documents/DocumentsManagement";
 import {createDocumentUrl} from "@/helpers/createResourcesUrl";
 import {dateTimeString} from "@/helpers/dates";
 import {Lip} from "@/models/entities/lip";

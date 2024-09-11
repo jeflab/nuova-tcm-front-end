@@ -1,9 +1,9 @@
 "use server";
 
-import {BeneficiariesFormValues} from "@/app/(menu)/(authenticated)/lipsDrawers/BeneficiariesForm";
-import {fatcaQuestions} from "@/app/(menu)/(authenticated)/lipsDrawers/FatcaForm";
-import {HealthQuestionnaireFormValues} from "@/app/(menu)/(authenticated)/lipsDrawers/HealthQuestionnaireForm";
-import {PaymentFormValues} from "@/app/(menu)/(authenticated)/lipsDrawers/PaymentForm";
+import {BeneficiariesFormValues} from "@/app/(menu)/(authenticated)/lipsDrawers/beneficiaries/BeneficiariesForm";
+import {fatcaQuestions} from "@/app/(menu)/(authenticated)/lipsDrawers/facta/FatcaForm";
+import {HealthQuestionnaireFormValues} from "@/app/(menu)/(authenticated)/lipsDrawers/healthQuestionnaire/HealthQuestionnaireForm";
+import {PaymentFormValues} from "@/app/(menu)/(authenticated)/lipsDrawers/payment/PaymentForm";
 import {
   dependentFamilyMembersOptions,
   DependentFamilyMembersOptions,

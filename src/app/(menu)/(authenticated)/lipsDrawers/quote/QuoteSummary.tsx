@@ -1,7 +1,7 @@
 "use client";
 
-import {complementaryCoverages} from "@/app/(menu)/(authenticated)/lipsDrawers/ComplementaryCoverages";
-import {Coverage} from "@/app/(menu)/(authenticated)/lipsDrawers/QuoteSummary/Coverage";
+import {complementaryCoverages} from "@/app/(menu)/(authenticated)/lipsDrawers/quote/ComplementaryCoverages";
+import {Coverage} from "@/app/(menu)/(authenticated)/lipsDrawers/quote/Coverage";
 import {getCoverageDuration} from "@/app/(menu)/(authenticated)/quoter/helpers";
 import {calendarYearAge} from "@/helpers/ages";
 import {dateString} from "@/helpers/dates";

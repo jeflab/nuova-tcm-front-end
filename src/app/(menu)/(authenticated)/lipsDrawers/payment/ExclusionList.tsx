@@ -1,5 +1,5 @@
-import {complementaryCoverages} from "@/app/(menu)/(authenticated)/lipsDrawers/ComplementaryCoverages";
-import {Coverage} from "@/app/(menu)/(authenticated)/lipsDrawers/QuoteSummary/Coverage";
+import {complementaryCoverages} from "@/app/(menu)/(authenticated)/lipsDrawers/quote/ComplementaryCoverages";
+import {Coverage} from "@/app/(menu)/(authenticated)/lipsDrawers/quote/Coverage";
 import {Lip, Underwriting} from "@/models/entities/lip";
 import {Col, Row} from "react-bootstrap";
 import {useDrawerStore} from "../../lips/[id]/store";

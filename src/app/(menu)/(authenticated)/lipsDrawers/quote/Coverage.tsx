@@ -1,5 +1,5 @@
 import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
-import {complementaryCoverages} from "@/app/(menu)/(authenticated)/lipsDrawers/ComplementaryCoverages";
+import {complementaryCoverages} from "@/app/(menu)/(authenticated)/lipsDrawers/quote/ComplementaryCoverages";
 import {getCoverageDuration} from "@/app/(menu)/(authenticated)/quoter/helpers";
 import {Currency} from "@/ui/Currency";
 import {faCheck, faXmark} from "@fortawesome/pro-duotone-svg-icons";

@@ -1,4 +1,4 @@
-import {ContractorFiscalCodeForm} from "@/app/(menu)/(authenticated)/lipsDrawers/ContractorFiscalCodeForm";
+import {ContractorFiscalCodeForm} from "@/app/(menu)/(authenticated)/lipsDrawers/contractorFiscalCode/ContractorFiscalCodeForm";
 import {getAccount} from "@/app/(no-menu)/(auth)/actions";
 
 // Usiamo uno schema come validazione vista la complessità del form e la dipendenza del cf con gli altri campi
