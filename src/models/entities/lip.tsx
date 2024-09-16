@@ -395,6 +395,12 @@ export const lipStateSchema = z
   }));
 export type LipState = z.infer<typeof lipStateSchema>;
 
+const certificateSchema = z
+  .object({effective_date: z.coerce.date()})
+  .transform(({effective_date}) => ({
+    effectiveDate: effective_date,
+  }));
+
 export const lipSchema = z
   .object({
     id: z.number(),
@@ -412,6 +418,7 @@ export const lipSchema = z
     must_ask_underwriting: z.boolean(),
     json_beneficiary: zu.stringToJSON().pipe(beneficiariesSchema).nullish(),
     json_payment: zu.stringToJSON().pipe(paymentSchema).nullish(),
+    json_certificate: zu.stringToJSON().pipe(certificateSchema).nullish(),
     json_esign: zu.stringToJSON().pipe(eSignSchema).nullish(),
     aml: amlSchema.nullish(),
     json_privacy_company: zu
@@ -436,6 +443,7 @@ export const lipSchema = z
       must_ask_underwriting,
       json_beneficiary,
       json_payment,
+      json_certificate,
       json_esign,
       json_privacy_company,
       lipstates,
@@ -452,6 +460,7 @@ export const lipSchema = z
         mustAskUnderwriting: must_ask_underwriting,
         beneficiaries: json_beneficiary,
         payment: json_payment,
+        certificate: json_certificate,
         eSigns: json_esign,
         privacyCompany: json_privacy_company,
         lipStates: lipstates,
