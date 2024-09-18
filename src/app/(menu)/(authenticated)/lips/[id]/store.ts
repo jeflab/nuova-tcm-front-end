@@ -329,19 +329,6 @@ function createDrawerState(state: State & Actions) {
       }
     }
 
-    // Certificato
-    if (state.drawerStates.documentation?.variant === "success") {
-      if (!state.lip?.certificate) {
-        state.drawerStates.certificate = {
-          variant: "waiting",
-        };
-      } else {
-        state.drawerStates.certificate = {
-          variant: "success",
-        };
-      }
-    }
-
     // state.drawerStates.contractorData = {
     //   variant: "waiting",
     //   buttonLabel: "Debug",

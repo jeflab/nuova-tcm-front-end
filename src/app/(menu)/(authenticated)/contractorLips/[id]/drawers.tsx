@@ -1,5 +1,4 @@
 import {BeneficiariesSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/beneficiaries/BeneficiariesSummary";
-import {CertificateSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/certificate/CertificateSummary";
 import {ContractorDataSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/contractorData/ContractorDataSummary";
 import {ContractorFiscalCodeSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/contractorFiscalCode/ContractorFiscalCodeSummary";
 import {ContractorPersonalAreaActivationSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/contractorPersonalAreaActivation/ContractorPersonalAreaActivationSummary";
@@ -88,9 +87,4 @@ export const drawers: DrawerConfig[] = [
     title: "Documentazione",
     summaryContent: <DocumentsSummary />,
   },
-  {
-    name: "certificate",
-    title: "Certificato",
-    summaryContent: <CertificateSummary />,
-  },
-] as const;
+];

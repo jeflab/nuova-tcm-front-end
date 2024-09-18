@@ -1,6 +1,5 @@
 import {BeneficiariesForm} from "@/app/(menu)/(authenticated)/lipsDrawers/beneficiaries/BeneficiariesForm";
 import {BeneficiariesSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/beneficiaries/BeneficiariesSummary";
-import {CertificateSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/certificate/CertificateSummary";
 import {ContractorContactsFormWrapper} from "@/app/(menu)/(authenticated)/lipsDrawers/contractorContacts/ContractorContactsFormWrapper";
 import {ContractorDataForm} from "@/app/(menu)/(authenticated)/lipsDrawers/contractorData/ContractorDataForm";
 import {ContractorDataSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/contractorData/ContractorDataSummary";
@@ -40,8 +39,7 @@ export type DrawerName =
   | "healthQuestionnaire"
   | "beneficiaries"
   | "payment"
-  | "documentation"
-  | "certificate";
+  | "documentation";
 interface DrawerConfig {
   name: DrawerName;
   title: string;
@@ -132,10 +130,5 @@ export const drawers: DrawerConfig[] = [
     modalContent: <DocumentsModal />,
     summaryContent: <DocumentsSummary />,
     lock: <DocumentsLock />,
-  },
-  {
-    name: "certificate",
-    title: "Certificato",
-    summaryContent: <CertificateSummary />,
   },
 ] as const;

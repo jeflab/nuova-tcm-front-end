@@ -2,12 +2,7 @@ import {z} from "zod";
 
 export const searchPramsSchema = z.discriminatedUnion("uri", [
   z.object({
-    uri: z.enum([
-      "pdf-allegato3",
-      "pdf-allegato4ter",
-      "pdf-elenco-compagnie",
-      "pdf-certificato",
-    ]),
+    uri: z.enum(["pdf-allegato3", "pdf-allegato4ter", "pdf-elenco-compagnie"]),
     lipId: z.coerce.number(),
     agentId: z.coerce.number(),
   }),
@@ -22,6 +17,7 @@ export const searchPramsSchema = z.discriminatedUnion("uri", [
       "set-informativo",
       "pdf-underwriting-sanitario",
       "pdf-underwriting-sportivo",
+      "pdf-certificato",
     ]),
     lipId: z.coerce.number(),
     agentId: z.coerce.number(),
