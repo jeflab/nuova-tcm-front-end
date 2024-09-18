@@ -101,10 +101,10 @@ export function PaymentLock({
               ) per la compilazione del modulo. Una volta compilato, deve essere
               inviato via email all'indirizzo{" "}
               <a
-                href="mailto:underwriting@brightlife.it"
+                href="mailto:supporto.underwriting@brightlife.it"
                 className="alert-link"
               >
-                underwriting@brightlife.it
+                supporto.underwriting@brightlife.it
               </a>
               .
             </p>
