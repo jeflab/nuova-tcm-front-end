@@ -1,5 +1,11 @@
 # Changelog
 
+### v1.0.5 (2024-09-18)
+
+#### Changed:
+
+- Modificata mail per l'underwriting
+
 ### v1.0.4 (2024-09-11)
 
 #### Changed:
