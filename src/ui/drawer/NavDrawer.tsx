@@ -1,7 +1,7 @@
 "use client";
 
 import {DrawerName} from "@/app/(menu)/(authenticated)/lips/[id]/drawers";
-import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {cns} from "@/helpers/cns";
 import {DrawerIcon} from "@/ui/drawer/DrawerIcon";
 import React, {ReactNode} from "react";
@@ -14,7 +14,7 @@ interface DrawerProps {
 }
 
 export function NavDrawer({active, children, name}: DrawerProps) {
-  const drawerState = useDrawerStore((state) => state.drawerStates[name]);
+  const drawerState = useStore((state) => state.drawerStates[name]);
 
   return (
     <NavLink

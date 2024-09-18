@@ -5,7 +5,7 @@ import {
   Gender,
   genderOptions,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
-import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {cns} from "@/helpers/cns";
 import {dbDateString} from "@/helpers/dates";
 import {getOptionsValues} from "@/helpers/getOptionsLabel";
@@ -130,12 +130,12 @@ export function ContractorFiscalCodeForm({
     defaultValues: contractorFiscalCodeDefaultValues,
     resolver: zodResolver(ContractorFormSchema),
   });
-  const closeModal = useDrawerStore((state) => state.closeModal);
-  const updatePreliminaryData = useDrawerStore(
+  const closeModal = useStore((state) => state.closeModal);
+  const updatePreliminaryData = useStore(
     (state) => state.updatePreliminaryData,
   );
   // Lip dovrebbe essere sempre a undefined la prima volta, ma così siamo future proof
-  const lip = useDrawerStore((state) => state.lip);
+  const lip = useStore((state) => state.lip);
 
   return (
     <>

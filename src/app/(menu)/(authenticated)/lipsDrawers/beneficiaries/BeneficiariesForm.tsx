@@ -1,7 +1,7 @@
 "use client";
 
 import {updateBeneficiaries} from "@/app/(menu)/(authenticated)/lips/[id]/actions";
-import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {
   getIdentityDocumentDefaultValues,
   IdentityDocumentForm,
@@ -150,7 +150,7 @@ export type BeneficiariesFormValues = ReturnType<
 export function BeneficiariesForm() {
   const animateContainer = useRef(null);
 
-  const beneficiariesData = useDrawerStore((state) => state.lip?.beneficiaries);
+  const beneficiariesData = useStore((state) => state.lip?.beneficiaries);
 
   const formMethods = useForm({
     mode: "onChange",
@@ -168,8 +168,8 @@ export function BeneficiariesForm() {
     animateContainer.current && autoAnimate(animateContainer.current);
   }, []);
 
-  const lipId = useDrawerStore((state) => state.lip?.id);
-  const closeModal = useDrawerStore((state) => state.closeModal);
+  const lipId = useStore((state) => state.lip?.id);
+  const closeModal = useStore((state) => state.closeModal);
 
   return (
     <>

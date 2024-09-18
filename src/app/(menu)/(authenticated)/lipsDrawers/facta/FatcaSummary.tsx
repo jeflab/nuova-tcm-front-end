@@ -1,19 +1,17 @@
 "use client";
 
-import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 
 export function FatcaSummary() {
-  const fatcaPreliminary = useDrawerStore(
-    (state) => state.preliminaryData.fatca,
-  );
-  const residencyPreliminary = useDrawerStore(
+  const fatcaPreliminary = useStore((state) => state.preliminaryData.fatca);
+  const residencyPreliminary = useStore(
     (state) => state.preliminaryData.italianResidency,
   );
 
-  const fatcaLip = useDrawerStore(
+  const fatcaLip = useStore(
     (state) => state.lip?.contractor?.fatca.fatcaCheck.response,
   );
-  const residencyLip = useDrawerStore(
+  const residencyLip = useStore(
     (state) => state.lip?.contractor?.fatca.residencyCheck.response,
   );
 
@@ -40,12 +38,10 @@ export function FatcaSummary() {
 
   if (fatcaData === "no" && residencyData === "yes") {
     return (
-      <>
-        <p className="mb-0">
-          Il Contraente è residente in Italia e non è residente negli Stati
-          Uniti d'America
-        </p>
-      </>
+      <p className="mb-0">
+        Il Contraente è residente in Italia e non è residente negli Stati Uniti
+        d'America
+      </p>
     );
   }
 }

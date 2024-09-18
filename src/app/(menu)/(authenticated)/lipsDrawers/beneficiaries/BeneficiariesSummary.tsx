@@ -1,7 +1,7 @@
 "use client";
 
 import {nominationOptions} from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
-import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {dateString} from "@/helpers/dates";
 import {getOptionsLabel} from "@/helpers/getOptionsLabel";
 import {IconStack} from "@/ui/IconStack";
@@ -16,7 +16,7 @@ import {Fragment} from "react";
 import {Col, Row, Stack} from "react-bootstrap";
 
 export function BeneficiariesSummary() {
-  const beneficiariesData = useDrawerStore((state) => state.lip?.beneficiaries);
+  const beneficiariesData = useStore((state) => state.lip?.beneficiaries);
 
   if (!beneficiariesData) {
     return null;

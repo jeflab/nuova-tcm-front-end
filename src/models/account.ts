@@ -1,3 +1,4 @@
+import {brokerSchema} from "@/models/entities/broker";
 import {personalDataSchema} from "@/models/entities/personalData";
 import {userSchema} from "@/models/entities/user";
 import {z} from "zod";
@@ -19,7 +20,9 @@ export const accountSchema = z.object({
   user: userSchema,
   roles: z.array(roleSchema),
   permissions: z.array(permissionSchema),
+  broker: brokerSchema.nullish(),
 });
+export type Account = z.infer<typeof accountSchema>;
 
 export const profileSchema = z.object({
   user: userSchema,

@@ -1,10 +1,10 @@
 "use client";
 
-import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {Alert} from "react-bootstrap";
 
 export function DocumentsLock() {
-  const isDocumentsLocked = useDrawerStore(
+  const isDocumentsLocked = useStore(
     (state) => state.drawerStates.documentation?.isLocked,
   );
 

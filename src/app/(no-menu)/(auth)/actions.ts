@@ -1,9 +1,8 @@
 "use server";
 
 import {AUTH_COOKIE_NAME, COOKIE_DURATION} from "@/app/(no-menu)/(auth)/const";
-import {permissionSchema, roleSchema} from "@/models/account";
+import {accountSchema} from "@/models/account";
 import {agentSchema} from "@/models/entities/agent";
-import {brokerSchema} from "@/models/entities/broker";
 import {personalDataSchema} from "@/models/entities/personalData";
 import {userSchema} from "@/models/entities/user";
 import * as api from "@/services/api";
@@ -94,15 +93,9 @@ export async function checkAuth() {
   }
 }
 
-const getAccountShape = {
-  user: userSchema,
-  roles: z.array(roleSchema),
-  permissions: z.array(permissionSchema),
-  broker: brokerSchema.nullish(),
-};
 export async function getAccount() {
   return await api.get("/me", {
-    payloadShape: getAccountShape,
+    payloadShape: accountSchema.shape,
     tags: [Tags.me()],
   });
 }

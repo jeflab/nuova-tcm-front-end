@@ -1,6 +1,6 @@
 "use client";
 
-import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {createDocumentUrl} from "@/helpers/createResourcesUrl";
 import {ButtonLink} from "@/ui/ButtonLink";
 import {faDownload} from "@fortawesome/pro-duotone-svg-icons";
@@ -8,9 +8,9 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Stack} from "react-bootstrap";
 
 export function ContractorPersonalAreaActivationSummary() {
-  const lipId = useDrawerStore((state) => state.lip?.id);
-  const agentId = useDrawerStore((state) => state.lip?.agent.id);
-  const contractor = useDrawerStore((state) => state.lip?.contractor);
+  const lipId = useStore((state) => state.lip?.id);
+  const agentId = useStore((state) => state.lip?.agent.id);
+  const contractor = useStore((state) => state.lip?.contractor);
 
   if (!contractor) {
     return null;

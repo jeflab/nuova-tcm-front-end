@@ -11,7 +11,7 @@ import {
   jobPositionOptions,
   needsToMeetOptions,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
-import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {getOptionsLabel} from "@/helpers/getOptionsLabel";
 import {
   validateDenDuration,
@@ -31,9 +31,9 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Col, Row} from "react-bootstrap";
 
 export function DenSummary() {
-  const lip = useDrawerStore((state) => state.lip);
-  const denData = useDrawerStore((state) => state.lip?.den);
-  const job = useDrawerStore((state) => state.lip?.contractor.pep?.job);
+  const lip = useStore((state) => state.lip);
+  const denData = useStore((state) => state.lip?.den);
+  const job = useStore((state) => state.lip?.contractor.pep?.job);
 
   if (!denData) {
     return null;

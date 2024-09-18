@@ -1,6 +1,6 @@
 "use client";
 
-import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {Lip} from "@/models/entities/lip";
 import {useEffect} from "react";
 
@@ -9,8 +9,8 @@ interface InitStoreWithServerDataProps {
 }
 
 export function InitStoreWithServerData({lip}: InitStoreWithServerDataProps) {
-  const updateLip = useDrawerStore((state) => state.updateLip);
-  const updatePreliminaryData = useDrawerStore(
+  const updateLip = useStore((state) => state.updateLip);
+  const updatePreliminaryData = useStore(
     (state) => state.updatePreliminaryData,
   );
 

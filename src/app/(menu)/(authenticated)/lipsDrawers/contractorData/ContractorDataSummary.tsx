@@ -8,7 +8,7 @@ import {
   tAECodeOptions,
   yesNoOptions,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
-import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {dateString} from "@/helpers/dates";
 import {getOptionsLabel} from "@/helpers/getOptionsLabel";
 import {
@@ -21,7 +21,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Col, Row} from "react-bootstrap";
 
 export function ContractorDataSummary() {
-  const contractor = useDrawerStore((state) => state.lip?.contractor);
+  const contractor = useStore((state) => state.lip?.contractor);
 
   if (!contractor?.pep) {
     return null;

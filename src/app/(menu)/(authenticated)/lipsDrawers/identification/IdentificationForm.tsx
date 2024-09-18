@@ -3,7 +3,7 @@
 import {HelpText} from "@/ui/form/HelpText";
 import omit from "lodash/omit";
 import {identificationContractor} from "@/app/(menu)/(authenticated)/lips/[id]/actions";
-import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {
   getIdentityDocumentDefaultValues,
   IdentityDocumentForm,
@@ -37,9 +37,9 @@ import invariant from "tiny-invariant";
 import {getTypedFormDataFromObject} from "@/helpers/typedFormData";
 
 export function IdentificationForm() {
-  const agentId = useDrawerStore((state) => state.lip?.agent.id);
-  const contractorId = useDrawerStore((state) => state.lip?.contractor.id);
-  const identityDocument = useDrawerStore((state) =>
+  const agentId = useStore((state) => state.lip?.agent.id);
+  const contractorId = useStore((state) => state.lip?.contractor.id);
+  const identityDocument = useStore((state) =>
     state.lip?.contractor.identitydocument?.at(-1),
   );
 
@@ -56,11 +56,9 @@ export function IdentificationForm() {
     },
   });
 
-  const fiscalCode = useDrawerStore(
-    (state) => state.lip?.contractor?.fiscalCode,
-  );
-  const lipId = useDrawerStore((state) => state.lip?.id);
-  const closeModal = useDrawerStore((state) => state.closeModal);
+  const fiscalCode = useStore((state) => state.lip?.contractor?.fiscalCode);
+  const lipId = useStore((state) => state.lip?.id);
+  const closeModal = useStore((state) => state.closeModal);
 
   const existingFrontImageUrl = createIDImageUrl({
     contractorId,

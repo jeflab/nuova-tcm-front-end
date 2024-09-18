@@ -1,5 +1,5 @@
 import {saveCompanyPrivacyConsent} from "@/app/(menu)/(authenticated)/lips/[id]/actions";
-import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {
   consentOptions,
   ConsentOptions,
@@ -39,11 +39,9 @@ export function CompanyPrivacy({
   agentId,
   contractorId,
 }: CompanyPrivacyProps) {
-  const privacyCompany = useDrawerStore((state) =>
-    state.lip?.privacyCompany?.at(-1),
-  );
-  const lip = useDrawerStore((state) => state.lip);
-  const closeModalFromStore = useDrawerStore((state) => state.closeModal);
+  const privacyCompany = useStore((state) => state.lip?.privacyCompany?.at(-1));
+  const lip = useStore((state) => state.lip);
+  const closeModalFromStore = useStore((state) => state.closeModal);
 
   const formMethods = useForm({
     defaultValues: {flags: privacyCompany?.flags ?? ([] as ConsentOptions[])},

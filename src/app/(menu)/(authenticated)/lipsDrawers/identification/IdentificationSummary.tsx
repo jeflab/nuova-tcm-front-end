@@ -2,7 +2,7 @@
 
 import {IdImage} from "@/app/(menu)/(authenticated)/lipsDrawers/identification/IdImage";
 import {idTypeOptions} from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
-import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {dateString} from "@/helpers/dates";
 import {getOptionsLabel} from "@/helpers/getOptionsLabel";
 import {
@@ -14,9 +14,9 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Col, Row} from "react-bootstrap";
 
 export function IdentificationDataSummary() {
-  const agentId = useDrawerStore((state) => state.lip?.agent.id);
-  const contractorId = useDrawerStore((state) => state.lip?.contractor.id);
-  const identification = useDrawerStore((state) =>
+  const agentId = useStore((state) => state.lip?.agent.id);
+  const contractorId = useStore((state) => state.lip?.contractor.id);
+  const identification = useStore((state) =>
     state.lip?.contractor.identitydocument?.at(-1),
   );
 
