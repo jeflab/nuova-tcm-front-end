@@ -1,6 +1,6 @@
 {
   "name": "nuova-tcm-front-end",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "dependencies": {
     "@formkit/auto-animate": "^0.8.1",
     "@fortawesome/fontawesome-svg-core": "^6.4.2",
