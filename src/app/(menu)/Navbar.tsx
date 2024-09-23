@@ -1,3 +1,4 @@
+import {HelpLink} from "@/app/(menu)/HelpLink";
 import {LoginButton} from "@/app/(menu)/LoginButton";
 import {getAccount, isLoggedIn} from "@/app/(no-menu)/(auth)/actions";
 import {cns} from "@/helpers/cns";
@@ -23,8 +24,11 @@ export async function Navbar() {
   const serverTheme = await getTheme();
   const loggedIn = await isLoggedIn();
 
+  // get page url in server components
+
   let permissions = [] as Permission[];
   let broker: Broker | undefined | null;
+  let fiscalCode: string | undefined;
 
   if (loggedIn) {
     const account = await getAccount();
@@ -32,6 +36,7 @@ export async function Navbar() {
     if (account.status === "success") {
       permissions = account.permissions;
       broker = account.broker;
+      fiscalCode = account.user.fiscalCode;
     }
   }
 
@@ -82,6 +87,15 @@ export async function Navbar() {
                   <NavLink as={Link} href="/contractorLips">
                     Le tue polizze
                   </NavLink>
+                )}
+                {permissions.some(
+                  (permission) => permission.name === "create-lip",
+                ) && (
+                  <HelpLink
+                    className="nav-link"
+                    fiscalCode={fiscalCode}
+                    label="Assistenza"
+                  />
                 )}
                 <NavLink as={Link} href="/profile">
                   Il tuo profilo

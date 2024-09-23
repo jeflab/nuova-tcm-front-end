@@ -30,3 +30,5 @@ export const Tags = {
   getLip: <T extends number>(id: T) => `getLip-${id}` as const,
 } as const;
 export type Tag = ReturnType<(typeof Tags)[keyof typeof Tags]>;
+
+export const helpEmail = "assistenza@smartbroker.space";
