@@ -1,3 +1,4 @@
+import {HelpLink} from "@/app/(menu)/HelpLink";
 import {getAccount, isLoggedIn} from "@/app/(no-menu)/(auth)/actions";
 import {getVersion} from "@/helpers/release";
 import {Broker} from "@/models/entities/broker";
@@ -11,12 +12,14 @@ export async function Footer() {
   const loggedIn = await isLoggedIn();
 
   let broker: Broker | undefined | null;
+  let fiscalCode: string | undefined;
 
   if (loggedIn) {
     const account = await getAccount();
 
     if (account.status === "success") {
       broker = account.broker;
+      fiscalCode = account.user.fiscalCode;
     }
   }
 
@@ -38,7 +41,8 @@ export async function Footer() {
                 }}
               />
             </>
-          ) : null}
+          ) : null}{" "}
+          | <HelpLink className="footer-link" fiscalCode={fiscalCode} />
         </div>
         <small className="ms-auto text-muted">Versione {getVersion()}</small>
       </div>
