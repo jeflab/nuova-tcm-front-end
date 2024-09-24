@@ -16,17 +16,18 @@ import {cns} from "@/helpers/cns";
 import {dbDateString} from "@/helpers/dates";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {CheckGroup} from "@/ui/form/CheckGroup";
+import {CitizenshipAutocompleteField} from "@/ui/form/CitizenshipAutocompleteField";
 import {ComuneProvAutocompleteField} from "@/ui/form/ComuneProvAutocompleteField";
 import {FieldError} from "@/ui/form/FieldError";
 import {Form} from "@/ui/form/Form";
 import {HelpText} from "@/ui/form/HelpText";
 import {InputField} from "@/ui/form/InputField";
-import {CitizenshipAutocompleteField} from "@/ui/form/CitizenshipAutocompleteField";
 import {emailNormalizer, onlyNumbersNormalizer} from "@/ui/form/normalizers";
 import {SelectField} from "@/ui/form/SelectField";
 import {emailValidator} from "@/ui/form/validators/email";
 import {faSave, faSpinner, faXmark} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import * as Sentry from "@sentry/nextjs";
 import {
   Alert,
   Button,
@@ -40,6 +41,19 @@ import {
 } from "react-bootstrap";
 import {useForm} from "react-hook-form";
 import invariant from "tiny-invariant";
+
+// Polyfill per safari 15.
+let toSortedPolyfillNeeded = false;
+if ([].toSorted === undefined) {
+  Sentry.captureMessage("[].toSorted method is undefined. " + [].toSorted);
+  toSortedPolyfillNeeded = true;
+}
+
+import "core-js/actual/array/to-sorted";
+
+if (toSortedPolyfillNeeded) {
+  Sentry.captureMessage("[].toSorted polyfill applied. " + [].toSorted);
+}
 
 export function ContractorDataForm() {
   const lipId = useDrawerStore((state) => state.lip?.id);
