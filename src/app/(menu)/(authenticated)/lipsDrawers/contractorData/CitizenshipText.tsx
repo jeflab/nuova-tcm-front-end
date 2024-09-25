@@ -4,15 +4,15 @@ import {getCitizenships} from "@/ui/form/actions";
 import {useEffect, useState} from "react";
 
 interface NationalityAutocompleteProps {
-  alpha3: Nullable<string>;
+  alpha2: Nullable<string>;
 }
 
 interface CitizenshipOption {
-  alpha3: string;
+  alpha2: string;
   citizenship: string;
 }
 
-export function CitizenshipText({alpha3}: NationalityAutocompleteProps) {
+export function CitizenshipText({alpha2}: NationalityAutocompleteProps) {
   const [isLoadingNationalities, setIsLoadingNationalities] = useState(false);
   const [error, setError] = useState("");
   const [nationalities, setNationalities] = useState<CitizenshipOption[]>([]);
@@ -47,13 +47,13 @@ export function CitizenshipText({alpha3}: NationalityAutocompleteProps) {
   }
 
   const transform = {
-    input(alpha3: Nullable<string>) {
-      if (!alpha3) {
+    input(alpha2: Nullable<string>) {
+      if (!alpha2) {
         return "";
       }
       return (
-        nationalities.find((option) => option.alpha3 === alpha3)?.citizenship ??
-        alpha3
+        nationalities.find((option) => option.alpha2 === alpha2)?.citizenship ??
+        alpha2
       );
     },
     output(citizenship: Nullable<string>) {
@@ -62,10 +62,10 @@ export function CitizenshipText({alpha3}: NationalityAutocompleteProps) {
       }
       return (
         nationalities.find((option) => option.citizenship === citizenship)
-          ?.alpha3 ?? citizenship
+          ?.alpha2 ?? citizenship
       );
     },
   };
 
-  return <span>{transform.input(alpha3)}</span>;
+  return <span>{transform.input(alpha2)}</span>;
 }

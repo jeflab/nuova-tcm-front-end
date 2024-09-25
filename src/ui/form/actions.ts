@@ -6,7 +6,7 @@ import {z} from "zod";
 const citizenshipShape = {
   citizenships: z.array(
     z.object({
-      alpha3: z.string(),
+      alpha2: z.string(),
       citizenship: z.string(),
     }),
   ),
