@@ -24,7 +24,7 @@ interface NationalityAutocompleteProps {
 }
 
 interface CitizenshipOption {
-  alpha3: string;
+  alpha2: string;
   citizenship: string;
 }
 
@@ -81,13 +81,13 @@ export function CitizenshipAutocompleteField({
   }
 
   const transform = {
-    input(alpha3: string) {
-      if (!alpha3) {
+    input(alpha2: string) {
+      if (!alpha2) {
         return "";
       }
       return (
-        nationalities.find((option) => option.alpha3 === alpha3)?.citizenship ??
-        alpha3
+        nationalities.find((option) => option.alpha2 === alpha2)?.citizenship ??
+        alpha2
       );
     },
     output(citizenship: string) {
@@ -96,7 +96,7 @@ export function CitizenshipAutocompleteField({
       }
       return (
         nationalities.find((option) => option.citizenship === citizenship)
-          ?.alpha3 ?? citizenship
+          ?.alpha2 ?? citizenship
       );
     },
   };
