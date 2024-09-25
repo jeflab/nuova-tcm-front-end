@@ -1,5 +1,17 @@
 # Changelog
 
+### v1.0.7 (2024-09-25)
+
+#### Changed:
+
+- Modificato salvataggio cittadinanza da alpha3 a alpha2
+
+### v1.0.6 (2024-09-23)
+
+#### Added:
+
+- Aggiunta email per richieste di assistenza tecnica
+
 ### v1.0.5 (2024-09-18)
 
 #### Changed:
