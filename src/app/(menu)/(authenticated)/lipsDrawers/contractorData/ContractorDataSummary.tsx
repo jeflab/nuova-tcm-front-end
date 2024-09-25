@@ -44,7 +44,7 @@ export function ContractorDataSummary() {
         </p>
         <p className="mb-0">
           <strong>Nazionalità:</strong>{" "}
-          <CitizenshipText alpha3={contractor.citizenship} />
+          <CitizenshipText alpha2={contractor.citizenship} />
         </p>
         <p className="mb-0">
           <strong>Genere:</strong>{" "}
