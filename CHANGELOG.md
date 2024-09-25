@@ -2,6 +2,10 @@
 
 ### v1.0.7 (2024-09-25)
 
+#### Added:
+
+- Aggiunto polyfill per Array.prototype.toSorted
+
 #### Changed:
 
 - Modificato salvataggio cittadinanza da alpha3 a alpha2
