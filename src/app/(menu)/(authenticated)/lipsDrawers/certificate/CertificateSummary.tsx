@@ -1,6 +1,7 @@
 "use client";
 
 import {createDocumentUrl} from "@/helpers/createResourcesUrl";
+import {dateString} from "@/helpers/dates";
 import {ButtonLink} from "@/ui/ButtonLink";
 import {
   faDownload,
@@ -12,6 +13,7 @@ import {useDrawerStore} from "../../lips/[id]/store";
 export function CertificateSummary() {
   const lipId = useDrawerStore((state) => state.lip?.id);
   const agentId = useDrawerStore((state) => state.lip?.agent?.id);
+  const certificate = useDrawerStore((state) => state.lip?.certificate);
   const certificateState = useDrawerStore(
     (state) => state.drawerStates.certificate,
   );
@@ -37,7 +39,8 @@ export function CertificateSummary() {
         <FontAwesomeIcon icon={faFileCertificate} /> Certificato
       </h4>
       <p>
-        <strong>Data di decorrenza:</strong> 15 gennaio 2025
+        <strong>Data di decorrenza:</strong>{" "}
+        {dateString(certificate?.effectiveDate)}
       </p>
       <div>
         <ButtonLink
