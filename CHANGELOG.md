@@ -1,5 +1,11 @@
 # Changelog
 
+### v1.0.8 (2024-09-25)
+
+#### Added:
+
+- Aggiunto cassetto per il certificato
+
 ### v1.0.7 (2024-09-25)
 
 #### Added:
