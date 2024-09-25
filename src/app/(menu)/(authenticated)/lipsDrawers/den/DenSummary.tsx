@@ -100,16 +100,18 @@ export function DenSummary() {
           <strong>Prodotti assicurativi in essere:</strong>
         </p>
         <ul className="list-unstyled mb-0">
-          {denData.otherInsuranceProducts.response === "yes"
-            ? denData.needsIntendToMeet.response.map((value) => (
-                <li key={value} className="d-flex">
-                  <FontAwesomeIcon icon={faSquareCheck} className="me-2 mt-1" />
-                  {value === "other"
-                    ? denData.needsIntendToMeetOther
-                    : getOptionsLabel(needsToMeetOptions, value)}
-                </li>
-              ))
-            : "Nessuno"}
+          {denData.otherInsuranceProducts.response === "yes" ? (
+            denData.needsIntendToMeet.response.map((value) => (
+              <li key={value} className="d-flex">
+                <FontAwesomeIcon icon={faSquareCheck} className="me-2 mt-1" />
+                {value === "other"
+                  ? denData.needsIntendToMeetOther
+                  : getOptionsLabel(needsToMeetOptions, value)}
+              </li>
+            ))
+          ) : (
+            <li>Nessuno</li>
+          )}
         </ul>
       </Col>
       <Col xs={12} sm={6} md={12} lg={6}>
