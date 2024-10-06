@@ -2,10 +2,10 @@
 
 import {cns} from "@/helpers/cns";
 import {WithChildren} from "@/ui/types";
-import autoAnimate from "@formkit/auto-animate";
+import {useAutoAnimate} from "@formkit/auto-animate/react";
 import {faChevronDown} from "@fortawesome/pro-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {ReactNode, useEffect, useId, useRef, useState} from "react";
+import {ReactNode, useId, useState} from "react";
 import {Card, CardBody, CardHeader} from "react-bootstrap";
 import styles from "./CardCollapsable.module.scss";
 
@@ -23,11 +23,7 @@ export function CardCollapsable({
 }: CardCollapsableProps) {
   const id = useId();
   const [isOpen, setIsOpen] = useState(false);
-  const parent = useRef(null);
-
-  useEffect(() => {
-    parent.current && autoAnimate(parent.current);
-  }, []);
+  const [animateContainer] = useAutoAnimate();
 
   const toggleIsOpen = () => {
     if (disabled) return;
@@ -37,7 +33,7 @@ export function CardCollapsable({
 
   return (
     <Card
-      ref={parent}
+      ref={animateContainer}
       className={cns(
         className,
         disabled && styles.disabled,

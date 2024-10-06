@@ -14,6 +14,7 @@ export function CertificateSummary() {
   const lipId = useStore((state) => state.lip?.id);
   const agentId = useStore((state) => state.lip?.agent?.id);
   const certificateState = useStore((state) => state.drawerStates.certificate);
+  const certificate = useStore((state) => state.lip?.certificate);
 
   if (!lipId || !agentId || !certificateState) {
     return null;

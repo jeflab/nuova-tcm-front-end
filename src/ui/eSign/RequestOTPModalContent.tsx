@@ -7,7 +7,9 @@ import {RequestOTPForm} from "@/ui/eSign/RequestOTPForm";
 import {faRotate, faSpinner, faXmark} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import useInterval from "@restart/hooks/useInterval";
-import {useCallback, useEffect, useRef, useState} from "react";
+import useMountEffect from "@restart/hooks/useMountEffect";
+import {useMutation, useQuery} from "@tanstack/react-query";
+import {useState} from "react";
 import {Alert, Button} from "react-bootstrap";
 
 interface RequestOTPModalContentProps<TPayload> {
@@ -33,53 +35,50 @@ export function RequestOTPModalContent<TPayload>({
   personalData,
   tagToRevalidate,
 }: RequestOTPModalContentProps<TPayload>) {
-  const callingServer = useRef(false);
   const [counter, setCounter] = useState(60);
   const [updatePhoneOpen, setUpdatePhoneOpen] = useState(false);
-  const [isRequestOTPLoading, setIsRequestOTPLoading] = useState(false);
-  const [requestOTPError, setRequestOTPError] = useState<string>();
-  const [createdFEATransaction, setCreatedFEATransaction] =
-    useState<Awaited<ReturnType<typeof createFEATransaction>>>();
 
-  useInterval(() => setCounter((counter) => counter - 1), 1000, counter <= 0);
+  const {
+    mutate: requestOTP,
+    data: createdFEATransaction,
+    error: createdFEATransactionError,
+    isIdle: isCreatedFEATransactionIdle,
+    isPending: isCreatedFEATransactionPending,
+    isError: isCreatedFEATransactionError,
+  } = useMutation({
+    mutationFn: async (data: {contractorId?: number; lipId: number}) => {
+      console.log("Calling createFEATransaction from useQuery");
+      setCounter(60);
 
-  // TODO: Da sostituire con tanstack-query o rtk-query per ora usiamo il ref
-  const requestOTP = useCallback(() => {
-    const makeRequest = async () => {
-      if (!callingServer.current) {
-        setIsRequestOTPLoading(true);
-        callingServer.current = true;
-        setCounter(60);
-        const response = await createFEATransaction({
-          contractorId: personalData?.id,
-          lipId: lipId,
-        });
+      const response = await createFEATransaction(data);
 
-        if (response.featTransaction?.status !== "success") {
-          setRequestOTPError(response.featTransaction.message);
-          setIsRequestOTPLoading(false);
-          callingServer.current = false;
-          return;
-        } else if (response.profile?.status !== "success") {
-          setRequestOTPError(response.profile.message);
-          setIsRequestOTPLoading(false);
-          callingServer.current = false;
-          return;
-        }
-
-        setCreatedFEATransaction(response);
-        setIsRequestOTPLoading(false);
-        callingServer.current = false;
+      if (response.featTransaction?.status !== "success") {
+        throw new Error(response.featTransaction.message);
       }
-    };
-    void makeRequest();
-  }, [lipId, personalData?.id]);
+      if (response.profile?.status !== "success") {
+        throw new Error(response.profile.message);
+      }
 
-  useEffect(() => {
-    requestOTP();
-  }, [requestOTP]);
+      return {
+        featTransaction: response.featTransaction,
+        profile: response.profile,
+      };
+    },
+  });
 
-  if (isRequestOTPLoading) {
+  useMountEffect(() => {
+    if (isCreatedFEATransactionIdle) {
+      requestOTP({contractorId: personalData?.id, lipId: lipId});
+    }
+  });
+
+  useInterval(
+    () => setCounter((counter) => counter - 1),
+    1000,
+    !isCreatedFEATransactionPending || counter <= 0,
+  );
+
+  if (isCreatedFEATransactionPending || isCreatedFEATransactionIdle) {
     return (
       <>
         <Alert variant="info">
@@ -92,7 +91,9 @@ export function RequestOTPModalContent<TPayload>({
               variant="secondary"
               type="button"
               disabled={counter > 0}
-              onClick={requestOTP}
+              onClick={() => {
+                requestOTP({contractorId: personalData?.id, lipId: lipId});
+              }}
             >
               <FontAwesomeIcon icon={faRotate} className="me-2" />
               Invia di nuovo
@@ -106,28 +107,11 @@ export function RequestOTPModalContent<TPayload>({
         </div>
       </>
     );
-  } else if (requestOTPError) {
+  }
+  if (isCreatedFEATransactionError) {
     return (
       <>
-        <Alert variant="danger">{requestOTPError}</Alert>
-        <div className="text-center">
-          <Button variant="cancel" type="button" onClick={onCancel}>
-            Chiudi
-          </Button>
-        </div>
-      </>
-    );
-  } else if (
-    !createdFEATransaction ||
-    createdFEATransaction.featTransaction.status !== "success" ||
-    createdFEATransaction.profile.status !== "success"
-  ) {
-    // TODO: Togliere quando messo tanstack o rtk
-    return (
-      <>
-        <Alert variant="danger">
-          Si è verificato un errore durante l'invio dell'OTP. Riprova più tardi.
-        </Alert>
+        <Alert variant="danger">{createdFEATransactionError.message}</Alert>
         <div className="text-center">
           <Button variant="cancel" type="button" onClick={onCancel}>
             Chiudi
@@ -150,7 +134,9 @@ export function RequestOTPModalContent<TPayload>({
       transactionId={createdFEATransaction.featTransaction.esign.transactionId}
       onEsignComplete={onEsignComplete}
       payload={payload}
-      resendOTP={requestOTP}
+      resendOTP={() => {
+        requestOTP({contractorId: personalData?.id, lipId: lipId});
+      }}
       tagToRevalidate={tagToRevalidate}
     />
   ) : (
@@ -164,7 +150,9 @@ export function RequestOTPModalContent<TPayload>({
       }}
       lipId={lipId}
       onCancel={onCancel}
-      onNumberUpdated={requestOTP}
+      onNumberUpdated={() => {
+        requestOTP({contractorId: personalData?.id, lipId: lipId});
+      }}
       personalData={personalData}
       profile={createdFEATransaction.profile}
     />

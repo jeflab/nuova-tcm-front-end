@@ -36,7 +36,7 @@ import {
   fiscalCodeMatchDataValidator,
   fiscalCodeValidator,
 } from "@/ui/form/validators/fiscalCode";
-import autoAnimate from "@formkit/auto-animate";
+import {useAutoAnimate} from "@formkit/auto-animate/react";
 import {
   faSave,
   faSpinner,
@@ -48,7 +48,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {getDate} from "date-fns/getDate";
 import {getMonth} from "date-fns/getMonth";
 import {getYear} from "date-fns/getYear";
-import {Fragment, useEffect, useRef} from "react";
+import {Fragment} from "react";
 import {
   Alert,
   Button,
@@ -148,9 +148,11 @@ export type BeneficiariesFormValues = ReturnType<
 >;
 
 export function BeneficiariesForm() {
-  const animateContainer = useRef(null);
+  const [animateContainer] = useAutoAnimate();
 
   const beneficiariesData = useStore((state) => state.lip?.beneficiaries);
+  const lipId = useStore((state) => state.lip?.id);
+  const closeModal = useStore((state) => state.closeModal);
 
   const formMethods = useForm({
     mode: "onChange",
@@ -163,13 +165,6 @@ export function BeneficiariesForm() {
 
   const nominationValue = formMethods.watch("nomination");
   const thirdPartyValue = formMethods.watch("thirdParty");
-
-  useEffect(() => {
-    animateContainer.current && autoAnimate(animateContainer.current);
-  }, []);
-
-  const lipId = useStore((state) => state.lip?.id);
-  const closeModal = useStore((state) => state.closeModal);
 
   return (
     <>

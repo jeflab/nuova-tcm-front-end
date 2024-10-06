@@ -1,59 +1,26 @@
-import {normalizeErrorMessage} from "@/helpers/errors";
 import {Nullable} from "@/helpers/TypesHelper";
-import {
-  getCitizenships,
-  getCitizenshipsQuery,
-} from "@/services/actions/citizenships";
-import {Debug} from "@/ui/Debug";
+import {citizenshipsOptions} from "@/services/queries/citizenshipsOptions";
 import {useQuery} from "@tanstack/react-query";
-import {useEffect, useState} from "react";
 
 interface NationalityAutocompleteProps {
   alpha2: Nullable<string>;
 }
 
-interface CitizenshipOption {
-  alpha2: string;
-  citizenship: string;
-}
-
 export function CitizenshipText({alpha2}: NationalityAutocompleteProps) {
-  const [isLoadingNationalities, setIsLoadingNationalities] = useState(false);
-  const [error, setError] = useState("");
-  const [nationalities, setNationalities] = useState<CitizenshipOption[]>([]);
+  const {
+    data: citizenships,
+    isPending: isCitizenshipsPending,
+    error: citizenshipsError,
+    isError: isCitizenshipsError,
+  } = useQuery(citizenshipsOptions());
 
-  const citizenships = useQuery({
-    queryKey: ["citizenships"],
-    queryFn: () => getCitizenshipsQuery(),
-  });
-  console.log("citizenships", citizenships);
-
-  useEffect(() => {
-    const getOptions = async () => {
-      setIsLoadingNationalities(true);
-      try {
-        const citizenships = await getCitizenships();
-        if (citizenships?.status !== "success") {
-          setError("Impossibile recuperare l'elenco nazionalità");
-          return;
-        }
-
-        setNationalities(citizenships.citizenships);
-      } catch (error) {
-        setError(normalizeErrorMessage(error));
-      } finally {
-        setIsLoadingNationalities(false);
-      }
-    };
-
-    void getOptions();
-  }, []);
-
-  if (error) {
-    return <span className="alert alert-danger">{error}</span>;
+  if (isCitizenshipsError) {
+    return (
+      <span className="alert alert-danger">{citizenshipsError.message}</span>
+    );
   }
 
-  if (isLoadingNationalities) {
+  if (isCitizenshipsPending) {
     return <span>Caricamento...</span>;
   }
 
@@ -63,7 +30,7 @@ export function CitizenshipText({alpha2}: NationalityAutocompleteProps) {
         return "";
       }
       return (
-        nationalities.find((option) => option.alpha2 === alpha2)?.citizenship ??
+        citizenships.find((option) => option.alpha2 === alpha2)?.citizenship ??
         alpha2
       );
     },
@@ -72,16 +39,11 @@ export function CitizenshipText({alpha2}: NationalityAutocompleteProps) {
         return "";
       }
       return (
-        nationalities.find((option) => option.citizenship === citizenship)
+        citizenships.find((option) => option.citizenship === citizenship)
           ?.alpha2 ?? citizenship
       );
     },
   };
 
-  return (
-    <>
-      <Debug>{citizenships}</Debug>
-      <span>{transform.input(alpha2)}</span>
-    </>
-  );
+  return <span>{transform.input(alpha2)}</span>;
 }
