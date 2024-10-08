@@ -1,6 +1,6 @@
 "use client";
 
-import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {DocumentsChapterDetails} from "@/app/(menu)/(authenticated)/lipsDrawers/documents/DocumentsChapterDetails";
 import {DownloadDocumentsSearchParams} from "@/app/download-doc/schema";
 import {createDocumentUrl} from "@/helpers/createResourcesUrl";
@@ -120,8 +120,8 @@ export function DocumentsManagement() {
   const [chapterModalOpen, setChapterModalOpen] =
     useState<`${"advisor" | "contractor"}-${string}`>();
 
-  const lip = useDrawerStore((state) => state.lip);
-  const closeModal = useDrawerStore((state) => state.closeModal);
+  const lip = useStore((state) => state.lip);
+  const closeModal = useStore((state) => state.closeModal);
 
   if (!lip) {
     return null;

@@ -1,15 +1,15 @@
 import {cns} from "@/helpers/cns";
-import {normalizeErrorMessage} from "@/helpers/errors";
+import {citizenshipsOptions} from "@/services/queries/citizenshipsOptions";
 import {InputField} from "@/ui/form/InputField";
 import {upperCaseWordsNormalizer} from "@/ui/form/normalizers";
 import {faExclamationTriangle} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {useContext, useEffect, useState} from "react";
+import {useQuery} from "@tanstack/react-query";
+import {useContext, useState} from "react";
 import {Highlighter, Typeahead} from "react-bootstrap-typeahead";
 import FormContext from "react-bootstrap/esm/FormContext";
 import {RegisterOptions, useController} from "react-hook-form";
 import invariant from "tiny-invariant";
-import {getCitizenships} from "./actions";
 import {useValidationState} from "./hooks";
 import styles from "./NationalityAutocompleteField.module.scss";
 
@@ -37,9 +37,6 @@ export function CitizenshipAutocompleteField({
   validation,
   validationStyle = true,
 }: NationalityAutocompleteProps) {
-  const [isLoadingNationalities, setIsLoadingNationalities] = useState(false);
-  const [error, setError] = useState("");
-  const [nationalities, setNationalities] = useState<CitizenshipOption[]>([]);
   const [query, setQuery] = useState("");
   const {controlId} = useContext(FormContext);
   const controlName = name || controlId;
@@ -51,32 +48,20 @@ export function CitizenshipAutocompleteField({
 
   const {isInvalid, isValid} = useValidationState(controlName);
 
-  useEffect(() => {
-    const getOptions = async () => {
-      setIsLoadingNationalities(true);
-      try {
-        const citizenships = await getCitizenships();
-        if (citizenships?.status !== "success") {
-          setError("Impossibile recuperare l'elenco nazionalità");
-          return;
-        }
+  const {
+    data: citizenships,
+    isPending: isCitizenshipsPending,
+    error: citizenshipsError,
+    isError: isCitizenshipsError,
+  } = useQuery(citizenshipsOptions());
 
-        setNationalities(citizenships.citizenships);
-      } catch (error) {
-        setError(normalizeErrorMessage(error));
-      } finally {
-        setIsLoadingNationalities(false);
-      }
-    };
-
-    void getOptions();
-  }, []);
-
-  if (error) {
-    return <div className="alert alert-danger">{error}</div>;
+  if (isCitizenshipsError) {
+    return (
+      <div className="alert alert-danger">{citizenshipsError.message}</div>
+    );
   }
 
-  if (isLoadingNationalities) {
+  if (isCitizenshipsPending) {
     return <div>Caricamento...</div>;
   }
 
@@ -86,7 +71,7 @@ export function CitizenshipAutocompleteField({
         return "";
       }
       return (
-        nationalities.find((option) => option.alpha2 === alpha2)?.citizenship ??
+        citizenships.find((option) => option.alpha2 === alpha2)?.citizenship ??
         alpha2
       );
     },
@@ -95,7 +80,7 @@ export function CitizenshipAutocompleteField({
         return "";
       }
       return (
-        nationalities.find((option) => option.citizenship === citizenship)
+        citizenships.find((option) => option.citizenship === citizenship)
           ?.alpha2 ?? citizenship
       );
     },
@@ -136,7 +121,7 @@ export function CitizenshipAutocompleteField({
             readOnly,
           }}
           isInvalid={validationStyle && isInvalid}
-          isLoading={isLoadingNationalities}
+          isLoading={isCitizenshipsPending}
           isValid={validationStyle && isValid}
           labelKey={(option) => (option as CitizenshipOption)?.citizenship}
           onBlur={onBlur}
@@ -151,7 +136,7 @@ export function CitizenshipAutocompleteField({
           onInputChange={(text) => {
             setQuery(text);
           }}
-          options={nationalities}
+          options={citizenships}
           placeholder={placeholder}
           ref={ref}
           renderMenuItemChildren={(option, {text}) => {

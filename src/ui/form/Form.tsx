@@ -20,15 +20,21 @@ interface BaseFormProps<TFieldValues extends FieldValues>
   ) => void | Promise<void>;
 }
 
+interface FormWithDefaultValues<TFieldValues extends FieldValues>
+  extends BaseFormProps<TFieldValues> {
+  defaultValues: DefaultValues<TFieldValues>;
+  formMethods?: never;
+}
+
+interface FormWithFormMethods<TFieldValues extends FieldValues>
+  extends BaseFormProps<TFieldValues> {
+  defaultValues?: never;
+  formMethods: UseFormReturn<TFieldValues>;
+}
+
 type FormProps<TFieldValues extends FieldValues> =
-  | (BaseFormProps<TFieldValues> & {
-      defaultValues: DefaultValues<TFieldValues>;
-      formMethods?: never;
-    })
-  | (BaseFormProps<TFieldValues> & {
-      defaultValues?: never;
-      formMethods: UseFormReturn<TFieldValues>;
-    });
+  | FormWithDefaultValues<TFieldValues>
+  | FormWithFormMethods<TFieldValues>;
 
 export function Form<TFieldValues extends FieldValues>({
   children,

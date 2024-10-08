@@ -26,7 +26,7 @@ export default async function NewLipPage() {
       <ButtonLink href="/lips">
         <FontAwesomeIcon icon={faArrowLeft} /> Torna all'elenco
       </ButtonLink>
-      <Row className="flex-row-reverse">
+      <Row className="flex-row-reverse gy-3">
         <Col md="auto">
           <Nav className={cns("flex-column", styles.connectedList)}>
             {drawers.map(({name, title, shortTitle}) => (

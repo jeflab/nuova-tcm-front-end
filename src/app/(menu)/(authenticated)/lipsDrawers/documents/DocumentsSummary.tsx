@@ -1,6 +1,6 @@
 "use client";
 
-import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {CompanyPrivacy} from "@/app/(menu)/(authenticated)/lipsDrawers/CompanyPrivacy";
 import {createDocumentUrl} from "@/helpers/createResourcesUrl";
 import {validateDen} from "@/helpers/lip-validator";
@@ -104,8 +104,8 @@ const eSignsCount = (
 
 export function DocumentsSummary() {
   const [isConsentCheckOpen, setIsConsentCheckOpen] = useState(false);
-  const lip = useDrawerStore((state) => state.lip);
-  const denValid = useDrawerStore((state) => validateDen(state.lip?.den));
+  const lip = useStore((state) => state.lip);
+  const denValid = useStore((state) => validateDen(state.lip?.den));
 
   if (!lip || !denValid) {
     return null;

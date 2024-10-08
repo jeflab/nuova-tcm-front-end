@@ -1,16 +1,16 @@
 "use client";
 
-import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 
 export function ContractorFiscalCodeSummary() {
-  const contractorAlreadyRegistered = useDrawerStore(
+  const contractorAlreadyRegistered = useStore(
     (state) => state.preliminaryData.contractorAlreadyRegistered,
   );
 
-  const contractorFiscalCodeDataPreliminary = useDrawerStore(
+  const contractorFiscalCodeDataPreliminary = useStore(
     (state) => state.preliminaryData.contractorPersonalData,
   );
-  const contractorFiscalCodeDataLip = useDrawerStore(
+  const contractorFiscalCodeDataLip = useStore(
     (state) => state.lip?.contractor?.fiscalCode,
   );
 

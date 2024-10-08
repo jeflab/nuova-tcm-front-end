@@ -1,7 +1,7 @@
 "use client";
 
 import {updateQuotation} from "@/app/(menu)/(authenticated)/lips/[id]/actions";
-import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {YesNoAnswer} from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
 import {getQuote} from "@/app/(menu)/(authenticated)/quoter/actions";
 import {Advantages} from "@/app/(menu)/(authenticated)/quoter/Advantages";
@@ -34,14 +34,14 @@ export function QuoteForm() {
   const [isSaving, setIsSaving] = useState(false);
   const [firstTry, setFirstTry] = useState(true);
 
-  const quoteData = useDrawerStore((state) => state.lip?.quotation);
-  const contractorBirthDate = useDrawerStore(
+  const quoteData = useStore((state) => state.lip?.quotation);
+  const contractorBirthDate = useStore(
     (state) => state.lip?.contractor?.birthDate,
   );
-  const income = useDrawerStore((state) => state.lip?.den?.income);
-  const lipId = useDrawerStore((state) => state.lip?.id);
-  const closeModal = useDrawerStore((state) => state.closeModal);
-  const isHealthQuestionnaireCompiled = useDrawerStore(
+  const income = useStore((state) => state.lip?.den?.income);
+  const lipId = useStore((state) => state.lip?.id);
+  const closeModal = useStore((state) => state.closeModal);
+  const isHealthQuestionnaireCompiled = useStore(
     (state) => state.lip?.healthcareQuestionnaire,
   );
 

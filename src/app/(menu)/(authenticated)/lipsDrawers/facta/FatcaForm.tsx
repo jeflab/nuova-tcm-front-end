@@ -1,6 +1,6 @@
 "use client";
 
-import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {YesNoAnswer} from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {CheckGroup} from "@/ui/form/CheckGroup";
@@ -45,8 +45,8 @@ const fatcaDefaultValues = ({
 });
 
 export function FatcaForm() {
-  const fatcaData = useDrawerStore((state) => state.preliminaryData.fatca);
-  const italianResidencyData = useDrawerStore(
+  const fatcaData = useStore((state) => state.preliminaryData.fatca);
+  const italianResidencyData = useStore(
     (state) => state.preliminaryData.italianResidency,
   );
 
@@ -58,8 +58,8 @@ export function FatcaForm() {
     }),
   });
 
-  const closeModal = useDrawerStore((state) => state.closeModal);
-  const updatePreliminaryData = useDrawerStore(
+  const closeModal = useStore((state) => state.closeModal);
+  const updatePreliminaryData = useStore(
     (state) => state.updatePreliminaryData,
   );
 

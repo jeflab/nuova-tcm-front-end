@@ -1,7 +1,7 @@
 "use client";
 
 import {updatePaymentData} from "@/app/(menu)/(authenticated)/lips/[id]/actions";
-import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {
   PaymentMethods,
   paymentMethodsOptions,
@@ -49,13 +49,11 @@ const paymentDefaultValues = (paymentData?: Lip["payment"]) => ({
 export type PaymentFormValues = ReturnType<typeof paymentDefaultValues>;
 
 export function PaymentForm() {
-  const lipId = useDrawerStore((state) => state.lip?.id);
-  const birthDate = useDrawerStore((state) => state.lip?.contractor.birthDate)!;
-  const contractorName = useDrawerStore((state) => state.lip?.contractor.name);
-  const contractorSurname = useDrawerStore(
-    (state) => state.lip?.contractor.surname,
-  );
-  const paymentData = useDrawerStore((state) => state.lip?.payment);
+  const lipId = useStore((state) => state.lip?.id);
+  const birthDate = useStore((state) => state.lip?.contractor.birthDate)!;
+  const contractorName = useStore((state) => state.lip?.contractor.name);
+  const contractorSurname = useStore((state) => state.lip?.contractor.surname);
+  const paymentData = useStore((state) => state.lip?.payment);
 
   const formMethods = useForm({
     mode: "onChange",
@@ -69,9 +67,9 @@ export function PaymentForm() {
     },
   });
 
-  const closeModal = useDrawerStore((state) => state.closeModal);
-  const premium = useDrawerStore((state) => state.lip?.quotation?.premium)!;
-  const extraPremium = useDrawerStore(
+  const closeModal = useStore((state) => state.closeModal);
+  const premium = useStore((state) => state.lip?.quotation?.premium)!;
+  const extraPremium = useStore(
     (state) => state.lip?.quotation?.underwriting?.extraPremium?.value,
   );
   const realPremium = extraPremium ?? premium;

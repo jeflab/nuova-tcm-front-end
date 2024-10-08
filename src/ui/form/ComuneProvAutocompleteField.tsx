@@ -9,7 +9,9 @@ import {
   faSpinner,
 } from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {useCallback, useContext, useState} from "react";
+import useDebouncedState from "@restart/hooks/useDebouncedState";
+import {keepPreviousData, useQuery} from "@tanstack/react-query";
+import {useContext, useState} from "react";
 import {AsyncTypeahead, Highlighter} from "react-bootstrap-typeahead";
 import FormContext from "react-bootstrap/FormContext";
 import {RegisterOptions, useController, useFormContext} from "react-hook-form";
@@ -30,6 +32,8 @@ interface ComuneProvAutocompleteFiledProps {
   validationStyle?: boolean;
 }
 
+const oneDayInMs = 1000 * 60 * 60 * 24;
+
 export function ComuneProvAutocompleteField({
   disabled,
   name,
@@ -41,28 +45,36 @@ export function ComuneProvAutocompleteField({
   validation,
   validationStyle = true,
 }: ComuneProvAutocompleteFiledProps) {
-  const [isLoadingCities, setIsLoadingCities] = useState(false);
-  const [cities, setCities] = useState<City[]>([]);
   const {setValue} = useFormContext();
-  const [query, setQuery] = useState("");
   const {controlId} = useContext(FormContext);
   const controlName = name || controlId;
   invariant(controlName, "name or controlId is required");
 
-  const {
-    field: {onBlur, onChange, value, ref},
-  } = useController({name: `${controlName}.city`, rules: validation});
-
   const {isInvalid, isValid} = useValidationState(controlName);
 
-  const handleSearch = useCallback(
-    async (query: string) => {
-      setIsLoadingCities(true);
-      setCities(await getCities(query, {onlyExisting, onlyItalian}));
-      setIsLoadingCities(false);
+  const {
+    field: {onBlur, onChange, value, ref},
+    fieldState: {isTouched, isDirty},
+  } = useController({name: `${controlName}.city`, rules: validation});
+  const {
+    field: {value: provinceValue},
+  } = useController({name: `${controlName}.province`});
+
+  const [query, setQuery] = useDebouncedState(value, 300);
+  const [isEnabled, setIsEnabled] = useState(false);
+
+  const {data: cities = [], isPending: isCitiesPending} = useQuery({
+    queryKey: ["cities", query, onlyExisting, onlyItalian] as const,
+    queryFn: ({queryKey: [_key, query, onlyExisting, onlyItalian]}) => {
+      console.log("carico città da react query " + query);
+      return getCities(query, {onlyExisting, onlyItalian});
     },
-    [onlyExisting, onlyItalian],
-  );
+    staleTime: oneDayInMs,
+    placeholderData: keepPreviousData,
+    enabled: isEnabled,
+  });
+
+  console.log({isTouched, isDirty, isEnabled});
 
   return (
     <div className="hstack gap-3">
@@ -79,7 +91,11 @@ export function ComuneProvAutocompleteField({
           className={styles.cityInputWrapper}
           defaultInputValue={value}
           disabled={disabled}
-          options={cities}
+          options={
+            cities.length > 0
+              ? cities
+              : [{city: value, province: provinceValue}]
+          }
           placeholder={placeholder}
           emptyLabel={
             <span className="dropdown-item-text text-center">
@@ -103,7 +119,7 @@ export function ComuneProvAutocompleteField({
               città in corso...
             </span>
           }
-          isLoading={isLoadingCities}
+          isLoading={isCitiesPending}
           highlightOnlyResult
           onBlur={onBlur}
           onChange={(selected) => {
@@ -123,6 +139,9 @@ export function ComuneProvAutocompleteField({
           onInputChange={(text) => {
             setQuery(text);
             setValue?.(`${controlName}.province`, "");
+          }}
+          onFocus={() => {
+            setIsEnabled(true);
           }}
           inputProps={{
             name: `${controlName}.city`,
@@ -149,7 +168,9 @@ export function ComuneProvAutocompleteField({
             upperCaseWordsNormalizer((option as City).city)
           }
           flip
-          onSearch={handleSearch}
+          onSearch={(text) => {
+            setQuery(text);
+          }}
           useCache={false}
         />
       )}

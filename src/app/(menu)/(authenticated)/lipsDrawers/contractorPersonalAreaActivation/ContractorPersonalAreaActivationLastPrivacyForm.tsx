@@ -1,6 +1,6 @@
 "use client";
 
-import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {cns} from "@/helpers/cns";
 import {PDFType} from "@/models/entities/esign";
 import {Privacy} from "@/models/entities/privacy";
@@ -29,8 +29,8 @@ export function ContractorPersonalAreaActivationLastPrivacyForm({
     mode: "onChange",
   });
   const [esignModalOpen, setEsignModalOpen] = useState(false);
-  const lip = useDrawerStore((state) => state.lip);
-  const closeModal = useDrawerStore((state) => state.closeModal);
+  const lip = useStore((state) => state.lip);
+  const closeModal = useStore((state) => state.closeModal);
 
   return (
     <Form

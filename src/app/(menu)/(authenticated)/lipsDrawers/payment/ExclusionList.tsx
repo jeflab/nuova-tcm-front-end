@@ -2,7 +2,7 @@ import {complementaryCoverages} from "@/app/(menu)/(authenticated)/lipsDrawers/q
 import {Coverage} from "@/app/(menu)/(authenticated)/lipsDrawers/quote/Coverage";
 import {Lip, Underwriting} from "@/models/entities/lip";
 import {Col, Row} from "react-bootstrap";
-import {useDrawerStore} from "../../lips/[id]/store";
+import {useStore} from "../../lips/[id]/store";
 
 interface ExclusionListProps {
   exclusions: Underwriting["exclusions"];
@@ -28,7 +28,7 @@ export function getExcludedCoverages(
 }
 
 export function ExclusionList({exclusions}: ExclusionListProps) {
-  const quoteData = useDrawerStore((state) => state.lip?.quotation);
+  const quoteData = useStore((state) => state.lip?.quotation);
   if (!quoteData) {
     return null;
   }

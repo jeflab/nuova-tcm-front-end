@@ -1,7 +1,7 @@
 "use client";
 
 import {updateHealthQuestionnaire} from "@/app/(menu)/(authenticated)/lips/[id]/actions";
-import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {
   SportRiskIndex,
   sportRiskIndexOptions,
@@ -96,15 +96,15 @@ export type HealthQuestionnaireFormValues = ReturnType<
 const tableBgTransparent = {"--bs-table-bg": "transparent"} as CSSProperties;
 
 export function HealthQuestionnaireForm() {
-  const healthQuestionnaireData = useDrawerStore(
+  const healthQuestionnaireData = useStore(
     (state) => state.lip?.healthcareQuestionnaire,
   );
-  const lipId = useDrawerStore((state) => state.lip?.id);
-  const closeModal = useDrawerStore((state) => state.closeModal);
-  const hasCancerCoverage = useDrawerStore(
+  const lipId = useStore((state) => state.lip?.id);
+  const closeModal = useStore((state) => state.closeModal);
+  const hasCancerCoverage = useStore(
     (state) => state.lip?.quotation?.cancer.enabled,
   );
-  const hasTpiOrTpdCoverage = useDrawerStore(
+  const hasTpiOrTpdCoverage = useStore(
     (state) =>
       state.lip?.quotation?.tpd.enabled || state.lip?.quotation?.tpi.enabled,
   );

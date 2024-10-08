@@ -1,18 +1,18 @@
 import {DrawerName} from "@/app/(menu)/(authenticated)/lips/[id]/drawers";
 import {validateDen} from "@/helpers/lip-validator";
+import {Account} from "@/models/account";
 import {Lip} from "@/models/entities/lip";
 import {PreliminaryData} from "@/models/preliminaryData";
 import {DrawerState, presetButtons} from "@/ui/drawer/types";
-import {TableContext} from "@/ui/table/react-table";
 import {create} from "zustand";
 import {immer} from "zustand/middleware/immer";
 
 interface State {
+  account?: Account;
   drawerStates: Partial<Record<DrawerName, DrawerState>>;
   lip: Lip | null;
   modalOpen: DrawerName | null;
   preliminaryData: PreliminaryData;
-  tableContext?: TableContext;
 }
 interface Actions {
   closeModal: () => void;
@@ -20,7 +20,7 @@ interface Actions {
   resetState: () => void;
   updateLip: (lip: Lip | null) => void;
   updatePreliminaryData: (data: Partial<PreliminaryData> | null) => void;
-  updateTableContext: (tableContext?: TableContext) => void;
+  updateAccount: (account: Account) => void;
 }
 
 const initialState: State = {
@@ -30,7 +30,7 @@ const initialState: State = {
   preliminaryData: {},
 };
 
-function createDrawerState(state: State & Actions) {
+function createState(state: State & Actions) {
   // Dati preliminari
   const isPreliminary = !state.lip;
   state.drawerStates = {...initialState.drawerStates};
@@ -349,7 +349,7 @@ function createDrawerState(state: State & Actions) {
   }
 }
 
-export const useDrawerStore = create<State & Actions>()(
+export const useStore = create<State & Actions>()(
   immer((set) => ({
     ...initialState,
     openModal: (id) =>
@@ -370,16 +370,16 @@ export const useDrawerStore = create<State & Actions>()(
         } else {
           state.preliminaryData = initialState.preliminaryData;
         }
-        createDrawerState(state);
+        createState(state);
       }),
     updateLip: (lip) =>
       set((state) => {
         state.lip = lip;
-        createDrawerState(state);
+        createState(state);
       }),
-    updateTableContext: (tableContext?: TableContext) =>
+    updateAccount: (account: Account | undefined) =>
       set((state) => {
-        state.tableContext = tableContext;
+        state.account = account;
       }),
     resetState: () => {
       set(initialState);

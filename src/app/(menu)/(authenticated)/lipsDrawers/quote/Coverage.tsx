@@ -1,4 +1,4 @@
-import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {complementaryCoverages} from "@/app/(menu)/(authenticated)/lipsDrawers/quote/ComplementaryCoverages";
 import {getCoverageDuration} from "@/app/(menu)/(authenticated)/quoter/helpers";
 import {Currency} from "@/ui/Currency";
@@ -12,7 +12,7 @@ interface CoverageProps {
 }
 
 export function Coverage({complementaryCoverage, enabled}: CoverageProps) {
-  const quoteData = useDrawerStore((state) => state.lip?.quotation);
+  const quoteData = useStore((state) => state.lip?.quotation);
   const coverageData = quoteData?.[complementaryCoverage.key];
 
   if (!coverageData) {

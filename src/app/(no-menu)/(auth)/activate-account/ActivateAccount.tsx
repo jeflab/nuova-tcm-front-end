@@ -3,8 +3,8 @@
 import {SetPasswordForm} from "@/app/(no-menu)/(auth)/password-reset/SetPasswordForm";
 import {backendUrl} from "@/services/const";
 import {ButtonLink} from "@/ui/ButtonLink";
-import autoAnimate from "@formkit/auto-animate";
-import {useEffect, useRef, useState} from "react";
+import {useAutoAnimate} from "@formkit/auto-animate/react";
+import {useState} from "react";
 import {Alert, Card} from "react-bootstrap";
 
 interface ActivateAccountParams {
@@ -13,11 +13,8 @@ interface ActivateAccountParams {
 }
 
 export function ActivateAccount(props: ActivateAccountParams) {
-  const animateContainer = useRef<HTMLDivElement>(null);
+  const [animateContainer] = useAutoAnimate();
   const [passwordSet, setPasswordSet] = useState<boolean>(false);
-  useEffect(() => {
-    animateContainer.current && autoAnimate(animateContainer.current);
-  }, []);
 
   return (
     <div ref={animateContainer}>

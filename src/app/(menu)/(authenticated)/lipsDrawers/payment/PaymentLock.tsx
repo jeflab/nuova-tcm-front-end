@@ -1,6 +1,6 @@
 "use client";
 
-import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {PDFType} from "@/models/entities/esign";
 import {backendUrl, Tags} from "@/services/const";
 import {ButtonLink} from "@/ui/ButtonLink";
@@ -26,11 +26,11 @@ export function PaymentLock({
 }: PaymentLockProps) {
   const [isUnderwritingOpen, setIsUnderwritingOpen] = useState(false);
 
-  const isPaymentLocked = useDrawerStore(
+  const isPaymentLocked = useStore(
     (state) => state.drawerStates.payment?.isLocked,
   );
-  const lip = useDrawerStore((state) => state.lip);
-  const lipState = useDrawerStore((state) => state.lip?.lipStates);
+  const lip = useStore((state) => state.lip);
+  const lipState = useStore((state) => state.lip?.lipStates);
 
   if (!isPaymentLocked || !lipState) {
     return null;
