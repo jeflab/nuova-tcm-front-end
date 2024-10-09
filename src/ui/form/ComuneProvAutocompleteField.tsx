@@ -54,7 +54,6 @@ export function ComuneProvAutocompleteField({
 
   const {
     field: {onBlur, onChange, value, ref},
-    fieldState: {isTouched, isDirty},
   } = useController({name: `${controlName}.city`, rules: validation});
   const {
     field: {value: provinceValue},
@@ -66,15 +65,12 @@ export function ComuneProvAutocompleteField({
   const {data: cities = [], isPending: isCitiesPending} = useQuery({
     queryKey: ["cities", query, onlyExisting, onlyItalian] as const,
     queryFn: ({queryKey: [_key, query, onlyExisting, onlyItalian]}) => {
-      console.log("carico città da react query " + query);
       return getCities(query, {onlyExisting, onlyItalian});
     },
     staleTime: oneDayInMs,
     placeholderData: keepPreviousData,
     enabled: isEnabled,
   });
-
-  console.log({isTouched, isDirty, isEnabled});
 
   return (
     <div className="hstack gap-3">

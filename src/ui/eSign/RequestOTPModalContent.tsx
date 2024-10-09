@@ -8,7 +8,7 @@ import {faRotate, faSpinner, faXmark} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import useInterval from "@restart/hooks/useInterval";
 import useMountEffect from "@restart/hooks/useMountEffect";
-import {useMutation, useQuery} from "@tanstack/react-query";
+import {useMutation} from "@tanstack/react-query";
 import {useState} from "react";
 import {Alert, Button} from "react-bootstrap";
 
@@ -46,6 +46,7 @@ export function RequestOTPModalContent<TPayload>({
     isPending: isCreatedFEATransactionPending,
     isError: isCreatedFEATransactionError,
   } = useMutation({
+    mutationKey: ["createFEATransaction", lipId],
     mutationFn: async (data: {contractorId?: number; lipId: number}) => {
       console.log("Calling createFEATransaction from useQuery");
       setCounter(60);
@@ -67,9 +68,11 @@ export function RequestOTPModalContent<TPayload>({
   });
 
   useMountEffect(() => {
-    if (isCreatedFEATransactionIdle) {
+    // Uso un timeout per evitare che la richiesta venga fatta più volte
+    const timeout = setTimeout(() => {
       requestOTP({contractorId: personalData?.id, lipId: lipId});
-    }
+    }, 100);
+    return () => clearTimeout(timeout);
   });
 
   useInterval(
