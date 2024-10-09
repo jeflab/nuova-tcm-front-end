@@ -322,6 +322,7 @@ interface UpdateQuotationParams {
   cancer: {enabled: boolean; coverage: string};
   tpd: {enabled: boolean; coverage: string};
   premium: number;
+  originalPremium: number;
 }
 export async function updateQuotation(
   formData: UpdateQuotationParams,
@@ -347,7 +348,8 @@ export async function updateQuotation(
       enabled: formData.tpd.enabled,
       coverage: parseInt(formData.tpd.coverage || "0", 10),
     },
-    premium: formData.premium,
+    premium: Math.round(formData.premium * 100) / 100,
+    originalPremium: formData.originalPremium,
   };
 
   invalidateTag(Tags.getLip(lipId));

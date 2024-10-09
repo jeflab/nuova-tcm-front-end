@@ -30,7 +30,10 @@ import {useForm} from "react-hook-form";
 import invariant from "tiny-invariant";
 
 export function QuoteForm() {
-  const [premium, setPremium] = useState<number>();
+  const [quotation, setQuotation] = useState<{
+    premium: number;
+    originalPremium: number;
+  }>();
   const [isSaving, setIsSaving] = useState(false);
   const [firstTry, setFirstTry] = useState(true);
 
@@ -106,19 +109,19 @@ export function QuoteForm() {
       };
     }
 
-    setPremium(clientResponse.quotazione.premium);
+    setQuotation(clientResponse.quotazione);
     setFirstTry(false);
   };
 
   const handleSave = async () => {
     setIsSaving(true);
-    invariant(premium, "premium required");
+    invariant(quotation, "premium required");
     invariant(lipId, "lipId required");
 
     const updateQuotationResponse = await updateQuotation(
       {
         ...formMethods.getValues(),
-        premium,
+        ...quotation,
       },
       lipId,
       tpiTpdCancerDirty,
@@ -149,7 +152,7 @@ export function QuoteForm() {
           className="vstack gap-3"
           onChange={() => {
             if (formMethods.formState.isSubmitted) {
-              setPremium(undefined);
+              setQuotation(undefined);
             }
           }}
         >
@@ -157,7 +160,7 @@ export function QuoteForm() {
             <InsuredData blockBirthDate />
             <Coverages />
             <Advantages
-              premium={premium ?? 0}
+              premium={quotation?.premium ?? 0}
               duration={getCoverageDuration(birthDate)}
             />
             <ComplementaryCoverages />
@@ -182,11 +185,11 @@ export function QuoteForm() {
         <div className="me-auto">
           {formMethods.formState.isSubmitting ? (
             "Calcolo in corso..."
-          ) : premium ? (
+          ) : quotation ? (
             <>
               Premio mensile:{" "}
               <Currency className="h4 mb-0 d-inline-block">
-                {premium / 12}
+                {quotation.premium / 12}
               </Currency>
             </>
           ) : firstTry ? (
@@ -195,13 +198,13 @@ export function QuoteForm() {
             "Clicca nuovamente calcolo preventivo per aggiornare il preventivo."
           )}
         </div>
-        {premium ? (
+        {quotation ? (
           <Button
             type="button"
             variant="cancel"
             onClick={() => {
               formMethods.reset();
-              setPremium(undefined);
+              setQuotation(undefined);
             }}
             className={styles.rotateOnFocus}
           >
@@ -214,7 +217,7 @@ export function QuoteForm() {
             Annulla
           </Button>
         )}
-        {premium ? (
+        {quotation ? (
           <Button type="button" variant="primary" onClick={handleSave}>
             {isSaving ? (
               <FontAwesomeIcon icon={faSpinner} className="fa-spin me-2" />
