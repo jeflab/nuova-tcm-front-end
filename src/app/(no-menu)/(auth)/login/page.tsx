@@ -1,3 +1,4 @@
+import {HelpLink} from "@/app/(menu)/HelpLink";
 import {isLoggedIn} from "@/app/(no-menu)/(auth)/actions";
 import {ButtonLink} from "@/ui/ButtonLink";
 import {redirect} from "next/navigation";
@@ -5,6 +6,8 @@ import {Card, CardBody} from "react-bootstrap";
 import {LoginForm} from "./LoginForm";
 import styles from "./page.module.scss";
 import CenterLogoContent from "@/ui/CenterLogoContent";
+import {faLifeRing} from "@fortawesome/pro-duotone-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 interface LoginPageProps {
   searchParams: {
@@ -31,6 +34,9 @@ export default async function LoginPage({searchParams}: LoginPageProps) {
           </ButtonLink>
         </CardBody>
       </Card>
+      <div className="text-center">
+        <HelpLink fiscalCode="LOGIN" label="Hai bisogno di assistenza?" />
+      </div>
     </CenterLogoContent>
   );
 }
