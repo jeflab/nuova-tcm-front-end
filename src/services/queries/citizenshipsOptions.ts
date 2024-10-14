@@ -1,5 +1,3 @@
-"use client";
-
 import {queryOptions} from "@tanstack/react-query";
 import {getCitizenships} from "../actions/citizenships";
 
@@ -17,5 +15,6 @@ export function citizenshipsOptions() {
       return citizenships.citizenships;
     },
     staleTime: oneDayInMs,
+    retry: 5,
   });
 }

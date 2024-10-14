@@ -2,7 +2,11 @@ import {cns} from "@/helpers/cns";
 import {citizenshipsOptions} from "@/services/queries/citizenshipsOptions";
 import {InputField} from "@/ui/form/InputField";
 import {upperCaseWordsNormalizer} from "@/ui/form/normalizers";
-import {faExclamationTriangle} from "@fortawesome/pro-duotone-svg-icons";
+import {
+  faArrowsRotate,
+  faExclamationTriangle,
+  faSpinner,
+} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {useQuery} from "@tanstack/react-query";
 import {useContext, useState} from "react";
@@ -12,6 +16,7 @@ import {RegisterOptions, useController} from "react-hook-form";
 import invariant from "tiny-invariant";
 import {useValidationState} from "./hooks";
 import styles from "./NationalityAutocompleteField.module.scss";
+import {Button} from "react-bootstrap";
 
 interface NationalityAutocompleteProps {
   disabled?: boolean;
@@ -53,16 +58,37 @@ export function CitizenshipAutocompleteField({
     isPending: isCitizenshipsPending,
     error: citizenshipsError,
     isError: isCitizenshipsError,
+    refetch: refetchCitizenships,
+    isRefetching: isCitizenshipsRefetching,
   } = useQuery(citizenshipsOptions());
 
   if (isCitizenshipsError) {
     return (
-      <div className="alert alert-danger">{citizenshipsError.message}</div>
+      <div className="alert alert-danger mb-0">
+        {citizenshipsError.message}
+        <Button
+          size="sm"
+          variant="link"
+          onClick={() => refetchCitizenships()}
+          title="Riprova"
+          className="alert-link"
+        >
+          <FontAwesomeIcon
+            icon={faArrowsRotate}
+            className={cns(isCitizenshipsRefetching && "fa-spin")}
+          ></FontAwesomeIcon>
+        </Button>
+      </div>
     );
   }
 
   if (isCitizenshipsPending) {
-    return <div>Caricamento...</div>;
+    return (
+      <span>
+        <FontAwesomeIcon icon={faSpinner} className="fa-spin me-1" />
+        Caricamento...
+      </span>
+    );
   }
 
   const transform = {
