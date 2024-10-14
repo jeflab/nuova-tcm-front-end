@@ -6,8 +6,6 @@ import {Card, CardBody} from "react-bootstrap";
 import {LoginForm} from "./LoginForm";
 import styles from "./page.module.scss";
 import CenterLogoContent from "@/ui/CenterLogoContent";
-import {faLifeRing} from "@fortawesome/pro-duotone-svg-icons";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 interface LoginPageProps {
   searchParams: {
