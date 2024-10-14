@@ -16,10 +16,10 @@ interface LoginPageProps {
 export default async function LoginPage({searchParams}: LoginPageProps) {
   if (await isLoggedIn()) {
     if (searchParams.next) {
-      return redirect(searchParams.next);
+      redirect(searchParams.next);
     }
 
-    return redirect("/");
+    redirect("/");
   }
 
   return (
