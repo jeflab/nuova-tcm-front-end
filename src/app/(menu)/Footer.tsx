@@ -25,8 +25,8 @@ export async function Footer() {
 
   return (
     <AppContainer>
-      <div className="d-flex flex-wrap gap-3 mb-3 flex-column flex-sm-row">
-        <div className="d-flex gap-2 align-items-start align-items-sm-center flex-column flex-sm-row">
+      <div className="d-flex flex-wrap gap-3 mb-3 flex-column flex-md-row">
+        <div className="d-flex gap-2 align-items-start align-items-md-center flex-column flex-md-row">
           <span>
             <FontAwesomeIcon icon={faCopyright} className="text-primary" /> 2024
             {currentYear > 2024 ? ` - ${currentYear}` : ""} Smart Broker Space
@@ -41,8 +41,9 @@ export async function Footer() {
                 }}
               />
             </>
-          ) : null}{" "}
-          | <HelpLink className="footer-link" fiscalCode={fiscalCode} />
+          ) : null}
+          <span className={styles.divider}> | </span>
+          <HelpLink className="footer-link" fiscalCode={fiscalCode} />
         </div>
         <small className="ms-auto text-muted">Versione {getVersion()}</small>
       </div>
