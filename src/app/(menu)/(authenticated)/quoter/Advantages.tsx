@@ -67,7 +67,7 @@ export function Advantages({
                   overlay={
                     <Tooltip id="advantages-info">
                       La cifra mostrata è una stima indicativa. Chiediamo di
-                      rivolgervi al vostro consulente fiscale o commercialista
+                      rivolgervi al vostro Consulente fiscale o commercialista
                       di fiducia per ottenere la cifra esatta
                     </Tooltip>
                   }

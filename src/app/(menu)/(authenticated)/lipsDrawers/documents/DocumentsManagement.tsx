@@ -210,7 +210,7 @@ export function DocumentsManagement() {
               <div className={styles.docTableActions}>
                 <>
                   <div>
-                    <strong>Firme consulente:</strong>
+                    <strong>Firme Consulente:</strong>
                     <span className="d-block d-sm-none">
                       {partialAdvisorESign.length} di {totalAdvisorESign.length}
                       {partialAdvisorESign.length ===
