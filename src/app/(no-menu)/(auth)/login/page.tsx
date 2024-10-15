@@ -6,6 +6,7 @@ import {Card, CardBody} from "react-bootstrap";
 import {LoginForm} from "./LoginForm";
 import styles from "./page.module.scss";
 import CenterLogoContent from "@/ui/CenterLogoContent";
+import * as Sentry from "@sentry/nextjs";
 
 interface LoginPageProps {
   searchParams: {
@@ -15,6 +16,15 @@ interface LoginPageProps {
 
 export default async function LoginPage({searchParams}: LoginPageProps) {
   if (await isLoggedIn()) {
+    Sentry.addBreadcrumb({
+      message: "User is already logged in",
+      category: "auth",
+      data: {
+        searchParams,
+        redirectTo: searchParams.next ?? "/",
+      },
+    });
+
     if (searchParams.next) {
       redirect(searchParams.next);
     }
