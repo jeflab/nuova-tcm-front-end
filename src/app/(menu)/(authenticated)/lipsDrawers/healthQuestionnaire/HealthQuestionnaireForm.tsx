@@ -224,9 +224,9 @@ export function HealthQuestionnaireForm() {
             {weightValid && heightValid && !isImcInRange && (
               <Col className="d-flex" xs={12}>
                 <Alert variant="warning" className="mb-0 w-100">
-                  In virtù delle informazioni relative ad altezza e peso fornite
-                  qui sopra, la proposta di Polizza sarà soggetta ad ulteriori
-                  approfondimenti.
+                  L'indice di massa corporea (IMC), è al di fuori dai parametri
+                  accettabili per l'emissione diretta. La polizza verrà
+                  sottoposta ad underwriting.
                 </Alert>
               </Col>
             )}
