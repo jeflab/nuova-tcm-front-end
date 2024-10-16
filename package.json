@@ -18,7 +18,7 @@
     "codice-fiscale-js": "^2.3.20",
     "core-js": "^3.38.1",
     "date-fns": "^4.0.0",
-    "eslint-plugin-react-compiler": "^0.0.0-experimental-45ae4c3-20241011",
+    "eslint-plugin-react-compiler": "^0.0.0-experimental-605e95c-20241015",
     "flat": "^6.0.1",
     "ibantools": "^4.5.0",
     "immer": "^10.0.3",
