@@ -1,3 +1,4 @@
+import {HelpLink} from "@/app/(menu)/HelpLink";
 import {isLoggedIn} from "@/app/(no-menu)/(auth)/actions";
 import {ButtonLink} from "@/ui/ButtonLink";
 import {redirect} from "next/navigation";
@@ -5,6 +6,7 @@ import {Card, CardBody} from "react-bootstrap";
 import {LoginForm} from "./LoginForm";
 import styles from "./page.module.scss";
 import CenterLogoContent from "@/ui/CenterLogoContent";
+import * as Sentry from "@sentry/nextjs";
 
 interface LoginPageProps {
   searchParams: {
@@ -14,11 +16,20 @@ interface LoginPageProps {
 
 export default async function LoginPage({searchParams}: LoginPageProps) {
   if (await isLoggedIn()) {
+    Sentry.addBreadcrumb({
+      message: "User is already logged in",
+      category: "auth",
+      data: {
+        searchParams,
+        redirectTo: searchParams.next ?? "/",
+      },
+    });
+
     if (searchParams.next) {
-      return redirect(searchParams.next);
+      redirect(searchParams.next);
     }
 
-    return redirect("/");
+    redirect("/");
   }
 
   return (
@@ -31,6 +42,9 @@ export default async function LoginPage({searchParams}: LoginPageProps) {
           </ButtonLink>
         </CardBody>
       </Card>
+      <div className="text-center">
+        <HelpLink fiscalCode="LOGIN" label="Hai bisogno di assistenza?" />
+      </div>
     </CenterLogoContent>
   );
 }

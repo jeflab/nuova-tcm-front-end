@@ -17,10 +17,10 @@ import {
 import {faDollar} from "@fortawesome/pro-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Col, Row} from "react-bootstrap";
-import {useDrawerStore} from "../../lips/[id]/store";
+import {useStore} from "../../lips/[id]/store";
 
 export function QuoteSummary() {
-  const quoteData = useDrawerStore((state) => state.lip?.quotation);
+  const quoteData = useStore((state) => state.lip?.quotation);
 
   if (!quoteData) {
     return null;

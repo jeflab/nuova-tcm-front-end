@@ -1,49 +1,51 @@
-import {normalizeErrorMessage} from "@/helpers/errors";
+import {cns} from "@/helpers/cns";
 import {Nullable} from "@/helpers/TypesHelper";
-import {getCitizenships} from "@/ui/form/actions";
-import {useEffect, useState} from "react";
+import {citizenshipsOptions} from "@/services/queries/citizenshipsOptions";
+import {faArrowsRotate, faSpinner} from "@fortawesome/pro-duotone-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {useQuery} from "@tanstack/react-query";
+import {Button} from "react-bootstrap";
 
 interface NationalityAutocompleteProps {
   alpha2: Nullable<string>;
 }
 
-interface CitizenshipOption {
-  alpha2: string;
-  citizenship: string;
-}
-
 export function CitizenshipText({alpha2}: NationalityAutocompleteProps) {
-  const [isLoadingNationalities, setIsLoadingNationalities] = useState(false);
-  const [error, setError] = useState("");
-  const [nationalities, setNationalities] = useState<CitizenshipOption[]>([]);
+  const {
+    data: citizenships,
+    isPending: isCitizenshipsPending,
+    isRefetching: isCitizenshipsRefetching,
+    error: citizenshipsError,
+    isError: isCitizenshipsError,
+    refetch: refetchCitizenships,
+  } = useQuery(citizenshipsOptions());
 
-  useEffect(() => {
-    const getOptions = async () => {
-      setIsLoadingNationalities(true);
-      try {
-        const citizenships = await getCitizenships();
-        if (citizenships?.status !== "success") {
-          setError("Impossibile recuperare l'elenco nazionalità");
-          return;
-        }
-
-        setNationalities(citizenships.citizenships);
-      } catch (error) {
-        setError(normalizeErrorMessage(error));
-      } finally {
-        setIsLoadingNationalities(false);
-      }
-    };
-
-    void getOptions();
-  }, []);
-
-  if (error) {
-    return <span className="alert alert-danger">{error}</span>;
+  if (isCitizenshipsError) {
+    return (
+      <span className="text-danger">
+        {citizenshipsError.message}
+        <Button
+          size="sm"
+          variant="link"
+          onClick={() => refetchCitizenships()}
+          title="Riprova"
+        >
+          <FontAwesomeIcon
+            icon={faArrowsRotate}
+            className={cns(isCitizenshipsRefetching && "fa-spin")}
+          ></FontAwesomeIcon>
+        </Button>
+      </span>
+    );
   }
 
-  if (isLoadingNationalities) {
-    return <span>Caricamento...</span>;
+  if (isCitizenshipsPending) {
+    return (
+      <span>
+        <FontAwesomeIcon icon={faSpinner} className="fa-spin me-1" />
+        Caricamento...
+      </span>
+    );
   }
 
   const transform = {
@@ -52,7 +54,7 @@ export function CitizenshipText({alpha2}: NationalityAutocompleteProps) {
         return "";
       }
       return (
-        nationalities.find((option) => option.alpha2 === alpha2)?.citizenship ??
+        citizenships.find((option) => option.alpha2 === alpha2)?.citizenship ??
         alpha2
       );
     },
@@ -61,7 +63,7 @@ export function CitizenshipText({alpha2}: NationalityAutocompleteProps) {
         return "";
       }
       return (
-        nationalities.find((option) => option.citizenship === citizenship)
+        citizenships.find((option) => option.citizenship === citizenship)
           ?.alpha2 ?? citizenship
       );
     },

@@ -8,6 +8,7 @@ import {z} from "zod";
 const getQuoteResponseSchema = {
   quotazione: z.object({
     premium: z.number(),
+    originalPremium: z.number(),
   }),
 };
 interface GetQuoteParams {

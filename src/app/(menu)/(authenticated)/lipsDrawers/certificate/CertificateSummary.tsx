@@ -8,15 +8,13 @@ import {
   faFileCertificate,
 } from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {useDrawerStore} from "../../lips/[id]/store";
+import {useStore} from "../../lips/[id]/store";
 
 export function CertificateSummary() {
-  const lipId = useDrawerStore((state) => state.lip?.id);
-  const agentId = useDrawerStore((state) => state.lip?.agent?.id);
-  const certificate = useDrawerStore((state) => state.lip?.certificate);
-  const certificateState = useDrawerStore(
-    (state) => state.drawerStates.certificate,
-  );
+  const lipId = useStore((state) => state.lip?.id);
+  const agentId = useStore((state) => state.lip?.agent?.id);
+  const certificateState = useStore((state) => state.drawerStates.certificate);
+  const certificate = useStore((state) => state.lip?.certificate);
 
   if (!lipId || !agentId || !certificateState) {
     return null;

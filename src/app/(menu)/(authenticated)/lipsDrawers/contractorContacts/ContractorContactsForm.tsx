@@ -5,7 +5,7 @@ import {
   updateContractorContacts,
 } from "@/app/(menu)/(authenticated)/lips/[id]/actions";
 import {fatcaQuestions} from "@/app/(menu)/(authenticated)/lipsDrawers/facta/FatcaForm";
-import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {cns} from "@/helpers/cns";
 import {Role} from "@/models/account";
 import {PersonalData} from "@/models/entities/personalData";
@@ -51,10 +51,10 @@ export function ContractorContactsForm({
 }: ContractorContactsFormProps) {
   const router = useRouter();
 
-  const contractor = useDrawerStore((state) => state.lip?.contractor);
-  const lipId = useDrawerStore((state) => state.lip?.id);
-  const closeModal = useDrawerStore((state) => state.closeModal);
-  const preliminaryData = useDrawerStore((state) => state.preliminaryData);
+  const contractor = useStore((state) => state.lip?.contractor);
+  const lipId = useStore((state) => state.lip?.id);
+  const closeModal = useStore((state) => state.closeModal);
+  const preliminaryData = useStore((state) => state.preliminaryData);
 
   const formMethods = useForm({
     mode: "onChange",

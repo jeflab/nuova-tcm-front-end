@@ -1,17 +1,22 @@
 import {cns} from "@/helpers/cns";
-import {normalizeErrorMessage} from "@/helpers/errors";
+import {citizenshipsOptions} from "@/services/queries/citizenshipsOptions";
 import {InputField} from "@/ui/form/InputField";
 import {upperCaseWordsNormalizer} from "@/ui/form/normalizers";
-import {faExclamationTriangle} from "@fortawesome/pro-duotone-svg-icons";
+import {
+  faArrowsRotate,
+  faExclamationTriangle,
+  faSpinner,
+} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {useContext, useEffect, useState} from "react";
+import {useQuery} from "@tanstack/react-query";
+import {useContext, useState} from "react";
 import {Highlighter, Typeahead} from "react-bootstrap-typeahead";
 import FormContext from "react-bootstrap/esm/FormContext";
 import {RegisterOptions, useController} from "react-hook-form";
 import invariant from "tiny-invariant";
-import {getCitizenships} from "./actions";
 import {useValidationState} from "./hooks";
 import styles from "./NationalityAutocompleteField.module.scss";
+import {Button} from "react-bootstrap";
 
 interface NationalityAutocompleteProps {
   disabled?: boolean;
@@ -37,9 +42,6 @@ export function CitizenshipAutocompleteField({
   validation,
   validationStyle = true,
 }: NationalityAutocompleteProps) {
-  const [isLoadingNationalities, setIsLoadingNationalities] = useState(false);
-  const [error, setError] = useState("");
-  const [nationalities, setNationalities] = useState<CitizenshipOption[]>([]);
   const [query, setQuery] = useState("");
   const {controlId} = useContext(FormContext);
   const controlName = name || controlId;
@@ -51,33 +53,42 @@ export function CitizenshipAutocompleteField({
 
   const {isInvalid, isValid} = useValidationState(controlName);
 
-  useEffect(() => {
-    const getOptions = async () => {
-      setIsLoadingNationalities(true);
-      try {
-        const citizenships = await getCitizenships();
-        if (citizenships?.status !== "success") {
-          setError("Impossibile recuperare l'elenco nazionalità");
-          return;
-        }
+  const {
+    data: citizenships,
+    isPending: isCitizenshipsPending,
+    error: citizenshipsError,
+    isError: isCitizenshipsError,
+    refetch: refetchCitizenships,
+    isRefetching: isCitizenshipsRefetching,
+  } = useQuery(citizenshipsOptions());
 
-        setNationalities(citizenships.citizenships);
-      } catch (error) {
-        setError(normalizeErrorMessage(error));
-      } finally {
-        setIsLoadingNationalities(false);
-      }
-    };
-
-    void getOptions();
-  }, []);
-
-  if (error) {
-    return <div className="alert alert-danger">{error}</div>;
+  if (isCitizenshipsError) {
+    return (
+      <div className="alert alert-danger mb-0">
+        {citizenshipsError.message}
+        <Button
+          size="sm"
+          variant="link"
+          onClick={() => refetchCitizenships()}
+          title="Riprova"
+          className="alert-link"
+        >
+          <FontAwesomeIcon
+            icon={faArrowsRotate}
+            className={cns(isCitizenshipsRefetching && "fa-spin")}
+          ></FontAwesomeIcon>
+        </Button>
+      </div>
+    );
   }
 
-  if (isLoadingNationalities) {
-    return <div>Caricamento...</div>;
+  if (isCitizenshipsPending) {
+    return (
+      <span>
+        <FontAwesomeIcon icon={faSpinner} className="fa-spin me-1" />
+        Caricamento...
+      </span>
+    );
   }
 
   const transform = {
@@ -86,7 +97,7 @@ export function CitizenshipAutocompleteField({
         return "";
       }
       return (
-        nationalities.find((option) => option.alpha2 === alpha2)?.citizenship ??
+        citizenships.find((option) => option.alpha2 === alpha2)?.citizenship ??
         alpha2
       );
     },
@@ -95,7 +106,7 @@ export function CitizenshipAutocompleteField({
         return "";
       }
       return (
-        nationalities.find((option) => option.citizenship === citizenship)
+        citizenships.find((option) => option.citizenship === citizenship)
           ?.alpha2 ?? citizenship
       );
     },
@@ -136,7 +147,7 @@ export function CitizenshipAutocompleteField({
             readOnly,
           }}
           isInvalid={validationStyle && isInvalid}
-          isLoading={isLoadingNationalities}
+          isLoading={isCitizenshipsPending}
           isValid={validationStyle && isValid}
           labelKey={(option) => (option as CitizenshipOption)?.citizenship}
           onBlur={onBlur}
@@ -151,7 +162,7 @@ export function CitizenshipAutocompleteField({
           onInputChange={(text) => {
             setQuery(text);
           }}
-          options={nationalities}
+          options={citizenships}
           placeholder={placeholder}
           ref={ref}
           renderMenuItemChildren={(option, {text}) => {

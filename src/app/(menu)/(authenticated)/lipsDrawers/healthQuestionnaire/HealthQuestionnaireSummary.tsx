@@ -1,12 +1,12 @@
 "use client";
 
-import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {imcInRange} from "@/helpers/imc";
 import {Decimal} from "@/ui/Currency";
 import {Alert, Stack} from "react-bootstrap";
 
 export function HealthQuestionnaireSummary() {
-  const healthQuestionnaireData = useDrawerStore(
+  const healthQuestionnaireData = useStore(
     (state) => state.lip?.healthcareQuestionnaire,
   );
 

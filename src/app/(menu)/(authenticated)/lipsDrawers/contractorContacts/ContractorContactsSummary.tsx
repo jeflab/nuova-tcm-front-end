@@ -1,11 +1,11 @@
 "use client";
 
-import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {faAddressBook} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 export function ContractorContactsSummary() {
-  const contractor = useDrawerStore((state) => state.lip?.contractor);
+  const contractor = useStore((state) => state.lip?.contractor);
 
   if (!contractor) {
     return null;

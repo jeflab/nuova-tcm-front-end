@@ -23,7 +23,7 @@ import {
   YesNoAnswer,
   yesNoOptions,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
-import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {getOptionsLabel} from "@/helpers/getOptionsLabel";
 import {Nullish, Optional} from "@/helpers/TypesHelper";
 import {Den} from "@/models/entities/lip";
@@ -74,11 +74,11 @@ const denDefaultValues = (job: Optional<JobPosition>, den: Nullish<Den>) => ({
 });
 
 export function DenForm() {
-  const job = useDrawerStore(
+  const job = useStore(
     (state) => state.lip?.contractor.pep?.job.position.response,
   );
-  const den = useDrawerStore((state) => state.lip?.den);
-  const jobOther = useDrawerStore(
+  const den = useStore((state) => state.lip?.den);
+  const jobOther = useStore(
     (state) => state.lip?.contractor.pep?.job.positionOther,
   );
 
@@ -87,8 +87,8 @@ export function DenForm() {
     defaultValues: {...denDefaultValues(job, den)},
   });
 
-  const lipId = useDrawerStore((state) => state.lip?.id);
-  const closeModal = useDrawerStore((state) => state.closeModal);
+  const lipId = useStore((state) => state.lip?.id);
+  const closeModal = useStore((state) => state.closeModal);
 
   const dependentFamilyMembersValue = formMethods.watch(
     "dependentFamilyMembers",

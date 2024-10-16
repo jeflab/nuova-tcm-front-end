@@ -1,7 +1,7 @@
 "use client";
 
 import {updateContractorData} from "@/app/(menu)/(authenticated)/lips/[id]/actions";
-import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {
   genderOptions,
   JobPosition,
@@ -56,8 +56,8 @@ if (toSortedPolyfillNeeded) {
 }
 
 export function ContractorDataForm() {
-  const lipId = useDrawerStore((state) => state.lip?.id);
-  const contractor = useDrawerStore((state) => state.lip?.contractor);
+  const lipId = useStore((state) => state.lip?.id);
+  const contractor = useStore((state) => state.lip?.contractor);
 
   const formMethods = useForm({
     mode: "onChange",
@@ -103,7 +103,7 @@ export function ContractorDataForm() {
     },
   });
 
-  const closeModal = useDrawerStore((state) => state.closeModal);
+  const closeModal = useStore((state) => state.closeModal);
 
   const jobPositionValue = formMethods.watch("job.position");
 

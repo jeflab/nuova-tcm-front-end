@@ -2,7 +2,7 @@
 
 .divider {
   display: none;
-  @include media-breakpoint-up(sm) {
+  @include media-breakpoint-up(md) {
     display: revert;
   }
 }
@@ -13,20 +13,20 @@
     display: none;
     margin-inline-end: 0.5rem;
 
-    @include media-breakpoint-up(sm) {
+    @include media-breakpoint-up(md) {
       display: revert;
     }
   }
 
   :global(.list-inline-item) {
     display: block;
-    @include media-breakpoint-up(sm) {
+    @include media-breakpoint-up(md) {
       display: inline-block;
     }
 
     &:not(:last-child) {
       margin-block-end: 0.5rem;
-      @include media-breakpoint-up(sm) {
+      @include media-breakpoint-up(md) {
         margin-block-end: 0;
       }
     }

@@ -1,6 +1,6 @@
 "use client";
 
-import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {Debug} from "@/ui/Debug";
 import {ReactNode} from "react";
 import {Card, CardBody, CardHeader} from "react-bootstrap";
@@ -12,9 +12,9 @@ interface DebugStateProps {
 }
 
 export function DebugState({debugNav}: DebugStateProps) {
-  const preliminaryData = useDrawerStore((state) => state.preliminaryData);
-  const lip = useDrawerStore((state) => state.lip);
-  const drawerStates = useDrawerStore((state) => state.drawerStates);
+  const preliminaryData = useStore((state) => state.preliminaryData);
+  const lip = useStore((state) => state.lip);
+  const drawerStates = useStore((state) => state.drawerStates);
 
   return (
     <Card style={divStyle}>

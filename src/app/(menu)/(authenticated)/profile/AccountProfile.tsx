@@ -15,7 +15,7 @@ import {ReverseFormGroup} from "@/ui/form/ReverseFormGroup";
 import {emailValidator} from "@/ui/form/validators/email";
 import {password} from "@/ui/form/validators/password";
 import {IconStack} from "@/ui/IconStack";
-import autoAnimate from "@formkit/auto-animate";
+import {useAutoAnimate} from "@formkit/auto-animate/react";
 import {
   faSave,
   faSpinner,
@@ -24,7 +24,7 @@ import {
 } from "@fortawesome/pro-duotone-svg-icons";
 import {faLock, faPen} from "@fortawesome/pro-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {useEffect, useRef, useState} from "react";
+import {useState} from "react";
 import {
   Alert,
   Button,
@@ -43,7 +43,7 @@ interface AccountProfileProps {
 }
 
 export function AccountProfile({user}: AccountProfileProps) {
-  const animateContainer = useRef<HTMLDivElement>(null);
+  const [animateContainer] = useAutoAnimate();
   const [isUpdateMode, setIsUpdateMode] = useState(false);
   const [isPasswordMode, setIsPasswordMode] = useState<
     "close" | "open" | "success"
@@ -63,10 +63,6 @@ export function AccountProfile({user}: AccountProfileProps) {
       repeatNewPassword: "",
     },
   });
-
-  useEffect(() => {
-    animateContainer.current && autoAnimate(animateContainer.current);
-  }, []);
 
   return (
     <Card>

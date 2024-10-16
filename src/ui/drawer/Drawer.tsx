@@ -1,15 +1,15 @@
 "use client";
 
 import {DrawerName} from "@/app/(menu)/(authenticated)/lips/[id]/drawers";
-import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {cns} from "@/helpers/cns";
 import {DrawerIcon} from "@/ui/drawer/DrawerIcon";
 import {buttonMap} from "@/ui/drawer/types";
 import {upperCaseFirstNormalizer} from "@/ui/form/normalizers";
-import autoAnimate from "@formkit/auto-animate";
+import {useAutoAnimate} from "@formkit/auto-animate/react";
 import {faPenToSquare} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {ReactNode, useEffect, useRef} from "react";
+import {ReactNode} from "react";
 import {
   Button,
   Card,
@@ -35,16 +35,12 @@ export function Drawer({
   readonly,
   title,
 }: DrawerProps) {
-  const modalOpen = useDrawerStore((state) => state.modalOpen);
-  const openModal = useDrawerStore((state) => state.openModal);
-  const closeModal = useDrawerStore((state) => state.closeModal);
+  const [animateContainer] = useAutoAnimate();
+  const modalOpen = useStore((state) => state.modalOpen);
+  const openModal = useStore((state) => state.openModal);
+  const closeModal = useStore((state) => state.closeModal);
   const {variant, buttonLabel, buttonIcon, isLocked} =
-    useDrawerStore((state) => state.drawerStates[name]) ?? {};
-
-  const parent = useRef(null);
-  useEffect(() => {
-    parent.current && autoAnimate(parent.current);
-  }, [parent]);
+    useStore((state) => state.drawerStates[name]) ?? {};
 
   return (
     <>
@@ -75,7 +71,7 @@ export function Drawer({
             </Button>
           )}
         </CardHeader>
-        <CardBody ref={parent}>{children}</CardBody>
+        <CardBody ref={animateContainer}>{children}</CardBody>
       </Card>
       {!readonly && (
         <Modal

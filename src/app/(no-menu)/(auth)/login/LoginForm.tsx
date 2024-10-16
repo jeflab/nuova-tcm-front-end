@@ -11,7 +11,9 @@ import {fiscalCodeValidator} from "@/ui/form/validators/fiscalCode";
 import {faSpinner} from "@fortawesome/pro-duotone-svg-icons";
 import {faSignInAlt} from "@fortawesome/pro-duotone-svg-icons/faSignInAlt";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {useRouter} from "next/navigation";
 import {Alert, FormGroup, FormLabel} from "react-bootstrap";
+import * as Sentry from "@sentry/nextjs";
 
 const defaultValues = {
   fiscalCode: "",
@@ -19,13 +21,14 @@ const defaultValues = {
 };
 
 export function LoginForm() {
+  const router = useRouter();
+
   const handleSubmit = async (data: typeof defaultValues) => {
     let loginResponse: Awaited<ReturnType<typeof login>>;
 
     try {
       loginResponse = await login(data);
     } catch (error) {
-      console.error(error);
       throw {
         root: {
           type: "server",
@@ -37,6 +40,22 @@ export function LoginForm() {
     if (loginResponse.status !== "success") {
       throw {root: {type: "server", message: loginResponse.message}};
     }
+
+    Sentry.addBreadcrumb({
+      message: "login success",
+      category: "auth",
+      data: {
+        loginResponse,
+      },
+    });
+
+    setTimeout(() => {
+      Sentry.addBreadcrumb({
+        message: "redirecting after 1ms",
+        category: "auth",
+      });
+      router.push("/");
+    }, 1);
   };
 
   return (
@@ -50,6 +69,7 @@ export function LoginForm() {
         <InputField
           type="text"
           placeholder="Codice Fiscale"
+          autoComplete="codice-fiscale"
           validation={{
             required: "Inserisci il tuo codice fiscale",
             validate: (value) =>
@@ -64,6 +84,7 @@ export function LoginForm() {
         <InputField
           type="password"
           placeholder="Password"
+          autoComplete="current-password"
           validation={{required: "Inserisci la password"}}
         />
         <FieldError />

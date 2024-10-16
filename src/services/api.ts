@@ -14,6 +14,7 @@ import {
   invalidateTag,
   serverErrorSchema,
 } from "@/services/helpers";
+import * as Sentry from "@sentry/nextjs";
 import chalk from "chalk";
 import {cookies} from "next/headers";
 import {redirect} from "next/navigation";
@@ -106,6 +107,19 @@ export async function apiCall<ResponsePayloadShape extends ZodRawShape>(
     );
     console.error(unrollFetchData(data));
     console.error(chalk.redBright(e));
+
+    Sentry.withScope((scope) => {
+      scope.setContext("Errore di rete", {
+        fetch: "apiCall",
+        readableError: "Errore di rete",
+        method,
+        url: apiUrl + url + searchParamsString,
+        data: JSON.stringify(unrollFetchData(data)),
+        response: JSON.stringify(errors[ErrorCodes.FETCH_ERROR]),
+      });
+      Sentry.captureException(e);
+    });
+
     return errors[ErrorCodes.FETCH_ERROR] as z.infer<typeof serverErrorSchema>;
   }
 
@@ -137,6 +151,22 @@ export async function apiCall<ResponsePayloadShape extends ZodRawShape>(
     } else {
       console.error(text);
     }
+
+    Sentry.withScope((scope) => {
+      scope.setContext("Errore di parsing del JSON della risposta del server", {
+        fetch: "apiCall",
+        readableError: "Errore di parsing del JSON della risposta del server",
+        method,
+        url: apiUrl + url + searchParamsString,
+        "response.url": response.url,
+        "response.status": response.status,
+        text,
+        data: JSON.stringify(unrollFetchData(data)),
+        response: JSON.stringify(errors[ErrorCodes.INVALID_JSON]),
+      });
+      Sentry.captureException(e);
+    });
+
     return errors[ErrorCodes.INVALID_JSON] as z.infer<typeof serverErrorSchema>;
   }
 
@@ -159,7 +189,28 @@ export async function apiCall<ResponsePayloadShape extends ZodRawShape>(
     );
     console.error(unrollFetchData(data));
     console.error(chalk.redBright(e));
-    console.error(await response.text());
+    const text = await response.text();
+    console.error(text);
+
+    Sentry.withScope((scope) => {
+      scope.setContext(
+        "Errore di parsing dello schema della risposta del server",
+        {
+          fetch: "apiCall",
+          readableError:
+            "Errore di parsing dello schema della risposta del server",
+          method,
+          url: apiUrl + url + searchParamsString,
+          "response.url": response.url,
+          "response.status": response.status,
+          text,
+          data: JSON.stringify(unrollFetchData(data)),
+          response: JSON.stringify(errors[ErrorCodes.INVALID_SCHEMA]),
+        },
+      );
+      Sentry.captureException(e);
+    });
+
     return errors[ErrorCodes.INVALID_SCHEMA] as z.infer<
       typeof serverErrorSchema
     >;
@@ -178,6 +229,23 @@ export async function apiCall<ResponsePayloadShape extends ZodRawShape>(
     );
     console.error(unrollFetchData(data));
     console.error(serverResponseJson);
+
+    Sentry.withScope((scope) => {
+      scope.setContext("Errore nella risposta del server", {
+        fetch: "apiCall",
+        readableError:
+          "Errore nella risposta del server" +
+          (serverResponseJson.responseStatus === 401
+            ? " (Chiamata non autorizzata, logout)"
+            : ""),
+        method,
+        url: apiUrl + url + searchParamsString,
+        "response.url": response.url,
+        "response.status": response.status,
+        data: JSON.stringify(unrollFetchData(data)),
+        response: JSON.stringify(serverResponseJson),
+      });
+    });
 
     if (serverResponseJson.responseStatus === 401) {
       console.error("Chiamata non autorizzata, logout");

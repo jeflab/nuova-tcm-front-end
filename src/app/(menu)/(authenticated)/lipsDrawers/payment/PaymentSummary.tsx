@@ -1,6 +1,6 @@
 "use client";
 
-import {useDrawerStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {
   ExclusionList,
   getExcludedCoverages,
@@ -22,11 +22,11 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Alert, Stack} from "react-bootstrap";
 
 export function PaymentSummary() {
-  const lip = useDrawerStore((state) => state.lip);
-  const paymentData = useDrawerStore((state) => state.lip?.payment);
-  const premium = useDrawerStore((state) => state.lip?.quotation?.premium);
-  const quoteData = useDrawerStore((state) => state.lip?.quotation);
-  const underwritingData = useDrawerStore(
+  const lip = useStore((state) => state.lip);
+  const paymentData = useStore((state) => state.lip?.payment);
+  const premium = useStore((state) => state.lip?.quotation?.premium);
+  const quoteData = useStore((state) => state.lip?.quotation);
+  const underwritingData = useStore(
     (state) => state.lip?.quotation?.underwriting,
   );
 
