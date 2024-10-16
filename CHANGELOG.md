@@ -1,5 +1,19 @@
 # Changelog
 
+## v1.1.0 (2024-10-16)
+
+#### Added:
+
+- Aggiunto react query per le chiamate API lato client
+- Link assistenza tecnica in login
+- Aggiunto alert per IMC nel form del questionario sanitario
+
+#### Fixed:
+
+- Corretto aggiustamento del premio divisibile per 12
+- Footer collassa a md ora
+- Sistemato falso errore al redirect della login
+
 ### v1.0.8 (2024-09-25)
 
 #### Added:
