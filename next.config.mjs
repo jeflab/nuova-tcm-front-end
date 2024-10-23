@@ -7,6 +7,8 @@ import process from "node:process";
 
 process.env.SENTRY_RELEASE = getRelease();
 console.info(`Sentry release: ${process.env.SENTRY_RELEASE}`);
+const maintenanceMode = process.env.MAINTENANCE_MODE === "true";
+console.info(`Maintenance mode: ${maintenanceMode}`);
 
 let nextConfig = {
   logging: {fetches: {fullUrl: true}},
@@ -22,7 +24,20 @@ let nextConfig = {
       },
     ),
   },
+  ...(maintenanceMode && {
+    async redirects() {
+      return [
+        {
+          source: "/((?!maintenance).*)",
+          destination: "/maintenance",
+          permanent: false,
+        },
+      ];
+    },
+  }),
 };
+
+console.log("nextConfig", nextConfig);
 
 nextConfig = withSentryConfig(nextConfig, {
   // For all available options, see:
