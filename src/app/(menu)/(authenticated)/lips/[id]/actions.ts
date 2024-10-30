@@ -178,6 +178,7 @@ interface updateContractorDataParams {
     position: JobPosition;
     positionOther: string;
     tAECode: "" | TAECode;
+    type: string;
     province: string;
     country: string;
   };
@@ -212,7 +213,12 @@ export async function updateContractorData(
           response: formData.job.position,
         },
         positionOther: formData.job.positionOther,
-        tAECode: {options: tAECodeOptions, response: formData.job.tAECode},
+        ...(["entrepreneur", "freelancer", "selfEmployed"].includes(
+          formData.job.position,
+        ) && {
+          tAECode: {options: tAECodeOptions, response: formData.job.tAECode},
+        }),
+        ...(formData.job.position === "employee" && {type: formData.job.type}),
         province: formData.job.province,
         country: formData.job.country,
       },

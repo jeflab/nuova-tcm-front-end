@@ -39,15 +39,18 @@ const jobSchema = z.object({
     response: z.enum(getOptionsValues(jobPositionOptions)),
   }),
   positionOther: z.string().optional(),
-  tAECode: z.object({
-    options: z.array(
-      z.object({
-        label: z.string(),
-        value: z.enum(getOptionsValues(tAECodeOptions)),
-      }),
-    ),
-    response: z.enum([...getOptionsValues(tAECodeOptions), ""]),
-  }),
+  tAECode: z
+    .object({
+      options: z.array(
+        z.object({
+          label: z.string(),
+          value: z.enum(getOptionsValues(tAECodeOptions)),
+        }),
+      ),
+      response: z.enum([...getOptionsValues(tAECodeOptions), ""]),
+    })
+    .optional(),
+  type: z.string().optional(),
   province: z.string().optional(),
   country: z.string().optional(),
 });

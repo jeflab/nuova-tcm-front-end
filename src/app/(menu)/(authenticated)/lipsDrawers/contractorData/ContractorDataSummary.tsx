@@ -85,7 +85,7 @@ export function ContractorDataSummary() {
               )
             : contractor.pep.job.positionOther}
         </p>
-        {contractor.pep.job.tAECode.response && (
+        {contractor.pep.job.tAECode?.response && (
           <p className="mb-0">
             <strong>Codice TAE attività:</strong>{" "}
             {getOptionsLabel(
@@ -93,6 +93,12 @@ export function ContractorDataSummary() {
               contractor.pep.job.tAECode.response,
             )}{" "}
             (codice: {contractor.pep.job.tAECode.response})
+          </p>
+        )}
+        {contractor.pep.job.type && (
+          <p className="mb-0">
+            <strong>Tipologia di lavoro svolto:</strong>{" "}
+            {contractor.pep.job.type}
           </p>
         )}
         <p className="mb-0">
