@@ -346,6 +346,16 @@ export function DenForm() {
                     validation={{
                       required:
                         "Inserisci la tua capacità di risparmio media mensile",
+                      validate: {
+                        lessThanIncome: (value, formValues) => {
+                          if (
+                            parseInt(value, 10) * 12 >
+                            parseInt(formValues.income, 10)
+                          ) {
+                            return `La tua capacità di risparmio mensile non può essere maggiore del tuo reddito medio annuo netto`;
+                          }
+                        },
+                      },
                     }}
                   />
                   <InputGroup.Text>,00 €</InputGroup.Text>
