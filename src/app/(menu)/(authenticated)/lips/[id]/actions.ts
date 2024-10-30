@@ -159,6 +159,7 @@ export async function updateUnderwriting(lipId: number) {
 
 interface updateContractorDataParams {
   citizenship: string;
+  secondCitizenship: string;
   residence: {
     place: {
       city: string;
@@ -197,6 +198,7 @@ export async function updateContractorData(
     street_number: formData.residence.streetNumber,
     zip_code: formData.residence.zipCode,
     citizenship: formData.citizenship,
+    second_citizenship: formData.secondCitizenship,
     json_pep: JSON.stringify({
       isPep: {options: yesNoOptions, response: formData.pep.isPep},
       publicOffice: {

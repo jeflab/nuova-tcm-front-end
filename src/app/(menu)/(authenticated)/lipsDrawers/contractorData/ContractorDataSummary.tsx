@@ -1,6 +1,5 @@
 "use client";
 
-import {CitizenshipText} from "@/app/(menu)/(authenticated)/lipsDrawers/contractorData/CitizenshipText";
 import {
   genderOptions,
   jobPositionOptions,
@@ -44,8 +43,14 @@ export function ContractorDataSummary() {
         </p>
         <p className="mb-0">
           <strong>Nazionalità:</strong>{" "}
-          <CitizenshipText alpha2={contractor.citizenship} />
+          <span>{contractor.citizenshipInstance?.citizenship}</span>
         </p>
+        {contractor.secondCitizenship && (
+          <p className="mb-0">
+            <strong>Seconda Nazionalità:</strong>{" "}
+            <span>{contractor.secondCitizenshipInstance?.citizenship}</span>
+          </p>
+        )}
         <p className="mb-0">
           <strong>Genere:</strong>{" "}
           {getOptionsLabel(genderOptions, contractor.gender)}

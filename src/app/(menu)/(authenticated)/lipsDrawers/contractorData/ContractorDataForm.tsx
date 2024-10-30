@@ -78,6 +78,7 @@ export function ContractorDataForm() {
         email: contractor?.email ?? "",
       },
       citizenship: contractor?.citizenship ?? "",
+      secondCitizenship: contractor?.secondCitizenship ?? "",
       residence: {
         place: {
           city: contractor?.city ?? "",
@@ -233,14 +234,35 @@ export function ContractorDataForm() {
               </FormGroup>
             </Col>
             <h4 className="w-100">Nazionalità</h4>
-            <Col className="d-flex" xs={12}>
+            <Col className="d-flex" xs={12} sm={6}>
               <FormGroup controlId="citizenship" as={BorderFeedback}>
                 <FormLabel>Nazionalità</FormLabel>
                 <FieldError />
                 <CitizenshipAutocompleteField
+                  onChange={() => {
+                    formMethods.trigger("secondCitizenship");
+                  }}
                   placeholder="Nazionalità"
                   validation={{
                     required: "Inserisci la nazionalità del Contraente",
+                  }}
+                />
+              </FormGroup>
+            </Col>
+            <Col className="d-flex" xs={12} sm={6}>
+              <FormGroup controlId="secondCitizenship" as={BorderFeedback}>
+                <FormLabel>Seconda nazionalità</FormLabel>
+                <FieldError />
+                <CitizenshipAutocompleteField
+                  placeholder="Seconda nazionalità"
+                  validation={{
+                    validate: {
+                      unique: (value, values) => {
+                        if (value === values.citizenship) {
+                          return "Le nazionalità non possono essere uguali";
+                        }
+                      },
+                    },
                   }}
                 />
               </FormGroup>

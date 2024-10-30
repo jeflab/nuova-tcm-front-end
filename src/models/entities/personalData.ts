@@ -1,10 +1,10 @@
 import {
   jobPositionOptions,
   publicOfficesOptions,
-  TAECode,
   tAECodeOptions,
   yesNoOptions,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
+import {citizenshipSchema} from "@/models/entities/citizenship";
 import {identityDocumentSchema} from "@/models/entities/identityDocument";
 import {getOptionsValues} from "@/helpers/getOptionsLabel";
 import {Prettify} from "@/helpers/TypesHelper";
@@ -103,6 +103,9 @@ export const personalDataSchema = z
     city: z.string().nullable(),
     region: z.string().nullable(),
     citizenship: z.string().nullable(),
+    citizenship_instance: citizenshipSchema.nullable(),
+    second_citizenship: z.string().nullable(),
+    second_citizenship_instance: citizenshipSchema.nullable(),
     json_pep: zu.stringToJSON().pipe(pepSchema).nullable().optional(),
     identitydocument: z.array(identityDocumentSchema).optional(),
   })
@@ -116,6 +119,9 @@ export const personalDataSchema = z
       json_fatca,
       street_number,
       zip_code,
+      citizenship_instance,
+      second_citizenship,
+      second_citizenship_instance,
       json_pep,
       ...data
     }) => {
@@ -129,6 +135,9 @@ export const personalDataSchema = z
         fatca: json_fatca,
         streetNumber: street_number,
         zipCode: zip_code,
+        citizenshipInstance: citizenship_instance,
+        secondCitizenship: second_citizenship,
+        secondCitizenshipInstance: second_citizenship_instance,
         pep: json_pep,
       };
     },
