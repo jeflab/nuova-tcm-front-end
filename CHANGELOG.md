@@ -1,5 +1,11 @@
 # Changelog
 
+### v1.1.1
+
+#### Added:
+
+- Aggiunta pagina di manutenzione
+
 ## v1.1.0 (2024-10-16)
 
 #### Added:
