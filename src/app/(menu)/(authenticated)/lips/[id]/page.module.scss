@@ -4,6 +4,7 @@
 .connectedList {
   position: sticky;
   top: calc(1.5rem + $headerHeight);
+  width: min-content;
 
   a:first-of-type {
     padding-top: 0;

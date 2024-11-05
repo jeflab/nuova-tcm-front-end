@@ -20,7 +20,7 @@ export function NavDrawer({active, children, name}: DrawerProps) {
     <NavLink
       disabled={!drawerState}
       href={`#${name}`}
-      className={cns(active && "fw-bold")}
+      className={cns("text-nowrap", active && "fw-bold")}
     >
       <DrawerIcon variant={drawerState?.variant} className="me-2" />
       {children}
