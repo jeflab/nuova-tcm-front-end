@@ -66,8 +66,9 @@ export async function apiCall<ResponsePayloadShape extends ZodRawShape>(
     tags,
   }: ApiCallOptions<ResponsePayloadShape>,
 ): Promise<
-  z.infer<typeof serverSuccessSchema> | z.infer<typeof serverErrorSchema>
-  // | undefined
+  | z.infer<typeof serverSuccessSchema>
+  | z.infer<typeof serverErrorSchema>
+  | undefined
 > {
   const payloadShapeOrDefault: ResponsePayloadShape =
     payloadShape ?? ({} as ResponsePayloadShape);

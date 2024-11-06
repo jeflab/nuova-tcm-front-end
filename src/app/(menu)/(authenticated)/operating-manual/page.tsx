@@ -1,12 +1,13 @@
 import {getAccount} from "@/app/(no-menu)/(auth)/actions";
+import {normalizeError} from "@/helpers/errors";
 import {AppContainer} from "@/ui/AppContainer";
 import {PageTitle} from "@/ui/PageTitle";
 
 export default async function OperatingManualPage() {
   const account = await getAccount();
 
-  if (account.status !== "success") {
-    throw new Error(account.message);
+  if (account?.status !== "success") {
+    throw normalizeError(account);
   }
 
   return (

@@ -59,11 +59,14 @@ export const errors: Record<ErrorCodes, AppError> = {
   },
 };
 
-export function normalizeError(error: unknown): Error {
+export function normalizeError(
+  error: unknown,
+  defaultMessage = errors[ErrorCodes.GENERIC_ERROR].message,
+): Error {
   let message: string;
 
   if (!error) {
-    message = errors[ErrorCodes.GENERIC_ERROR].message;
+    message = defaultMessage;
   } else if (error instanceof Error) {
     message = error.message;
   } else if (
@@ -75,12 +78,8 @@ export function normalizeError(error: unknown): Error {
   } else if (typeof error === "string") {
     message = error;
   } else {
-    message = errors[ErrorCodes.GENERIC_ERROR].message;
+    message = defaultMessage;
   }
 
   return new Error(message);
-}
-
-export function normalizeErrorMessage(error: unknown): string {
-  return normalizeError(error).message;
 }

@@ -17,6 +17,7 @@ import {
   yesNoOptions,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
 import {dbDateString} from "@/helpers/dates";
+import {normalizeError} from "@/helpers/errors";
 import {Beneficiary, Lip, ThirdParty} from "@/models/entities/lip";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {CheckboxField} from "@/ui/form/CheckboxField";
@@ -263,11 +264,11 @@ export function BeneficiariesForm() {
 
             const updatedContractor = await updateBeneficiaries(values, lipId);
 
-            if (updatedContractor.status !== "success") {
+            if (updatedContractor?.status !== "success") {
               throw {
                 root: {
                   type: "server",
-                  message: updatedContractor.message,
+                  message: normalizeError(updatedContractor).message,
                 },
               };
             }

@@ -14,6 +14,7 @@ import {
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
 import {cns} from "@/helpers/cns";
 import {dbDateString} from "@/helpers/dates";
+import {normalizeError} from "@/helpers/errors";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {CheckGroup} from "@/ui/form/CheckGroup";
 import {CitizenshipAutocompleteField} from "@/ui/form/CitizenshipAutocompleteField";
@@ -122,11 +123,11 @@ export function ContractorDataForm() {
               values,
             );
 
-            if (updatedContractor.status !== "success") {
+            if (updatedContractor?.status !== "success") {
               throw {
                 root: {
                   type: "server",
-                  message: updatedContractor.message,
+                  message: normalizeError(updatedContractor).message,
                 },
               };
             }

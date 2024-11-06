@@ -5,6 +5,7 @@ import {
   updatePassword,
 } from "@/app/(menu)/(authenticated)/profile/actions";
 import {cns} from "@/helpers/cns";
+import {normalizeError} from "@/helpers/errors";
 import {User} from "@/models/entities/user";
 import {FieldError} from "@/ui/form/FieldError";
 import {Form} from "@/ui/form/Form";
@@ -75,11 +76,11 @@ export function AccountProfile({user}: AccountProfileProps) {
             onSubmit={async (values) => {
               const updateAccountResponse = await updateAccount(values);
 
-              if (updateAccountResponse.status !== "success") {
+              if (updateAccountResponse?.status !== "success") {
                 throw {
                   root: {
                     type: "server",
-                    message: updateAccountResponse.message,
+                    message: normalizeError(updateAccountResponse).message,
                   },
                 };
               }
@@ -159,11 +160,11 @@ export function AccountProfile({user}: AccountProfileProps) {
                 }
                 const updatePasswordResponse = await updatePassword(values);
 
-                if (updatePasswordResponse.status !== "success") {
+                if (updatePasswordResponse?.status !== "success") {
                   throw {
                     root: {
                       type: "server",
-                      message: updatePasswordResponse.message,
+                      message: normalizeError(updatePasswordResponse).message,
                     },
                   };
                 }

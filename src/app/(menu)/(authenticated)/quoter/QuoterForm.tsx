@@ -5,6 +5,7 @@ import {getQuote} from "@/app/(menu)/(authenticated)/quoter/actions";
 import {Advantages} from "@/app/(menu)/(authenticated)/quoter/Advantages";
 import {getCoverageDuration} from "@/app/(menu)/(authenticated)/quoter/helpers";
 import {cns} from "@/helpers/cns";
+import {normalizeError} from "@/helpers/errors";
 import {AppContainer} from "@/ui/AppContainer";
 import {Currency} from "@/ui/Currency";
 import {FieldError} from "@/ui/form/FieldError";
@@ -71,8 +72,10 @@ export function QuoterForm() {
       };
     }
 
-    if (clientResponse.status !== "success") {
-      throw {root: {type: "server", message: clientResponse.message}};
+    if (clientResponse?.status !== "success") {
+      throw {
+        root: {type: "server", message: normalizeError(clientResponse).message},
+      };
     }
 
     setPremium(clientResponse.quotazione.premium);

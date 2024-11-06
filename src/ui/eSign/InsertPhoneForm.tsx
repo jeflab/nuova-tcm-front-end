@@ -1,3 +1,4 @@
+import {normalizeError} from "@/helpers/errors";
 import {Profile} from "@/models/account";
 import {PersonalData} from "@/models/entities/personalData";
 import {cns} from "@/helpers/cns";
@@ -45,11 +46,11 @@ export function InsertPhoneForm({
             lipId,
             values.phone,
           );
-          if (updateContractorPhoneResponse.status !== "success") {
+          if (updateContractorPhoneResponse?.status !== "success") {
             throw {
               root: {
                 type: "server",
-                message: updateContractorPhoneResponse.message,
+                message: normalizeError(updateContractorPhoneResponse).message,
               },
             };
           }
@@ -62,11 +63,11 @@ export function InsertPhoneForm({
             values.phone,
           );
 
-          if (updateAgentPhoneResponse.status !== "success") {
+          if (updateAgentPhoneResponse?.status !== "success") {
             throw {
               root: {
                 type: "server",
-                message: updateAgentPhoneResponse.message,
+                message: normalizeError(updateAgentPhoneResponse).message,
               },
             };
           }

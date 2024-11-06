@@ -34,7 +34,7 @@ interface DrawerSkeletonProps {
 
 export function NavDrawerSkeleton({children}: DrawerSkeletonProps) {
   return (
-    <NavLink disabled>
+    <NavLink disabled className="text-nowrap">
       <DrawerIcon variant="loading" className="me-2" />
       {children}
     </NavLink>

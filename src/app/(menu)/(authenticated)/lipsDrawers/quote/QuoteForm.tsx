@@ -13,6 +13,7 @@ import {QuoterFormValues} from "@/app/(menu)/(authenticated)/quoter/QuoterForm";
 import styles from "@/app/(menu)/(authenticated)/quoter/QuoterForm.module.scss";
 import {cns} from "@/helpers/cns";
 import {dbDateString} from "@/helpers/dates";
+import {normalizeError} from "@/helpers/errors";
 import {Currency} from "@/ui/Currency";
 import {FieldError} from "@/ui/form/FieldError";
 import {Form} from "@/ui/form/Form";
@@ -92,8 +93,10 @@ export function QuoteForm() {
       };
     }
 
-    if (clientResponse.status !== "success") {
-      throw {root: {type: "server", message: clientResponse.message}};
+    if (clientResponse?.status !== "success") {
+      throw {
+        root: {type: "server", message: normalizeError(clientResponse).message},
+      };
     }
 
     if (
@@ -127,10 +130,10 @@ export function QuoteForm() {
       tpiTpdCancerDirty,
     );
 
-    if (updateQuotationResponse.status !== "success") {
+    if (updateQuotationResponse?.status !== "success") {
       formMethods.setError("root", {
         type: "server",
-        message: updateQuotationResponse.message,
+        message: normalizeError(updateQuotationResponse).message,
       });
       setIsSaving(false);
       return;

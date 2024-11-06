@@ -20,7 +20,7 @@ interface Actions {
   resetState: () => void;
   updateLip: (lip: Lip | null) => void;
   updatePreliminaryData: (data: Partial<PreliminaryData> | null) => void;
-  updateAccount: (account: Account) => void;
+  updateAccount: (account: Account | undefined) => void;
 }
 
 const initialState: State = {
@@ -342,7 +342,7 @@ function createState(state: State & Actions) {
       }
     }
 
-    // state.drawerStates.contractorData = {
+    // state.drawerStates.beneficiaries = {
     //   variant: "waiting",
     //   buttonLabel: "Debug",
     // };

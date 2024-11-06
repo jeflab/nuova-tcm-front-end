@@ -24,6 +24,7 @@ import {
   yesNoOptions,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
 import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {normalizeError} from "@/helpers/errors";
 import {getOptionsLabel} from "@/helpers/getOptionsLabel";
 import {Nullish, Optional} from "@/helpers/TypesHelper";
 import {Den} from "@/models/entities/lip";
@@ -109,11 +110,11 @@ export function DenForm() {
             invariant(lipId, "lipId is required");
             const updateDenResponse = await updateDen(values, lipId);
 
-            if (updateDenResponse.status !== "success") {
+            if (updateDenResponse?.status !== "success") {
               throw {
                 root: {
                   type: "server",
-                  message: updateDenResponse.message,
+                  message: normalizeError(updateDenResponse).message,
                 },
               };
             }

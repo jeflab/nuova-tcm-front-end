@@ -6,6 +6,7 @@ import {
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
 import {cns} from "@/helpers/cns";
 import {createDocumentUrl} from "@/helpers/createResourcesUrl";
+import {normalizeError} from "@/helpers/errors";
 import {CheckGroup} from "@/ui/form/CheckGroup";
 import {FieldError} from "@/ui/form/FieldError";
 import {Form} from "@/ui/form/Form";
@@ -567,11 +568,11 @@ export function CompanyPrivacy({
               lip.id,
             );
 
-            if (updatedContractor.status !== "success") {
+            if (updatedContractor?.status !== "success") {
               throw {
                 root: {
                   type: "server",
-                  message: updatedContractor.message,
+                  message: normalizeError(updatedContractor).message,
                 },
               };
             }

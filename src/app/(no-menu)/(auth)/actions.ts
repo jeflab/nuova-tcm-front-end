@@ -29,7 +29,7 @@ export async function login(data: LoginParams) {
     },
   });
 
-  if (loginResponse.status === "success") {
+  if (loginResponse?.status === "success") {
     cookies().set(AUTH_COOKIE_NAME, loginResponse.access_token, {
       httpOnly: true,
       secure: true,
