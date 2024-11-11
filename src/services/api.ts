@@ -81,6 +81,7 @@ export async function apiCall<ResponsePayloadShape extends ZodRawShape>(
     data instanceof FormData
       ? {
           ...authorizationHeader(),
+          ...acceptJsonHeader,
         }
       : {
           ...authorizationHeader(),
