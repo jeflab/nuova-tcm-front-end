@@ -38,7 +38,6 @@ import {
   ModalBody,
   ModalFooter,
   Row,
-  Stack,
 } from "react-bootstrap";
 import {useForm} from "react-hook-form";
 import invariant from "tiny-invariant";
@@ -337,54 +336,55 @@ export function ContractorDataForm() {
               </FormGroup>
             </Col>
             <h4 className="w-100">Situazione professionale</h4>
-            <Col className="d-flex" xs={12} sm={6}>
-              <Stack gap={3}>
-                <FormGroup controlId="job.position" as={BorderFeedback}>
-                  <FormLabel>Attività e professione esercitata</FormLabel>
-                  <FieldError />
-                  <SelectField
-                    placeholder="Seleziona l'attività e professione esercitata"
-                    options={jobPositionOptions}
+            <Col
+              className="d-flex"
+              xs={12}
+              sm={
+                [
+                  "other",
+                  "employee",
+                  "manager",
+                  "entrepreneur",
+                  "freelancer",
+                  "selfEmployed",
+                ].includes(jobPositionValue)
+                  ? 6
+                  : 12
+              }
+            >
+              <FormGroup controlId="job.position" as={BorderFeedback}>
+                <FormLabel>Attività e professione esercitata</FormLabel>
+                <FieldError />
+                <SelectField
+                  placeholder="Seleziona l'attività e professione esercitata"
+                  options={jobPositionOptions}
+                  validation={{
+                    required: "Seleziona l'attività e professione esercitata",
+                  }}
+                />
+              </FormGroup>
+            </Col>
+            {jobPositionValue === "other" && (
+              <Col className="d-flex" xs={12} sm={6}>
+                <FormGroup controlId="job.positionOther" as={BorderFeedback}>
+                  <FormLabel>
+                    Specifica l'attività e professione esercitata
+                  </FormLabel>
+                  <InputField
+                    type="text"
+                    placeholder="Specifica l'attività e professione esercitata"
                     validation={{
-                      required: "Seleziona l'attività e professione esercitata",
-                    }}
-                    onChange={(event) => {
-                      if (event.target.value === "employee") {
-                        formMethods.setValue("job.type", "");
-                      } else if (
-                        ![
-                          "entrepreneur",
-                          "freelancer",
-                          "selfEmployed",
-                        ].includes(event.target.value)
-                      ) {
-                        formMethods.setValue("job.tAECode", "" as TAECode);
-                      }
+                      required: "Inserisci l'attività e professione esercitata",
                     }}
                   />
                 </FormGroup>
-                {jobPositionValue === "other" && (
-                  <FormGroup controlId="job.positionOther" as={BorderFeedback}>
-                    <FormLabel>
-                      Specifica l'attività e professione esercitata
-                    </FormLabel>
-                    <InputField
-                      type="text"
-                      placeholder="Specifica l'attività e professione esercitata"
-                      validation={{
-                        required:
-                          "Inserisci l'attività e professione esercitata",
-                      }}
-                    />
-                  </FormGroup>
-                )}
-              </Stack>
-            </Col>
-            <Col className="d-flex" xs={12} sm={6}>
-              {jobPositionValue === "employee" ? (
+              </Col>
+            )}
+            {["employee", "manager"].includes(jobPositionValue) && (
+              <Col className="d-flex" xs={12} sm={6}>
                 <FormGroup controlId="job.type" as={BorderFeedback}>
                   <FormLabel>Tipologia di lavoro svolto</FormLabel>
-                  <HelpText>obbligatorio per dipendente</HelpText>
+                  <HelpText>obbligatorio per dipendente e dirigente</HelpText>
                   <FieldError />
                   <InputField
                     type="text"
@@ -394,7 +394,12 @@ export function ContractorDataForm() {
                     }}
                   />
                 </FormGroup>
-              ) : (
+              </Col>
+            )}
+            {["entrepreneur", "freelancer", "selfEmployed"].includes(
+              jobPositionValue,
+            ) && (
+              <Col className="d-flex" xs={12} sm={6}>
                 <FormGroup controlId="job.tAECode" as={BorderFeedback}>
                   <FormLabel>Codice TAE attività</FormLabel>
                   <HelpText>
@@ -422,8 +427,8 @@ export function ContractorDataForm() {
                     }
                   />
                 </FormGroup>
-              )}
-            </Col>
+              </Col>
+            )}
             <Col className="d-flex" xs={12} sm={6}>
               <FormGroup controlId="job.province" as={BorderFeedback}>
                 <FormLabel>Provincia di attività prevalente</FormLabel>

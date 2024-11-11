@@ -218,7 +218,9 @@ export async function updateContractorData(
         ) && {
           tAECode: {options: tAECodeOptions, response: formData.job.tAECode},
         }),
-        ...(formData.job.position === "employee" && {type: formData.job.type}),
+        ...(["employee", "manager"].includes(formData.job.position) && {
+          type: formData.job.type,
+        }),
         province: formData.job.province,
         country: formData.job.country,
       },
