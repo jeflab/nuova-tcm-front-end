@@ -2,14 +2,15 @@ import {AccountProfile} from "@/app/(menu)/(authenticated)/profile/AccountProfil
 import {AgentProfile} from "@/app/(menu)/(authenticated)/profile/AgentProfile";
 import {ContractorProfile} from "@/app/(menu)/(authenticated)/profile/ContractorProfile";
 import {getProfile} from "@/app/(no-menu)/(auth)/actions";
+import {normalizeError} from "@/helpers/errors";
 import {AppContainer} from "@/ui/AppContainer";
 import {PageTitle} from "@/ui/PageTitle";
 
 export default async function ProfilePage() {
   const userProfile = await getProfile();
 
-  if (userProfile.status !== "success") {
-    throw new Error("Errore imprevisto, riprova più tardi.");
+  if (userProfile?.status !== "success") {
+    throw normalizeError(userProfile);
   }
 
   const {user, agent, contractor} = userProfile;

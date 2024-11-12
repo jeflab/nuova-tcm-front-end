@@ -159,6 +159,7 @@ export async function updateUnderwriting(lipId: number) {
 
 interface updateContractorDataParams {
   citizenship: string;
+  secondCitizenship: string;
   residence: {
     place: {
       city: string;
@@ -177,6 +178,7 @@ interface updateContractorDataParams {
     position: JobPosition;
     positionOther: string;
     tAECode: "" | TAECode;
+    type: string;
     province: string;
     country: string;
   };
@@ -197,6 +199,7 @@ export async function updateContractorData(
     street_number: formData.residence.streetNumber,
     zip_code: formData.residence.zipCode,
     citizenship: formData.citizenship,
+    second_citizenship: formData.secondCitizenship,
     json_pep: JSON.stringify({
       isPep: {options: yesNoOptions, response: formData.pep.isPep},
       publicOffice: {
@@ -210,7 +213,14 @@ export async function updateContractorData(
           response: formData.job.position,
         },
         positionOther: formData.job.positionOther,
-        tAECode: {options: tAECodeOptions, response: formData.job.tAECode},
+        ...(["entrepreneur", "freelancer", "selfEmployed"].includes(
+          formData.job.position,
+        ) && {
+          tAECode: {options: tAECodeOptions, response: formData.job.tAECode},
+        }),
+        ...(["employee", "manager"].includes(formData.job.position) && {
+          type: formData.job.type,
+        }),
         province: formData.job.province,
         country: formData.job.country,
       },

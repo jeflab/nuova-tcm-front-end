@@ -1,3 +1,4 @@
+import {normalizeError} from "@/helpers/errors";
 import {PDFType} from "@/models/entities/esign";
 import {PersonalData} from "@/models/entities/personalData";
 import {Tag} from "@/services/const";
@@ -54,10 +55,10 @@ export function RequestOTPModalContent<TPayload>({
       const response = await createFEATransaction(data);
 
       if (response.featTransaction?.status !== "success") {
-        throw new Error(response.featTransaction.message);
+        throw normalizeError(response.featTransaction);
       }
       if (response.profile?.status !== "success") {
-        throw new Error(response.profile.message);
+        throw normalizeError(response.profile);
       }
 
       return {

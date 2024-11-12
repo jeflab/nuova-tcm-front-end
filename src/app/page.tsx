@@ -5,7 +5,7 @@ export default async function Page() {
   if (await isLoggedIn()) {
     const account = await getAccount();
     if (
-      account.status === "success" &&
+      account?.status === "success" &&
       account.permissions?.some(
         (permission) => permission.name === "create-lip",
       )

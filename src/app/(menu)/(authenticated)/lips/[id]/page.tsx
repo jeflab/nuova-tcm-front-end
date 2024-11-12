@@ -1,3 +1,4 @@
+import {normalizeError} from "@/helpers/errors";
 import {Lip} from "@/models/entities/lip";
 import {cns} from "@/helpers/cns";
 import {AppContainer} from "@/ui/AppContainer";
@@ -33,11 +34,11 @@ export default async function NewLipPage({params}: NewLipPageProps) {
   let lip: Lip | null = null;
   if (params.id !== "new") {
     const lipResponse = await getLip(parseInt(params.id, 10));
-    if (lipResponse.status !== "success") {
-      if (lipResponse.responseStatus === 404) {
+    if (lipResponse?.status !== "success") {
+      if (lipResponse?.responseStatus === 404) {
         notFound();
       }
-      throw new Error(lipResponse.message);
+      throw normalizeError(lipResponse);
     }
     lip = lipResponse.lip;
   }

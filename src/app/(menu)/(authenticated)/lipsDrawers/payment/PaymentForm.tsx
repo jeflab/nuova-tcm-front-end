@@ -7,6 +7,7 @@ import {
   paymentMethodsOptions,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
 import {getCoverageDuration} from "@/app/(menu)/(authenticated)/quoter/helpers";
+import {normalizeError} from "@/helpers/errors";
 import {Lip} from "@/models/entities/lip";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {CheckGroup} from "@/ui/form/CheckGroup";
@@ -87,11 +88,11 @@ export function PaymentForm() {
               lipId,
             );
 
-            if (updatedContractor.status !== "success") {
+            if (updatedContractor?.status !== "success") {
               throw {
                 root: {
                   type: "server",
-                  message: updatedContractor.message,
+                  message: normalizeError(updatedContractor).message,
                 },
               };
             }

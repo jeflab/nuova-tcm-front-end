@@ -1,6 +1,5 @@
 "use client";
 
-import {CitizenshipText} from "@/app/(menu)/(authenticated)/lipsDrawers/contractorData/CitizenshipText";
 import {
   genderOptions,
   jobPositionOptions,
@@ -44,8 +43,14 @@ export function ContractorDataSummary() {
         </p>
         <p className="mb-0">
           <strong>Nazionalità:</strong>{" "}
-          <CitizenshipText alpha2={contractor.citizenship} />
+          <span>{contractor.citizenshipInstance?.citizenship}</span>
         </p>
+        {contractor.secondCitizenship && (
+          <p className="mb-0">
+            <strong>Seconda Nazionalità:</strong>{" "}
+            <span>{contractor.secondCitizenshipInstance?.citizenship}</span>
+          </p>
+        )}
         <p className="mb-0">
           <strong>Genere:</strong>{" "}
           {getOptionsLabel(genderOptions, contractor.gender)}
@@ -80,7 +85,7 @@ export function ContractorDataSummary() {
               )
             : contractor.pep.job.positionOther}
         </p>
-        {contractor.pep.job.tAECode.response && (
+        {contractor.pep.job.tAECode?.response && (
           <p className="mb-0">
             <strong>Codice TAE attività:</strong>{" "}
             {getOptionsLabel(
@@ -88,6 +93,12 @@ export function ContractorDataSummary() {
               contractor.pep.job.tAECode.response,
             )}{" "}
             (codice: {contractor.pep.job.tAECode.response})
+          </p>
+        )}
+        {contractor.pep.job.type && (
+          <p className="mb-0">
+            <strong>Tipologia di lavoro svolto:</strong>{" "}
+            {contractor.pep.job.type}
           </p>
         )}
         <p className="mb-0">

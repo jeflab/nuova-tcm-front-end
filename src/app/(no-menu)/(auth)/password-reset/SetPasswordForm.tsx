@@ -2,6 +2,7 @@
 
 import {setPassword} from "@/app/(no-menu)/(auth)/actions";
 import {cns} from "@/helpers/cns";
+import {normalizeError} from "@/helpers/errors";
 import {FieldError} from "@/ui/form/FieldError";
 import {Form} from "@/ui/form/Form";
 import {HelpText} from "@/ui/form/HelpText";
@@ -53,8 +54,13 @@ export function SetPasswordForm({
           };
         }
 
-        if (setPasswordResponse.status !== "success") {
-          throw {root: {type: "server", message: setPasswordResponse.message}};
+        if (setPasswordResponse?.status !== "success") {
+          throw {
+            root: {
+              type: "server",
+              message: normalizeError(setPasswordResponse).message,
+            },
+          };
         }
 
         onPasswordSet?.();

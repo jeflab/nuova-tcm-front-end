@@ -8,6 +8,7 @@ import {
   YesNoAnswer,
   yesNoOptions,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
+import {normalizeError} from "@/helpers/errors";
 import {imcInRange} from "@/helpers/imc";
 import {Nullish} from "@/helpers/TypesHelper";
 import {HealthcareQuestionnaire} from "@/models/entities/lip";
@@ -163,11 +164,11 @@ export function HealthQuestionnaireForm() {
               lipId,
             );
 
-            if (updatedContractor.status !== "success") {
+            if (updatedContractor?.status !== "success") {
               throw {
                 root: {
                   type: "server",
-                  message: updatedContractor.message,
+                  message: normalizeError(updatedContractor).message,
                 },
               };
             }

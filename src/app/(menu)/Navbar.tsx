@@ -33,7 +33,7 @@ export async function Navbar() {
   if (loggedIn) {
     const account = await getAccount();
 
-    if (account.status === "success") {
+    if (account?.status === "success") {
       permissions = account.permissions;
       broker = account.broker;
       fiscalCode = account.user.fiscalCode;

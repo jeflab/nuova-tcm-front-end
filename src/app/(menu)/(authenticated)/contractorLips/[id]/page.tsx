@@ -1,4 +1,5 @@
 import {cns} from "@/helpers/cns";
+import {normalizeError} from "@/helpers/errors";
 import {AppContainer} from "@/ui/AppContainer";
 import {ButtonLink} from "@/ui/ButtonLink";
 import {Drawer} from "@/ui/drawer/Drawer";
@@ -30,16 +31,17 @@ const minWidthHack = {minWidth: "1px"};
 
 export default async function NewLipPage({params}: NewLipPageProps) {
   const lipResponse = await getLip(parseInt(params.id, 10));
-  if (lipResponse.status !== "success") {
-    if (lipResponse.responseStatus === 404) {
+  if (lipResponse?.status !== "success") {
+    if (lipResponse?.responseStatus === 404) {
       notFound();
     }
-    throw new Error(lipResponse.message);
+    throw normalizeError(lipResponse);
   }
   const lip = lipResponse.lip;
 
   return (
     <AppContainer className="vstack gap-3 align-items-start">
+      <InitStoreWithServerData lip={lip} />
       <div>
         <PageTitle>Polizza n° {lip.lipNumber}</PageTitle>
         {lip.lipStates && <LipStateBadge lipState={lip.lipStates} />}
@@ -47,7 +49,6 @@ export default async function NewLipPage({params}: NewLipPageProps) {
       <ButtonLink href="/contractorLips">
         <FontAwesomeIcon icon={faArrowLeft} /> Torna alle tue polizze
       </ButtonLink>
-      <InitStoreWithServerData lip={lip} />
       <Row className="flex-row-reverse gy-3">
         <Col md="auto">
           <Nav className={cns("flex-column", styles.connectedList)}>

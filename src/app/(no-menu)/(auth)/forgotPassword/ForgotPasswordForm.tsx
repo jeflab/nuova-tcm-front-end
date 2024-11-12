@@ -2,6 +2,7 @@
 
 import {forgotPassword} from "@/app/(no-menu)/(auth)/actions";
 import {cns} from "@/helpers/cns";
+import {normalizeError} from "@/helpers/errors";
 import {FieldError} from "@/ui/form/FieldError";
 import {Form} from "@/ui/form/Form";
 import {InputField} from "@/ui/form/InputField";
@@ -38,8 +39,13 @@ export function ForgotPasswordForm({onResetSuccess}: ForgotPasswordFormProps) {
       };
     }
 
-    if (forgotPasswordResponse.status !== "success") {
-      throw {root: {type: "server", message: forgotPasswordResponse.message}};
+    if (forgotPasswordResponse?.status !== "success") {
+      throw {
+        root: {
+          type: "server",
+          message: normalizeError(forgotPasswordResponse).message,
+        },
+      };
     }
 
     onResetSuccess?.(forgotPasswordResponse.email);

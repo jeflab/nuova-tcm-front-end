@@ -17,7 +17,7 @@ export async function Footer() {
   if (loggedIn) {
     const account = await getAccount();
 
-    if (account.status === "success") {
+    if (account?.status === "success") {
       broker = account.broker;
       fiscalCode = account.user.fiscalCode;
     }

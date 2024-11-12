@@ -8,7 +8,7 @@ import {Alert} from "react-bootstrap";
 export default async function ContractorLipsPage() {
   const contractorLips = await getContractorLips();
 
-  if (contractorLips.status !== "success") {
+  if (contractorLips?.status !== "success") {
     throw normalizeError(contractorLips);
   }
 

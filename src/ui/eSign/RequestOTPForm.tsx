@@ -1,3 +1,4 @@
+import {normalizeError} from "@/helpers/errors";
 import {Profile} from "@/models/account";
 import {PDFType} from "@/models/entities/esign";
 import {PersonalData} from "@/models/entities/personalData";
@@ -74,11 +75,11 @@ export function RequestOTPForm<TPayload>({
           tagToRevalidate,
         });
 
-        if (response.status !== "success") {
+        if (response?.status !== "success") {
           throw {
             root: {
               type: "server",
-              message: response.message,
+              message: normalizeError(response).message,
             },
           };
         }

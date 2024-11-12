@@ -1,5 +1,6 @@
 "use client";
 
+import {normalizeError} from "@/helpers/errors";
 import {HelpText} from "@/ui/form/HelpText";
 import omit from "lodash/omit";
 import {identificationContractor} from "@/app/(menu)/(authenticated)/lips/[id]/actions";
@@ -97,11 +98,12 @@ export function IdentificationForm() {
                 lipId,
               );
 
-            if (identificationContractorResponse.status !== "success") {
+            if (identificationContractorResponse?.status !== "success") {
               throw {
                 root: {
                   type: "server",
-                  message: identificationContractorResponse.message,
+                  message: normalizeError(identificationContractorResponse)
+                    .message,
                 },
               };
             }

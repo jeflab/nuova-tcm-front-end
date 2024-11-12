@@ -1,5 +1,6 @@
 import {getLipsList} from "@/app/(menu)/(authenticated)/lips/actions";
 import {columns} from "@/app/(menu)/(authenticated)/lips/columns";
+import {normalizeError} from "@/helpers/errors";
 import {DataTable} from "@/ui/table/DataTable";
 import {DataTableParams, dataTableParamsSchema} from "@/ui/table/helpers";
 
@@ -11,8 +12,8 @@ export async function LipsTable({searchParams}: LipsTableProps) {
   const parsedSearchParams = dataTableParamsSchema.parse(searchParams);
   const lips = await getLipsList(parsedSearchParams);
 
-  if (lips.status !== "success") {
-    throw new Error("Impossibile caricare le polizze, riprovare più tardi");
+  if (lips?.status !== "success") {
+    throw normalizeError(lips);
   }
 
   return (

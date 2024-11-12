@@ -7,6 +7,7 @@ import {
 import {fatcaQuestions} from "@/app/(menu)/(authenticated)/lipsDrawers/facta/FatcaForm";
 import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {cns} from "@/helpers/cns";
+import {normalizeError} from "@/helpers/errors";
 import {Role} from "@/models/account";
 import {PersonalData} from "@/models/entities/personalData";
 import {User} from "@/models/entities/user";
@@ -102,11 +103,11 @@ export function ContractorContactsForm({
                 };
               }
 
-              if (activateContractorResponse.status !== "success") {
+              if (activateContractorResponse?.status !== "success") {
                 throw {
                   root: {
                     type: "server",
-                    message: activateContractorResponse.message,
+                    message: normalizeError(activateContractorResponse).message,
                   },
                 };
               }
@@ -123,11 +124,11 @@ export function ContractorContactsForm({
                 values,
               );
 
-              if (updatedContractor.status !== "success") {
+              if (updatedContractor?.status !== "success") {
                 throw {
                   root: {
                     type: "server",
-                    message: updatedContractor.message,
+                    message: normalizeError(updatedContractor).message,
                   },
                 };
               }

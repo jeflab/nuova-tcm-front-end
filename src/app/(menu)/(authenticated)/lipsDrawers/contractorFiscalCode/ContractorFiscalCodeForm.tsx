@@ -8,6 +8,7 @@ import {
 import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {cns} from "@/helpers/cns";
 import {dbDateString} from "@/helpers/dates";
+import {normalizeError} from "@/helpers/errors";
 import {getOptionsValues} from "@/helpers/getOptionsLabel";
 import {User} from "@/models/entities/user";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
@@ -175,7 +176,7 @@ export function ContractorFiscalCodeForm({
             //  - error con messaggio "Utente già censito da un altro Advisor"
             //  - error con messaggio generico
 
-            if (checkIfFiscalCodeExistsResponse.status === "success") {
+            if (checkIfFiscalCodeExistsResponse?.status === "success") {
               if (
                 !!checkIfFiscalCodeExistsResponse.lip &&
                 !!checkIfFiscalCodeExistsResponse.lip.contractor
@@ -195,7 +196,7 @@ export function ContractorFiscalCodeForm({
             }
             // TODO: Sarebbe meglio avere un codice errore piùttosto che il messaggio come discriminante
             if (
-              checkIfFiscalCodeExistsResponse.message ===
+              checkIfFiscalCodeExistsResponse?.message ===
               "Utente già censito da un altro Advisor"
             ) {
               updatePreliminaryData({contractorAlreadyRegistered: true});
@@ -206,7 +207,8 @@ export function ContractorFiscalCodeForm({
             throw {
               root: {
                 type: "server",
-                message: checkIfFiscalCodeExistsResponse.message,
+                message: normalizeError(checkIfFiscalCodeExistsResponse)
+                  .message,
               },
             };
           }}

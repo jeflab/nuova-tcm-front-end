@@ -1,5 +1,23 @@
 # Changelog
 
+### v1.1.2
+
+#### Added:
+
+- Aggiunto campo libero per dipendente
+- Aggiunto campo libero anche per dirigente
+- Aggiunta seconda nazionalità per contraente
+- Aggiunto controllo sul risparmio vs reddito netto
+
+#### Changed
+
+- Migliorato supporto agli errori delle server actions
+- Aggiustata chiamata a identification per gestire meglio gli errori
+
+##### Fixed
+
+- Corretto problema lunghezza etichette menu laterale lip
+
 ### v1.1.1
 
 #### Added:

@@ -9,7 +9,7 @@ import {
 } from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {useQuery} from "@tanstack/react-query";
-import {useContext, useState} from "react";
+import {useContext, useRef, useState} from "react";
 import {Highlighter, Typeahead} from "react-bootstrap-typeahead";
 import FormContext from "react-bootstrap/esm/FormContext";
 import {RegisterOptions, useController} from "react-hook-form";
@@ -21,6 +21,7 @@ import {Button} from "react-bootstrap";
 interface NationalityAutocompleteProps {
   disabled?: boolean;
   name?: string;
+  onChange?: (value: string) => void;
   placeholder?: string;
   plaintext?: boolean;
   readOnly?: boolean;
@@ -36,12 +37,14 @@ interface CitizenshipOption {
 export function CitizenshipAutocompleteField({
   disabled,
   name,
+  onChange: onChangeParent,
   placeholder,
   plaintext,
   readOnly,
   validation,
   validationStyle = true,
 }: NationalityAutocompleteProps) {
+  const inputRef = useRef<{clear: () => void}>(null);
   const [query, setQuery] = useState("");
   const {controlId} = useContext(FormContext);
   const controlName = name || controlId;
@@ -150,21 +153,35 @@ export function CitizenshipAutocompleteField({
           isLoading={isCitizenshipsPending}
           isValid={validationStyle && isValid}
           labelKey={(option) => (option as CitizenshipOption)?.citizenship}
-          onBlur={onBlur}
+          onBlur={() => {
+            if (!value) {
+              inputRef.current?.clear();
+            }
+            onBlur();
+          }}
           onChange={(selected) => {
             onChange(
               transform.output(
                 (selected[0] as CitizenshipOption)?.citizenship ?? "",
               ),
             );
+            onChangeParent?.(
+              (selected[0] as CitizenshipOption)?.citizenship ?? "",
+            );
             onBlur();
           }}
           onInputChange={(text) => {
+            onChange("");
             setQuery(text);
           }}
           options={citizenships}
           placeholder={placeholder}
-          ref={ref}
+          ref={(instance) => {
+            ref(instance);
+            // @ts-ignore-next-line
+            // noinspection JSConstantReassignment
+            inputRef.current = instance;
+          }}
           renderMenuItemChildren={(option, {text}) => {
             return (
               <span>

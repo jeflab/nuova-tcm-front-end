@@ -24,6 +24,7 @@ import {
   yesNoOptions,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
 import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {normalizeError} from "@/helpers/errors";
 import {getOptionsLabel} from "@/helpers/getOptionsLabel";
 import {Nullish, Optional} from "@/helpers/TypesHelper";
 import {Den} from "@/models/entities/lip";
@@ -109,11 +110,11 @@ export function DenForm() {
             invariant(lipId, "lipId is required");
             const updateDenResponse = await updateDen(values, lipId);
 
-            if (updateDenResponse.status !== "success") {
+            if (updateDenResponse?.status !== "success") {
               throw {
                 root: {
                   type: "server",
-                  message: updateDenResponse.message,
+                  message: normalizeError(updateDenResponse).message,
                 },
               };
             }
@@ -346,6 +347,16 @@ export function DenForm() {
                     validation={{
                       required:
                         "Inserisci la tua capacità di risparmio media mensile",
+                      validate: {
+                        lessThanIncome: (value, formValues) => {
+                          if (
+                            parseInt(value, 10) * 12 >
+                            parseInt(formValues.income, 10)
+                          ) {
+                            return `La tua capacità di risparmio mensile non può essere maggiore del tuo reddito medio annuo netto`;
+                          }
+                        },
+                      },
                     }}
                   />
                   <InputGroup.Text>,00 €</InputGroup.Text>
