@@ -187,7 +187,10 @@ export function QuoteForm() {
       <ModalFooter>
         <div className="me-auto">
           {formMethods.formState.isSubmitting ? (
-            "Calcolo in corso..."
+            <>
+              <FontAwesomeIcon icon={faSpinner} className="fa-spin" /> Calcolo
+              in corso...
+            </>
           ) : quotation ? (
             <>
               Premio mensile:{" "}
