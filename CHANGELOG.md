@@ -1,6 +1,16 @@
 # Changelog
 
-### v1.1.2
+## 1.2.0 (2024-11-20)
+
+#### Added:
+
+- Aggiunto pagina preventivo pubblica
+
+#### Fixed:
+
+- Rimosso redirect dopo login
+
+### v1.1.2 (2024-11-12)
 
 #### Added:
 
@@ -18,7 +28,7 @@
 
 - Corretto problema lunghezza etichette menu laterale lip
 
-### v1.1.1
+### v1.1.1 (2024-10-30)
 
 #### Added:
 
