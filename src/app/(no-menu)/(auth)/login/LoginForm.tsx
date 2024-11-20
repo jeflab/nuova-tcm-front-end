@@ -12,9 +12,7 @@ import {fiscalCodeValidator} from "@/ui/form/validators/fiscalCode";
 import {faSpinner} from "@fortawesome/pro-duotone-svg-icons";
 import {faSignInAlt} from "@fortawesome/pro-duotone-svg-icons/faSignInAlt";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {useRouter} from "next/navigation";
 import {Alert, FormGroup, FormLabel} from "react-bootstrap";
-import * as Sentry from "@sentry/nextjs";
 
 const defaultValues = {
   fiscalCode: "",
@@ -22,8 +20,6 @@ const defaultValues = {
 };
 
 export function LoginForm() {
-  const router = useRouter();
-
   const handleSubmit = async (data: typeof defaultValues) => {
     let loginResponse: Awaited<ReturnType<typeof login>>;
 
@@ -44,21 +40,7 @@ export function LoginForm() {
       };
     }
 
-    Sentry.addBreadcrumb({
-      message: "login success",
-      category: "auth",
-      data: {
-        loginResponse,
-      },
-    });
-
-    setTimeout(() => {
-      Sentry.addBreadcrumb({
-        message: "redirecting after 1ms",
-        category: "auth",
-      });
-      router.push("/");
-    }, 1);
+    // Se la login è andata a buon fine, vengono settati i cookie che triggerano la revalidazione della pagina quindi qui non dobbiamo fare niente
   };
 
   return (

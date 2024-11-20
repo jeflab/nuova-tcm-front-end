@@ -152,7 +152,10 @@ export function QuoterForm() {
             </div>
             <div className="hstack gap-2">
               {formMethods.formState.isSubmitting ? (
-                "Calcolo in corso..."
+                <>
+                  <FontAwesomeIcon icon={faSpinner} className="fa-spin" />{" "}
+                  Calcolo in corso...
+                </>
               ) : premium ? (
                 <>
                   Premio mensile:{" "}
