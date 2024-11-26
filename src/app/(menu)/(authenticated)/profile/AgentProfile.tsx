@@ -1,6 +1,6 @@
 import {dateString} from "@/helpers/dates";
 import {Agent} from "@/models/entities/agent";
-import {Button, Card, CardBody, CardHeader, Col, Row} from "react-bootstrap";
+import {Card, CardBody, CardHeader, Col, Row} from "react-bootstrap";
 
 interface AgentProfileProps {
   agent: Agent;
@@ -26,7 +26,7 @@ export function AgentProfile({agent}: AgentProfileProps) {
           </Col>
           <Col>
             <dt>Numero civico:</dt>
-            <dd>{agent.streetNumber}</dd>
+            <dd>{agent?.streetNumber || "n.d."}</dd>
           </Col>
           <Col>
             <dt>Città:</dt>
