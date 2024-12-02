@@ -3,6 +3,7 @@ import {
   fundSourceOptions,
   genderOptions,
   idTypeOptions,
+  lipTypeOptions,
   nominationOptions,
   paymentMethodsSimpleOptions,
   relationshipOptions,
@@ -431,6 +432,7 @@ export const lipSchema = z
       .transform((states) => {
         return states?.[states.length - 1] ?? lipStateSchema.parse(undefined);
       }),
+    type: z.enum(getOptionsValues(lipTypeOptions)),
   })
   .transform(
     ({

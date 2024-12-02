@@ -24,6 +24,16 @@ export const relationshipOptions = [
 ] as const;
 export type Relationship = (typeof relationshipOptions)[number]["value"];
 
+// {label: "Il Contraente è diverso dall'Assicurato ed è una persona giuridica", value: "corporate-insured"},
+export const lipTypeOptions = [
+  {label: "Il Contraente è uguale all'Assicurato", value: "self-insured"},
+  {
+    label: "Il Contraente è diverso dall'Assicurato",
+    value: "third-party-insured",
+  },
+] as const;
+export type LipType = (typeof lipTypeOptions)[number]["value"];
+
 // Contractor data
 
 export const publicOfficesOptions = [

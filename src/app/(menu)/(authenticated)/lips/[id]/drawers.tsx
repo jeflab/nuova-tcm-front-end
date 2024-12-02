@@ -24,11 +24,14 @@ import {PaymentLock} from "@/app/(menu)/(authenticated)/lipsDrawers/payment/Paym
 import {PaymentSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/payment/PaymentSummary";
 import {QuoteForm} from "@/app/(menu)/(authenticated)/lipsDrawers/quote/QuoteForm";
 import {QuoteSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/quote/QuoteSummary";
+import {TypeForm} from "@/app/(menu)/(authenticated)/lipsDrawers/type/TypeForm";
+import {TypeSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/type/TypeSummary";
 import {ReactNode} from "react";
 import {ContractorContactsSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/contractorContacts/ContractorContactsSummary";
 import {ContractorPersonalAreaActivationLastPrivacy} from "@/app/(menu)/(authenticated)/lipsDrawers/contractorPersonalAreaActivation/ContractorPersonalAreaActivationLastPrivacy";
 
 export type DrawerName =
+  | "type"
   | "fatca"
   | "contractorFiscalCode"
   | "contractorContacts"
@@ -52,6 +55,12 @@ interface DrawerConfig {
 }
 
 export const drawers: DrawerConfig[] = [
+  {
+    name: "type",
+    title: "Tipo di polizza",
+    modalContent: <TypeForm />,
+    summaryContent: <TypeSummary />,
+  },
   {
     name: "fatca",
     title: "Verifica residenza",

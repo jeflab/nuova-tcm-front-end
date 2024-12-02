@@ -24,7 +24,7 @@ interface Actions {
 }
 
 const initialState: State = {
-  drawerStates: {fatca: {variant: "active", ...presetButtons.compile}},
+  drawerStates: {type: {variant: "active", ...presetButtons.compile}},
   lip: null,
   modalOpen: null,
   preliminaryData: {},
@@ -68,16 +68,30 @@ function createState(state: State & Actions) {
   const amlBlocked = state.lip?.aml?.blocked ?? false;
 
   if (isPreliminary) {
-    // fatca
-    if (state.preliminaryData.fatca === undefined) {
-      state.drawerStates.fatca = {variant: "active", ...presetButtons.compile};
-    } else if (
-      state.preliminaryData.fatca === "no" &&
-      state.preliminaryData.italianResidency === "yes"
-    ) {
-      state.drawerStates.fatca = {variant: "success"};
+    // type
+    if (state.preliminaryData.type === undefined) {
+      state.drawerStates.type = {variant: "active", ...presetButtons.compile};
     } else {
-      state.drawerStates.fatca = {variant: "danger", ...presetButtons.update};
+      state.drawerStates.type = {variant: "success"};
+    }
+
+    // fatca
+    if (state.drawerStates.type?.variant === "success") {
+      if (state.preliminaryData.fatca === undefined) {
+        state.drawerStates.fatca = {
+          variant: "active",
+          ...presetButtons.compile,
+        };
+      } else if (
+        state.preliminaryData.fatca === "no" &&
+        state.preliminaryData.italianResidency === "yes"
+      ) {
+        state.drawerStates.fatca = {variant: "success"};
+      } else {
+        state.drawerStates.fatca = {variant: "danger", ...presetButtons.update};
+      }
+    } else {
+      state.drawerStates.fatca = undefined;
     }
 
     // contractor fiscal code
@@ -110,16 +124,30 @@ function createState(state: State & Actions) {
     }
   } else {
     // Dati da server
-    // fatca
-    if (state.lip?.contractor?.fatca.fatcaCheck.response === undefined) {
-      state.drawerStates.fatca = {variant: "active", ...presetButtons.compile};
-    } else if (
-      state.lip?.contractor.fatca.fatcaCheck.response === "no" &&
-      state.lip?.contractor.fatca.residencyCheck.response === "yes"
-    ) {
-      state.drawerStates.fatca = {variant: "success"};
+    // type
+    if (state.lip?.type === undefined) {
+      state.drawerStates.type = {variant: "active", ...presetButtons.compile};
     } else {
-      state.drawerStates.fatca = {variant: "danger"};
+      state.drawerStates.type = {variant: "success"};
+    }
+
+    // fatca
+    if (state.drawerStates.type?.variant === "success") {
+      if (state.lip?.contractor?.fatca.fatcaCheck.response === undefined) {
+        state.drawerStates.fatca = {
+          variant: "active",
+          ...presetButtons.compile,
+        };
+      } else if (
+        state.lip?.contractor.fatca.fatcaCheck.response === "no" &&
+        state.lip?.contractor.fatca.residencyCheck.response === "yes"
+      ) {
+        state.drawerStates.fatca = {variant: "success"};
+      } else {
+        state.drawerStates.fatca = {variant: "danger"};
+      }
+    } else {
+      state.drawerStates.fatca = undefined;
     }
 
     // contractor fiscal code
