@@ -6,12 +6,9 @@ import {DrawerSkeleton} from "@/ui/drawer/Drawer";
 import {NavDrawerSkeleton} from "@/ui/drawer/NavDrawer";
 import {LipStateBadgeSkeleton} from "@/ui/LipStateBadge";
 import {PageTitle} from "@/ui/PageTitle";
-import {
-  faArrowLeft,
-  faTriangleExclamation,
-} from "@fortawesome/pro-duotone-svg-icons";
+import {faArrowLeft} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {Alert, Col, Nav, Row} from "react-bootstrap";
+import {Col, Nav, Row} from "react-bootstrap";
 import styles from "./page.module.scss";
 
 export default async function NewLipPage() {
@@ -24,7 +21,7 @@ export default async function NewLipPage() {
       <ButtonLink href="/contractorLips">
         <FontAwesomeIcon icon={faArrowLeft} /> Torna alle tue polizze
       </ButtonLink>
-      <Row className="flex-row-reverse">
+      <Row className="flex-row-reverse gy-3">
         <Col md="auto">
           <Nav className={cns("flex-column", styles.connectedList)}>
             {drawers.map(({name, title, shortTitle}) => (
@@ -35,24 +32,6 @@ export default async function NewLipPage() {
           </Nav>
         </Col>
         <Col className="d-flex flex-column gap-3">
-          <Alert variant="info" className="mb-0">
-            <h3>
-              <FontAwesomeIcon icon={faTriangleExclamation} className="me-2" />
-              Avviso legale: Contraente e Assicurato devono coincidere.
-            </h3>
-            <p>
-              Ti diamo il benvenuto nell'app di calcolo preventivo per polizze
-              vita. Ai fini legali, è obbligatorio che il Contraente coincida
-              con l'assicurato durante la compilazione dei dati.
-            </p>
-            <p className="mb-0">
-              Il Contraente è la persona responsabile della sottoscrizione della
-              polizza, mentre l'assicurato è la persona per la quale la polizza
-              viene stipulata. Affinché il processo sia conforme alle normative
-              vigenti, i dettagli del Contraente e dell'assicurato devono
-              corrispondere.
-            </p>
-          </Alert>
           {drawers.map(({name, title}) => (
             <DrawerSkeleton key={name} title={title} />
           ))}
