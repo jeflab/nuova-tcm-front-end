@@ -7,7 +7,9 @@ import {
 export interface PreliminaryData {
   type?: LipType;
   fatca?: YesNoAnswer;
+  insuredFatca?: YesNoAnswer;
   italianResidency?: YesNoAnswer;
+  insuredItalianResidency?: YesNoAnswer;
   contractorAlreadyRegistered?: boolean;
   contractorPersonalData?: {
     birthDate: string;

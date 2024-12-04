@@ -11,6 +11,7 @@ import {IdentificationDataSummary} from "@/app/(menu)/(authenticated)/lipsDrawer
 import {PaymentLock} from "@/app/(menu)/(authenticated)/lipsDrawers/payment/PaymentLock";
 import {PaymentSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/payment/PaymentSummary";
 import {QuoteSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/quote/QuoteSummary";
+import {TypeSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/type/TypeSummary";
 import {ReactNode} from "react";
 import {ContractorContactsSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/contractorContacts/ContractorContactsSummary";
 import {DrawerName} from "../../lips/[id]/drawers";
@@ -24,6 +25,11 @@ interface DrawerConfig {
 }
 
 export const drawers: DrawerConfig[] = [
+  {
+    name: "type",
+    title: "Tipo di polizza",
+    summaryContent: <TypeSummary />,
+  },
   {
     name: "fatca",
     title: "Verifica residenza",

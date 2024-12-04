@@ -84,7 +84,10 @@ function createState(state: State & Actions) {
         };
       } else if (
         state.preliminaryData.fatca === "no" &&
-        state.preliminaryData.italianResidency === "yes"
+        state.preliminaryData.italianResidency === "yes" &&
+        (state.preliminaryData.type === "self-insured" ||
+          (state.preliminaryData.insuredFatca === "no" &&
+            state.preliminaryData.insuredItalianResidency === "yes"))
       ) {
         state.drawerStates.fatca = {variant: "success"};
       } else {
@@ -140,7 +143,10 @@ function createState(state: State & Actions) {
         };
       } else if (
         state.lip?.contractor.fatca.fatcaCheck.response === "no" &&
-        state.lip?.contractor.fatca.residencyCheck.response === "yes"
+        state.lip?.contractor.fatca.residencyCheck.response === "yes" &&
+        (state.lip?.type === "self-insured" ||
+          (state.lip?.insured?.fatca.fatcaCheck.response === "no" &&
+            state.lip?.insured?.fatca.residencyCheck.response === "yes"))
       ) {
         state.drawerStates.fatca = {variant: "success"};
       } else {
