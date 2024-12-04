@@ -40,7 +40,7 @@ function createState(state: State & Actions) {
       Object.keys(state.lip?.eSigns?.polizza).length > 0) ||
     (state.lip?.eSigns?.identificazione &&
       Object.keys(state.lip?.eSigns?.identificazione).length > 0);
-  const privacyESigned = !!state.lip?.contractor?.lastPrivacyEsignId;
+  const privacyESigned = !!state.lip?.contractor?.lastPrivacyESignId;
 
   const askForUnderwriting =
     // se le condizioni sanitarie non sono rispettate
@@ -186,7 +186,7 @@ function createState(state: State & Actions) {
 
     // Attesa creazione area Contraente
     if (state.drawerStates.contractorContacts?.variant === "success") {
-      if (state.lip?.contractor.lastPrivacyEsignId === null) {
+      if (state.lip?.contractor.lastPrivacyESignId === null) {
         state.drawerStates.contractorPersonalAreaActivation = {
           variant: "active",
           ...presetButtons.privacyEsign,
@@ -222,14 +222,14 @@ function createState(state: State & Actions) {
     // Identificazione Contraente
     if (state.drawerStates.contractorData?.variant === "success") {
       if (
-        !state.lip?.contractor.identitydocument ||
-        state.lip.contractor.identitydocument.length === 0
+        !state.lip?.contractor.identityDocument ||
+        state.lip.contractor.identityDocument.length === 0
       ) {
         state.drawerStates.identification = {
           variant: "active",
           ...presetButtons.compile,
         };
-      } else if (state.lip.contractor.identitydocument.length > 0) {
+      } else if (state.lip.contractor.identityDocument.length > 0) {
         state.drawerStates.identification = {
           variant: "success",
           ...(allowUpdatesBeforePayment && presetButtons.update),

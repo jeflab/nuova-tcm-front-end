@@ -16,7 +16,7 @@ export function ContractorPersonalAreaActivationSummary() {
     return null;
   }
 
-  if (contractor.lastPrivacyEsignId === null) {
+  if (contractor.lastPrivacyESignId === null) {
     return (
       <p className="mb-0">
         In attesa che il Contraente accetti e firmi la privacy

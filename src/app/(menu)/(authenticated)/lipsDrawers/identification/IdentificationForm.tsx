@@ -41,7 +41,7 @@ export function IdentificationForm() {
   const agentId = useStore((state) => state.lip?.agent.id);
   const contractorId = useStore((state) => state.lip?.contractor.id);
   const identityDocument = useStore((state) =>
-    state.lip?.contractor.identitydocument?.at(-1),
+    state.lip?.contractor.identityDocument?.at(-1),
   );
 
   const formMethods = useForm({

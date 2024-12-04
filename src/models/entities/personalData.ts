@@ -126,6 +126,7 @@ export const personalDataSchema = z
       second_citizenship,
       second_citizenship_instance,
       json_pep,
+      identitydocument,
       ...data
     }) => {
       return {
@@ -134,7 +135,7 @@ export const personalDataSchema = z
         birthPlace: place_birth,
         birthProvince: region_birth,
         fiscalCode: fiscal_code,
-        lastPrivacyEsignId: last_privacy_esign_id,
+        lastPrivacyESignId: last_privacy_esign_id,
         fatca: json_fatca,
         streetNumber: street_number,
         zipCode: zip_code,
@@ -142,6 +143,7 @@ export const personalDataSchema = z
         secondCitizenship: second_citizenship,
         secondCitizenshipInstance: second_citizenship_instance,
         pep: json_pep,
+        identityDocument: identitydocument,
       };
     },
   );
