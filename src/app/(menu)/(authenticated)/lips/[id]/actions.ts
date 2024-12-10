@@ -1,7 +1,6 @@
 "use server";
 
 import {BeneficiariesFormValues} from "@/app/(menu)/(authenticated)/lipsDrawers/beneficiaries/BeneficiariesForm";
-import {fatcaQuestions} from "@/app/(menu)/(authenticated)/lipsDrawers/facta/FatcaForm";
 import {HealthQuestionnaireFormValues} from "@/app/(menu)/(authenticated)/lipsDrawers/healthQuestionnaire/HealthQuestionnaireForm";
 import {PaymentFormValues} from "@/app/(menu)/(authenticated)/lipsDrawers/payment/PaymentForm";
 import {
@@ -22,6 +21,7 @@ import {
   IdType,
   JobPosition,
   jobPositionOptions,
+  LipType,
   needsToMeetOptions,
   NeedsToMeetOptions,
   PublicOffices,
@@ -56,17 +56,18 @@ const checkContractorShape = {
   lip: lipSchema.optional(),
 };
 interface ActivateContractorParams {
+  type: LipType;
   fatca: {
     label: string;
     text: string;
     options: readonly Option[];
-    response: (typeof fatcaQuestions)["fatcaCheck"]["options"][number]["value"];
+    response: YesNoAnswer;
   };
   italianResidency: {
     label: string;
     text: string;
     options: readonly Option[];
-    response: (typeof fatcaQuestions)["residencyCheck"]["options"][number]["value"];
+    response: YesNoAnswer;
   };
   birthDate: string;
   birthPlace: {
@@ -84,6 +85,7 @@ export async function activateContractor(
   contractorData: ActivateContractorParams,
 ) {
   const data = {
+    type: contractorData.type,
     json_fatca: JSON.stringify({
       fatcaCheck: contractorData.fatca,
       residencyCheck: contractorData.italianResidency,

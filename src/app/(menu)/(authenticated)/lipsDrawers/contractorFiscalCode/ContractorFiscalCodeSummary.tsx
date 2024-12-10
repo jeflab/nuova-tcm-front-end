@@ -1,6 +1,8 @@
 "use client";
 
 import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {faCheck, faXmark} from "@fortawesome/pro-solid-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 export function ContractorFiscalCodeSummary() {
   const contractorAlreadyRegistered = useStore(
@@ -24,11 +26,17 @@ export function ContractorFiscalCodeSummary() {
   if (contractorAlreadyRegistered) {
     return (
       <p className="mb-0">
+        <FontAwesomeIcon icon={faXmark} className="text-danger" fixedWidth />{" "}
         Non è possibile continuare la consulenza poiché il Contraente risulta
         già censito da un altro Intermediario
       </p>
     );
   }
 
-  return <p className="mb-0">Il codice fiscale del Contraente è corretto</p>;
+  return (
+    <p className="mb-0">
+      <FontAwesomeIcon icon={faCheck} className="text-success" fixedWidth /> Il
+      codice fiscale del Contraente è corretto
+    </p>
+  );
 }
