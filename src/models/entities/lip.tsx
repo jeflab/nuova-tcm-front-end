@@ -405,10 +405,10 @@ const certificateSchema = z
 export const lipSchema = z
   .object({
     id: z.number(),
-    insured_id: z.number(),
     created_at: z.coerce.date(),
     agent: agentSchema,
     contractor: personalDataSchema,
+    contractor_insured_relationship: z.string().nullable(),
     insured: personalDataSchema.nullish(),
     lip_number: z.coerce.string(),
     json_den: zu.stringToJSON().pipe(denSchema).nullish(),
@@ -438,8 +438,8 @@ export const lipSchema = z
   .transform(
     ({
       created_at,
-      insured_id,
       lip_number,
+      contractor_insured_relationship,
       json_den,
       json_quotation,
       json_survey_healthcare,
@@ -452,11 +452,20 @@ export const lipSchema = z
       lipstates,
       ...data
     }) => {
+      const contractorInsuredRelationship =
+        contractor_insured_relationship?.startsWith("other:")
+          ? contractor_insured_relationship.slice(0, 5)
+          : contractor_insured_relationship;
+      const contractorInsuredRelationshipOther =
+        contractor_insured_relationship?.startsWith("other:")
+          ? contractor_insured_relationship.slice(6)
+          : undefined;
       return {
         ...data,
         createdAt: created_at,
-        insuredId: insured_id,
         lipNumber: lip_number,
+        contractorInsuredRelationship,
+        contractorInsuredRelationshipOther,
         den: json_den,
         quotation: json_quotation,
         healthcareQuestionnaire: json_survey_healthcare,

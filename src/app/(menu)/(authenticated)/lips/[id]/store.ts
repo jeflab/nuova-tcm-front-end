@@ -145,6 +145,7 @@ function createState(state: State & Actions) {
         state.lip?.contractor.fatca.fatcaCheck.response === "no" &&
         state.lip?.contractor.fatca.residencyCheck.response === "yes" &&
         (state.lip?.type === "self-insured" ||
+          !state.lip?.insured ||
           (state.lip?.insured?.fatca.fatcaCheck.response === "no" &&
             state.lip?.insured?.fatca.residencyCheck.response === "yes"))
       ) {
@@ -266,8 +267,29 @@ function createState(state: State & Actions) {
       state.drawerStates.den = undefined;
     }
 
-    // Preventivo
+    // Censimento Contraente
     if (state.drawerStates.den?.variant === "success") {
+      if (!state.lip?.insured?.city) {
+        state.drawerStates.insuredData = {
+          variant: "active",
+          ...presetButtons.compile,
+        };
+      } else {
+        state.drawerStates.insuredData = {
+          variant: "success",
+          ...(allowUpdatesBeforePayment && presetButtons.update),
+        };
+      }
+    } else {
+      state.drawerStates.insuredData = undefined;
+    }
+
+    // Preventivo
+    if (
+      (state.lip?.type !== "third-party-insured" &&
+        state.drawerStates.den?.variant === "success") ||
+      state.drawerStates.insuredData?.variant === "success"
+    ) {
       if (state.lip?.quotation === null) {
         state.drawerStates.quote = {
           variant: "active",

@@ -1,6 +1,6 @@
 "use client";
 
-import {updateContractorData} from "@/app/(menu)/(authenticated)/lips/[id]/actions";
+import {updatePersonalData} from "@/app/(menu)/(authenticated)/lips/[id]/actions";
 import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {
   genderOptions,
@@ -116,7 +116,7 @@ export function ContractorDataForm() {
           onSubmit={async (values) => {
             invariant(contractor, "Contractor must be defined");
             invariant(lipId, "Lip ID must be defined");
-            const updatedContractor = await updateContractorData(
+            const updatedContractor = await updatePersonalData(
               contractor.id,
               lipId,
               values,
@@ -200,6 +200,7 @@ export function ContractorDataForm() {
             <Col className="d-flex" xs={12} sm={6}>
               <FormGroup controlId="contact.phone" as={BorderFeedback}>
                 <FormLabel>Cellulare</FormLabel>
+                <FieldError />
                 <InputField
                   type="tel"
                   placeholder="Cellulare del Contraente"
@@ -213,6 +214,7 @@ export function ContractorDataForm() {
             <Col className="d-flex" xs={12} sm={6}>
               <FormGroup controlId="contact.email" as={BorderFeedback}>
                 <FormLabel>E-mail</FormLabel>
+                <FieldError />
                 <InputField
                   type="email"
                   placeholder="Email del Contraente"

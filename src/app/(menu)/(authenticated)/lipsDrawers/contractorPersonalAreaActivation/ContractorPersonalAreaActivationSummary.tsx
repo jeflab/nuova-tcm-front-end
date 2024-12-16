@@ -4,6 +4,7 @@ import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {createDocumentUrl} from "@/helpers/createResourcesUrl";
 import {ButtonLink} from "@/ui/ButtonLink";
 import {faDownload} from "@fortawesome/pro-duotone-svg-icons";
+import {faCheck} from "@fortawesome/pro-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Stack} from "react-bootstrap";
 
@@ -26,7 +27,10 @@ export function ContractorPersonalAreaActivationSummary() {
 
   return (
     <Stack gap={4}>
-      <p className="mb-0">Area Contraente attivata</p>
+      <p className="mb-0">
+        <FontAwesomeIcon icon={faCheck} className="text-success" fixedWidth />{" "}
+        Area Contraente attivata
+      </p>
       <h4 className="w-100 text-primary">
         <FontAwesomeIcon icon={faDownload} /> Documenti preliminari
       </h4>

@@ -19,11 +19,14 @@ import {HealthQuestionnaireForm} from "@/app/(menu)/(authenticated)/lipsDrawers/
 import {HealthQuestionnaireSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/healthQuestionnaire/HealthQuestionnaireSummary";
 import {IdentificationForm} from "@/app/(menu)/(authenticated)/lipsDrawers/identification/IdentificationForm";
 import {IdentificationDataSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/identification/IdentificationSummary";
+import {InsuredDataForm} from "@/app/(menu)/(authenticated)/lipsDrawers/insuredData/InsuredDataForm";
+import {InsuredDataSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/insuredData/InsuredDataSummary";
 import {PaymentForm} from "@/app/(menu)/(authenticated)/lipsDrawers/payment/PaymentForm";
 import {PaymentLock} from "@/app/(menu)/(authenticated)/lipsDrawers/payment/PaymentLock";
 import {PaymentSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/payment/PaymentSummary";
 import {QuoteForm} from "@/app/(menu)/(authenticated)/lipsDrawers/quote/QuoteForm";
 import {QuoteSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/quote/QuoteSummary";
+import {LipType} from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
 import {TypeForm} from "@/app/(menu)/(authenticated)/lipsDrawers/type/TypeForm";
 import {TypeSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/type/TypeSummary";
 import {ReactNode} from "react";
@@ -39,6 +42,7 @@ export type DrawerName =
   | "contractorData"
   | "identification"
   | "den"
+  | "insuredData"
   | "quote"
   | "healthQuestionnaire"
   | "beneficiaries"
@@ -52,6 +56,7 @@ interface DrawerConfig {
   modalContent?: ReactNode;
   summaryContent?: ReactNode;
   lock?: ReactNode;
+  isVisible?: (lipType: LipType) => boolean;
 }
 
 export const drawers: DrawerConfig[] = [
@@ -108,6 +113,13 @@ export const drawers: DrawerConfig[] = [
     shortTitle: "Questionario di coerenza",
     modalContent: <DenForm />,
     summaryContent: <DenSummary />,
+  },
+  {
+    name: "insuredData",
+    title: "Censimento Assicurato",
+    modalContent: <InsuredDataForm />,
+    summaryContent: <InsuredDataSummary />,
+    isVisible: (lipType) => lipType === "third-party-insured",
   },
   {
     name: "quote",

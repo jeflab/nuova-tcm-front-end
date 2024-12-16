@@ -97,7 +97,7 @@ export const personalDataSchema = z
     place_birth: z.string(),
     region_birth: z.string(),
     fiscal_code: z.string(),
-    gender: z.enum(["male", "female", "other"]),
+    gender: z.enum(["male", "female"]),
     last_privacy_esign_id: z.number().nullable(),
     json_fatca: zu.stringToJSON().pipe(fatcaSchema),
     address: z.string().nullable(),

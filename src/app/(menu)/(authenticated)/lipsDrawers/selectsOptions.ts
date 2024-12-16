@@ -241,6 +241,20 @@ export const fundSourceOptions = [
 ] as const;
 export type FundSource = (typeof fundSourceOptions)[number]["value"];
 
+// Insured data
+export const insuredRelationshipOptions = [
+  {label: "Parentela", value: "kinship"},
+  {label: "Lavoro/Affari", value: "work_business"},
+  {label: "Affinità", value: "affinity"},
+  {label: "Coniugio", value: "marriage"},
+  {label: "Convivenza di fatto/Unione civile", value: "de_facto_civil_union"},
+  {label: "Relazione amicale", value: "friendly_relationship"},
+  {label: "Beneficenza/Liberalità", value: "charity_donation"},
+  {label: "Altro", value: "other"},
+] as const;
+export type InsuredRelationship =
+  (typeof insuredRelationshipOptions)[number]["value"];
+
 // Identification
 
 export const idTypeOptions = [
