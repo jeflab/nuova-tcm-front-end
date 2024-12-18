@@ -818,11 +818,11 @@ export function BeneficiariesForm() {
                   Ove non sia designato alcun Beneficiario, la prestazione
                   assicurativa sarà corrisposta in favore degli eredi
                   testamentari o, in mancanza di testamento, degli eredi
-                  legittimi del Contraente-assicurato
+                  legittimi dell'Assicurato
                 </Alert>
                 <Alert variant="warning" className="mb-0">
                   In caso di mancata indicazione nominativa del Beneficiario, la
-                  compagnia potrà incontrare, al decesso dell'assicurato,
+                  compagnia potrà incontrare, al decesso dell'Assicurato,
                   maggiori difficoltà nelle identificazione e nella ricerca del
                   Beneficiario
                 </Alert>
@@ -831,7 +831,7 @@ export function BeneficiariesForm() {
             <FormGroup controlId="thirdParty" as={BorderFeedback}>
               <CheckboxField
                 type="checkbox"
-                label="Il Contraente-Assicurato dichiara di voler escludere l’invio di comunicazioni ai Beneficiari, prima dell’evento assicurato."
+                label="Il Contraente dichiara di voler escludere l’invio di comunicazioni ai Beneficiari, prima dell’evento assicurato."
                 onChange={(value) => {
                   if (value.target.checked) {
                     formMethods.setValue(
@@ -853,11 +853,10 @@ export function BeneficiariesForm() {
                   <Row className="row-gap-3">
                     <Col xs={12}>
                       <Alert variant="info" className="mb-0">
-                        Il Contraente-Assicurato, per specifiche esigenze di
-                        riservatezza, indica come referente terzo, diverso dai
-                        Beneficiari, il soggetto di seguito indicato, al quale
-                        la Compagnia farà riferimento in caso di decesso del
-                        Contraente-Assicurato:
+                        Il Contraente, per specifiche esigenze di riservatezza,
+                        indica come referente terzo, diverso dai Beneficiari, il
+                        soggetto di seguito indicato, al quale la Compagnia farà
+                        riferimento in caso di decesso dell'Assicurato:
                       </Alert>
                     </Col>
                     <h4 className="w-100 me-auto">Anagrafica</h4>

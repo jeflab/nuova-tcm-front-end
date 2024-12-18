@@ -375,7 +375,7 @@ export type DurationOptions = (typeof durationOptions)[number]["value"];
 export const nominationOptions = [
   {
     label:
-      "Il Contraente designa come Beneficiari gli eredi testamentari o, in assenza di testamento, gli eredi legittimi del Contraente-assicurato in parti uguali fra loro",
+      "Il Contraente designa come Beneficiari gli eredi testamentari o, in assenza di testamento, gli eredi legittimi dell'Assicurato in parti uguali fra loro",
     value: "heirs",
   },
   {
