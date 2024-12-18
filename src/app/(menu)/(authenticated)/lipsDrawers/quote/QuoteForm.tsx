@@ -39,9 +39,7 @@ export function QuoteForm() {
   const [firstTry, setFirstTry] = useState(true);
 
   const quoteData = useStore((state) => state.lip?.quotation);
-  const contractorBirthDate = useStore(
-    (state) => state.lip?.contractor?.birthDate,
-  );
+  const insuredBirthDate = useStore((state) => state.lip?.insured?.birthDate);
   const income = useStore((state) => state.lip?.den?.income);
   const lipId = useStore((state) => state.lip?.id);
   const closeModal = useStore((state) => state.closeModal);
@@ -69,7 +67,7 @@ export function QuoteForm() {
         enabled: quoteData?.tpd.enabled ?? false,
         coverage: quoteData?.tpd.coverage.toString() ?? "0",
       },
-      birthDate: dbDateString(contractorBirthDate),
+      birthDate: dbDateString(insuredBirthDate),
     },
   });
 
