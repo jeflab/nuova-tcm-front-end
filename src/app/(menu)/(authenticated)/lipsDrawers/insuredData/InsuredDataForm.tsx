@@ -14,6 +14,9 @@ import {
 import {cns} from "@/helpers/cns";
 import {dbDateString} from "@/helpers/dates";
 import {normalizeError} from "@/helpers/errors";
+import {Nullable, Nullish} from "@/helpers/TypesHelper";
+import {Lip} from "@/models/entities/lip";
+import {PersonalData} from "@/models/entities/personalData";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {CheckGroup} from "@/ui/form/CheckGroup";
 import {CitizenshipAutocompleteField} from "@/ui/form/CitizenshipAutocompleteField";
@@ -28,6 +31,7 @@ import {
   upperCaseWordsNormalizer,
 } from "@/ui/form/normalizers";
 import {emailValidator} from "@/ui/form/validators/email";
+import {checkFiscalCodeDataConsistencyValidator} from "@/ui/form/validators/fiscalCode";
 import {faSave, faSpinner, faXmark} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import * as Sentry from "@sentry/nextjs";
@@ -46,6 +50,9 @@ import {
 import {useForm} from "react-hook-form";
 import invariant from "tiny-invariant";
 import "core-js/actual/array/to-sorted";
+import {getDate} from "date-fns/getDate";
+import {getMonth} from "date-fns/getMonth";
+import {getYear} from "date-fns/getYear";
 
 // Polyfill per safari 15.
 let toSortedPolyfillNeeded = false;
@@ -58,6 +65,40 @@ if (toSortedPolyfillNeeded) {
   Sentry.captureMessage("[].toSorted polyfill applied. " + [].toSorted);
 }
 
+function getDefaultValues(insured: Nullish<PersonalData>, lip: Nullable<Lip>) {
+  return {
+    insuredPersonalData: {
+      birthDate: insured ? dbDateString(insured.birthDate) : "",
+      birthPlace: {
+        city: insured?.birthPlace ?? "",
+        province: insured?.birthProvince ?? "",
+      },
+      fiscalCode: insured?.fiscalCode ?? "",
+      gender: insured?.gender ?? ("" as Gender),
+      name: insured?.name ?? "",
+      surname: insured?.surname ?? "",
+    },
+    contact: {
+      phone: insured?.phone ?? "",
+      email: insured?.email ?? "",
+    },
+    citizenship: insured?.citizenship ?? "",
+    secondCitizenship: insured?.secondCitizenship ?? "",
+    residence: {
+      place: {
+        city: insured?.city ?? "",
+        province: insured?.region ?? "",
+      },
+      streetName: insured?.address ?? "",
+      streetNumber: insured?.streetNumber ?? "",
+      zipCode: insured?.zipCode ?? "",
+    },
+    relationship:
+      lip?.contractorInsuredRelationship ?? ("" as InsuredRelationship),
+    relationshipOther: lip?.contractorInsuredRelationshipOther ?? "",
+  };
+}
+
 export function InsuredDataForm() {
   const lipId = useStore((state) => state.lip?.id);
   const lip = useStore((state) => state.lip);
@@ -65,37 +106,7 @@ export function InsuredDataForm() {
 
   const formMethods = useForm({
     mode: "onChange",
-    defaultValues: {
-      insuredPersonalData: {
-        birthDate: insured ? dbDateString(insured.birthDate) : "",
-        birthPlace: {
-          city: insured?.birthPlace ?? "",
-          province: insured?.birthProvince ?? "",
-        },
-        fiscalCode: insured?.fiscalCode ?? "",
-        gender: insured?.gender ?? ("" as Gender),
-        name: insured?.name ?? "",
-        surname: insured?.surname ?? "",
-      },
-      contact: {
-        phone: insured?.phone ?? "",
-        email: insured?.email ?? "",
-      },
-      citizenship: insured?.citizenship ?? "",
-      secondCitizenship: insured?.secondCitizenship ?? "",
-      residence: {
-        place: {
-          city: insured?.city ?? "",
-          province: insured?.region ?? "",
-        },
-        streetName: insured?.address ?? "",
-        streetNumber: insured?.streetNumber ?? "",
-        zipCode: insured?.zipCode ?? "",
-      },
-      relationship:
-        lip?.contractorInsuredRelationship ?? ("" as InsuredRelationship),
-      relationshipOther: lip?.contractorInsuredRelationshipOther ?? "",
-    },
+    defaultValues: getDefaultValues(insured, lip),
   });
 
   const relationshipValue = formMethods.watch("relationship");
@@ -141,6 +152,22 @@ export function InsuredDataForm() {
                   normalize={upperCaseNormalizer}
                   validation={{
                     required: "Inserisci il codice fiscale dell'Assicurato",
+                    validate: (value, values) =>
+                      checkFiscalCodeDataConsistencyValidator(value, {
+                        name: values.insuredPersonalData.name,
+                        surname: values.insuredPersonalData.surname,
+                        gender:
+                          values.insuredPersonalData.gender === "male"
+                            ? "M"
+                            : "F",
+                        day: getDate(values.insuredPersonalData.birthDate),
+                        month:
+                          getMonth(values.insuredPersonalData.birthDate) + 1,
+                        year: getYear(values.insuredPersonalData.birthDate),
+                        birthplace: values.insuredPersonalData.birthPlace.city,
+                        birthplaceProvincia:
+                          values.insuredPersonalData.birthPlace.province,
+                      }),
                   }}
                 />
               </FormGroup>

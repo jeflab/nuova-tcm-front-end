@@ -267,7 +267,7 @@ function createState(state: State & Actions) {
       state.drawerStates.den = undefined;
     }
 
-    // Censimento Contraente
+    // Censimento Assicurato
     if (state.drawerStates.den?.variant === "success") {
       if (!state.lip?.insured?.city) {
         state.drawerStates.insuredData = {
@@ -284,11 +284,33 @@ function createState(state: State & Actions) {
       state.drawerStates.insuredData = undefined;
     }
 
+    // Identificazione Assicurato
+    if (state.drawerStates.insuredData?.variant === "success") {
+      if (
+        !state.lip?.insured?.identityDocument ||
+        state.lip.insured.identityDocument.length === 0
+      ) {
+        state.drawerStates.insuredIdentification = {
+          variant: "active",
+          ...presetButtons.compile,
+        };
+      } else if (state.lip.insured.identityDocument.length > 0) {
+        state.drawerStates.insuredIdentification = {
+          variant: "success",
+          ...(allowUpdatesBeforePayment && presetButtons.update),
+        };
+      } else {
+        state.drawerStates.insuredIdentification = {variant: "danger"};
+      }
+    } else {
+      state.drawerStates.insuredIdentification = undefined;
+    }
+
     // Preventivo
     if (
       (state.lip?.type !== "third-party-insured" &&
         state.drawerStates.den?.variant === "success") ||
-      state.drawerStates.insuredData?.variant === "success"
+      state.drawerStates.insuredIdentification?.variant === "success"
     ) {
       if (state.lip?.quotation === null) {
         state.drawerStates.quote = {

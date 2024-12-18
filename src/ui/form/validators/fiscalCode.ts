@@ -122,3 +122,34 @@ export const fiscalCodeMatchDataSuperRefine = (
     return false;
   }
 };
+
+export function checkFiscalCodeDataConsistencyValidator(
+  expectedFiscalCode: string,
+  data: FiscalCodeData,
+) {
+  if (
+    !data.name ||
+    !data.surname ||
+    !data.gender ||
+    !data.day ||
+    !data.month ||
+    !data.year ||
+    !data.birthplace ||
+    !data.birthplaceProvincia
+  ) {
+    return "Mancano dei dati per il calcolo del codice fiscale.";
+  }
+
+  try {
+    const fiscalCode = new CodiceFiscale(data);
+    if (fiscalCode.cf !== expectedFiscalCode) {
+      return "Il codice fiscale non corrisponde ai dati inseriti.";
+    }
+  } catch (e) {
+    return e && typeof e === "object" && "message" in e
+      ? (e.message as string)
+      : "Errore durante la validazione del codice fiscale.";
+  }
+
+  return true;
+}

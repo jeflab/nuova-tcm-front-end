@@ -13,11 +13,11 @@ import {
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Col, Row} from "react-bootstrap";
 
-export function IdentificationSummary() {
+export function InsuredIdentificationSummary() {
   const agentId = useStore((state) => state.lip?.agent.id);
-  const contractorId = useStore((state) => state.lip?.contractor.id);
+  const insuredId = useStore((state) => state.lip?.insured?.id);
   const identification = useStore((state) =>
-    state.lip?.contractor.identityDocument?.at(-1),
+    state.lip?.insured?.identityDocument?.at(-1),
   );
 
   if (!identification) {
@@ -54,11 +54,11 @@ export function IdentificationSummary() {
       <Col xs={6} sm={3} md={6} lg={3}>
         <div className="ratio ratio-4x3 p-3">
           {agentId &&
-            contractorId &&
+            insuredId &&
             identification.identification?.fileIdFrontName && (
               <IdImage
                 agentId={agentId}
-                personalDataId={contractorId}
+                personalDataId={insuredId}
                 filename={identification.identification?.fileIdFrontName}
               />
             )}
@@ -67,11 +67,11 @@ export function IdentificationSummary() {
       <Col xs={6} sm={3} md={6} lg={3}>
         <div className="ratio ratio-4x3 p-3">
           {agentId &&
-            contractorId &&
+            insuredId &&
             identification.identification?.fileIdBackName && (
               <IdImage
                 agentId={agentId}
-                personalDataId={contractorId}
+                personalDataId={insuredId}
                 filename={identification.identification?.fileIdBackName}
               />
             )}
@@ -84,19 +84,19 @@ export function IdentificationSummary() {
         </h4>
         <p className="mb-0">
           <FontAwesomeIcon icon={faSquareCheck} className="me-2" />
-          Di aver incontrato il Contraente di persona
+          Di aver incontrato l'Assicurato di persona
         </p>
         <p className="mb-0">
           <FontAwesomeIcon icon={faSquareCheck} className="me-2" />
-          Che il documento è la copia di quello mostrato dal Contraente
+          Che il documento è la copia di quello mostrato dall'Assicurato
         </p>
         <p className="mb-0">
           <FontAwesomeIcon icon={faSquareCheck} className="me-2" />
-          Che la fotografia è del Contraente
+          Che la fotografia è dell'Assicurato
         </p>
         <p className="mb-0">
           <FontAwesomeIcon icon={faSquareCheck} className="me-2" />
-          Di aver identificato il Contraente
+          Di aver identificato l'Assicurato
         </p>
       </Col>
     </Row>

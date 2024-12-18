@@ -7,7 +7,7 @@ import {DenSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/den/DenSummar
 import {DocumentsSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/documents/DocumentsSummary";
 import {FatcaSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/facta/FatcaSummary";
 import {HealthQuestionnaireSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/healthQuestionnaire/HealthQuestionnaireSummary";
-import {IdentificationDataSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/identification/IdentificationSummary";
+import {IdentificationSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/identification/IdentificationSummary";
 import {PaymentLock} from "@/app/(menu)/(authenticated)/lipsDrawers/payment/PaymentLock";
 import {PaymentSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/payment/PaymentSummary";
 import {QuoteSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/quote/QuoteSummary";
@@ -58,7 +58,7 @@ export const drawers: DrawerConfig[] = [
   {
     name: "identification",
     title: "Identificazione del Contraente",
-    summaryContent: <IdentificationDataSummary />,
+    summaryContent: <IdentificationSummary />,
   },
   {
     name: "den",

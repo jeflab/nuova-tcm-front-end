@@ -348,7 +348,7 @@ export async function addInsuredData(
   });
 }
 
-interface IdentificationContractorParams {
+interface IdentificationParams {
   frontPicture: File;
   backPicture: File;
   idType: IdType;
@@ -358,10 +358,12 @@ interface IdentificationContractorParams {
   issuedDate: string;
   expiringDate: string;
 }
-export async function identificationContractor(
-  documentFormData: TypedFormData<IdentificationContractorParams>,
+
+export async function identification(
+  documentFormData: TypedFormData<IdentificationParams>,
   fiscalCode: string,
   lipId: number,
+  endpoint: "/identification-contractor" | "/identification-insured",
 ) {
   const formData = getTypedFormDataFromObject({
     idFront: documentFormData.get("frontPicture"),
@@ -374,10 +376,36 @@ export async function identificationContractor(
     expiring_date: documentFormData.get("expiringDate"),
     fiscal_code: fiscalCode,
   });
-  return post("/identification-contractor", {
+  return post(endpoint, {
     data: formData,
     tags: [Tags.getLip(lipId)],
   });
+}
+
+export async function identificationContractor(
+  documentFormData: TypedFormData<IdentificationParams>,
+  fiscalCode: string,
+  lipId: number,
+) {
+  return identification(
+    documentFormData,
+    fiscalCode,
+    lipId,
+    "/identification-contractor",
+  );
+}
+
+export async function identificationInsured(
+  documentFormData: TypedFormData<IdentificationParams>,
+  fiscalCode: string,
+  lipId: number,
+) {
+  return identification(
+    documentFormData,
+    fiscalCode,
+    lipId,
+    "/identification-insured",
+  );
 }
 
 interface UpdateDenParams {

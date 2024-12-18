@@ -18,7 +18,7 @@ import {FatcaSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/facta/Fatca
 import {HealthQuestionnaireForm} from "@/app/(menu)/(authenticated)/lipsDrawers/healthQuestionnaire/HealthQuestionnaireForm";
 import {HealthQuestionnaireSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/healthQuestionnaire/HealthQuestionnaireSummary";
 import {IdentificationForm} from "@/app/(menu)/(authenticated)/lipsDrawers/identification/IdentificationForm";
-import {IdentificationDataSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/identification/IdentificationSummary";
+import {IdentificationSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/identification/IdentificationSummary";
 import {InsuredDataForm} from "@/app/(menu)/(authenticated)/lipsDrawers/insuredData/InsuredDataForm";
 import {InsuredDataSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/insuredData/InsuredDataSummary";
 import {PaymentForm} from "@/app/(menu)/(authenticated)/lipsDrawers/payment/PaymentForm";
@@ -32,6 +32,8 @@ import {TypeSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/type/TypeSum
 import {ReactNode} from "react";
 import {ContractorContactsSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/contractorContacts/ContractorContactsSummary";
 import {ContractorPersonalAreaActivationLastPrivacy} from "@/app/(menu)/(authenticated)/lipsDrawers/contractorPersonalAreaActivation/ContractorPersonalAreaActivationLastPrivacy";
+import {InsuredIdentificationForm} from "../../lipsDrawers/insuredIdentification/InsuredIdentificationForm";
+import {InsuredIdentificationSummary} from "../../lipsDrawers/insuredIdentification/InsuredIdentificationSummary";
 
 export type DrawerName =
   | "type"
@@ -43,6 +45,7 @@ export type DrawerName =
   | "identification"
   | "den"
   | "insuredData"
+  | "insuredIdentification"
   | "quote"
   | "healthQuestionnaire"
   | "beneficiaries"
@@ -104,7 +107,7 @@ export const drawers: DrawerConfig[] = [
     name: "identification",
     title: "Identificazione del Contraente",
     modalContent: <IdentificationForm />,
-    summaryContent: <IdentificationDataSummary />,
+    summaryContent: <IdentificationSummary />,
   },
   {
     name: "den",
@@ -119,6 +122,13 @@ export const drawers: DrawerConfig[] = [
     title: "Censimento Assicurato",
     modalContent: <InsuredDataForm />,
     summaryContent: <InsuredDataSummary />,
+    isVisible: (lipType) => lipType === "third-party-insured",
+  },
+  {
+    name: "insuredIdentification",
+    title: "Identificazione dell'Assicurato",
+    modalContent: <InsuredIdentificationForm />,
+    summaryContent: <InsuredIdentificationSummary />,
     isVisible: (lipType) => lipType === "third-party-insured",
   },
   {

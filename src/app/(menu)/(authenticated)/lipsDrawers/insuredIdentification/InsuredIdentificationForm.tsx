@@ -3,7 +3,7 @@
 import {normalizeError} from "@/helpers/errors";
 import {HelpText} from "@/ui/form/HelpText";
 import omit from "lodash/omit";
-import {identificationContractor} from "@/app/(menu)/(authenticated)/lips/[id]/actions";
+import {identificationInsured} from "@/app/(menu)/(authenticated)/lips/[id]/actions";
 import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {
   getIdentityDocumentDefaultValues,
@@ -37,11 +37,11 @@ import {useForm} from "react-hook-form";
 import invariant from "tiny-invariant";
 import {getTypedFormDataFromObject} from "@/helpers/typedFormData";
 
-export function IdentificationForm() {
+export function InsuredIdentificationForm() {
   const agentId = useStore((state) => state.lip?.agent.id);
-  const contractorId = useStore((state) => state.lip?.contractor.id);
+  const insuredId = useStore((state) => state.lip?.insured?.id);
   const identityDocument = useStore((state) =>
-    state.lip?.contractor.identityDocument?.at(-1),
+    state.lip?.insured?.identityDocument?.at(-1),
   );
 
   const formMethods = useForm({
@@ -50,26 +50,26 @@ export function IdentificationForm() {
       ...getIdentityDocumentDefaultValues(identityDocument),
       frontPicture: null as unknown as File,
       backPicture: null as unknown as File,
-      metContractorInPerson: !!identityDocument,
-      documentIsCopyShownByContractor: !!identityDocument,
-      photoIsOfContractor: !!identityDocument,
-      contractorHasBeenIdentified: !!identityDocument,
+      metInsuredInPerson: !!identityDocument,
+      documentIsCopyShownByInsured: !!identityDocument,
+      photoIsOfInsured: !!identityDocument,
+      insuredHasBeenIdentified: !!identityDocument,
     },
   });
 
-  const fiscalCode = useStore((state) => state.lip?.contractor?.fiscalCode);
+  const fiscalCode = useStore((state) => state.lip?.insured?.fiscalCode);
   const lipId = useStore((state) => state.lip?.id);
   const closeModal = useStore((state) => state.closeModal);
 
   const existingFrontImageUrl = createIDImageUrl({
-    personalDataId: contractorId,
+    personalDataId: insuredId,
     agentId,
     fileName: identityDocument?.identification?.fileIdFrontName,
     size: "full",
   });
 
   const existingBackImageUrl = createIDImageUrl({
-    personalDataId: contractorId,
+    personalDataId: insuredId,
     agentId,
     fileName: identityDocument?.identification?.fileIdBackName,
     size: "full",
@@ -79,30 +79,29 @@ export function IdentificationForm() {
     <>
       <ModalBody>
         <Form
-          id="identification-form"
+          id="insured-identification-form"
           onSubmit={async (values) => {
             invariant(fiscalCode, "Fiscal code is required");
             invariant(lipId, "lipId is required");
 
-            const identificationContractorResponse =
-              await identificationContractor(
-                getTypedFormDataFromObject(
-                  omit(values, [
-                    "metContractorInPerson",
-                    "documentIsCopyShownByContractor",
-                    "photoIsOfContractor",
-                    "contractorHasBeenIdentified",
-                  ]),
-                ),
-                fiscalCode,
-                lipId,
-              );
+            const identificationInsuredResponse = await identificationInsured(
+              getTypedFormDataFromObject(
+                omit(values, [
+                  "metInsuredInPerson",
+                  "documentIsCopyShownByInsured",
+                  "photoIsOfInsured",
+                  "insuredHasBeenIdentified",
+                ]),
+              ),
+              fiscalCode,
+              lipId,
+            );
 
-            if (identificationContractorResponse?.status !== "success") {
+            if (identificationInsuredResponse?.status !== "success") {
               throw {
                 root: {
                   type: "server",
-                  message: normalizeError(identificationContractorResponse)
+                  message: normalizeError(identificationInsuredResponse)
                     .message,
                 },
               };
@@ -177,17 +176,17 @@ export function IdentificationForm() {
             <h4>L'Intermediario dichiara:</h4>
             <Col xs={12}>
               <FormGroup
-                controlId="metContractorInPerson"
+                controlId="metInsuredInPerson"
                 as={BorderFeedback}
                 className="position-relative"
               >
                 <FieldError />
                 <CheckboxField
                   type="checkbox"
-                  label="Di aver incontrato il Contraente di persona"
+                  label="Di aver incontrato l'Assicurato di persona"
                   validation={{
                     required:
-                      "Per procedere devi dichiarare di aver incontrato il Contraente di persona",
+                      "Per procedere devi dichiarare di aver incontrato l'Assicurato di persona",
                   }}
                   stretchedLabel
                 />
@@ -195,17 +194,17 @@ export function IdentificationForm() {
             </Col>
             <Col xs={12}>
               <FormGroup
-                controlId="documentIsCopyShownByContractor"
+                controlId="documentIsCopyShownByInsured"
                 as={BorderFeedback}
                 className="position-relative"
               >
                 <FieldError />
                 <CheckboxField
                   type="checkbox"
-                  label="Che il documento è la copia di quello mostrato dal Contraente"
+                  label="Che il documento è la copia di quello mostrato all'Assicurato"
                   validation={{
                     required:
-                      "Per procedere devi dichiarare che il documento è la copia di quello mostrato dal Contraente",
+                      "Per procedere devi dichiarare che il documento è la copia di quello mostrato all'Assicurato",
                   }}
                   stretchedLabel
                 />
@@ -213,17 +212,17 @@ export function IdentificationForm() {
             </Col>
             <Col xs={12}>
               <FormGroup
-                controlId="photoIsOfContractor"
+                controlId="photoIsOfInsured"
                 as={BorderFeedback}
                 className="position-relative"
               >
                 <FieldError />
                 <CheckboxField
                   type="checkbox"
-                  label="Che la fotografia è del Contraente"
+                  label="Che la fotografia è dell'Assicurato"
                   validation={{
                     required:
-                      "Per procedere devi dichiarare che la fotografia è del Contraente",
+                      "Per procedere devi dichiarare che la fotografia è dell'Assicurato",
                   }}
                   stretchedLabel
                 />
@@ -231,17 +230,17 @@ export function IdentificationForm() {
             </Col>
             <Col xs={12}>
               <FormGroup
-                controlId="contractorHasBeenIdentified"
+                controlId="insuredHasBeenIdentified"
                 as={BorderFeedback}
                 className="position-relative"
               >
                 <FieldError />
                 <CheckboxField
                   type="checkbox"
-                  label="Di aver identificato il Contraente"
+                  label="Di aver identificato l'Assicurato"
                   validation={{
                     required:
-                      "Per procedere devi dichiarare di aver identificato il Contraente",
+                      "Per procedere devi dichiarare di aver identificato l'Assicurato",
                   }}
                   stretchedLabel
                 />
@@ -261,7 +260,11 @@ export function IdentificationForm() {
           <FontAwesomeIcon icon={faXmark} className="me-2" />
           Annulla
         </Button>
-        <Button type="submit" variant="primary" form="identification-form">
+        <Button
+          type="submit"
+          variant="primary"
+          form="insured-identification-form"
+        >
           {formMethods.formState.isSubmitting ? (
             <FontAwesomeIcon icon={faSpinner} className="fa-spin me-2" />
           ) : (
