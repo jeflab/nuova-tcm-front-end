@@ -1,3 +1,4 @@
+import {ESign} from "@/app/(menu)/(authenticated)/lipsDrawers/documents/DocumentsManagement";
 import {normalizeError} from "@/helpers/errors";
 import {Profile} from "@/models/account";
 import {PDFType} from "@/models/entities/esign";
@@ -39,6 +40,7 @@ interface RequestOTPFormProps<TPayload> {
   resendOTP?: () => void;
   transactionId: string;
   tagToRevalidate?: Tag;
+  whoESign: ESign["whoESign"];
 }
 
 const requestOTPFormDefaultValues = {
@@ -57,6 +59,7 @@ export function RequestOTPForm<TPayload>({
   resendOTP,
   transactionId,
   tagToRevalidate,
+  whoESign,
 }: RequestOTPFormProps<TPayload>) {
   const formMethods = useForm({
     defaultValues: requestOTPFormDefaultValues,
@@ -66,13 +69,14 @@ export function RequestOTPForm<TPayload>({
     <Form
       onSubmit={async (values) => {
         const response = await signFEADoc({
-          contractorId: personalData?.id,
+          personalDataId: personalData?.id,
           lipId,
           OTP: values.otp,
           payload,
           pdfType,
           transactionId,
           tagToRevalidate,
+          whoESign,
         });
 
         if (response?.status !== "success") {

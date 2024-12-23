@@ -102,6 +102,7 @@ export function ContractorPersonalAreaActivationLastPrivacyForm({
             payload={{values: formMethods.watch()}}
             lipId={lip.id}
             tagToRevalidate={Tags.getLip(lip.id)}
+            whoESign="contractor"
           />
         )}
       </div>

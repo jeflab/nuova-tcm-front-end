@@ -92,8 +92,12 @@ export function DocumentsChapterDetails({
                     }}
                   >
                     <FontAwesomeIcon icon={faFileSignature} /> Firma
-                    {eSign.whoESign === "contractor" ? " del Contraente" : ""}
-                  </Button>{" "}
+                    {eSign.whoESign === "contractor"
+                      ? " del Contraente"
+                      : eSign.whoESign === "insured"
+                        ? " dell'assicurato"
+                        : ""}
+                  </Button>
                   <RequestOTPModal
                     onHide={() => {
                       startTransition(() => {
@@ -109,8 +113,11 @@ export function DocumentsChapterDetails({
                     personalData={
                       eSign.whoESign === "contractor"
                         ? lip.contractor
-                        : undefined
+                        : eSign.whoESign === "insured" && lip.insured
+                          ? lip.insured
+                          : undefined
                     }
+                    whoESign={eSign.whoESign}
                     pdfType={document.type}
                     payload={{esignIndex: eSign.eSignIndex}}
                     show={esignModalOpen === eSign.eSignIndex}

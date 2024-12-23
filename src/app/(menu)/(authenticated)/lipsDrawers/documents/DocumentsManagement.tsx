@@ -26,14 +26,19 @@ import styles from "./DocumentsManagement.module.scss";
 
 export interface ESign {
   key: string;
-  whoESign: "advisor" | "contractor";
+  whoESign: "advisor" | "contractor" | "insured";
   eSignIndex: number;
   signed: boolean;
   date?: string;
   chapters: string[];
 }
 export interface Document {
-  key: "allegato4" | "setInformativo" | "identificazione" | "polizza";
+  key:
+    | "allegato4"
+    | "setInformativo"
+    | "identificazione"
+    | "identificazione_assicurato"
+    | "polizza";
   fileName: string;
   urlPreview: DownloadDocumentsSearchParams["uri"];
   urlDownload: DownloadDocumentsSearchParams["uri"];
@@ -43,7 +48,7 @@ export interface Document {
 const documents: Document[] = [
   {
     key: "identificazione",
-    fileName: "File di identificazione",
+    fileName: "File di identificazione del Contraente",
     urlPreview: "pdf-identificazione-preview",
     urlDownload: "pdf-identificazione",
     type: PDFType.Identification,
@@ -53,6 +58,22 @@ const documents: Document[] = [
         whoESign: "advisor",
         chapters: [
           "L'Intermediario dichiara di avere incontrato di persona e di avere identificato attraverso il suo documento d'identità il Contraente.",
+        ],
+      } as ESign,
+    ],
+  },
+  {
+    key: "identificazione_assicurato",
+    fileName: "File di identificazione dell'Assicurato",
+    urlPreview: "pdf-identificazione-assicurato-preview",
+    urlDownload: "pdf-identificazione-assicurato",
+    type: PDFType.InsuredIdentification,
+    eSigns: [
+      {
+        key: "esign_agente",
+        whoESign: "advisor",
+        chapters: [
+          "L'Intermediario dichiara di avere incontrato di persona e di avere identificato attraverso il suo documento d'identità l'Assicurato.",
         ],
       } as ESign,
     ],
@@ -90,6 +111,11 @@ const documents: Document[] = [
           "PG 9/32 - Firma del Contraente per l'addebito diretto SEPA - S.D.D.",
         ],
       } as ESign,
+      {
+        key: "esign_assicurato",
+        whoESign: "insured",
+        chapters: ["TODO", "Da cercare prima di andare in produzione"],
+      } as ESign,
     ],
   },
 ];
@@ -118,7 +144,7 @@ const eSignsCount = (
 
 export function DocumentsManagement() {
   const [chapterModalOpen, setChapterModalOpen] =
-    useState<`${"advisor" | "contractor"}-${string}`>();
+    useState<`${"advisor" | "contractor" | "insured"}-${(typeof documents)[number]["fileName"]}`>();
 
   const lip = useStore((state) => state.lip);
   const closeModal = useStore((state) => state.closeModal);
@@ -135,6 +161,15 @@ export function DocumentsManagement() {
     );
 
     return partialAdvisorESign.length === totalAdvisorESign.length;
+  });
+  const allContractorESigns = documents.every((document) => {
+    const [partialContractorESign, totalContractorESign] = eSignsCount(
+      document.eSigns,
+      lip.eSigns?.[document.key] ?? {},
+      "contractor",
+    );
+
+    return partialContractorESign.length === totalContractorESign.length;
   });
 
   const [partialESign, totalESign] = documents.reduce(
@@ -165,6 +200,11 @@ export function DocumentsManagement() {
             document.eSigns,
             lip.eSigns?.[document.key] ?? {},
             "contractor",
+          );
+          const [partialInsuredESign, totalInsuredESign] = eSignsCount(
+            document.eSigns,
+            lip.eSigns?.[document.key] ?? {},
+            "insured",
           );
 
           return (
@@ -346,6 +386,83 @@ export function DocumentsManagement() {
                     )}
                   </div>
                 </>
+                <>
+                  <div>
+                    <strong>Firme Assicurato:</strong>
+                    <span className="d-block d-sm-none">
+                      {partialInsuredESign.length} di {totalInsuredESign.length}
+                      {partialInsuredESign.length ===
+                        totalInsuredESign.length && (
+                        <FontAwesomeIcon
+                          icon={faCheckCircle}
+                          title="Completato"
+                          className="text-success ms-2"
+                        />
+                      )}
+                    </span>
+                  </div>
+                  <div className="doc-table-contractor-esign-content">
+                    {totalInsuredESign.length > 0 ? (
+                      <>
+                        <span className="d-none d-sm-block">
+                          {partialInsuredESign.length} di{" "}
+                          {totalInsuredESign.length}
+                          {partialInsuredESign.length ===
+                            totalInsuredESign.length && (
+                            <FontAwesomeIcon
+                              icon={faCheckCircle}
+                              title="Completato"
+                              className="text-success ms-2"
+                            />
+                          )}
+                        </span>
+                        {allAdvisorESigns ? (
+                          allContractorESigns ? (
+                            <>
+                              <Button
+                                size="sm"
+                                onClick={() => {
+                                  setChapterModalOpen(
+                                    `insured-${document.fileName}`,
+                                  );
+                                }}
+                                disabled={totalInsuredESign.every(
+                                  (eSign) => eSign.signed,
+                                )}
+                              >
+                                <FontAwesomeIcon
+                                  icon={faFileSignature}
+                                  className="me-2"
+                                />
+                                Firma dell'Assicurato
+                              </Button>
+                              <DocumentsChapterDetails
+                                eSigns={totalInsuredESign}
+                                show={
+                                  chapterModalOpen ===
+                                  `insured-${document.fileName}`
+                                }
+                                document={document}
+                                lip={lip}
+                                onHide={() => {
+                                  startTransition(() => {
+                                    setChapterModalOpen(undefined);
+                                  });
+                                }}
+                              />
+                            </>
+                          ) : (
+                            <>In attesa delle firme del Contraente</>
+                          )
+                        ) : (
+                          <>In attesa delle firme del Consulente</>
+                        )}
+                      </>
+                    ) : (
+                      <>Nessuna firma richiesta</>
+                    )}
+                  </div>
+                </>{" "}
               </div>
             </Card>
           );

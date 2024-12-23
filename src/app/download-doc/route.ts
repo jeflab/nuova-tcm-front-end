@@ -44,6 +44,8 @@ const mimeTypes: Record<
   "pdf-underwriting-sanitario": "application/pdf",
   "pdf-underwriting-sportivo": "application/pdf",
   "set-informativo": "application/zip",
+  "pdf-identificazione-assicurato": "application/pdf",
+  "pdf-identificazione-assicurato-preview": "application/pdf",
 };
 
 export const GET = async (request: NextRequest) => {

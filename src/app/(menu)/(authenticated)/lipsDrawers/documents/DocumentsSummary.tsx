@@ -25,12 +25,17 @@ import styles from "./DocumentsManagement.module.scss";
 
 interface Esign {
   key: string;
-  whoEsign: "advisor" | "contractor";
+  whoEsign: "advisor" | "contractor" | "insured";
   eSignIndex: number;
   signed: boolean;
 }
 interface Document {
-  key: "allegato4" | "setInformativo" | "identificazione" | "polizza";
+  key:
+    | "allegato4"
+    | "setInformativo"
+    | "identificazione"
+    | "identificazione_assicurato"
+    | "polizza";
   fileName: string;
   urlPreview: string;
   urlDownload: string;
@@ -40,10 +45,23 @@ interface Document {
 const documents = [
   {
     key: "identificazione",
-    fileName: "File di identificazione",
+    fileName: "File di identificazione del Contraente",
     urlPreview: "pdf-identificazione-preview",
     urlDownload: "pdf-identificazione",
     type: PDFType.Identification,
+    eSigns: [
+      {
+        key: "esign_agente",
+        whoEsign: "advisor",
+      } as Esign,
+    ],
+  },
+  {
+    key: "identificazione_assicurato",
+    fileName: "File di identificazione dell'Assicurato",
+    urlPreview: "pdf-identificazione-assicurato-preview",
+    urlDownload: "pdf-identificazione-assicurato",
+    type: PDFType.InsuredIdentification,
     eSigns: [
       {
         key: "esign_agente",
@@ -77,6 +95,7 @@ const documents = [
       {key: "esign_agente", whoEsign: "advisor"} as Esign,
       {key: "esign_contraente", whoEsign: "contractor"} as Esign,
       {key: "esign_contraente_sepa", whoEsign: "contractor"} as Esign,
+      {key: "esign_assicurato", whoEsign: "insured"} as Esign,
     ],
   },
 ] as const satisfies Document[];
@@ -154,6 +173,19 @@ export function DocumentsSummary() {
           <div className="doc-table-contractor-esign-content">
             Nessuna firma richiesta
           </div>
+          <div>
+            <strong>Firme Assicurato:</strong>
+            <span className="d-block d-sm-none">
+              <FontAwesomeIcon
+                icon={faCheckCircle}
+                title="Completato"
+                className="text-success ms-2"
+              />
+            </span>
+          </div>
+          <div className="doc-table-contractor-esign-content">
+            Nessuna firma richiesta
+          </div>
         </div>
       </Card>
       <Modal
@@ -187,10 +219,16 @@ export function DocumentsSummary() {
           lip.eSigns?.[document.key] ?? {},
           "contractor",
         );
+        const [partialInsuredESign, totalInsuredESign] = eSignsCount(
+          document.eSigns,
+          lip.eSigns?.[document.key] ?? {},
+          "insured",
+        );
 
         if (
           partialContractorESign < totalContractorESign ||
-          partialAdvisorESign < totalAdvisorESign
+          partialAdvisorESign < totalAdvisorESign ||
+          partialInsuredESign < totalInsuredESign
         ) {
           return null;
         }
@@ -297,6 +335,55 @@ export function DocumentsSummary() {
                         )}
                       </span>
                       {totalContractorESign.map((eSign) => (
+                        <Badge
+                          key={eSign.key}
+                          bg="success"
+                          className="text-nowrap"
+                        >
+                          <FontAwesomeIcon
+                            icon={faCheckCircle}
+                            className="me-2"
+                          />
+                          Firmato
+                        </Badge>
+                      ))}
+                    </>
+                  ) : (
+                    <>Nessuna firma richiesta</>
+                  )}
+                </div>
+              </>
+              <>
+                <div>
+                  <strong>Firme Assicurato:</strong>
+                  <span className="d-block d-sm-none">
+                    {partialInsuredESign.length} di {totalInsuredESign.length}
+                    {partialInsuredESign.length ===
+                      totalInsuredESign.length && (
+                      <FontAwesomeIcon
+                        icon={faCheckCircle}
+                        title="Completato"
+                        className="text-success ms-2"
+                      />
+                    )}
+                  </span>
+                </div>
+                <div className="doc-table-contractor-esign-content">
+                  {totalInsuredESign.length > 0 ? (
+                    <>
+                      <span className="d-none d-sm-block">
+                        {partialInsuredESign.length} di{" "}
+                        {totalInsuredESign.length}
+                        {partialInsuredESign.length ===
+                          totalInsuredESign.length && (
+                          <FontAwesomeIcon
+                            icon={faCheckCircle}
+                            title="Completato"
+                            className="text-success ms-2"
+                          />
+                        )}
+                      </span>
+                      {totalInsuredESign.map((eSign) => (
                         <Badge
                           key={eSign.key}
                           bg="success"

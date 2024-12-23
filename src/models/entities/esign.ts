@@ -3,6 +3,7 @@ import {z} from "zod";
 export enum PDFType {
   Privacy = "templatePrivacy",
   Identification = "templateIdentificazione",
+  InsuredIdentification = "templateIdentificazioneAssicurato",
   Proposal = "templateProposta",
   Allegato4 = "templateAllegato4",
   SetInformativo = "templateSetInformativo",

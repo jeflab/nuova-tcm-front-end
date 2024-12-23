@@ -346,6 +346,16 @@ export const eSignSchema = z.object({
       }),
     )
     .optional(),
+  identificazione_assicurato: z
+    .record(
+      z.enum(["esign_agente"]),
+      z.object({
+        file: z.string(),
+        esign_id: z.number(),
+        data: z.string(),
+      }),
+    )
+    .optional(),
   polizza: z
     .record(
       z.enum([
@@ -353,6 +363,7 @@ export const eSignSchema = z.object({
         "esign_contraente",
         "esign_contraente_sepa",
         "esign_contraente_underwriting",
+        "esign_assicurato",
       ]),
       z.object({
         file: z.string(),
