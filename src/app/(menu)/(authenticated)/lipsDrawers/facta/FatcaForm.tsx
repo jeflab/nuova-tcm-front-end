@@ -87,7 +87,6 @@ export function FatcaForm() {
           className="vstack gap-3"
         >
           <Row className="row-gap-3">
-            <h1>{lipType}</h1>
             <h4>Contraente</h4>
             <Col className="d-flex" sm={6}>
               <FormGroup controlId="fatcaCheck" as={BorderFeedback}>

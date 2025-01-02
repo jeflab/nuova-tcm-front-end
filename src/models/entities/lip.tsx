@@ -419,7 +419,7 @@ export const lipSchema = z
     created_at: z.coerce.date(),
     agent: agentSchema,
     contractor: personalDataSchema,
-    contractor_insured_relationship: z.string().nullable(),
+    contractor_insured_relationship: z.string().nullish(),
     insured: personalDataSchema.nullish(),
     lip_number: z.coerce.string(),
     json_den: zu.stringToJSON().pipe(denSchema).nullish(),
