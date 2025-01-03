@@ -13,8 +13,8 @@ import {DenSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/den/DenSummar
 import {DocumentsLock} from "@/app/(menu)/(authenticated)/lipsDrawers/documents/DocumentsLock";
 import {DocumentsModal} from "@/app/(menu)/(authenticated)/lipsDrawers/documents/DocumentsModal";
 import {DocumentsSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/documents/DocumentsSummary";
-import {FatcaForm} from "@/app/(menu)/(authenticated)/lipsDrawers/facta/FatcaForm";
-import {FatcaSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/facta/FatcaSummary";
+import {FatcaForm} from "@/app/(menu)/(authenticated)/lipsDrawers/fatca/FatcaForm";
+import {FatcaSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/fatca/FatcaSummary";
 import {HealthQuestionnaireForm} from "@/app/(menu)/(authenticated)/lipsDrawers/healthQuestionnaire/HealthQuestionnaireForm";
 import {HealthQuestionnaireSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/healthQuestionnaire/HealthQuestionnaireSummary";
 import {IdentificationForm} from "@/app/(menu)/(authenticated)/lipsDrawers/identification/IdentificationForm";

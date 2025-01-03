@@ -4,7 +4,7 @@ import {
   activateContractor,
   updateContractorContacts,
 } from "@/app/(menu)/(authenticated)/lips/[id]/actions";
-import {fatcaQuestions} from "@/app/(menu)/(authenticated)/lipsDrawers/facta/FatcaForm";
+import {fatcaQuestions} from "@/app/(menu)/(authenticated)/lipsDrawers/fatca/FatcaForm";
 import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {cns} from "@/helpers/cns";
 import {normalizeError} from "@/helpers/errors";

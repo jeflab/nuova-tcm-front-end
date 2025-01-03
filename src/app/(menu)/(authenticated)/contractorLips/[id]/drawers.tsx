@@ -5,7 +5,7 @@ import {ContractorFiscalCodeSummary} from "@/app/(menu)/(authenticated)/lipsDraw
 import {ContractorPersonalAreaActivationSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/contractorPersonalAreaActivation/ContractorPersonalAreaActivationSummary";
 import {DenSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/den/DenSummary";
 import {DocumentsSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/documents/DocumentsSummary";
-import {FatcaSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/facta/FatcaSummary";
+import {FatcaSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/fatca/FatcaSummary";
 import {HealthQuestionnaireSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/healthQuestionnaire/HealthQuestionnaireSummary";
 import {IdentificationSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/identification/IdentificationSummary";
 import {PaymentLock} from "@/app/(menu)/(authenticated)/lipsDrawers/payment/PaymentLock";

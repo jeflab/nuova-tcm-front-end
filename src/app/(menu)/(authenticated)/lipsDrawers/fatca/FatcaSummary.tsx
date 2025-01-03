@@ -1,7 +1,7 @@
 "use client";
 
-import {ContractorFatca} from "@/app/(menu)/(authenticated)/lipsDrawers/facta/ContractorFatca";
-import {InsuredFatca} from "@/app/(menu)/(authenticated)/lipsDrawers/facta/InsuredFatca";
+import {ContractorFatca} from "@/app/(menu)/(authenticated)/lipsDrawers/fatca/ContractorFatca";
+import {InsuredFatca} from "@/app/(menu)/(authenticated)/lipsDrawers/fatca/InsuredFatca";
 import {useStore} from "../../lips/[id]/store";
 
 export function FatcaSummary() {
