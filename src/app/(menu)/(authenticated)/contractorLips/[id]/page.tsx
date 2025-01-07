@@ -60,23 +60,33 @@ export default async function NewLipPage({params}: NewLipPageProps) {
               </div>
             </ScrollReveal>
             <div className={styles.navLinks}>
-              {drawers.map(({name, title, shortTitle}) => (
-                <NavDrawer name={name} key={name}>
-                  {shortTitle ?? title}
-                </NavDrawer>
-              ))}
+              {drawers.map(({name, title, shortTitle, isVisible}) => {
+                if (isVisible && !isVisible(lip.type)) {
+                  return null;
+                }
+                return (
+                  <NavDrawer name={name} key={name}>
+                    {shortTitle ?? title}
+                  </NavDrawer>
+                );
+              })}
             </div>
           </Nav>
         </Col>
         <Col className="d-flex flex-column gap-3" style={minWidthHack}>
-          {drawers.map(({name, title, summaryContent, lock}) => (
-            <Fragment key={name}>
-              {lock}
-              <Drawer name={name} title={title} readonly>
-                {summaryContent}
-              </Drawer>
-            </Fragment>
-          ))}
+          {drawers.map(({name, title, summaryContent, lock, isVisible}) => {
+            if (isVisible && lip && !isVisible(lip.type)) {
+              return null;
+            }
+            return (
+              <Fragment key={name}>
+                {lock}
+                <Drawer name={name} title={title} readonly>
+                  {summaryContent}
+                </Drawer>
+              </Fragment>
+            );
+          })}
         </Col>
       </Row>
     </AppContainer>

@@ -20,6 +20,7 @@ export default async function ContractorLipsPage() {
           <Policy
             key={lip.id}
             lip={lip}
+            insured={lip.insured}
             contractor={contractorLips.contractor!}
           />
         ))}
