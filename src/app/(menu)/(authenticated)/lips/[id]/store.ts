@@ -380,7 +380,13 @@ function createState(state: State & Actions) {
     }
 
     // Documentazione
-    const requiredProposalESign = state.lip?.mustAskUnderwriting ? 4 : 3;
+    let requiredProposalESign = 3;
+    if (state.lip?.mustAskUnderwriting) {
+      requiredProposalESign++;
+    }
+    if (state.lip?.type !== "self-insured") {
+      requiredProposalESign++;
+    }
     if (state.drawerStates.payment?.variant === "success") {
       if (amlBlocked) {
         state.drawerStates.documentation = {variant: "waiting", isLocked: true};

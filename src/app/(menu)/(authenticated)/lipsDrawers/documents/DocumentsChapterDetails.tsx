@@ -95,8 +95,8 @@ export function DocumentsChapterDetails({
                     {eSign.whoESign === "contractor"
                       ? " del Contraente"
                       : eSign.whoESign === "insured"
-                        ? " dell'assicurato"
-                        : ""}
+                        ? " dell'Assicurato"
+                        : " del Consulente"}
                   </Button>
                   <RequestOTPModal
                     onHide={() => {
