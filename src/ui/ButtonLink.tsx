@@ -5,6 +5,7 @@ import type {WithChildren} from "./types";
 interface ButtonLinkProps extends WithChildren, ButtonProps {
   scroll?: boolean;
   download?: boolean;
+  prefetch?: boolean;
   href: string;
 }
 export function ButtonLink({children, href, ...rest}: ButtonLinkProps) {

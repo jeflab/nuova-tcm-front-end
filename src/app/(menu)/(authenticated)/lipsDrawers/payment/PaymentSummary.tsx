@@ -6,15 +6,13 @@ import {
   getExcludedCoverages,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/payment/ExclusionList";
 import {PaymentMethod} from "@/app/(menu)/(authenticated)/lipsDrawers/payment/PaymentMethod";
-import {createDocumentUrl} from "@/helpers/createResourcesUrl";
-import {ButtonLink} from "@/ui/ButtonLink";
+import {DownloadDocumentButton} from "@/ui/DownloadDocumentButton";
 import {IconStack} from "@/ui/IconStack";
 import {
   faBank,
   faCalendar,
   faCirclePlay,
   faCreditCard,
-  faDownload,
   faShieldXmark,
 } from "@fortawesome/pro-duotone-svg-icons";
 import {faDollarSign} from "@fortawesome/pro-solid-svg-icons";
@@ -120,33 +118,26 @@ export function PaymentSummary() {
             <Alert variant="info">{underwritingData.extraPremium.note}</Alert>
             <Stack direction="horizontal" gap={2}>
               {lip && (
-                <ButtonLink
-                  href={createDocumentUrl({
-                    uri: "pdf-underwriting-sanitario",
-                    lipId: lip.id,
-                    agentId: lip.agent.id,
-                    contractorId: lip.contractor.id,
-                  })}
-                  download
+                <DownloadDocumentButton
+                  uri="pdf-underwriting-sanitario"
+                  lipId={lip.id}
+                  agentId={lip.agent.id}
+                  contractorId={lip.contractor.id}
                 >
-                  <FontAwesomeIcon icon={faDownload} /> Scarica il documento
-                </ButtonLink>
+                  Scarica il documento
+                </DownloadDocumentButton>
               )}
               {(lip?.healthcareQuestionnaire?.sportRisk.check === "yes" ||
                 lip?.healthcareQuestionnaire?.professionalRisk.check ===
                   "yes") && (
-                <ButtonLink
-                  href={createDocumentUrl({
-                    uri: "pdf-underwriting-sportivo",
-                    lipId: lip.id,
-                    agentId: lip.agent.id,
-                    contractorId: lip.contractor.id,
-                  })}
-                  download
+                <DownloadDocumentButton
+                  uri="pdf-underwriting-sportivo"
+                  lipId={lip.id}
+                  agentId={lip.agent.id}
+                  contractorId={lip.contractor.id}
                 >
-                  <FontAwesomeIcon icon={faDownload} /> Scarica il questionario
-                  aggiuntivo
-                </ButtonLink>
+                  Scarica il questionario aggiuntivo
+                </DownloadDocumentButton>
               )}
             </Stack>
           </div>

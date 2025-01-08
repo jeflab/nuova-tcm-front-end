@@ -6,12 +6,11 @@ import {
   createDocuments,
   ESign,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/documents/DocumentsManagement";
-import {createDocumentUrl} from "@/helpers/createResourcesUrl";
 import {validateDen} from "@/helpers/lip-validator";
+import {DownloadDocumentButton} from "@/ui/DownloadDocumentButton";
 import {
   faCheckCircle,
   faClipboardListCheck,
-  faDownload,
 } from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {useState} from "react";
@@ -169,21 +168,16 @@ export function DocumentsSummary() {
           <Card key={document.fileName}>
             <CardHeader className={styles.documentHeader}>
               <strong>{document.fileName}</strong>
-              <Button
-                as="a"
+              <DownloadDocumentButton
                 size="sm"
-                download
                 className="ms-sm-auto"
-                href={createDocumentUrl({
-                  uri: document.urlDownload,
-                  lipId: lip.id,
-                  agentId: lip.agent.id,
-                  contractorId: lip.contractor.id,
-                })}
+                uri={document.urlDownload}
+                lipId={lip.id}
+                agentId={lip.agent.id}
+                contractorId={lip.contractor.id}
               >
-                <FontAwesomeIcon icon={faDownload} /> Scarica il documento
-                {document.eSigns.length > 0 ? " firmato" : ""}
-              </Button>
+                Scarica il documento
+              </DownloadDocumentButton>
             </CardHeader>
             <div className={styles.docTableActions}>
               <>

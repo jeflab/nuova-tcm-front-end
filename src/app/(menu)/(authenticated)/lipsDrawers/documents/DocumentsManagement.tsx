@@ -3,12 +3,11 @@
 import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {DocumentsChapterDetails} from "@/app/(menu)/(authenticated)/lipsDrawers/documents/DocumentsChapterDetails";
 import {DownloadDocumentsSearchParams} from "@/app/download-doc/schema";
-import {createDocumentUrl} from "@/helpers/createResourcesUrl";
 import {PDFType} from "@/models/entities/esign";
 import {Lip} from "@/models/entities/lip";
+import {DownloadDocumentButton} from "@/ui/DownloadDocumentButton";
 import {
   faCheckCircle,
-  faDownload,
   faEye,
   faFileSignature,
   faSave,
@@ -250,37 +249,28 @@ export function DocumentsManagement() {
                 {partialAdvisorESign.length === totalAdvisorESign.length &&
                 partialContractorESign.length ===
                   totalContractorESign.length ? (
-                  <Button
-                    as="a"
-                    size="sm"
-                    download
+                  <DownloadDocumentButton
                     className="ms-sm-auto"
-                    href={createDocumentUrl({
-                      uri: document.urlDownload,
-                      lipId: lip.id,
-                      agentId: lip.agent.id,
-                      contractorId: lip.contractor.id,
-                    })}
+                    uri={document.urlDownload}
+                    lipId={lip.id}
+                    agentId={lip.agent.id}
+                    contractorId={lip.contractor.id}
+                    size="sm"
                   >
-                    <FontAwesomeIcon icon={faDownload} /> Scarica il documento
-                    firmato
-                  </Button>
+                    Scarica il documento firmato
+                  </DownloadDocumentButton>
                 ) : (
-                  <Button
-                    as="a"
-                    size="sm"
-                    download
+                  <DownloadDocumentButton
                     className="ms-sm-auto"
-                    href={createDocumentUrl({
-                      uri: document.urlPreview,
-                      lipId: lip.id,
-                      agentId: lip.agent.id,
-                      contractorId: lip.contractor.id,
-                    })}
+                    uri={document.urlPreview}
+                    lipId={lip.id}
+                    agentId={lip.agent.id}
+                    contractorId={lip.contractor.id}
+                    size="sm"
+                    icon={faEye}
                   >
-                    <FontAwesomeIcon icon={faEye} /> Visualizza anteprima del
-                    documento
-                  </Button>
+                    Visualizza anteprima del documento
+                  </DownloadDocumentButton>
                 )}
               </CardHeader>
               <div className={styles.docTableActions}>

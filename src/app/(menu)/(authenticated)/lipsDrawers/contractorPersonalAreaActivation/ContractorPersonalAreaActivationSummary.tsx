@@ -1,8 +1,7 @@
 "use client";
 
 import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
-import {createDocumentUrl} from "@/helpers/createResourcesUrl";
-import {ButtonLink} from "@/ui/ButtonLink";
+import {DownloadDocumentButton} from "@/ui/DownloadDocumentButton";
 import {faDownload} from "@fortawesome/pro-duotone-svg-icons";
 import {faCheck} from "@fortawesome/pro-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
@@ -36,50 +35,35 @@ export function ContractorPersonalAreaActivationSummary() {
       </h4>
       {lipId && agentId && (
         <Stack direction="horizontal" gap={2} className="flex-wrap">
-          <ButtonLink
-            href={createDocumentUrl({
-              uri: "pdf-privacy",
-              lipId,
-              agentId,
-              contractorId: contractor.id,
-            })}
-            download
-            target="_blank"
+          <DownloadDocumentButton
+            uri="pdf-privacy"
+            lipId={lipId}
+            agentId={agentId}
+            contractorId={contractor.id}
           >
-            <FontAwesomeIcon icon={faDownload} /> Privacy e consensi
-          </ButtonLink>
-          <ButtonLink
-            href={createDocumentUrl({
-              uri: "pdf-allegato3",
-              lipId,
-              agentId,
-            })}
-            download
-            target="_blank"
+            Privacy e consensi
+          </DownloadDocumentButton>
+          <DownloadDocumentButton
+            uri="pdf-allegato3"
+            lipId={lipId}
+            agentId={agentId}
           >
-            <FontAwesomeIcon icon={faDownload} /> Allegato 3
-          </ButtonLink>
-          <ButtonLink
-            href={createDocumentUrl({
-              uri: "pdf-allegato4ter",
-              lipId,
-              agentId,
-            })}
-            download
-            target="_blank"
+            Allegato 3
+          </DownloadDocumentButton>
+          <DownloadDocumentButton
+            uri="pdf-allegato4ter"
+            lipId={lipId}
+            agentId={agentId}
           >
-            <FontAwesomeIcon icon={faDownload} /> Allegato 4 TER
-          </ButtonLink>
-          <ButtonLink
-            href={createDocumentUrl({
-              uri: "pdf-elenco-compagnie",
-              lipId,
-              agentId,
-            })}
-            download
+            Allegato 4 TER
+          </DownloadDocumentButton>
+          <DownloadDocumentButton
+            uri="pdf-elenco-compagnie"
+            lipId={lipId}
+            agentId={agentId}
           >
-            <FontAwesomeIcon icon={faDownload} /> Elenco compagnie
-          </ButtonLink>
+            Elenco compagnie
+          </DownloadDocumentButton>
         </Stack>
       )}
     </Stack>
