@@ -47,6 +47,7 @@ import {
 } from "react-bootstrap";
 import {useForm} from "react-hook-form";
 import {z} from "zod";
+import invariant from "tiny-invariant";
 
 // Usiamo uno schema come validazione vista la complessità del form e la dipendenza del cf con gli altri campi
 const ContractorFormSchema = z
@@ -146,6 +147,7 @@ export function ContractorFiscalCodeForm({
             let checkIfFiscalCodeExistsResponse: Awaited<
               ReturnType<typeof checkIfFiscalCodeExists>
             >;
+            invariant(lip, "Lip is required");
 
             if (loggedUser.fiscalCode === values.fiscalCode) {
               throw {
@@ -159,6 +161,7 @@ export function ContractorFiscalCodeForm({
             try {
               checkIfFiscalCodeExistsResponse = await checkIfFiscalCodeExists(
                 values.fiscalCode,
+                lip.type,
               );
             } catch (error) {
               console.error(error);

@@ -36,7 +36,7 @@ import {
   getTypedFormDataFromObject,
   TypedFormData,
 } from "@/helpers/typedFormData";
-import {lipSchema} from "@/models/entities/lip";
+import {Lip, lipSchema} from "@/models/entities/lip";
 import {privacySchema} from "@/models/entities/privacy";
 import {get, patch, post} from "@/services/api";
 import {Tags} from "@/services/const";
@@ -117,8 +117,12 @@ export async function activateContractor(
 const checkIfFiscalCodeExistsShape = {
   lip: lipSchema.optional(),
 };
-export async function checkIfFiscalCodeExists(fiscalCode: string) {
+export async function checkIfFiscalCodeExists(
+  fiscalCode: string,
+  lipType: Lip["type"],
+) {
   const data = {
+    lip_type: lipType,
     fiscal_code: fiscalCode,
   };
 
