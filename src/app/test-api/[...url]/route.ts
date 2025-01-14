@@ -1,6 +1,6 @@
 import {AUTH_COOKIE_NAME} from "@/app/(no-menu)/(auth)/const";
 import {acceptJsonHeader, apiUrl, contentJsonHeader} from "@/services/const";
-import {cookies} from "next/headers";
+import {cookies, type UnsafeUnwrappedCookies} from "next/headers";
 import {NextRequest} from "next/server";
 
 async function authorizationHeader() {
