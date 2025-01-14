@@ -10,10 +10,11 @@ import {Suspense} from "react";
 import {LipsTable} from "./LipsTable";
 
 interface LipsPageProps {
-  searchParams: Partial<DataTableParams>;
+  searchParams: Promise<Partial<DataTableParams>>;
 }
 
-export default async function LipsPage({searchParams}: LipsPageProps) {
+export default async function LipsPage(props: LipsPageProps) {
+  const searchParams = await props.searchParams;
   return (
     <AppContainer className="vstack gap-3">
       <PageTitle>

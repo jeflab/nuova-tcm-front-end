@@ -12,10 +12,6 @@ console.info(`Maintenance mode: ${maintenanceMode}`);
 
 let nextConfig = {
   logging: {fetches: {fullUrl: true}},
-  experimental: {
-    instrumentationHook: true,
-    typedRoutes: true,
-  },
   images: {
     remotePatterns: process.env.IMAGE_REMOTE_PATTERN.split(",").map(
       (pattern) => {
