@@ -20,8 +20,8 @@ import {cookies} from "next/headers";
 import {redirect} from "next/navigation";
 import {z, ZodRawShape} from "zod";
 
-function authorizationHeader() {
-  const authCookie = cookies().get(AUTH_COOKIE_NAME)?.value;
+async function authorizationHeader() {
+  const authCookie = (await cookies()).get(AUTH_COOKIE_NAME)?.value;
   return authCookie ? {Authorization: `Bearer ${authCookie}`} : undefined;
 }
 
@@ -80,11 +80,11 @@ export async function apiCall<ResponsePayloadShape extends ZodRawShape>(
   const headers =
     data instanceof FormData
       ? {
-          ...authorizationHeader(),
+          ...(await authorizationHeader()),
           ...acceptJsonHeader,
         }
       : {
-          ...authorizationHeader(),
+          ...(await authorizationHeader()),
           ...acceptJsonHeader,
           ...contentJsonHeader,
         };

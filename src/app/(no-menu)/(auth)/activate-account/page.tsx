@@ -4,10 +4,11 @@ import CenterLogoContent from "@/ui/CenterLogoContent";
 const containerStyle = {"--content-width": "400px"};
 
 interface ResetPasswordParams {
-  searchParams: {token: string; email: string};
+  searchParams: Promise<{token: string; email: string}>;
 }
 
-export default function ResetPassword({searchParams}: ResetPasswordParams) {
+export default async function ResetPassword(props: ResetPasswordParams) {
+  const searchParams = await props.searchParams;
   return (
     <CenterLogoContent style={containerStyle}>
       <ActivateAccount token={searchParams.token} email={searchParams.email} />

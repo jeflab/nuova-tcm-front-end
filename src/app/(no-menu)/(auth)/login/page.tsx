@@ -9,12 +9,13 @@ import CenterLogoContent from "@/ui/CenterLogoContent";
 import * as Sentry from "@sentry/nextjs";
 
 interface LoginPageProps {
-  searchParams: {
+  searchParams: Promise<{
     next?: string;
-  };
+  }>;
 }
 
-export default async function LoginPage({searchParams}: LoginPageProps) {
+export default async function LoginPage(props: LoginPageProps) {
+  const searchParams = await props.searchParams;
   if (await isLoggedIn()) {
     Sentry.addBreadcrumb({
       message: "User is already logged in",
