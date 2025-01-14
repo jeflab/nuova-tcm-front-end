@@ -30,7 +30,7 @@ export async function login(data: LoginParams) {
   });
 
   if (loginResponse?.status === "success") {
-    cookies().set(AUTH_COOKIE_NAME, loginResponse.access_token, {
+    (await cookies()).set(AUTH_COOKIE_NAME, loginResponse.access_token, {
       httpOnly: true,
       secure: true,
       sameSite: "strict",
@@ -69,24 +69,24 @@ export async function setPassword(data: SetPasswordParams) {
 }
 
 export async function isLoggedIn() {
-  const cookie = cookies().get(AUTH_COOKIE_NAME)?.value;
+  const cookie = (await cookies()).get(AUTH_COOKIE_NAME)?.value;
   return !!cookie;
 }
 
 export async function logout() {
   const logoutResponsePromise = api.post("/logout", {});
   invalidateTag(Tags.me());
-  cookies().delete(AUTH_COOKIE_NAME);
+  (await cookies()).delete(AUTH_COOKIE_NAME);
 
   return await logoutResponsePromise;
 }
 
 export async function checkAuth() {
-  const headersList = headers();
+  const headersList = await headers();
   const referer = headersList.get("referer");
   const searchParams = new URLSearchParams({next: referer ?? ""});
 
-  const cookie = cookies().get(AUTH_COOKIE_NAME)?.value;
+  const cookie = (await cookies()).get(AUTH_COOKIE_NAME)?.value;
 
   if (!cookie) {
     redirect("/login" + (referer ? "?" + searchParams.toString() : ""));

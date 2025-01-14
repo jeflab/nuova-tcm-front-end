@@ -4,8 +4,8 @@ import {cookies} from "next/headers";
 import {NextRequest, NextResponse} from "next/server";
 import {z} from "zod";
 
-function authorizationHeader() {
-  const authCookie = cookies().get(AUTH_COOKIE_NAME)?.value;
+async function authorizationHeader() {
+  const authCookie = (await cookies()).get(AUTH_COOKIE_NAME)?.value;
   return authCookie ? {Authorization: `Bearer ${authCookie}`} : undefined;
 }
 
@@ -22,7 +22,7 @@ export const GET = async (request: NextRequest) => {
   );
 
   const headers = {
-    ...authorizationHeader(),
+    ...(await authorizationHeader()),
   };
 
   const image = await fetch(
