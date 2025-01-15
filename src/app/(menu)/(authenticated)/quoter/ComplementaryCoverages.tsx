@@ -1,4 +1,7 @@
-import {getCoverageDuration} from "@/app/(menu)/(authenticated)/quoter/helpers";
+import {
+  complementaryCoverages,
+  getCoverageDurationOld,
+} from "@/app/(menu)/(authenticated)/lipsDrawers/quote/ComplementaryCoverages";
 import {QuoterFormValues} from "@/app/(menu)/(authenticated)/quoter/QuoterForm";
 import {calendarYearAge} from "@/helpers/ages";
 import {Option} from "@/helpers/getOptionsLabel";
@@ -33,10 +36,12 @@ export function ComplementaryCoverages() {
     calendarYearAge(birthDateValue) <= 85; // per escludere date erronee tipo 0001-06-24
 
   const tpdOptions: Option[] = [];
-  for (let i = 500; i <= 2000; i += 100) {
-    if (i * 48 <= parseInt(deathValue, 10)) {
-      tpdOptions.push({value: i.toString(), label: toCurrency(i)});
-    }
+  for (
+    let i = 500;
+    i * 48 <= Math.min(parseInt(deathValue, 10), 96000);
+    i += 100
+  ) {
+    tpdOptions.push({value: i.toString(), label: toCurrency(i)});
   }
 
   return (
@@ -66,7 +71,7 @@ export function ComplementaryCoverages() {
           <div>
             {!isMoreThan75 ? (
               <strong>
-                Durata: {getCoverageDuration(watch("birthDate"))} anni
+                Durata: {getCoverageDurationOld(watch("birthDate"))} anni
               </strong>
             ) : (
               <strong className="text-warning">
@@ -108,7 +113,7 @@ export function ComplementaryCoverages() {
           <div>
             {!isMoreThan75 ? (
               <strong>
-                Durata: {getCoverageDuration(watch("birthDate"))} anni
+                Durata: {getCoverageDurationOld(watch("birthDate"))} anni
               </strong>
             ) : (
               <strong className="text-warning">
@@ -151,8 +156,8 @@ export function ComplementaryCoverages() {
           <div>
             {!isMoreThan55 ? (
               <strong>
-                Durata: {getCoverageDuration(watch("birthDate"), 10, 65)}{" "}
-                {getCoverageDuration(watch("birthDate"), 10, 65) === 1
+                Durata: {getCoverageDurationOld(watch("birthDate"), 10, 65)}{" "}
+                {getCoverageDurationOld(watch("birthDate"), 10, 65) === 1
                   ? "anno"
                   : "anni"}
               </strong>
@@ -198,15 +203,18 @@ export function ComplementaryCoverages() {
             in Polizza per l’Assicurazione Complementare Invalidità Totale e
             Permanente. Dev'essere compreso tra <Currency>{20_000}</Currency> e{" "}
             <Currency>
-              {Math.min(parseInt(watch("death"), 10), 100_000)}
+              {Math.min(
+                parseInt(watch("death"), 10),
+                complementaryCoverages.tpi.maxCoverage,
+              )}
             </Currency>
             ).
           </HelpText>
           <div>
             {!isMoreThan55 ? (
               <strong>
-                Durata: {getCoverageDuration(watch("birthDate"), 10, 65)}{" "}
-                {getCoverageDuration(watch("birthDate"), 10, 65) === 1
+                Durata: {getCoverageDurationOld(watch("birthDate"), 10, 65)}{" "}
+                {getCoverageDurationOld(watch("birthDate"), 10, 65) === 1
                   ? "anno"
                   : "anni"}
               </strong>
@@ -258,10 +266,16 @@ export function ComplementaryCoverages() {
                         formValues.tpi?.enabled &&
                         !isMoreThan55 &&
                         value >
-                          Math.min(parseInt(formValues.death, 10), 100_000)
+                          Math.min(
+                            parseInt(formValues.death, 10),
+                            complementaryCoverages.tpi.maxCoverage,
+                          )
                       ) {
                         return `Il capitale assicurato deve essere minore o uguale a ${toCurrency(
-                          Math.min(parseInt(formValues.death, 10), 100_000),
+                          Math.min(
+                            parseInt(formValues.death, 10),
+                            complementaryCoverages.tpi.maxCoverage,
+                          ),
                         )}`;
                       }
                     },
@@ -321,7 +335,8 @@ export function ComplementaryCoverages() {
           <div>
             {!isMoreThan65 ? (
               <strong>
-                Durata: {getCoverageDuration(watch("birthDate"), 10, 75)} anni
+                Durata: {getCoverageDurationOld(watch("birthDate"), 10, 75)}{" "}
+                anni
               </strong>
             ) : (
               <strong className="text-warning">
@@ -436,7 +451,7 @@ export function ComplementaryCoverages() {
           <div>
             {!isMoreThan75 ? (
               <strong>
-                Durata: {getCoverageDuration(watch("birthDate"))} anni
+                Durata: {getCoverageDurationOld(watch("birthDate"))} anni
               </strong>
             ) : (
               <strong className="text-warning">

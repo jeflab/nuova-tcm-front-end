@@ -3,7 +3,6 @@
 import {paymentMethodsOptions} from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
 import {getQuote} from "@/app/(menu)/(authenticated)/quoter/actions";
 import {Advantages} from "@/app/(menu)/(authenticated)/quoter/Advantages";
-import {getCoverageDuration} from "@/app/(menu)/(authenticated)/quoter/helpers";
 import {cns} from "@/helpers/cns";
 import {normalizeError} from "@/helpers/errors";
 import {AppContainer} from "@/ui/AppContainer";
@@ -34,6 +33,7 @@ import {ComplementaryCoverages} from "./ComplementaryCoverages";
 import {Coverages} from "./Coverages";
 import {InsuredData} from "./InsuredData";
 import styles from "./QuoterForm.module.scss";
+import {getCoverageDuration} from "../lipsDrawers/quote/ComplementaryCoverages";
 
 const quoterFormDefaultValues = {
   birthDate: "",
@@ -107,7 +107,7 @@ export function QuoterForm() {
           <Coverages />
           <Advantages
             premium={premium ?? 0}
-            duration={getCoverageDuration(birthDate)}
+            duration={getCoverageDuration("death", birthDate)}
           />
           <ComplementaryCoverages />
         </Row>

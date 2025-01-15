@@ -7,7 +7,6 @@ import {getQuote} from "@/app/(menu)/(authenticated)/quoter/actions";
 import {Advantages} from "@/app/(menu)/(authenticated)/quoter/Advantages";
 import {ComplementaryCoverages} from "@/app/(menu)/(authenticated)/quoter/ComplementaryCoverages";
 import {Coverages} from "@/app/(menu)/(authenticated)/quoter/Coverages";
-import {getCoverageDuration} from "@/app/(menu)/(authenticated)/quoter/helpers";
 import {InsuredData} from "@/app/(menu)/(authenticated)/quoter/InsuredData";
 import {QuoterFormValues} from "@/app/(menu)/(authenticated)/quoter/QuoterForm";
 import styles from "@/app/(menu)/(authenticated)/quoter/QuoterForm.module.scss";
@@ -29,6 +28,7 @@ import {useState} from "react";
 import {Alert, Button, ModalBody, ModalFooter, Row} from "react-bootstrap";
 import {useForm} from "react-hook-form";
 import invariant from "tiny-invariant";
+import {getCoverageDuration} from "./ComplementaryCoverages";
 
 export function QuoteForm() {
   const [quotation, setQuotation] = useState<{
@@ -162,7 +162,7 @@ export function QuoteForm() {
             <Coverages />
             <Advantages
               premium={quotation?.premium ?? 0}
-              duration={getCoverageDuration(birthDate)}
+              duration={getCoverageDuration("death", birthDate)}
             />
             <ComplementaryCoverages />
           </Row>

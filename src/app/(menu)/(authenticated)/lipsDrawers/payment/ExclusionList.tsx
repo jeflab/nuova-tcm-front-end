@@ -16,7 +16,7 @@ export function getExcludedCoverages(
     return [];
   }
 
-  return complementaryCoverages
+  return Object.values(complementaryCoverages)
     .filter(({key}) => {
       const coverage = quoteData[key];
       return typeof coverage === "boolean" ? coverage : coverage.enabled;

@@ -1,4 +1,7 @@
-import {complementaryCoverages} from "@/app/(menu)/(authenticated)/lipsDrawers/quote/ComplementaryCoverages";
+import {
+  ComplementaryCoverageKey,
+  complementaryCoverages,
+} from "@/app/(menu)/(authenticated)/lipsDrawers/quote/ComplementaryCoverages";
 import {
   fundSourceOptions,
   genderOptions,
@@ -154,7 +157,12 @@ const underwritingSchema = z
     exclusions: z.array(
       z
         .object({
-          name: z.enum(extractValuesByKey(complementaryCoverages, "key")),
+          name: z.enum(
+            Object.keys(complementaryCoverages) as [
+              ComplementaryCoverageKey,
+              ...ComplementaryCoverageKey[],
+            ],
+          ),
           decline: z.boolean(),
           exclusion: z.string(),
           reason_of_loading: z.string(),

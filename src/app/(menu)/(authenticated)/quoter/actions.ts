@@ -1,6 +1,6 @@
 "use server";
 
-import {getCoverageDuration} from "@/app/(menu)/(authenticated)/quoter/helpers";
+import {getCoverageDurationOld} from "@/app/(menu)/(authenticated)/lipsDrawers/quote/ComplementaryCoverages";
 import {calendarYearAge} from "@/helpers/ages";
 import {post} from "@/services/api";
 import {z} from "zod";
@@ -27,7 +27,7 @@ export async function getQuote(quoterData: GetQuoteParams) {
   const data = {
     sumInsured: parseInt(quoterData.death),
     age: calendarYearAge(quoterData.birthDate),
-    duration: getCoverageDuration(quoterData.birthDate),
+    duration: getCoverageDurationOld(quoterData.birthDate),
     sumInsuredForTotalPermanentDisability: quoterData.tpd.enabled
       ? parseInt(quoterData.tpd.coverage, 10) * monthInFourYears
       : 0,
