@@ -1,13 +1,15 @@
 import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
-import {complementaryCoverages} from "@/app/(menu)/(authenticated)/lipsDrawers/quote/ComplementaryCoverages";
-import {getCoverageDuration} from "@/app/(menu)/(authenticated)/quoter/helpers";
+import {
+  getCoverageDuration,
+  type ComplementaryCoverage,
+} from "@/app/(menu)/(authenticated)/lipsDrawers/quote/ComplementaryCoverages";
 import {Currency} from "@/ui/Currency";
 import {faCheck, faXmark} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Card} from "react-bootstrap";
 
 interface CoverageProps {
-  complementaryCoverage: (typeof complementaryCoverages)[number];
+  complementaryCoverage: ComplementaryCoverage;
   enabled: boolean;
 }
 
@@ -29,9 +31,8 @@ export function Coverage({complementaryCoverage, enabled}: CoverageProps) {
           : undefined;
 
   const duration = getCoverageDuration(
+    complementaryCoverage.key,
     quoteData.birthDate,
-    complementaryCoverage.maxDuration,
-    complementaryCoverage.maxAge,
   );
 
   return (

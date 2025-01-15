@@ -1,4 +1,3 @@
-import {getCoverageDuration} from "@/app/(menu)/(authenticated)/quoter/helpers";
 import {toCurrency} from "@/helpers/numbers";
 import {Currency} from "@/ui/Currency";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
@@ -7,6 +6,7 @@ import {HelpText} from "@/ui/form/HelpText";
 import {InputField} from "@/ui/form/InputField";
 import {Col, FormGroup, FormLabel, InputGroup} from "react-bootstrap";
 import {useFormContext} from "react-hook-form";
+import {getCoverageDuration} from "../lipsDrawers/quote/ComplementaryCoverages";
 
 export function Coverages() {
   const {watch, setValue} = useFormContext();
@@ -23,7 +23,7 @@ export function Coverages() {
             <Currency>{300_000}</Currency>
           </HelpText>
           <strong>
-            Durata: {getCoverageDuration(watch("birthDate"))} anni
+            Durata: {getCoverageDuration("death", watch("birthDate"))} anni
           </strong>
           <FieldError />
           <div className="d-flex flex-column flex-md-row align-items-md-center column-gap-3 row-gap-1">
