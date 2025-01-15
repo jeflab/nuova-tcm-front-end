@@ -10,6 +10,6 @@ const getLipShape = {
 export async function getLip(id: number) {
   return get(`/contractor-lips/${id}`, {
     payloadShape: getLipShape,
-    tags: [Tags.getLip(id)],
+    provideTags: [Tags.getLip(id)],
   });
 }

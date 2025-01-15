@@ -3,7 +3,6 @@
 import {accountSchema} from "@/models/account";
 import {patch, post} from "@/services/api";
 import {Tags} from "@/services/const";
-import {invalidateTag} from "@/services/helpers";
 
 interface UpdateAccountData {
   fiscalCode: string;
@@ -17,8 +16,11 @@ export async function updateAccount(formData: UpdateAccountData) {
     phone: formData.phone,
   };
 
-  invalidateTag(Tags.me());
-  return patch("/me", {payloadShape: accountSchema.shape, data});
+  return patch("/me", {
+    payloadShape: accountSchema.shape,
+    data,
+    revalidateTags: [Tags.me()],
+  });
 }
 
 interface UpdatePassword {
