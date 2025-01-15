@@ -40,7 +40,6 @@ import {Lip, lipSchema} from "@/models/entities/lip";
 import {privacySchema} from "@/models/entities/privacy";
 import {get, patch, post} from "@/services/api";
 import {Tags} from "@/services/const";
-import {invalidateTag} from "@/services/helpers";
 
 const getLipShape = {
   lip: lipSchema,
@@ -48,7 +47,7 @@ const getLipShape = {
 export async function getLip(id: number) {
   return get(`/lips/${id}`, {
     payloadShape: getLipShape,
-    tags: [Tags.getLip(id)],
+    provideTags: [Tags.getLip(id)],
   });
 }
 
@@ -146,7 +145,7 @@ export async function updateContractorContacts(
       phone: formData.phone,
       email: formData.email,
     },
-    tags: [Tags.getLip(lipId)],
+    revalidateTags: [Tags.getLip(lipId)],
   });
 }
 
@@ -159,7 +158,7 @@ export async function getLastPrivacy() {
 
 export async function updateUnderwriting(lipId: number) {
   return patch(`/lips/${lipId}/underwriting`, {
-    tags: [Tags.getLip(lipId)],
+    revalidateTags: [Tags.getLip(lipId)],
   });
 }
 
@@ -278,7 +277,7 @@ export async function updatePersonalData(
 
   return patch(`/personal-datas/${personalDataId}`, {
     data,
-    tags: [Tags.getLip(lipId)],
+    revalidateTags: [Tags.getLip(lipId)],
   });
 }
 
@@ -348,7 +347,7 @@ export async function addInsuredData(
 
   return post(`/lips/${lipId}/addInsured`, {
     data,
-    tags: [Tags.getLip(lipId)],
+    revalidateTags: [Tags.getLip(lipId)],
   });
 }
 
@@ -382,7 +381,7 @@ export async function identification(
   });
   return post(endpoint, {
     data: formData,
-    tags: [Tags.getLip(lipId)],
+    revalidateTags: [Tags.getLip(lipId)],
   });
 }
 
@@ -462,8 +461,10 @@ export async function updateDen(formData: UpdateDenParams, lipId: number) {
     },
     duration: {options: durationOptions, response: formData.duration},
   };
-  invalidateTag(Tags.getLip(lipId));
-  return patch(`/lips/${lipId}`, {data: {json_den: JSON.stringify(data)}});
+  return patch(`/lips/${lipId}`, {
+    data: {json_den: JSON.stringify(data)},
+    revalidateTags: [Tags.getLip(lipId)],
+  });
 }
 
 interface UpdateQuotationParams {
@@ -507,7 +508,6 @@ export async function updateQuotation(
     originalPremium: formData.originalPremium,
   };
 
-  invalidateTag(Tags.getLip(lipId));
   return patch(`/lips/${lipId}`, {
     data: {
       json_quotation: JSON.stringify(data),
@@ -515,15 +515,16 @@ export async function updateQuotation(
         json_survey_healthcare: null,
       }),
     },
+    revalidateTags: [Tags.getLip(lipId)],
   });
 }
 export async function updateHealthQuestionnaire(
   formData: HealthQuestionnaireFormValues,
   lipId: number,
 ) {
-  invalidateTag(Tags.getLip(lipId));
   return patch(`/lips/${lipId}`, {
     data: {json_survey_healthcare: JSON.stringify(formData)},
+    revalidateTags: [Tags.getLip(lipId)],
   });
 }
 
@@ -531,9 +532,9 @@ export async function updateBeneficiaries(
   beneficiaries: BeneficiariesFormValues,
   lipId: number,
 ) {
-  invalidateTag(Tags.getLip(lipId));
   return patch(`/lips/${lipId}`, {
     data: {json_beneficiary: JSON.stringify(beneficiaries)},
+    revalidateTags: [Tags.getLip(lipId)],
   });
 }
 
@@ -541,9 +542,9 @@ export async function updatePaymentData(
   payment: PaymentFormValues,
   lipId: number,
 ) {
-  invalidateTag(Tags.getLip(lipId));
   return patch(`/lips/${lipId}`, {
     data: {json_payment: JSON.stringify(payment)},
+    revalidateTags: [Tags.getLip(lipId)],
   });
 }
 
@@ -553,6 +554,6 @@ export async function saveCompanyPrivacyConsent(
 ) {
   return post(`/lips/${lipId}/privacy-company`, {
     data: consent,
-    tags: [Tags.getLip(lipId)],
+    revalidateTags: [Tags.getLip(lipId)],
   });
 }
