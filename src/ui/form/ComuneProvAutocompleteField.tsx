@@ -64,7 +64,7 @@ export function ComuneProvAutocompleteField({
 
   const {data: cities = [], isPending: isCitiesPending} = useQuery({
     queryKey: ["cities", query, onlyExisting, onlyItalian] as const,
-    queryFn: ({queryKey: [_key, query, onlyExisting, onlyItalian]}) => {
+    queryFn: ({queryKey: [, query, onlyExisting, onlyItalian]}) => {
       return getCities(query, {onlyExisting, onlyItalian});
     },
     staleTime: oneDayInMs,

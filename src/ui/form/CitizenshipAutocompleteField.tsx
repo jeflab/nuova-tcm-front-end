@@ -178,8 +178,6 @@ export function CitizenshipAutocompleteField({
           placeholder={placeholder}
           ref={(instance) => {
             ref(instance);
-            // @ts-ignore-next-line
-            // noinspection JSConstantReassignment
             inputRef.current = instance;
           }}
           renderMenuItemChildren={(option, {text}) => {

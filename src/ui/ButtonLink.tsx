@@ -10,7 +10,7 @@ interface ButtonLinkProps extends WithChildren, ButtonProps {
 }
 export function ButtonLink({children, href, ...rest}: ButtonLinkProps) {
   return (
-    // @ts-ignore - c'è un errore sulla prop "as" di Button. Pare un bug di react-bootstrap.
+    // @ts-expect-error - c'è un errore sulla prop "as" di Button. Pare un bug di react-bootstrap.
     //  Questo componente è solo per non scrivere il workaround ogni volta.
     <Button as={Link} href={href} type="button" {...rest}>
       {children}
