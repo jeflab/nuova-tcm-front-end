@@ -1,4 +1,5 @@
-const appInfo = require("../../package.json");
+import appInfo from "../../package.json";
+
 function getRelease() {
   return `${appInfo.name}@${getVersion()}`;
 }

@@ -96,7 +96,7 @@ export function ContractorContactsForm({
                     response: preliminaryData.italianResidency,
                   },
                 });
-              } catch (e) {
+              } catch {
                 throw {
                   root: {
                     type: "server",

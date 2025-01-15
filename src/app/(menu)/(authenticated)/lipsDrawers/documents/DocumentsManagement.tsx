@@ -207,6 +207,8 @@ export function DocumentsManagement() {
     return partialContractorESign.length === totalContractorESign.length;
   });
 
+  // TODO: Ripensare all'auto-chiusura
+  /*
   const [partialESign, totalESign] = documents.reduce(
     ([prevPartial, prevTotal], document) => {
       const [partialESign, totalESign] = eSignsCount(
@@ -218,9 +220,9 @@ export function DocumentsManagement() {
     },
     [[], []] as [ESign[], ESign[]],
   );
+  */
 
-  // TODO: Ripensare all'auto-chiusura
-  const lastESign = partialESign.length === totalESign.length - 1;
+  // const lastESign = partialESign.length === totalESign.length - 1;
 
   return (
     <>

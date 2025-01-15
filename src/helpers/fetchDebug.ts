@@ -22,7 +22,7 @@ export const logFetchInfo = async (
       );
       console.log(unrollFetchData(body));
       console.log(await response.clone().json());
-    } catch (e) {
+    } catch {
       // fall silently
     }
   }
