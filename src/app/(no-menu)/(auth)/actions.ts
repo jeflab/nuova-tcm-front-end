@@ -96,7 +96,7 @@ export async function checkAuth() {
 export async function getAccount() {
   return await api.get("/me", {
     payloadShape: accountSchema.shape,
-    tags: [Tags.me()],
+    provideTags: [Tags.me()],
   });
 }
 
