@@ -1,5 +1,3 @@
-import appInfo from "@/../package.json";
-import Image from "next/image";
 import {CSSProperties} from "react";
 import styles from "./CenterLogoContent.module.scss";
 import {WithChildren} from "./types";

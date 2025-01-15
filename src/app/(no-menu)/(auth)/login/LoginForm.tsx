@@ -25,7 +25,7 @@ export function LoginForm() {
 
     try {
       loginResponse = await login(data);
-    } catch (error) {
+    } catch {
       throw {
         root: {
           type: "server",

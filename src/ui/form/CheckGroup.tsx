@@ -66,7 +66,7 @@ export function CheckGroup<
             label={label}
             readOnly={readOnly}
             type={type === "radio-switch" ? "radio" : type}
-            validation={validation as any}
+            validation={validation as RegisterOptions}
             value={value}
             className={cns(type === "radio-switch" && "form-switch")}
             validationStyle={validationStyle}

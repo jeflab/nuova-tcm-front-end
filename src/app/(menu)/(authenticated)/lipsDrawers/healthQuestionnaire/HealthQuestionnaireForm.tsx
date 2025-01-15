@@ -37,10 +37,10 @@ import {useForm} from "react-hook-form";
 import invariant from "tiny-invariant";
 import {HealthQuestionnaireInfoAlert} from "./HealthQuestionnaireInfoAlert";
 
-const sportDefaultValues = {
-  name: "",
-  riskIndex: "" as "" | SportRiskIndex,
-};
+interface SportDefaultValues {
+  name: string;
+  riskIndex: "" | SportRiskIndex;
+}
 
 const healthQuestionnaireDefaultValues = (
   questionnaireData: Nullish<HealthcareQuestionnaire>,
@@ -69,8 +69,7 @@ const healthQuestionnaireDefaultValues = (
   },
   sportRisk: {
     check: (questionnaireData?.sportRisk.check ?? "") as YesNoAnswer,
-    sport: (questionnaireData?.sportRisk.sport ??
-      []) as (typeof sportDefaultValues)[],
+    sport: (questionnaireData?.sportRisk.sport ?? []) as SportDefaultValues[],
   },
   cancer: {
     check: (questionnaireData?.cancer.check ?? "") as YesNoAnswer,
