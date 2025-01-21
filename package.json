@@ -46,6 +46,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@typescript-eslint/eslint-plugin": "^8.20.0",
+    "babel-plugin-react-compiler": "^19.0.0-beta-e552027-20250112",
     "eslint": "^9.18.0",
     "eslint-config-next": "^15.1.4",
     "eslint-config-prettier": "^10",
@@ -82,5 +83,9 @@
     "turbo": "next dev --turbo",
     "u": "npm update && npm run validate",
     "validate": "npm-run-all --print-label --sequential clean-cache --parallel check-format lint check-types --sequential build"
+  },
+  "overrides": {
+    "react": "$react",
+    "react-dom": "$react-dom"
   }
 }
