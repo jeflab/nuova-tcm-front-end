@@ -18,12 +18,16 @@
     display: none;
   }
 
-  &:not(.isSuccess, .isDanger, .isWaiting),
+  &:not(.isSuccess, .isDanger, .isWaiting, .isActive),
   &.isLocked {
     > :global(.card-header) {
       border-bottom: none;
       border-radius: var(--bs-card-inner-border-radius);
     }
+  }
+  > :global(.card-header):has(+ :empty) {
+    border-bottom: none;
+    border-radius: var(--bs-card-inner-border-radius);
   }
 
   .actionButton {
