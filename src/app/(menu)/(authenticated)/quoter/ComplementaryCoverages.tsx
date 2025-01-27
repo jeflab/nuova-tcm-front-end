@@ -6,6 +6,7 @@ import {QuoterFormValues} from "@/app/(menu)/(authenticated)/quoter/QuoterForm";
 import {calendarYearAge} from "@/helpers/ages";
 import {Option} from "@/helpers/getOptionsLabel";
 import {toCurrency} from "@/helpers/numbers";
+import {Lip} from "@/models/entities/lip";
 import {Currency} from "@/ui/Currency";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {CheckboxField} from "@/ui/form/CheckboxField";
@@ -18,7 +19,11 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Col, FormGroup, FormLabel, InputGroup} from "react-bootstrap";
 import {useFormContext} from "react-hook-form";
 
-export function ComplementaryCoverages() {
+interface ComplementaryCoveragesProps {
+  lipType?: Lip["type"];
+}
+
+export function ComplementaryCoverages({lipType}: ComplementaryCoveragesProps) {
   const {watch, setValue} = useFormContext<QuoterFormValues>();
   const deathValue = watch("death");
   const birthDateValue = watch("birthDate");
@@ -141,7 +146,7 @@ export function ComplementaryCoverages() {
           className="position-relative"
         >
           <CheckboxField
-            disabled={isMoreThan55}
+            disabled={isMoreThan55 || (lipType && lipType !== "self-insured")}
             type="switch"
             label="Esonero dal pagamento dei premi"
             validationStyle={watch("exemptionFromPaying")}

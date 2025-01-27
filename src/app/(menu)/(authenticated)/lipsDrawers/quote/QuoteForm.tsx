@@ -42,6 +42,7 @@ export function QuoteForm() {
   const insuredBirthDate = useStore((state) => state.lip?.insured?.birthDate);
   const income = useStore((state) => state.lip?.den?.income);
   const lipId = useStore((state) => state.lip?.id);
+  const lipType = useStore((state) => state.lip?.type);
   const closeModal = useStore((state) => state.closeModal);
   const isHealthQuestionnaireCompiled = useStore(
     (state) => state.lip?.healthcareQuestionnaire,
@@ -164,7 +165,7 @@ export function QuoteForm() {
               premium={quotation?.premium ?? 0}
               duration={getCoverageDuration("death", birthDate)}
             />
-            <ComplementaryCoverages />
+            <ComplementaryCoverages lipType={lipType} />
           </Row>
           <FieldError
             name="root"
