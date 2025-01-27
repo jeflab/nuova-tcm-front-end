@@ -12,6 +12,7 @@ import {fiscalCodeValidator} from "@/ui/form/validators/fiscalCode";
 import {faSpinner} from "@fortawesome/pro-duotone-svg-icons";
 import {faSignInAlt} from "@fortawesome/pro-duotone-svg-icons/faSignInAlt";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {redirect} from "next/navigation";
 import {Alert, FormGroup, FormLabel} from "react-bootstrap";
 
 const defaultValues = {
@@ -19,7 +20,11 @@ const defaultValues = {
   password: "",
 };
 
-export function LoginForm() {
+interface LoginFormProps {
+  searchParamsJson: string | undefined;
+}
+
+export function LoginForm({searchParamsJson}: LoginFormProps) {
   const handleSubmit = async (data: typeof defaultValues) => {
     let loginResponse: Awaited<ReturnType<typeof login>>;
 
@@ -40,7 +45,25 @@ export function LoginForm() {
       };
     }
 
-    // Se la login è andata a buon fine, vengono settati i cookie che triggerano la revalidazione della pagina quindi qui non dobbiamo fare niente
+    if (searchParamsJson) {
+      const searchParams = JSON.parse(searchParamsJson);
+      const next = searchParams.next as string;
+      delete searchParams.next;
+
+      const newSearchParamsString = new URLSearchParams(
+        searchParams,
+      ).toString();
+
+      if (next) {
+        return redirect(
+          next + (newSearchParamsString ? `?${newSearchParamsString}` : ""),
+        );
+      } else {
+        return redirect("/");
+      }
+    }
+
+    return redirect("/");
   };
 
   return (
