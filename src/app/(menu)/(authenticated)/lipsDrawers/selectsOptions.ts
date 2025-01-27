@@ -412,7 +412,7 @@ export function paymentMethodsOptions(premium: number) {
     {
       label: `Pagamento mensile di ${toCurrency(premium / 12)} con anticipo di 3 mesi (${toCurrency((premium / 12) * 3)})`,
       value: "monthly",
-      disabled: premium < 480,
+      // disabled: premium < 480, Da riattivare dopo il rilascio del 3 febb
     },
     {
       label: `Pagamento annuale di ${toCurrency(premium)}`,
