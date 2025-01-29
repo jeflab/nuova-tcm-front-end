@@ -94,7 +94,9 @@ export const fiscalCodeMatchDataSuperRefine = (
 
   try {
     const fiscalCode = new CodiceFiscale(data);
-    if (fiscalCode.cf !== code) {
+    const omocodie = fiscalCode.omocodie();
+
+    if (fiscalCode.cf !== code && !omocodie.includes(code)) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: `Il codice fiscale non corrisponde ai dati inseriti.`,
@@ -142,7 +144,12 @@ export function checkFiscalCodeDataConsistencyValidator(
 
   try {
     const fiscalCode = new CodiceFiscale(data);
-    if (fiscalCode.cf !== expectedFiscalCode) {
+    const omocodie = fiscalCode.omocodie();
+
+    if (
+      fiscalCode.cf !== expectedFiscalCode &&
+      !omocodie.includes(expectedFiscalCode)
+    ) {
       return "Il codice fiscale non corrisponde ai dati inseriti.";
     }
   } catch (e) {
