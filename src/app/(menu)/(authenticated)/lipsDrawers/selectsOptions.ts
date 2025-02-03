@@ -24,6 +24,16 @@ export const relationshipOptions = [
 ] as const;
 export type Relationship = (typeof relationshipOptions)[number]["value"];
 
+// {label: "Il Contraente è diverso dall'Assicurato ed è una persona giuridica", value: "corporate-insured"},
+export const lipTypeOptions = [
+  {label: "Il Contraente è uguale all'Assicurato", value: "self-insured"},
+  {
+    label: "Il Contraente è diverso dall'Assicurato",
+    value: "third-party-insured",
+  },
+] as const;
+export type LipType = (typeof lipTypeOptions)[number]["value"];
+
 // Contractor data
 
 export const publicOfficesOptions = [
@@ -231,6 +241,20 @@ export const fundSourceOptions = [
 ] as const;
 export type FundSource = (typeof fundSourceOptions)[number]["value"];
 
+// Insured data
+export const insuredRelationshipOptions = [
+  {label: "Parentela", value: "kinship"},
+  {label: "Lavoro/Affari", value: "work_business"},
+  {label: "Affinità", value: "affinity"},
+  {label: "Coniugio", value: "marriage"},
+  {label: "Convivenza di fatto/Unione civile", value: "de_facto_civil_union"},
+  {label: "Relazione amicale", value: "friendly_relationship"},
+  {label: "Beneficenza/Liberalità", value: "charity_donation"},
+  {label: "Altro", value: "other"},
+] as const;
+export type InsuredRelationship =
+  (typeof insuredRelationshipOptions)[number]["value"];
+
 // Identification
 
 export const idTypeOptions = [
@@ -351,7 +375,7 @@ export type DurationOptions = (typeof durationOptions)[number]["value"];
 export const nominationOptions = [
   {
     label:
-      "Il Contraente designa come Beneficiari gli eredi testamentari o, in assenza di testamento, gli eredi legittimi del Contraente-assicurato in parti uguali fra loro",
+      "Il Contraente designa come Beneficiari gli eredi testamentari o, in assenza di testamento, gli eredi legittimi dell'Assicurato in parti uguali fra loro",
     value: "heirs",
   },
   {
@@ -388,6 +412,7 @@ export function paymentMethodsOptions(premium: number) {
     {
       label: `Pagamento mensile di ${toCurrency(premium / 12)} con anticipo di 3 mesi (${toCurrency((premium / 12) * 3)})`,
       value: "monthly",
+      // disabled: premium < 480, Da riattivare dopo il rilascio del 3 febb
     },
     {
       label: `Pagamento annuale di ${toCurrency(premium)}`,

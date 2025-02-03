@@ -6,7 +6,6 @@ import {
   PaymentMethods,
   paymentMethodsOptions,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
-import {getCoverageDuration} from "@/app/(menu)/(authenticated)/quoter/helpers";
 import {normalizeError} from "@/helpers/errors";
 import {Lip} from "@/models/entities/lip";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
@@ -35,6 +34,7 @@ import {useForm} from "react-hook-form";
 import invariant from "tiny-invariant";
 import {Currency} from "@/ui/Currency";
 import {toCurrency} from "@/helpers/numbers";
+import {getCoverageDuration} from "../quote/ComplementaryCoverages";
 
 const paymentDefaultValues = (paymentData?: Lip["payment"]) => ({
   effectiveDate: paymentData?.effectiveDate ?? "",
@@ -61,8 +61,11 @@ export function PaymentForm() {
     defaultValues: {
       ...paymentDefaultValues(paymentData),
       contractorFullName: `${contractorName} ${contractorSurname}`,
-      duration: getCoverageDuration(birthDate).toString(),
-      expirationDate: addYears(new Date(), getCoverageDuration(birthDate))
+      duration: getCoverageDuration("death", birthDate).toString(),
+      expirationDate: addYears(
+        new Date(),
+        getCoverageDuration("death", birthDate),
+      )
         .getFullYear()
         .toString(),
     },

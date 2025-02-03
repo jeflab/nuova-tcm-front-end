@@ -5,6 +5,17 @@
   position: sticky;
   top: calc(1.5rem + $headerHeight);
   width: min-content;
+  flex-wrap: nowrap;
+
+  @include media-breakpoint-up(md) {
+    max-height: calc(100vh - 1.5rem - 1.5rem - 56px);
+
+    .navLinks {
+      flex: 1;
+      overflow-y: auto;
+      margin-bottom: -0.25rem;
+    }
+  }
 
   a:first-of-type {
     padding-top: 0;
@@ -13,7 +24,6 @@
 
   a:last-of-type {
     padding-bottom: 0;
-    margin-bottom: -0.25rem;
   }
 
   a {

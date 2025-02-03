@@ -1,5 +1,6 @@
 "use server";
 
+import {ESign} from "@/app/(menu)/(authenticated)/lipsDrawers/documents/DocumentsManagement";
 import {getProfile} from "@/app/(no-menu)/(auth)/actions";
 import {esignSchema, PDFType} from "@/models/entities/esign";
 import {lipSchema} from "@/models/entities/lip";
@@ -30,23 +31,25 @@ const signFEADocSchema = {
   lip: lipSchema.optional(),
 };
 interface SignFEADocParams<TPayload> {
-  contractorId?: number;
   lipId: number;
   OTP: string;
   payload: TPayload;
   pdfType: PDFType;
+  personalDataId?: number;
   tagToRevalidate?: Tag;
   transactionId: string;
+  whoESign: ESign["whoESign"];
 }
 
 export async function signFEADoc<TPayload>({
-  contractorId,
   lipId,
   OTP,
   payload,
   pdfType,
+  personalDataId,
   tagToRevalidate,
   transactionId,
+  whoESign,
 }: SignFEADocParams<TPayload>) {
   return put("/esigns/sign-feadoc", {
     payloadShape: signFEADocSchema,
@@ -55,7 +58,8 @@ export async function signFEADoc<TPayload>({
       transactionId,
       lipId,
       pdfType,
-      contractorId,
+      ...(whoESign === "contractor" && {contractorId: personalDataId}),
+      ...(whoESign === "insured" && {insuredId: personalDataId}),
       ...payload,
     },
     ...(tagToRevalidate && {tags: [tagToRevalidate]}),

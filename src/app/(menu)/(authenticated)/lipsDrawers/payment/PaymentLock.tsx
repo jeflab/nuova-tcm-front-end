@@ -143,6 +143,7 @@ export function PaymentLock({
             }}
             show={isUnderwritingOpen}
             personalData={lip.contractor}
+            whoESign="contractor"
             tagToRevalidate={Tags.getLip(lip.id)}
           />
         </Alert>

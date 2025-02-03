@@ -1,0 +1,104 @@
+"use client";
+
+import {IdImage} from "@/ui/IdImage";
+import {idTypeOptions} from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
+import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {dateString} from "@/helpers/dates";
+import {getOptionsLabel} from "@/helpers/getOptionsLabel";
+import {
+  faAddressCard,
+  faClipboardListCheck,
+  faSquareCheck,
+} from "@fortawesome/pro-duotone-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {Col, Row} from "react-bootstrap";
+
+export function InsuredIdentificationSummary() {
+  const agentId = useStore((state) => state.lip?.agent.id);
+  const insuredId = useStore((state) => state.lip?.insured?.id);
+  const identification = useStore((state) =>
+    state.lip?.insured?.identityDocument?.at(-1),
+  );
+
+  if (!identification) {
+    return null;
+  }
+
+  return (
+    <Row className="row-gap-3">
+      <Col xs={12} sm={6} md={12} lg={6}>
+        <h4 className="text-primary">
+          <FontAwesomeIcon icon={faAddressCard} className="me-2" />
+          Documento di identità
+        </h4>
+        <p className="mb-0">
+          <strong>Documento:</strong>{" "}
+          {getOptionsLabel(idTypeOptions, identification.idType)}
+        </p>
+        <p className="mb-0">
+          <strong>Numero documento:</strong> {identification.number}
+        </p>
+        <p className="mb-0">
+          <strong>Rilasciato da:</strong> {identification.issuedByOrg}
+        </p>
+        <p className="mb-0">
+          <strong>Luogo di rilascio:</strong> {identification.issuedBy}
+        </p>
+        <p className="mb-0">
+          <strong>In data:</strong> {dateString(identification.issuedDate)}
+        </p>
+        <p className="mb-0">
+          <strong>Scadenza:</strong> {dateString(identification.expiringDate)}
+        </p>
+      </Col>
+      <Col xs={6} sm={3} md={6} lg={3}>
+        <div className="ratio ratio-4x3 p-3">
+          {agentId &&
+            insuredId &&
+            identification.identification?.fileIdFrontName && (
+              <IdImage
+                agentId={agentId}
+                personalDataId={insuredId}
+                filename={identification.identification?.fileIdFrontName}
+              />
+            )}
+        </div>
+      </Col>
+      <Col xs={6} sm={3} md={6} lg={3}>
+        <div className="ratio ratio-4x3 p-3">
+          {agentId &&
+            insuredId &&
+            identification.identification?.fileIdBackName && (
+              <IdImage
+                agentId={agentId}
+                personalDataId={insuredId}
+                filename={identification.identification?.fileIdBackName}
+              />
+            )}
+        </div>
+      </Col>
+      <Col xs={12}>
+        <h4 className="text-primary">
+          <FontAwesomeIcon icon={faClipboardListCheck} className="me-2" />
+          L'Agente dichiara:
+        </h4>
+        <p className="mb-0">
+          <FontAwesomeIcon icon={faSquareCheck} className="me-2" />
+          Di aver incontrato l'Assicurato di persona
+        </p>
+        <p className="mb-0">
+          <FontAwesomeIcon icon={faSquareCheck} className="me-2" />
+          Che il documento è la copia di quello mostrato dall'Assicurato
+        </p>
+        <p className="mb-0">
+          <FontAwesomeIcon icon={faSquareCheck} className="me-2" />
+          Che la fotografia è dell'Assicurato
+        </p>
+        <p className="mb-0">
+          <FontAwesomeIcon icon={faSquareCheck} className="me-2" />
+          Di aver identificato l'Assicurato
+        </p>
+      </Col>
+    </Row>
+  );
+}

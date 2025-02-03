@@ -1,19 +1,23 @@
 import {BeneficiariesSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/beneficiaries/BeneficiariesSummary";
 import {CertificateSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/certificate/CertificateSummary";
+import {ContractorContactsSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/contractorContacts/ContractorContactsSummary";
 import {ContractorDataSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/contractorData/ContractorDataSummary";
 import {ContractorFiscalCodeSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/contractorFiscalCode/ContractorFiscalCodeSummary";
 import {ContractorPersonalAreaActivationSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/contractorPersonalAreaActivation/ContractorPersonalAreaActivationSummary";
 import {DenSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/den/DenSummary";
 import {DocumentsSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/documents/DocumentsSummary";
-import {FatcaSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/facta/FatcaSummary";
+import {FatcaSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/fatca/FatcaSummary";
 import {HealthQuestionnaireSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/healthQuestionnaire/HealthQuestionnaireSummary";
-import {IdentificationDataSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/identification/IdentificationSummary";
+import {IdentificationSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/identification/IdentificationSummary";
+import {InsuredIdentificationSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/insuredIdentification/InsuredIdentificationSummary";
 import {PaymentLock} from "@/app/(menu)/(authenticated)/lipsDrawers/payment/PaymentLock";
 import {PaymentSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/payment/PaymentSummary";
 import {QuoteSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/quote/QuoteSummary";
+import {LipType} from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
+import {TypeSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/type/TypeSummary";
 import {ReactNode} from "react";
-import {ContractorContactsSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/contractorContacts/ContractorContactsSummary";
 import {DrawerName} from "../../lips/[id]/drawers";
+import {InsuredDataSummary} from "../../lipsDrawers/insuredData/InsuredDataSummary";
 
 interface DrawerConfig {
   name: DrawerName;
@@ -21,9 +25,15 @@ interface DrawerConfig {
   shortTitle?: string;
   summaryContent?: ReactNode;
   lock?: ReactNode;
+  isVisible?: (lipType: LipType) => boolean;
 }
 
 export const drawers: DrawerConfig[] = [
+  {
+    name: "type",
+    title: "Tipo di polizza",
+    summaryContent: <TypeSummary />,
+  },
   {
     name: "fatca",
     title: "Verifica residenza",
@@ -52,7 +62,7 @@ export const drawers: DrawerConfig[] = [
   {
     name: "identification",
     title: "Identificazione del Contraente",
-    summaryContent: <IdentificationDataSummary />,
+    summaryContent: <IdentificationSummary />,
   },
   {
     name: "den",
@@ -60,6 +70,18 @@ export const drawers: DrawerConfig[] = [
       "Questionario per la coerenza del contratto rispetto alle richieste ed esigenze del Contraente",
     shortTitle: "Questionario di coerenza",
     summaryContent: <DenSummary />,
+  },
+  {
+    name: "insuredData",
+    title: "Censimento Assicurato",
+    summaryContent: <InsuredDataSummary />,
+    isVisible: (lipType) => lipType === "third-party-insured",
+  },
+  {
+    name: "insuredIdentification",
+    title: "Identificazione dell'Assicurato",
+    summaryContent: <InsuredIdentificationSummary />,
+    isVisible: (lipType) => lipType === "third-party-insured",
   },
   {
     name: "quote",

@@ -12,10 +12,11 @@ import {Button, Placeholder, Stack} from "react-bootstrap";
 
 interface PolicyProps {
   lip: Lip;
+  insured?: PersonalData | null;
   contractor: PersonalData;
 }
 
-export function Policy({lip, contractor}: PolicyProps) {
+export function Policy({lip, insured, contractor}: PolicyProps) {
   return (
     <CardCollapsable
       header={
@@ -54,10 +55,22 @@ export function Policy({lip, contractor}: PolicyProps) {
         <p className="mb-0">
           <strong>Creata il:</strong> {dateString(lip.createdAt)}
         </p>
-        <p className="mb-0">
-          <strong>Contraente / Assicurato:</strong> {contractor.name}{" "}
-          {contractor.surname}
-        </p>
+        {lip.type === "self-insured" ? (
+          <p className="mb-0">
+            <strong>Contraente / Assicurato:</strong> {contractor.name}{" "}
+            {contractor.surname}
+          </p>
+        ) : (
+          <>
+            <p className="mb-0">
+              <strong>Contraente:</strong> {contractor.name}{" "}
+              {contractor.surname}
+            </p>
+            <p className="mb-0">
+              <strong>Assicurato:</strong> {insured?.name} {insured?.surname}
+            </p>
+          </>
+        )}
         <p className="mb-0">
           <strong>Agente:</strong> {lip.agent.name} {lip.agent.surname}
         </p>

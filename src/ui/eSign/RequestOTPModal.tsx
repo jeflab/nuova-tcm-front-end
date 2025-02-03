@@ -1,3 +1,4 @@
+import {ESign} from "@/app/(menu)/(authenticated)/lipsDrawers/documents/DocumentsManagement";
 import {PDFType} from "@/models/entities/esign";
 import {PersonalData} from "@/models/entities/personalData";
 import {Tag} from "@/services/const";
@@ -19,6 +20,7 @@ interface RequestOTPModalProps<TPayload> {
   personalData?: PersonalData;
   show: boolean;
   tagToRevalidate?: Tag;
+  whoESign: ESign["whoESign"];
 }
 
 export function RequestOTPModal<TPayload>({
@@ -30,6 +32,7 @@ export function RequestOTPModal<TPayload>({
   personalData,
   show,
   tagToRevalidate,
+  whoESign,
 }: RequestOTPModalProps<TPayload>) {
   return (
     <Modal show={show} onHide={onHide} backdrop="static" centered>
@@ -42,6 +45,7 @@ export function RequestOTPModal<TPayload>({
           lipId={lipId}
           onEsignComplete={onEsignComplete}
           tagToRevalidate={tagToRevalidate}
+          whoESign={whoESign}
         />
       </ModalBody>
     </Modal>

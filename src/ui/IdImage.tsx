@@ -4,18 +4,18 @@ import {createIDImageUrl} from "@/helpers/createResourcesUrl";
 
 interface IdImageProps {
   agentId: number;
-  contractorId: number;
+  personalDataId: number;
   filename: string;
   size?: "thumbnail" | "full";
 }
 export function IdImage({
   agentId,
-  contractorId,
+  personalDataId,
   filename,
   size = "thumbnail",
 }: IdImageProps) {
   const imageUrl = createIDImageUrl({
-    contractorId,
+    personalDataId,
     agentId,
     fileName: filename,
     size,

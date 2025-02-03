@@ -6,7 +6,7 @@ export const agentSchema = z
     name: z.string(),
     surname: z.string(),
     address: z.string(),
-    street_number: z.string(),
+    street_number: z.string().trim().nullish(),
     city: z.string(),
     zip_code: z.string(),
     region: z.string().nullable(),

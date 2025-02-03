@@ -4,24 +4,24 @@ import {
 } from "@/app/download-doc/schema";
 
 interface CreateDocumentImageUrlOptions {
-  contractorId?: number;
+  personalDataId?: number;
   agentId?: number;
   fileName?: string;
   size?: "thumbnail" | "full";
 }
 
 export function createIDImageUrl({
-  contractorId,
+  personalDataId,
   agentId,
   fileName,
   size,
 }: CreateDocumentImageUrlOptions) {
-  if (!contractorId || !agentId || !fileName || !size) {
+  if (!personalDataId || !agentId || !fileName || !size) {
     return undefined;
   }
 
   return encodeURI(
-    `/doc-image?contractorId=${contractorId}&filename=${fileName}&agentId=${agentId}&size=${size}`,
+    `/doc-image?contractorId=${personalDataId}&filename=${fileName}&agentId=${agentId}&size=${size}`,
   );
 }
 

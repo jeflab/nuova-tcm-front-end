@@ -3,6 +3,8 @@
 import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {imcInRange} from "@/helpers/imc";
 import {Decimal} from "@/ui/Currency";
+import {faCheck} from "@fortawesome/pro-solid-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Alert, Stack} from "react-bootstrap";
 
 export function HealthQuestionnaireSummary() {
@@ -27,6 +29,7 @@ export function HealthQuestionnaireSummary() {
   return (
     <Stack gap={3}>
       <p className="mb-0">
+        <FontAwesomeIcon icon={faCheck} className="text-success" fixedWidth />{" "}
         L'indice di massa corporea dell'assicurato è di{" "}
         <Decimal>{healthQuestionnaireData.IMC}</Decimal>.
       </p>

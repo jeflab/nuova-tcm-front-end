@@ -1,12 +1,8 @@
 "use client";
 
-import {createDocumentUrl} from "@/helpers/createResourcesUrl";
 import {dateString} from "@/helpers/dates";
-import {ButtonLink} from "@/ui/ButtonLink";
-import {
-  faDownload,
-  faFileCertificate,
-} from "@fortawesome/pro-duotone-svg-icons";
+import {DownloadDocumentButton} from "@/ui/DownloadDocumentButton";
+import {faFileCertificate} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {useStore} from "../../lips/[id]/store";
 
@@ -41,16 +37,13 @@ export function CertificateSummary() {
         {dateString(certificate?.effectiveDate)}
       </p>
       <div>
-        <ButtonLink
-          href={createDocumentUrl({
-            uri: "pdf-certificato",
-            lipId,
-            agentId,
-          })}
-          download
+        <DownloadDocumentButton
+          uri="pdf-certificato"
+          lipId={lipId}
+          agentId={agentId}
         >
-          <FontAwesomeIcon icon={faDownload} /> Scarica certificato di polizza
-        </ButtonLink>
+          Scarica certificato di polizza
+        </DownloadDocumentButton>
       </div>
     </>
   );

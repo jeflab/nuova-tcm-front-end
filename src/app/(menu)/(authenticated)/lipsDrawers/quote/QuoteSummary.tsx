@@ -1,8 +1,10 @@
 "use client";
 
-import {complementaryCoverages} from "@/app/(menu)/(authenticated)/lipsDrawers/quote/ComplementaryCoverages";
+import {
+  complementaryCoverages,
+  getCoverageDuration,
+} from "@/app/(menu)/(authenticated)/lipsDrawers/quote/ComplementaryCoverages";
 import {Coverage} from "@/app/(menu)/(authenticated)/lipsDrawers/quote/Coverage";
-import {getCoverageDuration} from "@/app/(menu)/(authenticated)/quoter/helpers";
 import {calendarYearAge} from "@/helpers/ages";
 import {dateString} from "@/helpers/dates";
 import {Currency} from "@/ui/Currency";
@@ -26,18 +28,18 @@ export function QuoteSummary() {
     return null;
   }
 
-  const filteredComplementaryCoverages = complementaryCoverages.filter(
-    ({key}) => {
-      const coverage = quoteData[key];
-      return typeof coverage === "boolean" ? coverage : coverage.enabled;
-    },
-  );
+  const filteredComplementaryCoverages = Object.values(
+    complementaryCoverages,
+  ).filter(({key}) => {
+    const coverage = quoteData[key];
+    return typeof coverage === "boolean" ? coverage : coverage.enabled;
+  });
 
   return (
     <Row className="row-gap-3">
       <Col xs={12} sm={6} md={12} lg={6}>
         <h4 className="text-primary">
-          <FontAwesomeIcon icon={faUser} /> Dati Contraente
+          <FontAwesomeIcon icon={faUser} /> Dati Assicurato
         </h4>
         <p className="mb-0">
           <strong>Data di nascita:</strong> {dateString(quoteData.birthDate)}
@@ -66,8 +68,8 @@ export function QuoteSummary() {
           <Currency>{quoteData.death}</Currency>
         </p>
         <p className="mb-0">
-          <strong>Durata:</strong> {getCoverageDuration(quoteData.birthDate)}{" "}
-          anni
+          <strong>Durata:</strong>{" "}
+          {getCoverageDuration("death", quoteData.birthDate)} anni
         </p>
       </Col>
       <Col>

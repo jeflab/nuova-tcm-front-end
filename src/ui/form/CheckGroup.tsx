@@ -25,7 +25,7 @@ type CheckGroupProps<TFieldValues extends FieldValues, TValue> = (
   disabled?: boolean;
   inline?: boolean;
   name?: string;
-  options: readonly {label: ReactNode; value: TValue}[];
+  options: readonly {label: ReactNode; value: TValue; disabled?: boolean}[];
   readOnly?: boolean;
   validation?: RegisterOptions<TFieldValues>;
   validationStyle?: boolean;
@@ -53,14 +53,14 @@ export function CheckGroup<
 
   return (
     <div>
-      {options.map(({label, value}) => {
+      {options.map(({label, value, disabled: singleDisabled}) => {
         return (
           <CheckboxField
             key={`${controlName}-${value}`}
             onChange={() => {
               onChange?.(getValues(controlName));
             }}
-            disabled={disabled || readOnly}
+            disabled={disabled || readOnly || singleDisabled}
             id={`${controlName}-${value}`}
             inline={inline}
             label={label}

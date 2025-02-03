@@ -7,15 +7,39 @@ import {Lip} from "@/models/entities/lip";
 import {ButtonLink} from "@/ui/ButtonLink";
 import {LipStateBadge, LipStateBadgeSkeleton} from "@/ui/LipStateBadge";
 import dataTableStyles from "@/ui/table/DataTable.module.scss";
-import {faEye, faFilterCircleXmark} from "@fortawesome/pro-duotone-svg-icons";
+import {
+  faEye,
+  faFilterCircleXmark,
+  faUser,
+  faUserGroupSimple,
+} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {ColumnDef, createColumnHelper} from "@tanstack/react-table";
 import {Button, FormControl, FormSelect, Placeholder} from "react-bootstrap";
+import styles from "@/ui/table/DataTable.module.scss";
 
 const columnHelper = createColumnHelper<Lip>();
 export const columns = [
   columnHelper.accessor("lipNumber", {
     header: "Numero proposta",
+    cell: (props) => {
+      const lipType = props.row.original.type;
+      return (
+        <>
+          <FontAwesomeIcon
+            icon={lipType === "self-insured" ? faUser : faUserGroupSimple}
+            fixedWidth
+            className={cns("cursor-help", styles.rowOtherLink)}
+            title={
+              lipType === "self-insured"
+                ? "Il Contraente e l'Assicurato coincidono"
+                : "Il Contraente è diverso dall'Assicurato"
+            }
+          />{" "}
+          {props.getValue()}
+        </>
+      );
+    },
   }),
   columnHelper.accessor((row) => `${row.agent.surname} ${row.agent.name}`, {
     id: "agent",

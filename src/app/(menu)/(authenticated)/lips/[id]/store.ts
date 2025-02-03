@@ -24,7 +24,7 @@ interface Actions {
 }
 
 const initialState: State = {
-  drawerStates: {fatca: {variant: "active", ...presetButtons.compile}},
+  drawerStates: {type: {variant: "active", ...presetButtons.compile}},
   lip: null,
   modalOpen: null,
   preliminaryData: {},
@@ -40,7 +40,7 @@ function createState(state: State & Actions) {
       Object.keys(state.lip?.eSigns?.polizza).length > 0) ||
     (state.lip?.eSigns?.identificazione &&
       Object.keys(state.lip?.eSigns?.identificazione).length > 0);
-  const privacyESigned = !!state.lip?.contractor?.lastPrivacyEsignId;
+  const privacyESigned = !!state.lip?.contractor?.lastPrivacyESignId;
 
   const askForUnderwriting =
     // se le condizioni sanitarie non sono rispettate
@@ -68,16 +68,33 @@ function createState(state: State & Actions) {
   const amlBlocked = state.lip?.aml?.blocked ?? false;
 
   if (isPreliminary) {
-    // fatca
-    if (state.preliminaryData.fatca === undefined) {
-      state.drawerStates.fatca = {variant: "active", ...presetButtons.compile};
-    } else if (
-      state.preliminaryData.fatca === "no" &&
-      state.preliminaryData.italianResidency === "yes"
-    ) {
-      state.drawerStates.fatca = {variant: "success"};
+    // type
+    if (state.preliminaryData.type === undefined) {
+      state.drawerStates.type = {variant: "active", ...presetButtons.compile};
     } else {
-      state.drawerStates.fatca = {variant: "danger", ...presetButtons.update};
+      state.drawerStates.type = {variant: "success"};
+    }
+
+    // fatca
+    if (state.drawerStates.type?.variant === "success") {
+      if (state.preliminaryData.fatca === undefined) {
+        state.drawerStates.fatca = {
+          variant: "active",
+          ...presetButtons.compile,
+        };
+      } else if (
+        state.preliminaryData.fatca === "no" &&
+        state.preliminaryData.italianResidency === "yes" &&
+        (state.preliminaryData.type === "self-insured" ||
+          (state.preliminaryData.insuredFatca === "no" &&
+            state.preliminaryData.insuredItalianResidency === "yes"))
+      ) {
+        state.drawerStates.fatca = {variant: "success"};
+      } else {
+        state.drawerStates.fatca = {variant: "danger", ...presetButtons.update};
+      }
+    } else {
+      state.drawerStates.fatca = undefined;
     }
 
     // contractor fiscal code
@@ -110,16 +127,34 @@ function createState(state: State & Actions) {
     }
   } else {
     // Dati da server
-    // fatca
-    if (state.lip?.contractor?.fatca.fatcaCheck.response === undefined) {
-      state.drawerStates.fatca = {variant: "active", ...presetButtons.compile};
-    } else if (
-      state.lip?.contractor.fatca.fatcaCheck.response === "no" &&
-      state.lip?.contractor.fatca.residencyCheck.response === "yes"
-    ) {
-      state.drawerStates.fatca = {variant: "success"};
+    // type
+    if (state.lip?.type === undefined) {
+      state.drawerStates.type = {variant: "active", ...presetButtons.compile};
     } else {
-      state.drawerStates.fatca = {variant: "danger"};
+      state.drawerStates.type = {variant: "success"};
+    }
+
+    // fatca
+    if (state.drawerStates.type?.variant === "success") {
+      if (state.lip?.contractor?.fatca.fatcaCheck.response === undefined) {
+        state.drawerStates.fatca = {
+          variant: "active",
+          ...presetButtons.compile,
+        };
+      } else if (
+        state.lip?.contractor.fatca.fatcaCheck.response === "no" &&
+        state.lip?.contractor.fatca.residencyCheck.response === "yes" &&
+        (state.lip?.type === "self-insured" ||
+          !state.lip?.insured ||
+          (state.lip?.insured?.fatca.fatcaCheck.response === "no" &&
+            state.lip?.insured?.fatca.residencyCheck.response === "yes"))
+      ) {
+        state.drawerStates.fatca = {variant: "success"};
+      } else {
+        state.drawerStates.fatca = {variant: "danger"};
+      }
+    } else {
+      state.drawerStates.fatca = undefined;
     }
 
     // contractor fiscal code
@@ -158,7 +193,7 @@ function createState(state: State & Actions) {
 
     // Attesa creazione area Contraente
     if (state.drawerStates.contractorContacts?.variant === "success") {
-      if (state.lip?.contractor.lastPrivacyEsignId === null) {
+      if (state.lip?.contractor.lastPrivacyESignId === null) {
         state.drawerStates.contractorPersonalAreaActivation = {
           variant: "active",
           ...presetButtons.privacyEsign,
@@ -194,14 +229,14 @@ function createState(state: State & Actions) {
     // Identificazione Contraente
     if (state.drawerStates.contractorData?.variant === "success") {
       if (
-        !state.lip?.contractor.identitydocument ||
-        state.lip.contractor.identitydocument.length === 0
+        !state.lip?.contractor.identityDocument ||
+        state.lip.contractor.identityDocument.length === 0
       ) {
         state.drawerStates.identification = {
           variant: "active",
           ...presetButtons.compile,
         };
-      } else if (state.lip.contractor.identitydocument.length > 0) {
+      } else if (state.lip.contractor.identityDocument.length > 0) {
         state.drawerStates.identification = {
           variant: "success",
           ...(allowUpdatesBeforePayment && presetButtons.update),
@@ -232,8 +267,51 @@ function createState(state: State & Actions) {
       state.drawerStates.den = undefined;
     }
 
-    // Preventivo
+    // Censimento Assicurato
     if (state.drawerStates.den?.variant === "success") {
+      if (!state.lip?.insured?.city) {
+        state.drawerStates.insuredData = {
+          variant: "active",
+          ...presetButtons.compile,
+        };
+      } else {
+        state.drawerStates.insuredData = {
+          variant: "success",
+          ...(allowUpdatesBeforePayment && presetButtons.update),
+        };
+      }
+    } else {
+      state.drawerStates.insuredData = undefined;
+    }
+
+    // Identificazione Assicurato
+    if (state.drawerStates.insuredData?.variant === "success") {
+      if (
+        !state.lip?.insured?.identityDocument ||
+        state.lip.insured.identityDocument.length === 0
+      ) {
+        state.drawerStates.insuredIdentification = {
+          variant: "active",
+          ...presetButtons.compile,
+        };
+      } else if (state.lip.insured.identityDocument.length > 0) {
+        state.drawerStates.insuredIdentification = {
+          variant: "success",
+          ...(allowUpdatesBeforePayment && presetButtons.update),
+        };
+      } else {
+        state.drawerStates.insuredIdentification = {variant: "danger"};
+      }
+    } else {
+      state.drawerStates.insuredIdentification = undefined;
+    }
+
+    // Preventivo
+    if (
+      (state.lip?.type !== "third-party-insured" &&
+        state.drawerStates.den?.variant === "success") ||
+      state.drawerStates.insuredIdentification?.variant === "success"
+    ) {
       if (state.lip?.quotation === null) {
         state.drawerStates.quote = {
           variant: "active",
@@ -302,7 +380,13 @@ function createState(state: State & Actions) {
     }
 
     // Documentazione
-    const requiredProposalESign = state.lip?.mustAskUnderwriting ? 4 : 3;
+    let requiredProposalESign = 3;
+    if (state.lip?.mustAskUnderwriting) {
+      requiredProposalESign++;
+    }
+    if (state.lip?.type !== "self-insured") {
+      requiredProposalESign++;
+    }
     if (state.drawerStates.payment?.variant === "success") {
       if (amlBlocked) {
         state.drawerStates.documentation = {variant: "waiting", isLocked: true};

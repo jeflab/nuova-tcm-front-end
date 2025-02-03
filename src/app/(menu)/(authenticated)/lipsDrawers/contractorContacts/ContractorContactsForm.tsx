@@ -4,7 +4,7 @@ import {
   activateContractor,
   updateContractorContacts,
 } from "@/app/(menu)/(authenticated)/lips/[id]/actions";
-import {fatcaQuestions} from "@/app/(menu)/(authenticated)/lipsDrawers/facta/FatcaForm";
+import {fatcaQuestions} from "@/app/(menu)/(authenticated)/lipsDrawers/fatca/FatcaForm";
 import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {cns} from "@/helpers/cns";
 import {normalizeError} from "@/helpers/errors";
@@ -72,6 +72,7 @@ export function ContractorContactsForm({
                 ReturnType<typeof activateContractor>
               >;
               try {
+                invariant(preliminaryData.type, "Tipo di polizza mancante");
                 invariant(
                   preliminaryData.contractorPersonalData,
                   "Dati del Contraente mancanti",
@@ -84,6 +85,7 @@ export function ContractorContactsForm({
 
                 activateContractorResponse = await activateContractor({
                   ...values,
+                  type: preliminaryData.type,
                   ...preliminaryData.contractorPersonalData,
                   fatca: {
                     ...fatcaQuestions.fatcaCheck,

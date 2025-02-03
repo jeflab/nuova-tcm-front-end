@@ -13,22 +13,30 @@ import {DenSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/den/DenSummar
 import {DocumentsLock} from "@/app/(menu)/(authenticated)/lipsDrawers/documents/DocumentsLock";
 import {DocumentsModal} from "@/app/(menu)/(authenticated)/lipsDrawers/documents/DocumentsModal";
 import {DocumentsSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/documents/DocumentsSummary";
-import {FatcaForm} from "@/app/(menu)/(authenticated)/lipsDrawers/facta/FatcaForm";
-import {FatcaSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/facta/FatcaSummary";
+import {FatcaForm} from "@/app/(menu)/(authenticated)/lipsDrawers/fatca/FatcaForm";
+import {FatcaSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/fatca/FatcaSummary";
 import {HealthQuestionnaireForm} from "@/app/(menu)/(authenticated)/lipsDrawers/healthQuestionnaire/HealthQuestionnaireForm";
 import {HealthQuestionnaireSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/healthQuestionnaire/HealthQuestionnaireSummary";
 import {IdentificationForm} from "@/app/(menu)/(authenticated)/lipsDrawers/identification/IdentificationForm";
-import {IdentificationDataSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/identification/IdentificationSummary";
+import {IdentificationSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/identification/IdentificationSummary";
+import {InsuredDataForm} from "@/app/(menu)/(authenticated)/lipsDrawers/insuredData/InsuredDataForm";
+import {InsuredDataSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/insuredData/InsuredDataSummary";
 import {PaymentForm} from "@/app/(menu)/(authenticated)/lipsDrawers/payment/PaymentForm";
 import {PaymentLock} from "@/app/(menu)/(authenticated)/lipsDrawers/payment/PaymentLock";
 import {PaymentSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/payment/PaymentSummary";
 import {QuoteForm} from "@/app/(menu)/(authenticated)/lipsDrawers/quote/QuoteForm";
 import {QuoteSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/quote/QuoteSummary";
+import {LipType} from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
+import {TypeForm} from "@/app/(menu)/(authenticated)/lipsDrawers/type/TypeForm";
+import {TypeSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/type/TypeSummary";
 import {ReactNode} from "react";
 import {ContractorContactsSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/contractorContacts/ContractorContactsSummary";
 import {ContractorPersonalAreaActivationLastPrivacy} from "@/app/(menu)/(authenticated)/lipsDrawers/contractorPersonalAreaActivation/ContractorPersonalAreaActivationLastPrivacy";
+import {InsuredIdentificationForm} from "../../lipsDrawers/insuredIdentification/InsuredIdentificationForm";
+import {InsuredIdentificationSummary} from "../../lipsDrawers/insuredIdentification/InsuredIdentificationSummary";
 
 export type DrawerName =
+  | "type"
   | "fatca"
   | "contractorFiscalCode"
   | "contractorContacts"
@@ -36,6 +44,8 @@ export type DrawerName =
   | "contractorData"
   | "identification"
   | "den"
+  | "insuredData"
+  | "insuredIdentification"
   | "quote"
   | "healthQuestionnaire"
   | "beneficiaries"
@@ -49,9 +59,16 @@ interface DrawerConfig {
   modalContent?: ReactNode;
   summaryContent?: ReactNode;
   lock?: ReactNode;
+  isVisible?: (lipType: LipType) => boolean;
 }
 
 export const drawers: DrawerConfig[] = [
+  {
+    name: "type",
+    title: "Tipo di polizza",
+    modalContent: <TypeForm />,
+    summaryContent: <TypeSummary />,
+  },
   {
     name: "fatca",
     title: "Verifica residenza",
@@ -90,7 +107,7 @@ export const drawers: DrawerConfig[] = [
     name: "identification",
     title: "Identificazione del Contraente",
     modalContent: <IdentificationForm />,
-    summaryContent: <IdentificationDataSummary />,
+    summaryContent: <IdentificationSummary />,
   },
   {
     name: "den",
@@ -99,6 +116,20 @@ export const drawers: DrawerConfig[] = [
     shortTitle: "Questionario di coerenza",
     modalContent: <DenForm />,
     summaryContent: <DenSummary />,
+  },
+  {
+    name: "insuredData",
+    title: "Censimento Assicurato",
+    modalContent: <InsuredDataForm />,
+    summaryContent: <InsuredDataSummary />,
+    isVisible: (lipType) => lipType === "third-party-insured",
+  },
+  {
+    name: "insuredIdentification",
+    title: "Identificazione dell'Assicurato",
+    modalContent: <InsuredIdentificationForm />,
+    summaryContent: <InsuredIdentificationSummary />,
+    isVisible: (lipType) => lipType === "third-party-insured",
   },
   {
     name: "quote",

@@ -1,6 +1,6 @@
 "use client";
 
-import {IdImage} from "@/app/(menu)/(authenticated)/lipsDrawers/identification/IdImage";
+import {IdImage} from "@/ui/IdImage";
 import {idTypeOptions} from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
 import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {dateString} from "@/helpers/dates";
@@ -13,11 +13,11 @@ import {
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Col, Row} from "react-bootstrap";
 
-export function IdentificationDataSummary() {
+export function IdentificationSummary() {
   const agentId = useStore((state) => state.lip?.agent.id);
   const contractorId = useStore((state) => state.lip?.contractor.id);
   const identification = useStore((state) =>
-    state.lip?.contractor.identitydocument?.at(-1),
+    state.lip?.contractor.identityDocument?.at(-1),
   );
 
   if (!identification) {
@@ -58,7 +58,7 @@ export function IdentificationDataSummary() {
             identification.identification?.fileIdFrontName && (
               <IdImage
                 agentId={agentId}
-                contractorId={contractorId}
+                personalDataId={contractorId}
                 filename={identification.identification?.fileIdFrontName}
               />
             )}
@@ -71,7 +71,7 @@ export function IdentificationDataSummary() {
             identification.identification?.fileIdBackName && (
               <IdImage
                 agentId={agentId}
-                contractorId={contractorId}
+                personalDataId={contractorId}
                 filename={identification.identification?.fileIdBackName}
               />
             )}

@@ -94,7 +94,9 @@ export const fiscalCodeMatchDataSuperRefine = (
 
   try {
     const fiscalCode = new CodiceFiscale(data);
-    if (fiscalCode.cf !== code) {
+    const omocodie = fiscalCode.omocodie();
+
+    if (fiscalCode.cf !== code && !omocodie.includes(code)) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: `Il codice fiscale non corrisponde ai dati inseriti.`,
@@ -122,3 +124,39 @@ export const fiscalCodeMatchDataSuperRefine = (
     return false;
   }
 };
+
+export function checkFiscalCodeDataConsistencyValidator(
+  expectedFiscalCode: string,
+  data: FiscalCodeData,
+) {
+  if (
+    !data.name ||
+    !data.surname ||
+    !data.gender ||
+    !data.day ||
+    !data.month ||
+    !data.year ||
+    !data.birthplace ||
+    !data.birthplaceProvincia
+  ) {
+    return "Mancano dei dati per il calcolo del codice fiscale.";
+  }
+
+  try {
+    const fiscalCode = new CodiceFiscale(data);
+    const omocodie = fiscalCode.omocodie();
+
+    if (
+      fiscalCode.cf !== expectedFiscalCode &&
+      !omocodie.includes(expectedFiscalCode)
+    ) {
+      return "Il codice fiscale non corrisponde ai dati inseriti.";
+    }
+  } catch (e) {
+    return e && typeof e === "object" && "message" in e
+      ? (e.message as string)
+      : "Errore durante la validazione del codice fiscale.";
+  }
+
+  return true;
+}

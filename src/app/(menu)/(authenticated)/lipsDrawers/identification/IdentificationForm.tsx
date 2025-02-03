@@ -41,7 +41,7 @@ export function IdentificationForm() {
   const agentId = useStore((state) => state.lip?.agent.id);
   const contractorId = useStore((state) => state.lip?.contractor.id);
   const identityDocument = useStore((state) =>
-    state.lip?.contractor.identitydocument?.at(-1),
+    state.lip?.contractor.identityDocument?.at(-1),
   );
 
   const formMethods = useForm({
@@ -62,14 +62,14 @@ export function IdentificationForm() {
   const closeModal = useStore((state) => state.closeModal);
 
   const existingFrontImageUrl = createIDImageUrl({
-    contractorId,
+    personalDataId: contractorId,
     agentId,
     fileName: identityDocument?.identification?.fileIdFrontName,
     size: "full",
   });
 
   const existingBackImageUrl = createIDImageUrl({
-    contractorId,
+    personalDataId: contractorId,
     agentId,
     fileName: identityDocument?.identification?.fileIdBackName,
     size: "full",

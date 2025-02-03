@@ -7,14 +7,11 @@ import {NavDrawer} from "@/ui/drawer/NavDrawer";
 import {LipStateBadge} from "@/ui/LipStateBadge";
 import {PageTitle} from "@/ui/PageTitle";
 import ScrollReveal from "@/ui/ScrollReveal/ScrollReveal";
-import {
-  faArrowLeft,
-  faTriangleExclamation,
-} from "@fortawesome/pro-duotone-svg-icons";
+import {faArrowLeft} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {notFound} from "next/navigation";
 import {Fragment} from "react";
-import {Alert, Col, Nav, Row} from "react-bootstrap";
+import {Col, Nav, Row} from "react-bootstrap";
 import {getLip} from "./actions";
 import {drawers} from "./drawers";
 import {InitStoreWithServerData} from "./InitStoreWithServerData";
@@ -62,40 +59,34 @@ export default async function NewLipPage({params}: NewLipPageProps) {
                 <LipStateBadge lipState={lip.lipStates} />
               </div>
             </ScrollReveal>
-            {drawers.map(({name, title, shortTitle}) => (
-              <NavDrawer name={name} key={name}>
-                {shortTitle ?? title}
-              </NavDrawer>
-            ))}
+            <div className={styles.navLinks}>
+              {drawers.map(({name, title, shortTitle, isVisible}) => {
+                if (isVisible && !isVisible(lip.type)) {
+                  return null;
+                }
+                return (
+                  <NavDrawer name={name} key={name}>
+                    {shortTitle ?? title}
+                  </NavDrawer>
+                );
+              })}
+            </div>
           </Nav>
         </Col>
         <Col className="d-flex flex-column gap-3" style={minWidthHack}>
-          <Alert variant="info" className="mb-0">
-            <h3>
-              <FontAwesomeIcon icon={faTriangleExclamation} className="me-2" />
-              Avviso legale: Contraente e Assicurato devono coincidere.
-            </h3>
-            <p>
-              Ti diamo il benvenuto nell'app di calcolo preventivo per polizze
-              vita. Ai fini legali, è obbligatorio che il Contraente coincida
-              con l'assicurato durante la compilazione dei dati.
-            </p>
-            <p className="mb-0">
-              Il Contraente è la persona responsabile della sottoscrizione della
-              polizza, mentre l'assicurato è la persona per la quale la polizza
-              viene stipulata. Affinché il processo sia conforme alle normative
-              vigenti, i dettagli del Contraente e dell'assicurato devono
-              corrispondere.
-            </p>
-          </Alert>
-          {drawers.map(({name, title, summaryContent, lock}) => (
-            <Fragment key={name}>
-              {lock}
-              <Drawer name={name} title={title} readonly>
-                {summaryContent}
-              </Drawer>
-            </Fragment>
-          ))}
+          {drawers.map(({name, title, summaryContent, lock, isVisible}) => {
+            if (isVisible && lip && !isVisible(lip.type)) {
+              return null;
+            }
+            return (
+              <Fragment key={name}>
+                {lock}
+                <Drawer name={name} title={title} readonly>
+                  {summaryContent}
+                </Drawer>
+              </Fragment>
+            );
+          })}
         </Col>
       </Row>
     </AppContainer>

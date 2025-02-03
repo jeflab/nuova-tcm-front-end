@@ -2,13 +2,15 @@
 
 import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {CompanyPrivacy} from "@/app/(menu)/(authenticated)/lipsDrawers/CompanyPrivacy";
-import {createDocumentUrl} from "@/helpers/createResourcesUrl";
+import {
+  createDocuments,
+  ESign,
+} from "@/app/(menu)/(authenticated)/lipsDrawers/documents/DocumentsManagement";
 import {validateDen} from "@/helpers/lip-validator";
-import {PDFType} from "@/models/entities/esign";
+import {DownloadDocumentButton} from "@/ui/DownloadDocumentButton";
 import {
   faCheckCircle,
   faClipboardListCheck,
-  faDownload,
 } from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {useState} from "react";
@@ -23,69 +25,11 @@ import {
 } from "react-bootstrap";
 import styles from "./DocumentsManagement.module.scss";
 
-interface Esign {
-  key: string;
-  whoEsign: "advisor" | "contractor";
-  eSignIndex: number;
-  signed: boolean;
-}
-interface Document {
-  key: "allegato4" | "setInformativo" | "identificazione" | "polizza";
-  fileName: string;
-  urlPreview: string;
-  urlDownload: string;
-  type: PDFType;
-  eSigns: Esign[];
-}
-const documents = [
-  {
-    key: "identificazione",
-    fileName: "File di identificazione",
-    urlPreview: "pdf-identificazione-preview",
-    urlDownload: "pdf-identificazione",
-    type: PDFType.Identification,
-    eSigns: [
-      {
-        key: "esign_agente",
-        whoEsign: "advisor",
-      } as Esign,
-    ],
-  },
-  {
-    key: "allegato4",
-    fileName: "Allegato 4",
-    urlPreview: "pdf-allegato4",
-    urlDownload: "pdf-allegato4",
-    type: PDFType.Allegato4,
-    eSigns: [],
-  },
-  {
-    key: "setInformativo",
-    fileName: "Set informativo",
-    urlPreview: "set-informativo",
-    urlDownload: "set-informativo",
-    type: PDFType.SetInformativo,
-    eSigns: [],
-  },
-  {
-    key: "polizza",
-    fileName: "File di Proposta",
-    urlPreview: "pdf-proposta-preview",
-    urlDownload: "pdf-proposta",
-    type: PDFType.Proposal,
-    eSigns: [
-      {key: "esign_agente", whoEsign: "advisor"} as Esign,
-      {key: "esign_contraente", whoEsign: "contractor"} as Esign,
-      {key: "esign_contraente_sepa", whoEsign: "contractor"} as Esign,
-    ],
-  },
-] as const satisfies Document[];
-
 const eSignsCount = (
-  documentESigns: Esign[],
+  documentESigns: ESign[],
   lipESigns: Record<string, {esign_id: number}>,
   filter?: string,
-): [Esign[], Esign[]] => {
+): [ESign[], ESign[]] => {
   let filteredESigns = documentESigns.map((eSign, index) => ({
     ...eSign,
     eSignIndex: index,
@@ -93,7 +37,7 @@ const eSignsCount = (
   }));
   if (filter) {
     filteredESigns = filteredESigns.filter(
-      (eSign) => eSign.whoEsign === filter,
+      (eSign) => eSign.whoESign === filter,
     );
   }
 
@@ -110,6 +54,8 @@ export function DocumentsSummary() {
   if (!lip || !denValid) {
     return null;
   }
+
+  const documents = createDocuments(lip.type);
 
   return (
     <Stack gap={3}>
@@ -154,6 +100,23 @@ export function DocumentsSummary() {
           <div className="doc-table-contractor-esign-content">
             Nessuna firma richiesta
           </div>
+          {lip.type !== "self-insured" && (
+            <>
+              <div>
+                <strong>Firme Assicurato:</strong>
+                <span className="d-block d-sm-none">
+                  <FontAwesomeIcon
+                    icon={faCheckCircle}
+                    title="Completato"
+                    className="text-success ms-2"
+                  />
+                </span>
+              </div>
+              <div className="doc-table-contractor-esign-content">
+                Nessuna firma richiesta
+              </div>
+            </>
+          )}
         </div>
       </Card>
       <Modal
@@ -187,10 +150,16 @@ export function DocumentsSummary() {
           lip.eSigns?.[document.key] ?? {},
           "contractor",
         );
+        const [partialInsuredESign, totalInsuredESign] = eSignsCount(
+          document.eSigns,
+          lip.eSigns?.[document.key] ?? {},
+          "insured",
+        );
 
         if (
           partialContractorESign < totalContractorESign ||
-          partialAdvisorESign < totalAdvisorESign
+          partialAdvisorESign < totalAdvisorESign ||
+          partialInsuredESign < totalInsuredESign
         ) {
           return null;
         }
@@ -199,21 +168,16 @@ export function DocumentsSummary() {
           <Card key={document.fileName}>
             <CardHeader className={styles.documentHeader}>
               <strong>{document.fileName}</strong>
-              <Button
-                as="a"
+              <DownloadDocumentButton
                 size="sm"
-                download
                 className="ms-sm-auto"
-                href={createDocumentUrl({
-                  uri: document.urlDownload,
-                  lipId: lip.id,
-                  agentId: lip.agent.id,
-                  contractorId: lip.contractor.id,
-                })}
+                uri={document.urlDownload}
+                lipId={lip.id}
+                agentId={lip.agent.id}
+                contractorId={lip.contractor.id}
               >
-                <FontAwesomeIcon icon={faDownload} /> Scarica il documento
-                {document.eSigns.length > 0 ? " firmato" : ""}
-              </Button>
+                Scarica il documento
+              </DownloadDocumentButton>
             </CardHeader>
             <div className={styles.docTableActions}>
               <>
@@ -315,6 +279,57 @@ export function DocumentsSummary() {
                   )}
                 </div>
               </>
+              {lip.type !== "self-insured" && (
+                <>
+                  <div>
+                    <strong>Firme Assicurato:</strong>
+                    <span className="d-block d-sm-none">
+                      {partialInsuredESign.length} di {totalInsuredESign.length}
+                      {partialInsuredESign.length ===
+                        totalInsuredESign.length && (
+                        <FontAwesomeIcon
+                          icon={faCheckCircle}
+                          title="Completato"
+                          className="text-success ms-2"
+                        />
+                      )}
+                    </span>
+                  </div>
+                  <div className="doc-table-contractor-esign-content">
+                    {totalInsuredESign.length > 0 ? (
+                      <>
+                        <span className="d-none d-sm-block">
+                          {partialInsuredESign.length} di{" "}
+                          {totalInsuredESign.length}
+                          {partialInsuredESign.length ===
+                            totalInsuredESign.length && (
+                            <FontAwesomeIcon
+                              icon={faCheckCircle}
+                              title="Completato"
+                              className="text-success ms-2"
+                            />
+                          )}
+                        </span>
+                        {totalInsuredESign.map((eSign) => (
+                          <Badge
+                            key={eSign.key}
+                            bg="success"
+                            className="text-nowrap"
+                          >
+                            <FontAwesomeIcon
+                              icon={faCheckCircle}
+                              className="me-2"
+                            />
+                            Firmato
+                          </Badge>
+                        ))}
+                      </>
+                    ) : (
+                      <>Nessuna firma richiesta</>
+                    )}
+                  </div>
+                </>
+              )}
             </div>
           </Card>
         );

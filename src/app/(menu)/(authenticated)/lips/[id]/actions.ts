@@ -1,7 +1,6 @@
 "use server";
 
 import {BeneficiariesFormValues} from "@/app/(menu)/(authenticated)/lipsDrawers/beneficiaries/BeneficiariesForm";
-import {fatcaQuestions} from "@/app/(menu)/(authenticated)/lipsDrawers/facta/FatcaForm";
 import {HealthQuestionnaireFormValues} from "@/app/(menu)/(authenticated)/lipsDrawers/healthQuestionnaire/HealthQuestionnaireForm";
 import {PaymentFormValues} from "@/app/(menu)/(authenticated)/lipsDrawers/payment/PaymentForm";
 import {
@@ -22,6 +21,7 @@ import {
   IdType,
   JobPosition,
   jobPositionOptions,
+  LipType,
   needsToMeetOptions,
   NeedsToMeetOptions,
   PublicOffices,
@@ -31,13 +31,13 @@ import {
   YesNoAnswer,
   yesNoOptions,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
+import {Option} from "@/helpers/getOptionsLabel";
 import {
   getTypedFormDataFromObject,
   TypedFormData,
 } from "@/helpers/typedFormData";
-import {lipSchema} from "@/models/entities/lip";
+import {Lip, lipSchema} from "@/models/entities/lip";
 import {privacySchema} from "@/models/entities/privacy";
-import {Option} from "@/helpers/getOptionsLabel";
 import {get, patch, post} from "@/services/api";
 import {Tags} from "@/services/const";
 import {invalidateTag} from "@/services/helpers";
@@ -56,17 +56,18 @@ const checkContractorShape = {
   lip: lipSchema.optional(),
 };
 interface ActivateContractorParams {
+  type: LipType;
   fatca: {
     label: string;
     text: string;
     options: readonly Option[];
-    response: (typeof fatcaQuestions)["fatcaCheck"]["options"][number]["value"];
+    response: YesNoAnswer;
   };
   italianResidency: {
     label: string;
     text: string;
     options: readonly Option[];
-    response: (typeof fatcaQuestions)["residencyCheck"]["options"][number]["value"];
+    response: YesNoAnswer;
   };
   birthDate: string;
   birthPlace: {
@@ -84,6 +85,7 @@ export async function activateContractor(
   contractorData: ActivateContractorParams,
 ) {
   const data = {
+    type: contractorData.type,
     json_fatca: JSON.stringify({
       fatcaCheck: contractorData.fatca,
       residencyCheck: contractorData.italianResidency,
@@ -115,8 +117,12 @@ export async function activateContractor(
 const checkIfFiscalCodeExistsShape = {
   lip: lipSchema.optional(),
 };
-export async function checkIfFiscalCodeExists(fiscalCode: string) {
+export async function checkIfFiscalCodeExists(
+  fiscalCode: string,
+  lipType: Lip["type"],
+) {
   const data = {
+    lip_type: lipType,
     fiscal_code: fiscalCode,
   };
 
@@ -157,7 +163,19 @@ export async function updateUnderwriting(lipId: number) {
   });
 }
 
-interface updateContractorDataParams {
+interface UpdatePersonalDataParams {
+  insuredPersonalData?: {
+    birthDate: string;
+    birthPlace: {
+      city: string;
+      province: string;
+    };
+    fiscalCode: string;
+    gender: Gender;
+    name: string;
+    surname: string;
+  };
+
   citizenship: string;
   secondCitizenship: string;
   residence: {
@@ -169,12 +187,12 @@ interface updateContractorDataParams {
     streetNumber: string;
     zipCode: string;
   };
-  pep: {
+  pep?: {
     isPep: YesNoAnswer;
     publicOffice: PublicOffices;
     otherPep: YesNoAnswer;
   };
-  job: {
+  job?: {
     position: JobPosition;
     positionOther: string;
     tAECode: "" | TAECode;
@@ -186,13 +204,32 @@ interface updateContractorDataParams {
     phone: string;
     email: string;
   };
+  relationship?: string;
+  relationshipOther?: string;
 }
-export async function updateContractorData(
-  contractorId: number,
+export async function updatePersonalData(
+  personalDataId: number,
   lipId: number,
-  formData: updateContractorDataParams,
+  formData: UpdatePersonalDataParams,
 ) {
   const data = {
+    ...(formData.insuredPersonalData && {
+      name: formData.insuredPersonalData.name,
+      surname: formData.insuredPersonalData.surname,
+      gender: formData.insuredPersonalData.gender,
+      date_birth: formData.insuredPersonalData.birthDate,
+      place_birth:
+        formData.insuredPersonalData.birthPlace.province !== "EE"
+          ? formData.insuredPersonalData.birthPlace.city
+          : "Estero",
+      region_birth: formData.insuredPersonalData.birthPlace.province,
+      country_birth:
+        formData.insuredPersonalData.birthPlace.province !== "EE"
+          ? "Italia"
+          : formData.insuredPersonalData.birthPlace.city,
+      fiscal_code: formData.insuredPersonalData.fiscalCode,
+    }),
+
     city: formData.residence.place.city,
     region: formData.residence.place.province,
     address: formData.residence.streetName,
@@ -200,42 +237,122 @@ export async function updateContractorData(
     zip_code: formData.residence.zipCode,
     citizenship: formData.citizenship,
     second_citizenship: formData.secondCitizenship,
-    json_pep: JSON.stringify({
-      isPep: {options: yesNoOptions, response: formData.pep.isPep},
-      publicOffice: {
-        options: publicOfficesOptions,
-        response: formData.pep.publicOffice,
-      },
-      otherPep: {options: yesNoOptions, response: formData.pep.otherPep},
-      job: {
-        position: {
-          options: jobPositionOptions,
-          response: formData.job.position,
-        },
-        positionOther: formData.job.positionOther,
-        ...(["entrepreneur", "freelancer", "selfEmployed"].includes(
-          formData.job.position,
-        ) && {
-          tAECode: {options: tAECodeOptions, response: formData.job.tAECode},
-        }),
-        ...(["employee", "manager"].includes(formData.job.position) && {
-          type: formData.job.type,
-        }),
-        province: formData.job.province,
-        country: formData.job.country,
-      },
-    }),
-    phone: formData.contact.phone,
+    json_pep:
+      formData.pep && formData.job
+        ? JSON.stringify({
+            isPep: {options: yesNoOptions, response: formData.pep.isPep},
+            publicOffice: {
+              options: publicOfficesOptions,
+              response: formData.pep.publicOffice,
+            },
+            otherPep: {options: yesNoOptions, response: formData.pep.otherPep},
+            job: {
+              position: {
+                options: jobPositionOptions,
+                response: formData.job.position,
+              },
+              positionOther: formData.job.positionOther,
+              ...(["entrepreneur", "freelancer", "selfEmployed"].includes(
+                formData.job.position,
+              ) && {
+                tAECode: {
+                  options: tAECodeOptions,
+                  response: formData.job.tAECode,
+                },
+              }),
+              ...(["employee", "manager"].includes(formData.job.position) && {
+                type: formData.job.type,
+              }),
+              province: formData.job.province,
+              country: formData.job.country,
+            },
+          })
+        : undefined,
     email: formData.contact.email,
+    phone: formData.contact.phone,
+    lipRelationship:
+      formData.relationship === "other"
+        ? "other:" + formData.relationshipOther
+        : formData.relationship,
   };
 
-  return patch(`/personal-datas/${contractorId}`, {
+  return patch(`/personal-datas/${personalDataId}`, {
     data,
     tags: [Tags.getLip(lipId)],
   });
 }
 
-interface IdentificationContractorParams {
+interface AddInsuredDataParams {
+  citizenship: string;
+  secondCitizenship: string;
+  insuredPersonalData: {
+    birthDate: string;
+    birthPlace: {
+      city: string;
+      province: string;
+    };
+    fiscalCode: string;
+    gender: Gender;
+    name: string;
+    surname: string;
+  };
+  residence: {
+    place: {
+      city: string;
+      province: string;
+    };
+    streetName: string;
+    streetNumber: string;
+    zipCode: string;
+  };
+  contact: {
+    phone: string;
+    email: string;
+  };
+  relationship: string;
+  relationshipOther: string;
+}
+export async function addInsuredData(
+  lipId: number,
+  formData: AddInsuredDataParams,
+) {
+  const data = {
+    name: formData.insuredPersonalData.name,
+    surname: formData.insuredPersonalData.surname,
+    gender: formData.insuredPersonalData.gender,
+    date_birth: formData.insuredPersonalData.birthDate,
+    place_birth:
+      formData.insuredPersonalData.birthPlace.province !== "EE"
+        ? formData.insuredPersonalData.birthPlace.city
+        : "Estero",
+    region_birth: formData.insuredPersonalData.birthPlace.province,
+    country_birth:
+      formData.insuredPersonalData.birthPlace.province !== "EE"
+        ? "Italia"
+        : formData.insuredPersonalData.birthPlace.city,
+    fiscal_code: formData.insuredPersonalData.fiscalCode,
+    address: formData.residence.streetName,
+    street_number: formData.residence.streetNumber,
+    city: formData.residence.place.city,
+    zip_code: formData.residence.zipCode,
+    region: formData.residence.place.province,
+    citizenship: formData.citizenship,
+    second_citizenship: formData.secondCitizenship,
+    email: formData.contact.email,
+    phone: formData.contact.phone,
+    lipRelationship:
+      formData.relationship === "other"
+        ? "other:" + formData.relationshipOther
+        : formData.relationship,
+  };
+
+  return post(`/lips/${lipId}/addInsured`, {
+    data,
+    tags: [Tags.getLip(lipId)],
+  });
+}
+
+interface IdentificationParams {
   frontPicture: File;
   backPicture: File;
   idType: IdType;
@@ -245,10 +362,12 @@ interface IdentificationContractorParams {
   issuedDate: string;
   expiringDate: string;
 }
-export async function identificationContractor(
-  documentFormData: TypedFormData<IdentificationContractorParams>,
+
+export async function identification(
+  documentFormData: TypedFormData<IdentificationParams>,
   fiscalCode: string,
   lipId: number,
+  endpoint: "/identification-contractor" | "/identification-insured",
 ) {
   const formData = getTypedFormDataFromObject({
     idFront: documentFormData.get("frontPicture"),
@@ -261,10 +380,36 @@ export async function identificationContractor(
     expiring_date: documentFormData.get("expiringDate"),
     fiscal_code: fiscalCode,
   });
-  return post("/identification-contractor", {
+  return post(endpoint, {
     data: formData,
     tags: [Tags.getLip(lipId)],
   });
+}
+
+export async function identificationContractor(
+  documentFormData: TypedFormData<IdentificationParams>,
+  fiscalCode: string,
+  lipId: number,
+) {
+  return identification(
+    documentFormData,
+    fiscalCode,
+    lipId,
+    "/identification-contractor",
+  );
+}
+
+export async function identificationInsured(
+  documentFormData: TypedFormData<IdentificationParams>,
+  fiscalCode: string,
+  lipId: number,
+) {
+  return identification(
+    documentFormData,
+    fiscalCode,
+    lipId,
+    "/identification-insured",
+  );
 }
 
 interface UpdateDenParams {

@@ -2,10 +2,10 @@ import {
   Document,
   ESign,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/documents/DocumentsManagement";
-import {createDocumentUrl} from "@/helpers/createResourcesUrl";
 import {dateTimeString} from "@/helpers/dates";
 import {Lip} from "@/models/entities/lip";
 import {Tags} from "@/services/const";
+import {DownloadDocumentButton} from "@/ui/DownloadDocumentButton";
 import RequestOTPModal from "@/ui/eSign/RequestOTPModal";
 import {
   faCheckCircle,
@@ -56,19 +56,16 @@ export function DocumentsChapterDetails({
       <ModalHeader closeButton>Firma il documento</ModalHeader>
       <ModalBody>
         <Stack gap={3}>
-          <Button
-            as="a"
-            download
+          <DownloadDocumentButton
             className="align-self-start"
-            href={createDocumentUrl({
-              uri: document.urlPreview,
-              lipId: lip.id,
-              agentId: lip.agent.id,
-              contractorId: lip.contractor.id,
-            })}
+            uri={document.urlPreview}
+            lipId={lip.id}
+            agentId={lip.agent.id}
+            contractorId={lip.contractor.id}
+            icon={faEye}
           >
-            <FontAwesomeIcon icon={faEye} /> Visualizza anteprima del documento
-          </Button>
+            Visualizza anteprima del documento
+          </DownloadDocumentButton>
           <h3>Firme richieste</h3>
           {eSigns.map((eSign, index) => (
             <Card body key={index} className="auto-margin-3">
@@ -92,8 +89,12 @@ export function DocumentsChapterDetails({
                     }}
                   >
                     <FontAwesomeIcon icon={faFileSignature} /> Firma
-                    {eSign.whoESign === "contractor" ? " del Contraente" : ""}
-                  </Button>{" "}
+                    {eSign.whoESign === "contractor"
+                      ? " del Contraente"
+                      : eSign.whoESign === "insured"
+                        ? " dell'Assicurato"
+                        : " del Consulente"}
+                  </Button>
                   <RequestOTPModal
                     onHide={() => {
                       startTransition(() => {
@@ -109,8 +110,11 @@ export function DocumentsChapterDetails({
                     personalData={
                       eSign.whoESign === "contractor"
                         ? lip.contractor
-                        : undefined
+                        : eSign.whoESign === "insured" && lip.insured
+                          ? lip.insured
+                          : undefined
                     }
+                    whoESign={eSign.whoESign}
                     pdfType={document.type}
                     payload={{esignIndex: eSign.eSignIndex}}
                     show={esignModalOpen === eSign.eSignIndex}

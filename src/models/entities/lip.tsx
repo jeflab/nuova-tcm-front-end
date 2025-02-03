@@ -1,15 +1,19 @@
-import {complementaryCoverages} from "@/app/(menu)/(authenticated)/lipsDrawers/quote/ComplementaryCoverages";
+import {
+  ComplementaryCoverageKey,
+  complementaryCoverages,
+} from "@/app/(menu)/(authenticated)/lipsDrawers/quote/ComplementaryCoverages";
 import {
   fundSourceOptions,
   genderOptions,
   idTypeOptions,
+  lipTypeOptions,
   nominationOptions,
   paymentMethodsSimpleOptions,
   relationshipOptions,
   sportRiskIndexOptions,
   yesNoOptions,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
-import {extractValuesByKey, getOptionsValues} from "@/helpers/getOptionsLabel";
+import {getOptionsValues} from "@/helpers/getOptionsLabel";
 import {agentSchema} from "@/models/entities/agent";
 import {personalDataSchema} from "@/models/entities/personalData";
 import {IconStack} from "@/ui/IconStack";
@@ -153,7 +157,12 @@ const underwritingSchema = z
     exclusions: z.array(
       z
         .object({
-          name: z.enum(extractValuesByKey(complementaryCoverages, "key")),
+          name: z.enum(
+            Object.keys(complementaryCoverages) as [
+              ComplementaryCoverageKey,
+              ...ComplementaryCoverageKey[],
+            ],
+          ),
           decline: z.boolean(),
           exclusion: z.string(),
           reason_of_loading: z.string(),
@@ -345,6 +354,16 @@ export const eSignSchema = z.object({
       }),
     )
     .optional(),
+  identificazione_assicurato: z
+    .record(
+      z.enum(["esign_agente"]),
+      z.object({
+        file: z.string(),
+        esign_id: z.number(),
+        data: z.string(),
+      }),
+    )
+    .optional(),
   polizza: z
     .record(
       z.enum([
@@ -352,6 +371,7 @@ export const eSignSchema = z.object({
         "esign_contraente",
         "esign_contraente_sepa",
         "esign_contraente_underwriting",
+        "esign_assicurato",
       ]),
       z.object({
         file: z.string(),
@@ -404,10 +424,11 @@ const certificateSchema = z
 export const lipSchema = z
   .object({
     id: z.number(),
-    insured_id: z.number(),
     created_at: z.coerce.date(),
     agent: agentSchema,
     contractor: personalDataSchema,
+    contractor_insured_relationship: z.string().nullish(),
+    insured: personalDataSchema.nullish(),
     lip_number: z.coerce.string(),
     json_den: zu.stringToJSON().pipe(denSchema).nullish(),
     json_quotation: zu.stringToJSON().pipe(quotationSchema).nullish(),
@@ -431,12 +452,13 @@ export const lipSchema = z
       .transform((states) => {
         return states?.[states.length - 1] ?? lipStateSchema.parse(undefined);
       }),
+    type: z.enum(getOptionsValues(lipTypeOptions)),
   })
   .transform(
     ({
       created_at,
-      insured_id,
       lip_number,
+      contractor_insured_relationship,
       json_den,
       json_quotation,
       json_survey_healthcare,
@@ -449,11 +471,20 @@ export const lipSchema = z
       lipstates,
       ...data
     }) => {
+      const contractorInsuredRelationship =
+        contractor_insured_relationship?.startsWith("other:")
+          ? contractor_insured_relationship.slice(0, 5)
+          : contractor_insured_relationship;
+      const contractorInsuredRelationshipOther =
+        contractor_insured_relationship?.startsWith("other:")
+          ? contractor_insured_relationship.slice(6)
+          : undefined;
       return {
         ...data,
         createdAt: created_at,
-        insuredId: insured_id,
         lipNumber: lip_number,
+        contractorInsuredRelationship,
+        contractorInsuredRelationshipOther,
         den: json_den,
         quotation: json_quotation,
         healthcareQuestionnaire: json_survey_healthcare,

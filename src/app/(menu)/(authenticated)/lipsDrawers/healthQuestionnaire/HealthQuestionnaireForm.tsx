@@ -115,8 +115,10 @@ export function HealthQuestionnaireForm() {
 
   const weightValue = formMethods.watch("weight");
   const heightValue = formMethods.watch("height");
-  const weightValid = formMethods.formState.errors.weight === undefined;
-  const heightValid = formMethods.formState.errors.height === undefined;
+  const weightValid =
+    !!weightValue && formMethods.formState.errors.weight === undefined;
+  const heightValid =
+    !!heightValue && formMethods.formState.errors.height === undefined;
 
   const hospitalizationCheckValue = formMethods.watch("hospitalization.check");
   const diseasesCheckValue = formMethods.watch("diseases.check");

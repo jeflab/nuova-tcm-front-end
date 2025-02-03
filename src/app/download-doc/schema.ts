@@ -16,6 +16,8 @@ export const searchPramsSchema = z.discriminatedUnion("uri", [
       "pdf-privacy",
       "pdf-identificazione",
       "pdf-identificazione-preview",
+      "pdf-identificazione-assicurato",
+      "pdf-identificazione-assicurato-preview",
       "pdf-proposta",
       "pdf-proposta-preview",
       "pdf-allegato4",

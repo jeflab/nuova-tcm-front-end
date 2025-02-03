@@ -1,3 +1,4 @@
+import {ESign} from "@/app/(menu)/(authenticated)/lipsDrawers/documents/DocumentsManagement";
 import {normalizeError} from "@/helpers/errors";
 import {PDFType} from "@/models/entities/esign";
 import {PersonalData} from "@/models/entities/personalData";
@@ -26,6 +27,7 @@ interface RequestOTPModalContentProps<TPayload> {
   personalData?: PersonalData;
   tagToRevalidate?: Tag;
   pdfType: PDFType;
+  whoESign: ESign["whoESign"];
 }
 export function RequestOTPModalContent<TPayload>({
   lipId,
@@ -35,6 +37,7 @@ export function RequestOTPModalContent<TPayload>({
   pdfType,
   personalData,
   tagToRevalidate,
+  whoESign,
 }: RequestOTPModalContentProps<TPayload>) {
   const [counter, setCounter] = useState(60);
   const [updatePhoneOpen, setUpdatePhoneOpen] = useState(false);
@@ -142,6 +145,7 @@ export function RequestOTPModalContent<TPayload>({
         requestOTP({contractorId: personalData?.id, lipId: lipId});
       }}
       tagToRevalidate={tagToRevalidate}
+      whoESign={whoESign}
     />
   ) : (
     <InsertPhoneForm

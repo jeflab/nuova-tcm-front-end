@@ -1,6 +1,26 @@
 # Changelog
 
-## 1.2.0 (2024-11-20)
+# v2.0.0
+
+#### Added:
+
+- Aggiunta la possibilità di creare proposte di polizza con Contraente != Assicurato
+
+#### Changed:
+
+- Ora lo script dev controlla la versione di node richiesta
+- Nuovo capitale massimo per la coperture TPI
+- Bloccata copertura di blocco dei pagamenti se Contraente != Assicurato
+- Aggiunta icona per distinguere le polizze con Contraente != Assicurato
+
+#### Fixed:
+
+- Ora il menu laterale scorre se troppo alto
+- Aggiunto urlencode al corpo della mail di assistenza
+- Migliorato UI per i cassetti chiusi
+- Ora il campo CF accetta anche le omocodie
+
+## v1.2.0 (2024-11-20)
 
 #### Added:
 
