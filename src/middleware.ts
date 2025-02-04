@@ -1,5 +1,7 @@
 import {AUTH_COOKIE_NAME} from "@/app/(no-menu)/(auth)/const";
+import {jwtSchema} from "@/models/jwt";
 import {NextRequest, NextResponse} from "next/server";
+import jwt from "jsonwebtoken";
 
 export const config = {
   matcher: [
@@ -27,11 +29,57 @@ const publicRoutes = [
 export default async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
   const isPublicRoute = publicRoutes.includes(path);
+  const isRootPath = path === "/";
   const isLoginPage = path === "/login";
-  const isUserLoggedIn = request.cookies.has(AUTH_COOKIE_NAME);
   const searchParams = request.nextUrl.searchParams;
+  const token = request.cookies.get(AUTH_COOKIE_NAME)?.value;
+  const isUserLoggedIn = !!token;
+  let userPermissions: string[] = [];
 
-  // TODO: Manage root path
+  if (token) {
+    try {
+      const decodedToken = jwt.decode(token);
+      const parsedToken = jwtSchema.parse(decodedToken);
+
+      userPermissions = Object.values(parsedToken.permissions ?? []);
+    } catch (error) {
+      console.error("Impossibile leggere il token JWT:", error);
+      console.error("Token:", token);
+
+      if (!isLoginPage) {
+        searchParams.set("next", path ?? "");
+        const redirectUrl = new URL(
+          `/login?${searchParams.toString()}`,
+          request.url,
+        );
+
+        const response = NextResponse.redirect(redirectUrl);
+        response.cookies.delete(AUTH_COOKIE_NAME);
+        return response;
+      }
+      const response = NextResponse.next();
+      response.cookies.delete(AUTH_COOKIE_NAME);
+      return response;
+    }
+  }
+
+  if (isRootPath) {
+    if (isUserLoggedIn) {
+      if (userPermissions?.some((permission) => permission === "create-lip")) {
+        return NextResponse.redirect(new URL("/lips", request.url));
+      } else if (
+        userPermissions?.some(
+          (permission) => permission === "contractor-read-lip",
+        )
+      ) {
+        return NextResponse.redirect(new URL("/contractorLips", request.url));
+      } else {
+        return NextResponse.redirect(new URL("/profile", request.url));
+      }
+    }
+
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
 
   if (!isPublicRoute && !isUserLoggedIn) {
     searchParams.set("next", path ?? "");

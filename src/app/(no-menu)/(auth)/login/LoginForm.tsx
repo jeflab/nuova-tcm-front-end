@@ -3,6 +3,7 @@
 import {login} from "@/app/(no-menu)/(auth)/actions";
 import {cns} from "@/helpers/cns";
 import {normalizeError} from "@/helpers/errors";
+import {jwtSchema} from "@/models/jwt";
 import {FieldError} from "@/ui/form/FieldError";
 import {Form} from "@/ui/form/Form";
 import {InputField} from "@/ui/form/InputField";
@@ -12,6 +13,7 @@ import {fiscalCodeValidator} from "@/ui/form/validators/fiscalCode";
 import {faSpinner} from "@fortawesome/pro-duotone-svg-icons";
 import {faSignInAlt} from "@fortawesome/pro-duotone-svg-icons/faSignInAlt";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import jwt from "jsonwebtoken";
 import {redirect} from "next/navigation";
 import {Alert, FormGroup, FormLabel} from "react-bootstrap";
 
@@ -58,11 +60,33 @@ export function LoginForm({searchParamsJson}: LoginFormProps) {
         return redirect(
           next + (newSearchParamsString ? `?${newSearchParamsString}` : ""),
         );
-      } else {
-        return redirect("/");
       }
     }
 
+    if (loginResponse.access_token) {
+      let userPermissions: string[] = [];
+      try {
+        const decodedToken = jwt.decode(loginResponse.access_token);
+        const parsedToken = jwtSchema.parse(decodedToken);
+
+        userPermissions = Object.values(parsedToken.permissions ?? []);
+      } catch (error) {
+        console.error("Impossibile leggere il token JWT:", error);
+        return redirect("/");
+      }
+
+      if (userPermissions?.some((permission) => permission === "create-lip")) {
+        return redirect("/lips");
+      } else if (
+        userPermissions?.some(
+          (permission) => permission === "contractor-read-lip",
+        )
+      ) {
+        redirect("/contractorLips");
+      } else {
+        redirect("/profile");
+      }
+    }
     return redirect("/");
   };
 
