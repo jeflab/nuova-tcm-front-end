@@ -31,7 +31,10 @@ import {
   upperCaseWordsNormalizer,
 } from "@/ui/form/normalizers";
 import {emailValidator} from "@/ui/form/validators/email";
-import {checkFiscalCodeDataConsistencyValidator} from "@/ui/form/validators/fiscalCode";
+import {
+  checkFiscalCodeDataConsistencyValidator,
+  fiscalCodeValidator,
+} from "@/ui/form/validators/fiscalCode";
 import {faSave, faSpinner, faXmark} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import * as Sentry from "@sentry/nextjs";
@@ -152,22 +155,43 @@ export function InsuredDataForm() {
                   normalize={upperCaseNormalizer}
                   validation={{
                     required: "Inserisci il codice fiscale dell'Assicurato",
-                    validate: (value, values) =>
-                      checkFiscalCodeDataConsistencyValidator(value, {
-                        name: values.insuredPersonalData.name,
-                        surname: values.insuredPersonalData.surname,
-                        gender:
-                          values.insuredPersonalData.gender === "male"
-                            ? "M"
-                            : "F",
-                        day: getDate(values.insuredPersonalData.birthDate),
-                        month:
-                          getMonth(values.insuredPersonalData.birthDate) + 1,
-                        year: getYear(values.insuredPersonalData.birthDate),
-                        birthplace: values.insuredPersonalData.birthPlace.city,
-                        birthplaceProvincia:
-                          values.insuredPersonalData.birthPlace.province,
-                      }),
+                    validate: {
+                      format: (value) => {
+                        return (
+                          fiscalCodeValidator(value) ||
+                          "Codice fiscale non valido"
+                        );
+                      },
+                      dataConsistency: (value, values) => {
+                        if (
+                          !values.insuredPersonalData.name ||
+                          !values.insuredPersonalData.surname ||
+                          !values.insuredPersonalData.gender ||
+                          !values.insuredPersonalData.birthDate ||
+                          !values.insuredPersonalData.birthPlace.city ||
+                          !values.insuredPersonalData.birthPlace.province
+                        ) {
+                          return true;
+                        }
+
+                        return checkFiscalCodeDataConsistencyValidator(value, {
+                          name: values.insuredPersonalData.name,
+                          surname: values.insuredPersonalData.surname,
+                          gender:
+                            values.insuredPersonalData.gender === "male"
+                              ? "M"
+                              : "F",
+                          day: getDate(values.insuredPersonalData.birthDate),
+                          month:
+                            getMonth(values.insuredPersonalData.birthDate) + 1,
+                          year: getYear(values.insuredPersonalData.birthDate),
+                          birthplace:
+                            values.insuredPersonalData.birthPlace.city,
+                          birthplaceProvincia:
+                            values.insuredPersonalData.birthPlace.province,
+                        });
+                      },
+                    },
                   }}
                 />
               </FormGroup>

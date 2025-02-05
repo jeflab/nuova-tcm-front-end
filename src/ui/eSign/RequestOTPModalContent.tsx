@@ -12,7 +12,7 @@ import useInterval from "@restart/hooks/useInterval";
 import useMountEffect from "@restart/hooks/useMountEffect";
 import {useMutation} from "@tanstack/react-query";
 import {useState} from "react";
-import {Alert, Button} from "react-bootstrap";
+import {Alert, Button, Stack} from "react-bootstrap";
 
 interface RequestOTPModalContentProps<TPayload> {
   lipId: number;
@@ -57,6 +57,9 @@ export function RequestOTPModalContent<TPayload>({
 
       const response = await createFEATransaction(data);
 
+      if (!response) {
+        throw new Error("Impossibile richiedere l'OTP, riprova più tardi");
+      }
       if (response.featTransaction?.status !== "success") {
         throw normalizeError(response.featTransaction);
       }
@@ -119,11 +122,21 @@ export function RequestOTPModalContent<TPayload>({
     return (
       <>
         <Alert variant="danger">{createdFEATransactionError.message}</Alert>
-        <div className="text-center">
+        <Stack direction="horizontal" gap={2}>
+          <Button
+            variant="secondary"
+            type="button"
+            onClick={() => {
+              requestOTP({contractorId: personalData?.id, lipId: lipId});
+            }}
+          >
+            <FontAwesomeIcon icon={faRotate} className="me-2" />
+            Riprova
+          </Button>
           <Button variant="cancel" type="button" onClick={onCancel}>
             Chiudi
           </Button>
-        </div>
+        </Stack>
       </>
     );
   }
