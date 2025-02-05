@@ -1,11 +1,11 @@
 "use client";
 
 import {checkIfFiscalCodeExists} from "@/app/(menu)/(authenticated)/lips/[id]/actions";
+import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {
   Gender,
   genderOptions,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
-import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {cns} from "@/helpers/cns";
 import {dbDateString} from "@/helpers/dates";
 import {normalizeError} from "@/helpers/errors";
@@ -46,8 +46,8 @@ import {
   Row,
 } from "react-bootstrap";
 import {useForm} from "react-hook-form";
-import {z} from "zod";
 import invariant from "tiny-invariant";
+import {z} from "zod";
 
 // Usiamo uno schema come validazione vista la complessità del form e la dipendenza del cf con gli altri campi
 const ContractorFormSchema = z
