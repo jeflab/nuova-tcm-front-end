@@ -77,6 +77,7 @@ export function InputField<
       setValue(controlName, normalize(e.target.value), {
         shouldValidate: true,
       });
+      onChange?.(e);
     },
   };
   const preventNotNumber = type === "number" && {
