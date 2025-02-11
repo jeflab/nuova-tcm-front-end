@@ -69,7 +69,7 @@ export function BeneficiariesSummary() {
                     <strong>Telefono:</strong> {beneficiary.phone}
                   </p>
                   <p className="mb-0">
-                    <strong>Email:</strong> {beneficiary.email}
+                    <strong>E-Mail:</strong> {beneficiary.email}
                   </p>
                 </Col>
               </Row>
@@ -140,7 +140,7 @@ export function BeneficiariesSummary() {
                   {beneficiariesData.thirdPartyContactPerson.phone}
                 </p>
                 <p className="mb-0">
-                  <strong>Email:</strong>{" "}
+                  <strong>E-Mail:</strong>{" "}
                   {beneficiariesData.thirdPartyContactPerson.email}
                 </p>
               </Col>

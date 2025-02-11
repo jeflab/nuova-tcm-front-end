@@ -99,7 +99,7 @@ export function PaymentLock({
                 Scarica <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
               </a>
               ) per la compilazione del modulo. Una volta compilato, deve essere
-              inviato via email all'indirizzo{" "}
+              inviato via e-mail all'indirizzo{" "}
               <a
                 href="mailto:supporto.underwriting@brightlife.it"
                 className="alert-link"

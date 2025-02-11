@@ -101,7 +101,7 @@ export function CompanyPrivacy({
           <p>
             Puoi contattare LifeStar Insurance presso la sede sita in
             Testaferrata Street, Ta’ Xbiex XBX 1403 – Malta - Telefono:{" "}
-            <a href="tel:+35621342342">+356 21 342342</a> Email:{" "}
+            <a href="tel:+35621342342">+356 21 342342</a> E-Mail:{" "}
             <a href="mailto:info@lifestarinsurance.com">
               info@lifestarinsurance.com
             </a>
@@ -303,7 +303,7 @@ export function CompanyPrivacy({
             <a href="https://www.garanteprivacy.it/">www.garanteprivacy.it</a>.
           </p>
           <p>
-            Puoi esercitare, del tutto gratuitamente, scrivendo alla email:{" "}
+            Puoi esercitare, del tutto gratuitamente, scrivendo alla e-mail:{" "}
             <a href="mailto:gdpr@lifestarinsurance.com">
               gdpr@lifestarinsurance.com
             </a>{" "}
@@ -391,7 +391,7 @@ export function CompanyPrivacy({
           <p>
             Puoi contattare LifeStar Insurance presso la sede sita in
             Testaferrata Street, Ta’ Xbiex XBX 1403 – Malta - Telefono:{" "}
-            <a href="tel:+35621342342">+356 21 342342</a> Email:{" "}
+            <a href="tel:+35621342342">+356 21 342342</a> E-Mail:{" "}
             <a href="mailto:info@lifestarinsurance.com">
               info@lifestarinsurance.com
             </a>
@@ -505,7 +505,7 @@ export function CompanyPrivacy({
             <a href="https://www.garanteprivacy.it/">www.garanteprivacy.it</a>.
           </p>
           <p>
-            Puoi esercitare, del tutto gratuitamente, scrivendo alla email:
+            Puoi esercitare, del tutto gratuitamente, scrivendo alla e-mail:
             <a href="mailto:gdpr@lifestarinsurance.com">
               gdpr@lifestarinsurance.com
             </a>
