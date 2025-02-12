@@ -69,7 +69,7 @@ export function LoginForm({searchParamsJson}: LoginFormProps) {
         const decodedToken = jwt.decode(loginResponse.access_token);
         const parsedToken = jwtSchema.parse(decodedToken);
 
-        userPermissions = Object.values(parsedToken.permissions ?? []);
+        userPermissions = Object.values(parsedToken.permissions ?? {});
       } catch (error) {
         console.error("Impossibile leggere il token JWT:", error);
         return redirect("/");

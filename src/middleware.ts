@@ -41,7 +41,7 @@ export default async function middleware(request: NextRequest) {
       const decodedToken = jwt.decode(token);
       const parsedToken = jwtSchema.parse(decodedToken);
 
-      userPermissions = Object.values(parsedToken.permissions ?? []);
+      userPermissions = Object.values(parsedToken.permissions ?? {});
     } catch (error) {
       console.error("Impossibile leggere il token JWT:", error);
       console.error("Token:", token);

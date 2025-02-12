@@ -259,7 +259,7 @@ export function InsuredDataForm() {
                   type="date"
                   placeholder="Data di nascita"
                   max={dbDateString(subYears(Date(), 18))}
-                  min={dbDateString(startOfYear(subYears(Date(), 64)))}
+                  min={dbDateString(startOfYear(subYears(Date(), 74)))}
                   validation={{
                     required: "Inserisci la data di nascita dell'Assicurato",
                   }}
