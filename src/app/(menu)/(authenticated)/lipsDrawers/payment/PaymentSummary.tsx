@@ -181,8 +181,8 @@ export function PaymentSummary() {
           </dd>
           <dt>Creditore:</dt>
           <dd>
-            Bright Life, Viale Bianca Maria, 9 – 20122 – Milano (MI) Codice
-            identificativo del creditore: IT11ZZZ0000013276280966
+            Bright Life, Piazza della Repubblica, 32 – 20122 – Milano (MI)
+            Codice identificativo del creditore: IT11ZZZ0000013276280966
           </dd>
         </dl>
       </div>
