@@ -31,7 +31,10 @@ import {
   upperCaseWordsNormalizer,
 } from "@/ui/form/normalizers";
 import {emailValidator} from "@/ui/form/validators/email";
-import {checkFiscalCodeDataConsistencyValidator} from "@/ui/form/validators/fiscalCode";
+import {
+  checkFiscalCodeDataConsistencyValidator,
+  fiscalCodeValidator,
+} from "@/ui/form/validators/fiscalCode";
 import {faSave, faSpinner, faXmark} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import * as Sentry from "@sentry/nextjs";
@@ -81,6 +84,8 @@ function getDefaultValues(insured: Nullish<PersonalData>, lip: Nullable<Lip>) {
     contact: {
       phone: insured?.phone ?? "",
       email: insured?.email ?? "",
+      repeatPhone: insured?.phone ?? "",
+      repeatEmail: insured?.email ?? "",
     },
     citizenship: insured?.citizenship ?? "",
     secondCitizenship: insured?.secondCitizenship ?? "",
@@ -152,22 +157,43 @@ export function InsuredDataForm() {
                   normalize={upperCaseNormalizer}
                   validation={{
                     required: "Inserisci il codice fiscale dell'Assicurato",
-                    validate: (value, values) =>
-                      checkFiscalCodeDataConsistencyValidator(value, {
-                        name: values.insuredPersonalData.name,
-                        surname: values.insuredPersonalData.surname,
-                        gender:
-                          values.insuredPersonalData.gender === "male"
-                            ? "M"
-                            : "F",
-                        day: getDate(values.insuredPersonalData.birthDate),
-                        month:
-                          getMonth(values.insuredPersonalData.birthDate) + 1,
-                        year: getYear(values.insuredPersonalData.birthDate),
-                        birthplace: values.insuredPersonalData.birthPlace.city,
-                        birthplaceProvincia:
-                          values.insuredPersonalData.birthPlace.province,
-                      }),
+                    validate: {
+                      format: (value) => {
+                        return (
+                          fiscalCodeValidator(value) ||
+                          "Codice fiscale non valido"
+                        );
+                      },
+                      dataConsistency: (value, values) => {
+                        if (
+                          !values.insuredPersonalData.name ||
+                          !values.insuredPersonalData.surname ||
+                          !values.insuredPersonalData.gender ||
+                          !values.insuredPersonalData.birthDate ||
+                          !values.insuredPersonalData.birthPlace.city ||
+                          !values.insuredPersonalData.birthPlace.province
+                        ) {
+                          return true;
+                        }
+
+                        return checkFiscalCodeDataConsistencyValidator(value, {
+                          name: values.insuredPersonalData.name,
+                          surname: values.insuredPersonalData.surname,
+                          gender:
+                            values.insuredPersonalData.gender === "male"
+                              ? "M"
+                              : "F",
+                          day: getDate(values.insuredPersonalData.birthDate),
+                          month:
+                            getMonth(values.insuredPersonalData.birthDate) + 1,
+                          year: getYear(values.insuredPersonalData.birthDate),
+                          birthplace:
+                            values.insuredPersonalData.birthPlace.city,
+                          birthplaceProvincia:
+                            values.insuredPersonalData.birthPlace.province,
+                        });
+                      },
+                    },
                   }}
                 />
               </FormGroup>
@@ -233,7 +259,7 @@ export function InsuredDataForm() {
                   type="date"
                   placeholder="Data di nascita"
                   max={dbDateString(subYears(Date(), 18))}
-                  min={dbDateString(startOfYear(subYears(Date(), 64)))}
+                  min={dbDateString(startOfYear(subYears(Date(), 74)))}
                   validation={{
                     required: "Inserisci la data di nascita dell'Assicurato",
                   }}
@@ -265,6 +291,11 @@ export function InsuredDataForm() {
                 <FieldError />
                 <InputField
                   type="tel"
+                  onChange={() => {
+                    if (!!formMethods.getValues("contact.repeatEmail")) {
+                      formMethods.trigger("contact.repeatPhone");
+                    }
+                  }}
                   placeholder="Cellulare dell'Assicurato"
                   validation={{
                     required: "Inserisci il Cellulare del Assicurato",
@@ -279,6 +310,11 @@ export function InsuredDataForm() {
                 <FieldError />
                 <InputField
                   type="email"
+                  onChange={() => {
+                    if (!!formMethods.getValues("contact.repeatEmail")) {
+                      formMethods.trigger("contact.repeatEmail");
+                    }
+                  }}
                   placeholder="Email dell'Assicurato"
                   validation={{
                     validate: {
@@ -290,6 +326,50 @@ export function InsuredDataForm() {
                       pattern: (value) => {
                         if (!emailValidator(value)) {
                           return "L'email inserita non è valida";
+                        }
+                      },
+                    },
+                  }}
+                  normalize={emailNormalizer}
+                />
+              </FormGroup>
+            </Col>
+            <Col className="d-flex" xs={12} sm={6}>
+              <FormGroup controlId="contact.repeatPhone" as={BorderFeedback}>
+                <FormLabel>Conferma il cellulare</FormLabel>
+                <FieldError />
+                <InputField
+                  type="tel"
+                  placeholder="Cellulare dell'Assicurato"
+                  validation={{
+                    required: "Conferma il Cellulare del Assicurato",
+                    validate: (value: string, values) => {
+                      if (!!value && value !== values.contact.phone) {
+                        return "Il cellulare non corrisponde";
+                      }
+                    },
+                  }}
+                  normalize={onlyNumbersNormalizer}
+                />
+              </FormGroup>
+            </Col>{" "}
+            <Col className="d-flex" xs={12} sm={6}>
+              <FormGroup controlId="contact.repeatEmail" as={BorderFeedback}>
+                <FormLabel>Conferma l'e-mail</FormLabel>
+                <FieldError />
+                <InputField
+                  type="email"
+                  placeholder="Email dell'Assicurato"
+                  validation={{
+                    validate: {
+                      required: (value) => {
+                        if (!value) {
+                          return "Conferma l'e-mail dell'Assicurato";
+                        }
+                      },
+                      validate: (value: string, values) => {
+                        if (!!value && value !== values.contact.email) {
+                          return "L'e-mail non corrisponde";
                         }
                       },
                     },

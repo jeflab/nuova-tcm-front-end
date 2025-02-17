@@ -1,4 +1,4 @@
-/** @type {import('next').NextConfig} */
+import type {NextConfig} from "next";
 
 import {withSentryConfig} from "@sentry/nextjs";
 import {getRelease} from "./src/helpers/release.esmodule.mjs";
@@ -10,19 +10,22 @@ console.info(`Sentry release: ${process.env.SENTRY_RELEASE}`);
 const maintenanceMode = process.env.MAINTENANCE_MODE === "true";
 console.info(`Maintenance mode: ${maintenanceMode}`);
 
-let nextConfig = {
+let nextConfig: NextConfig = {
+  // React compiler pronto
+  // experimental: {
+  //   reactCompiler: true,
+  // },
   logging: {fetches: {fullUrl: true}},
-  experimental: {
-    instrumentationHook: true,
-    typedRoutes: true,
-  },
   images: {
-    remotePatterns: process.env.IMAGE_REMOTE_PATTERN.split(",").map(
-      (pattern) => {
+    remotePatterns: process.env
+      .IMAGE_REMOTE_PATTERN!.split(",")
+      .map((pattern) => {
         const [protocol, hostname] = pattern.split("://");
-        return {protocol, hostname};
-      },
-    ),
+        return {
+          protocol: protocol as "http" | "https",
+          hostname: hostname as string,
+        };
+      }),
   },
   ...(maintenanceMode && {
     async redirects() {

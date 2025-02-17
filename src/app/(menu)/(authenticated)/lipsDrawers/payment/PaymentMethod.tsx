@@ -1,34 +1,40 @@
-import {PaymentMethodsSimple} from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
-import {Currency} from "@/ui/Currency";
+import {
+  paymentMethodsOptions,
+  PaymentMethods,
+  PaymentType,
+} from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
 
 interface PaymentMethodProps {
-  paymentMethod: PaymentMethodsSimple;
+  paymentMethod: PaymentMethods;
+  paymentType: PaymentType;
   premium: number;
 }
 
-export function PaymentMethod({paymentMethod, premium}: PaymentMethodProps) {
+export function PaymentMethod({
+  paymentMethod,
+  paymentType,
+  premium,
+}: PaymentMethodProps) {
   return (
-    <p className="mb-0">
-      {paymentMethod === "monthly" ? (
-        <>
-          Pagamento mensile di <Currency>{premium / 12}</Currency> con anticipo
-          di 3 mesi (<Currency>{(premium / 12) * 3}</Currency>)
-        </>
-      ) : paymentMethod === "annual" ? (
-        <>
-          Pagamento annuale di <Currency>{premium}</Currency>
-        </>
-      ) : paymentMethod === "3yearsAdvance" ? (
-        <>
-          Pagamento anticipato di 3 anni (<Currency>{premium * 3}</Currency>) e
-          a seguire pagamento mensile di <Currency>{premium / 12}</Currency>
-        </>
-      ) : paymentMethod === "5yearsAdvance" ? (
-        <>
-          Pagamento anticipato di 5 anni (<Currency>{premium * 5}</Currency>) e
-          a seguire pagamento mensile di <Currency>{premium / 12}</Currency>
-        </>
+    <>
+      {["legacy", "transfer-sdd"].includes(paymentType) ? (
+        <p className="mb-0">
+          <strong>Pagamento tramite Bonifico - Addebito diretto SDD</strong>
+        </p>
+      ) : paymentType === "credit-card" ? (
+        <p className="mb-0">
+          <strong>
+            Pagamento elettronico tramite Carta di Credito o Debito
+          </strong>
+        </p>
       ) : null}
-    </p>
+      <p className="mb-0">
+        {
+          paymentMethodsOptions(premium).find(
+            (method) => method.value === paymentMethod,
+          )?.label
+        }
+      </p>
+    </>
   );
 }

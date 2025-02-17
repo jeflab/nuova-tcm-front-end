@@ -21,7 +21,7 @@ export function HelpLink({className, fiscalCode, label}: HelpLinkProps) {
   Url della richiesta: ${pathName}
   ---
 
-  Inserisci qui la tua richiesta, specificando il numero della proposta, il contraente a cui ci si riferisce e allegando a questa email eventuali schermate di errore.`;
+  Inserisci qui la tua richiesta, specificando il numero della proposta, il contraente a cui ci si riferisce e allegando a questa e-mail eventuali schermate di errore.`;
 
   return (
     <Link

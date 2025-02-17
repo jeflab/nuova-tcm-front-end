@@ -20,7 +20,7 @@ export function ContractorContactsSummary() {
         <strong>Telefono:</strong> {contractor.phone}
       </p>
       <p className="mb-0">
-        <strong>Email:</strong> {contractor.email}
+        <strong>E-Mail:</strong> {contractor.email}
       </p>
     </>
   );

@@ -65,7 +65,7 @@ export function InsuredDataSummary() {
           <a href={`tel:${insured.phone}`}>{insured.phone}</a>
         </p>
         <p className="mb-0">
-          <strong>Email:</strong>{" "}
+          <strong>E-Mail:</strong>{" "}
           <a href={`mailto:${insured.email}`}>{insured.email}</a>
         </p>
       </Col>

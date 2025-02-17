@@ -1,5 +1,28 @@
 # Changelog
 
+## v2.1.0
+
+#### Added:
+
+- Aggiunto pagamento tramite carta di credito e blocco clicPay
+- Aggiornato framework NextJs alla versione 15
+- Aggiornato Eslint alla versione 9
+- Aggiunto React Compiler
+- Aggiunte conferma email e phone
+
+#### Changed:
+
+- Migliorata gestione tags per le query nei server components
+- Migliorata gestione auth tramite utilizzo di middleware
+- Migliorata validazione del codice fiscale nel censimento dell'Assicurato
+- Aggiunto nuovi stati per invio in compagnia e rescissione nel componente lip
+- Migliorata grafica cassetti chiusi/aperti
+- Aumentata età a 75 ma con underwriting
+
+#### Fixed:
+
+- Risolto bug che impediva al onChange degli input di venir eseguito quando c'era anche la normalizzazione
+
 # v2.0.0
 
 #### Added:

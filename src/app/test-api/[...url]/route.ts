@@ -3,14 +3,15 @@ import {acceptJsonHeader, apiUrl, contentJsonHeader} from "@/services/const";
 import {cookies} from "next/headers";
 import {NextRequest} from "next/server";
 
-function authorizationHeader() {
-  const authCookie = cookies().get(AUTH_COOKIE_NAME)?.value;
+async function authorizationHeader() {
+  const authCookie = (await cookies()).get(AUTH_COOKIE_NAME)?.value;
   return authCookie ? {Authorization: `Bearer ${authCookie}`} : undefined;
 }
 export async function GET(
   request: NextRequest,
-  {params}: {params: {url: string[]}},
+  props: {params: Promise<{url: string[]}>},
 ) {
+  const params = await props.params;
   console.time("test-api response time");
   const queryParams = new URLSearchParams(request.nextUrl.searchParams);
   const queryParamsString = queryParams.toString()
@@ -23,7 +24,7 @@ export async function GET(
       headers: {
         ...contentJsonHeader,
         ...acceptJsonHeader,
-        ...authorizationHeader(),
+        ...(await authorizationHeader()),
         "cache-control": "no-transform",
         "accept-encoding": "gzip, br",
       },

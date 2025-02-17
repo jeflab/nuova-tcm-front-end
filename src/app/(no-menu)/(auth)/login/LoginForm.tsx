@@ -3,6 +3,7 @@
 import {login} from "@/app/(no-menu)/(auth)/actions";
 import {cns} from "@/helpers/cns";
 import {normalizeError} from "@/helpers/errors";
+import {jwtSchema} from "@/models/jwt";
 import {FieldError} from "@/ui/form/FieldError";
 import {Form} from "@/ui/form/Form";
 import {InputField} from "@/ui/form/InputField";
@@ -12,6 +13,8 @@ import {fiscalCodeValidator} from "@/ui/form/validators/fiscalCode";
 import {faSpinner} from "@fortawesome/pro-duotone-svg-icons";
 import {faSignInAlt} from "@fortawesome/pro-duotone-svg-icons/faSignInAlt";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import jwt from "jsonwebtoken";
+import {redirect} from "next/navigation";
 import {Alert, FormGroup, FormLabel} from "react-bootstrap";
 
 const defaultValues = {
@@ -19,13 +22,17 @@ const defaultValues = {
   password: "",
 };
 
-export function LoginForm() {
+interface LoginFormProps {
+  searchParamsJson: string | undefined;
+}
+
+export function LoginForm({searchParamsJson}: LoginFormProps) {
   const handleSubmit = async (data: typeof defaultValues) => {
     let loginResponse: Awaited<ReturnType<typeof login>>;
 
     try {
       loginResponse = await login(data);
-    } catch (error) {
+    } catch {
       throw {
         root: {
           type: "server",
@@ -40,7 +47,47 @@ export function LoginForm() {
       };
     }
 
-    // Se la login è andata a buon fine, vengono settati i cookie che triggerano la revalidazione della pagina quindi qui non dobbiamo fare niente
+    if (searchParamsJson) {
+      const searchParams = JSON.parse(searchParamsJson);
+      const next = searchParams.next as string;
+      delete searchParams.next;
+
+      const newSearchParamsString = new URLSearchParams(
+        searchParams,
+      ).toString();
+
+      if (next) {
+        return redirect(
+          next + (newSearchParamsString ? `?${newSearchParamsString}` : ""),
+        );
+      }
+    }
+
+    if (loginResponse.access_token) {
+      let userPermissions: string[] = [];
+      try {
+        const decodedToken = jwt.decode(loginResponse.access_token);
+        const parsedToken = jwtSchema.parse(decodedToken);
+
+        userPermissions = Object.values(parsedToken.permissions ?? {});
+      } catch (error) {
+        console.error("Impossibile leggere il token JWT:", error);
+        return redirect("/");
+      }
+
+      if (userPermissions?.some((permission) => permission === "create-lip")) {
+        return redirect("/lips");
+      } else if (
+        userPermissions?.some(
+          (permission) => permission === "contractor-read-lip",
+        )
+      ) {
+        redirect("/contractorLips");
+      } else {
+        redirect("/profile");
+      }
+    }
+    return redirect("/");
   };
 
   return (

@@ -22,8 +22,8 @@ import {NextRequest, NextResponse} from "next/server";
 // const underwritingSanitarioSchema = z.object({uri: z.literal("pdf-underwriting-sanitario"),lipId: z.coerce.number(),agentId: z.coerce.number(),contractorId: z.coerce.number()});
 // const certificatoSchema = z.object({uri: z.literal("pdf-certificato"),lipId: z.coerce.number(),agentId: z.coerce.number(),contractorId: z.coerce.number()});
 
-function authorizationHeader() {
-  const authCookie = cookies().get(AUTH_COOKIE_NAME)?.value;
+async function authorizationHeader() {
+  const authCookie = (await cookies()).get(AUTH_COOKIE_NAME)?.value;
   return authCookie ? {Authorization: `Bearer ${authCookie}`} : undefined;
 }
 
@@ -54,7 +54,7 @@ export const GET = async (request: NextRequest) => {
   );
 
   const headers = {
-    ...authorizationHeader(),
+    ...(await authorizationHeader()),
   };
 
   const queryString = new URLSearchParams({

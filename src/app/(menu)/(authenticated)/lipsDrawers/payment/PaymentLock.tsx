@@ -47,7 +47,7 @@ export function PaymentLock({
     (lipState.id === 0 || lipState.id === 1);
 
   // mostro il messaggio di underwriting in corso solo se lo stato è quello
-  // dedicato o se è explicitato di nascondere l'azione di underwriting (per l'area cliente)
+  // dedicato o se è esplicitato di nascondere l'azione di underwriting (per l'area cliente)
   const underwritingUnderInvestigation =
     lipState.id === 2 || hideUnderwritingAction;
 
@@ -99,7 +99,7 @@ export function PaymentLock({
                 Scarica <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
               </a>
               ) per la compilazione del modulo. Una volta compilato, deve essere
-              inviato via email all'indirizzo{" "}
+              inviato via e-mail all'indirizzo{" "}
               <a
                 href="mailto:supporto.underwriting@brightlife.it"
                 className="alert-link"

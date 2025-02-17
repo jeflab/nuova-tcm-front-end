@@ -8,7 +8,8 @@ import {
   idTypeOptions,
   lipTypeOptions,
   nominationOptions,
-  paymentMethodsSimpleOptions,
+  paymentMethodsOptions,
+  paymentTypesOptions,
   relationshipOptions,
   sportRiskIndexOptions,
   yesNoOptions,
@@ -103,6 +104,21 @@ const LipStatesIcons: Record<number, ReactNode> = {
       <FontAwesomeIcon icon={faHeartPulse} className="fa-stack-1x" />
     </IconStack>
   ),
+  // 16: Invio in compagnia fallito
+  16: (
+    <IconStack className="text-danger">
+      <FontAwesomeIcon icon={faCircle} className="fa-stack-2x" opacity={0.4} />
+      <FontAwesomeIcon
+        icon={faPaperPlane}
+        className="fa-stack-1x"
+        transform="left-1"
+      />
+    </IconStack>
+  ),
+  // 17: Rescissa
+  17: <FontAwesomeIcon icon={faCircleXmark} className="text-danger" />,
+  // 18: Revocata
+  18: <FontAwesomeIcon icon={faCircleXmark} className="text-danger" />,
 } as const;
 
 const denSchema = z.object({
@@ -335,12 +351,16 @@ const paymentSchema = z.object({
   effectiveDate: z.string(),
   duration: z.string(),
   expirationDate: z.string(),
-  paymentMethod: z.enum(getOptionsValues(paymentMethodsSimpleOptions)),
+  paymentType: z
+    .enum([...getOptionsValues(paymentTypesOptions), "legacy"])
+    .default("legacy"),
+  paymentMethod: z.enum(getOptionsValues(paymentMethodsOptions())),
   contractorFullName: z.string(),
   jointOwners: z.string().nullish(),
   bank: z.string(),
   bicSwift: z.string(),
   iban: z.string(),
+  clicPayLinkClicked: z.boolean().optional(),
 });
 
 export const eSignSchema = z.object({
