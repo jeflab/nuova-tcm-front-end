@@ -5,6 +5,7 @@ import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {
   Gender,
   genderOptions,
+  LipType,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
 import {cns} from "@/helpers/cns";
 import {dbDateString} from "@/helpers/dates";
@@ -50,62 +51,69 @@ import invariant from "tiny-invariant";
 import {z} from "zod";
 
 // Usiamo uno schema come validazione vista la complessità del form e la dipendenza del cf con gli altri campi
-const ContractorFormSchema = z
-  .object({
-    birthDate: z
-      .string()
-      .refine(required, "Inserisci la data di nascita del Contraente")
-      .refine((value) => {
-        const date = new Date(value);
-        return date <= subYears(Date(), 18);
-      }, "Il Contraente deve essere maggiorenne")
-      .refine((value) => {
-        const date = new Date(value);
-        return date > startOfYear(subYears(Date(), 65));
-      }, "L'età assicurativa del Contraente deve essere inferiore a 65 anni"),
-    birthPlace: z.object({
-      city: z
+const ContractorFormSchema = (lipType: LipType) =>
+  z
+    .object({
+      birthDate: z
         .string()
-        .refine(required, "Inserisci il comune di nascita del Contraente"),
-      province: z
+        .refine(required, "Inserisci la data di nascita del Contraente")
+        .refine((value) => {
+          const date = new Date(value);
+          return date <= subYears(Date(), 18);
+        }, "Il Contraente deve essere maggiorenne")
+        .refine((value) => {
+          if (lipType !== "self-insured") {
+            return true;
+          }
+
+          const date = new Date(value);
+          return date > startOfYear(subYears(Date(), 74));
+        }, "L'età assicurativa del Contraente deve essere inferiore a 75 anni"),
+      birthPlace: z.object({
+        city: z
+          .string()
+          .refine(required, "Inserisci il comune di nascita del Contraente"),
+        province: z
+          .string()
+          .refine(required, "Inserisci la provincia di nascita del Contraente"),
+      }),
+      fiscalCode: z
         .string()
-        .refine(required, "Inserisci la provincia di nascita del Contraente"),
-    }),
-    fiscalCode: z
-      .string()
-      .refine(required, "Inserisci il codice fiscale del Contraente")
-      .refine((value) => {
-        return fiscalCodeValidator(value);
-      }, "Codice fiscale non valido"),
-    gender: z
-      .string()
-      .refine(required, "Inserisci il genere del Contraente")
-      .and(
-        z.enum(getOptionsValues(genderOptions), {
-          errorMap: () => ({
-            message: "Il genere del Contraente non è valido",
+        .refine(required, "Inserisci il codice fiscale del Contraente")
+        .refine((value) => {
+          return fiscalCodeValidator(value);
+        }, "Codice fiscale non valido"),
+      gender: z
+        .string()
+        .refine(required, "Inserisci il genere del Contraente")
+        .and(
+          z.enum(getOptionsValues(genderOptions), {
+            errorMap: () => ({
+              message: "Il genere del Contraente non è valido",
+            }),
           }),
-        }),
-      ),
-    name: z.string().refine(required, "Inserisci il nome del Contraente"),
-    surname: z.string().refine(required, "Inserisci il cognome del Contraente"),
-  })
-  .superRefine((formValues, ctx) => {
-    fiscalCodeMatchDataSuperRefine(
-      {
-        name: formValues.name,
-        surname: formValues.surname,
-        gender: formValues.gender === "male" ? "M" : "F",
-        day: getDate(formValues.birthDate),
-        month: getMonth(formValues.birthDate) + 1,
-        year: getYear(formValues.birthDate),
-        birthplace: formValues.birthPlace.city,
-        birthplaceProvincia: formValues.birthPlace.province,
-      },
-      formValues.fiscalCode,
-      ctx,
-    );
-  });
+        ),
+      name: z.string().refine(required, "Inserisci il nome del Contraente"),
+      surname: z
+        .string()
+        .refine(required, "Inserisci il cognome del Contraente"),
+    })
+    .superRefine((formValues, ctx) => {
+      fiscalCodeMatchDataSuperRefine(
+        {
+          name: formValues.name,
+          surname: formValues.surname,
+          gender: formValues.gender === "male" ? "M" : "F",
+          day: getDate(formValues.birthDate),
+          month: getMonth(formValues.birthDate) + 1,
+          year: getYear(formValues.birthDate),
+          birthplace: formValues.birthPlace.city,
+          birthplaceProvincia: formValues.birthPlace.province,
+        },
+        formValues.fiscalCode,
+        ctx,
+      );
+    });
 
 const contractorFiscalCodeDefaultValues = {
   birthDate: "",
@@ -127,21 +135,23 @@ export function ContractorFiscalCodeForm({
   loggedUser,
 }: ContractorFiscalCodeFormProps) {
   const router = useRouter();
-  const formMethods = useForm({
-    mode: "onChange",
-    defaultValues: contractorFiscalCodeDefaultValues,
-    resolver: zodResolver(ContractorFormSchema),
-  });
-  const closeModal = useStore((state) => state.closeModal);
-  const updatePreliminaryData = useStore(
-    (state) => state.updatePreliminaryData,
-  );
+
   const preliminaryLipType = useStore((state) => state.preliminaryData.type);
 
   // Lip dovrebbe essere sempre a undefined la prima volta, ma così siamo future proof
   const lip = useStore((state) => state.lip);
 
   const lipType = preliminaryLipType || lip?.type;
+
+  const formMethods = useForm({
+    mode: "onChange",
+    defaultValues: contractorFiscalCodeDefaultValues,
+    resolver: zodResolver(ContractorFormSchema(lipType as LipType)),
+  });
+  const closeModal = useStore((state) => state.closeModal);
+  const updatePreliminaryData = useStore(
+    (state) => state.updatePreliminaryData,
+  );
 
   return (
     <>
@@ -271,7 +281,11 @@ export function ContractorFiscalCodeForm({
                   type="date"
                   placeholder="Data di nascita"
                   max={dbDateString(subYears(Date(), 18))}
-                  min={dbDateString(startOfYear(subYears(Date(), 64)))}
+                  min={
+                    lipType === "self-insured"
+                      ? dbDateString(startOfYear(subYears(Date(), 74)))
+                      : "1900-01-01"
+                  }
                 />
               </FormGroup>
             </Col>
