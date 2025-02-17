@@ -26,16 +26,20 @@ export const columns = [
       const lipType = props.row.original.type;
       return (
         <>
-          <FontAwesomeIcon
-            icon={lipType === "self-insured" ? faUser : faUserGroupSimple}
-            fixedWidth
-            className={cns("cursor-help", styles.rowOtherLink)}
+          <span
+            className={styles.rowOtherLink}
             title={
               lipType === "self-insured"
                 ? "Il Contraente e l'Assicurato coincidono"
                 : "Il Contraente è diverso dall'Assicurato"
             }
-          />{" "}
+          >
+            <FontAwesomeIcon
+              icon={lipType === "self-insured" ? faUser : faUserGroupSimple}
+              fixedWidth
+              className="cursor-help"
+            />
+          </span>{" "}
           {props.getValue()}
         </>
       );
@@ -143,6 +147,11 @@ export const skeletonColumns = [
     header: "Numero proposta",
     cell: () => (
       <Placeholder as="span" animation="glow">
+        <Placeholder
+          as="span"
+          className="rounded-circle"
+          style={{width: "1em"}}
+        />{" "}
         <Placeholder as="span" style={{width: `84px`}} />
       </Placeholder>
     ),

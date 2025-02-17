@@ -8,7 +8,7 @@ import {HelpText} from "@/ui/form/HelpText";
 import {InputField} from "@/ui/form/InputField";
 import {startOfYear} from "date-fns/startOfYear";
 import {subYears} from "date-fns/subYears";
-import {Col, FormGroup, FormLabel} from "react-bootstrap";
+import {Alert, Col, FormGroup, FormLabel} from "react-bootstrap";
 import {useFormContext} from "react-hook-form";
 
 interface InsuredDataProps {
@@ -16,7 +16,9 @@ interface InsuredDataProps {
 }
 
 export function InsuredData({blockBirthDate}: InsuredDataProps) {
-  const {trigger, setValue} = useFormContext<QuoterFormValues>();
+  const {trigger, setValue, watch} = useFormContext<QuoterFormValues>();
+  const birthDateValue = watch("birthDate");
+
   return (
     <>
       <h3 className="w-100">Dati dell'assicurato</h3>
@@ -24,7 +26,7 @@ export function InsuredData({blockBirthDate}: InsuredDataProps) {
         <FormGroup controlId="birthDate" as={BorderFeedback}>
           <FormLabel>Data di nascita</FormLabel>
           <HelpText>
-            L'età dell'assicurato deve essere compresa tra 18 e 65 anni
+            L'età dell'assicurato deve essere compresa tra 18 e 75 anni
           </HelpText>
           <FieldError />
           <InputField
@@ -44,7 +46,7 @@ export function InsuredData({blockBirthDate}: InsuredDataProps) {
               }
             }}
             max={dbDateString(subYears(Date(), 18))}
-            min={dbDateString(startOfYear(subYears(Date(), 65)))}
+            min={dbDateString(startOfYear(subYears(Date(), 75)))}
             validation={{
               required: "Inserisci la data di nascita dell'assicurato",
               max: {
@@ -52,8 +54,8 @@ export function InsuredData({blockBirthDate}: InsuredDataProps) {
                 message: "L'assicurato deve aver compiuto almeno 18 anni",
               },
               min: {
-                value: dbDateString(startOfYear(subYears(Date(), 65))),
-                message: "L'assicurato deve avere al massimo 65 anni",
+                value: dbDateString(startOfYear(subYears(Date(), 75))),
+                message: "L'assicurato deve avere al massimo 75 anni",
               },
             }}
           />
@@ -81,6 +83,14 @@ export function InsuredData({blockBirthDate}: InsuredDataProps) {
           />
         </FormGroup>
       </Col>
+      {calendarYearAge(birthDateValue) > 65 && (
+        <Col className="w-100">
+          <Alert variant="warning" className="mb-0">
+            In virtù dell'età assicurativa dell'Assicurato maggiore di 65 anni,
+            la proposta di Polizza sarà soggetta ad ulteriori approfondimenti.
+          </Alert>
+        </Col>
+      )}
     </>
   );
 }

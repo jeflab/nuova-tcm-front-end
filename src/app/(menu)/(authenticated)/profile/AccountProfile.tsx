@@ -94,24 +94,24 @@ export function AccountProfile({user}: AccountProfileProps) {
                 <dd>{user.fiscalCode}</dd>
               </Col>
               <Col>
-                <dt>Email:</dt>
+                <dt>E-Mail:</dt>
                 {isUpdateMode ? (
                   <dd>
                     <InputField
                       type="email"
                       name="email"
-                      placeholder="Email"
+                      placeholder="E-Mail"
                       normalize={emailNormalizer}
                       validation={{
                         validate: {
                           required: (value) => {
                             if (!value) {
-                              return "Inserisci la tia email";
+                              return "Inserisci la tua e-mail";
                             }
                           },
                           pattern: (value) => {
                             if (!emailValidator(value)) {
-                              return "L'email inserita non è valida";
+                              return "L'e-mail inserita non è valida";
                             }
                           },
                         },

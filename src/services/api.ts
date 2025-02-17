@@ -20,8 +20,8 @@ import {cookies} from "next/headers";
 import {redirect} from "next/navigation";
 import {z, ZodRawShape} from "zod";
 
-function authorizationHeader() {
-  const authCookie = cookies().get(AUTH_COOKIE_NAME)?.value;
+async function authorizationHeader() {
+  const authCookie = (await cookies()).get(AUTH_COOKIE_NAME)?.value;
   return authCookie ? {Authorization: `Bearer ${authCookie}`} : undefined;
 }
 
@@ -54,7 +54,8 @@ interface ApiCallOptions<ResponsePayloadShape extends ZodRawShape> {
   payloadShape?: ResponsePayloadShape;
   data?: object | FormData;
   searchParams?: Record<string, string>;
-  tags?: Tag[];
+  revalidateTags?: Tag[];
+  provideTags?: Tag[];
 }
 export async function apiCall<ResponsePayloadShape extends ZodRawShape>(
   method: "GET" | "POST" | "PUT" | "PATCH",
@@ -63,7 +64,8 @@ export async function apiCall<ResponsePayloadShape extends ZodRawShape>(
     payloadShape,
     data,
     searchParams,
-    tags,
+    revalidateTags,
+    provideTags,
   }: ApiCallOptions<ResponsePayloadShape>,
 ): Promise<
   | z.infer<typeof serverSuccessSchema>
@@ -80,11 +82,11 @@ export async function apiCall<ResponsePayloadShape extends ZodRawShape>(
   const headers =
     data instanceof FormData
       ? {
-          ...authorizationHeader(),
+          ...(await authorizationHeader()),
           ...acceptJsonHeader,
         }
       : {
-          ...authorizationHeader(),
+          ...(await authorizationHeader()),
           ...acceptJsonHeader,
           ...contentJsonHeader,
         };
@@ -96,7 +98,7 @@ export async function apiCall<ResponsePayloadShape extends ZodRawShape>(
       headers,
       method,
       body,
-      ...(tags ? {tags} : {}),
+      ...(provideTags ? {tags: provideTags} : {}),
     });
 
     void logFetchInfo(method, response, data);
@@ -260,7 +262,7 @@ export async function apiCall<ResponsePayloadShape extends ZodRawShape>(
     }
   }
 
-  tags?.map((tag) => invalidateTag(tag));
+  revalidateTags?.map((tag) => invalidateTag(tag));
 
   return serverResponseJson;
 }

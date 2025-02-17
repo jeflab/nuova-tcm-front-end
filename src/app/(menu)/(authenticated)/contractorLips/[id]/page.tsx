@@ -21,12 +21,13 @@ import styles from "./page.module.scss";
 //  Fatto ciò la pagina può tornare server component
 
 interface NewLipPageProps {
-  params: {id: string};
+  params: Promise<{id: string}>;
 }
 
 const minWidthHack = {minWidth: "1px"};
 
-export default async function NewLipPage({params}: NewLipPageProps) {
+export default async function NewLipPage(props: NewLipPageProps) {
+  const params = await props.params;
   const lipResponse = await getLip(parseInt(params.id, 10));
   if (lipResponse?.status !== "success") {
     if (lipResponse?.responseStatus === 404) {

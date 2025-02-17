@@ -77,6 +77,7 @@ export function InputField<
       setValue(controlName, normalize(e.target.value), {
         shouldValidate: true,
       });
+      onChange?.(e);
     },
   };
   const preventNotNumber = type === "number" && {
@@ -100,7 +101,7 @@ export function InputField<
       {...reactHookFormProps}
       ref={(instance: HTMLTextAreaElement) => {
         ref(instance);
-        // @ts-ignore-next-line
+        // @ts-expect-error-next-line
         // noinspection JSConstantReassignment
         inputRef.current = instance;
       }}

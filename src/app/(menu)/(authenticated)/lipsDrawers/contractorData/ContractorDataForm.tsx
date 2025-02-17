@@ -217,12 +217,12 @@ export function ContractorDataForm() {
                 <FieldError />
                 <InputField
                   type="email"
-                  placeholder="Email del Contraente"
+                  placeholder="E-Mail del Contraente"
                   validation={{
                     validate: {
                       required: (value) => {
                         if (!value) {
-                          return "Inserisci l'email del Contraente";
+                          return "Inserisci l'e-mail del Contraente";
                         }
                       },
                       pattern: (value) => {

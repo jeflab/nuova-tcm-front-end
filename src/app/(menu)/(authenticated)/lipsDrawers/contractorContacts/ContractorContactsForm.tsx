@@ -96,7 +96,7 @@ export function ContractorContactsForm({
                     response: preliminaryData.italianResidency,
                   },
                 });
-              } catch (e) {
+              } catch {
                 throw {
                   root: {
                     type: "server",
@@ -171,7 +171,7 @@ export function ContractorContactsForm({
             </Col>
             <Col className="d-flex" xs={12} sm={6}>
               <FormGroup controlId="email" as={BorderFeedback}>
-                <FormLabel>Email del Contraente</FormLabel>
+                <FormLabel>E-Mail del Contraente</FormLabel>
                 <FieldError />
                 <InputField
                   type="email"

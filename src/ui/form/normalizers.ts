@@ -29,7 +29,6 @@ export const numberNormalizer = (
     return "";
   }
 
-  // eslint-disable-next-line no-useless-escape
   value = value.replace(/[^\d.,-]/g, ""); // Rimuove tutti i caratteri strani
   if (negative) {
     value = value.replace(/(?!^)-/g, ""); // Rimuove tutti i "-" che non sono all'inizio

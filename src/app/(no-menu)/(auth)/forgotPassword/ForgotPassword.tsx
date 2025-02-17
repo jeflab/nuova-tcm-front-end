@@ -17,7 +17,7 @@ export default function ForgotPasswordPage() {
           <h3>Recupera password</h3>
           <p className="mb-0">
             Controlla la tua casella di posta &ldquo;{mailSentTo}&rdquo;. Ti
-            abbiamo inviato una email con il link per impostare la tua nuova
+            abbiamo inviato una e-mail con il link per impostare la tua nuova
             password.
           </p>
         </Alert>

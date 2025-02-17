@@ -13,7 +13,7 @@ interface FilterComponentProps {
 type TableContext = LipState[];
 
 declare module "@tanstack/table-core" {
-  interface ColumnMeta<TData extends RowData, TValue> {
+  interface ColumnMeta {
     filterComponent: (props: FilterComponentProps) => ReactNode;
   }
 }

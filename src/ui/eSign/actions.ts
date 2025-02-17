@@ -62,7 +62,7 @@ export async function signFEADoc<TPayload>({
       ...(whoESign === "insured" && {insuredId: personalDataId}),
       ...payload,
     },
-    ...(tagToRevalidate && {tags: [tagToRevalidate]}),
+    ...(tagToRevalidate && {revalidateTags: [tagToRevalidate]}),
   });
 }
 
@@ -73,7 +73,7 @@ export async function updateContractorPhone(
 ) {
   return patch(`/personal-datas/${personalDataId}`, {
     data: {phone},
-    tags: [Tags.getLip(lipId)],
+    revalidateTags: [Tags.getLip(lipId)],
   });
 }
 

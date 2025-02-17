@@ -386,47 +386,75 @@ export const nominationOptions = [
 export type Nomination = (typeof nominationOptions)[number]["value"];
 
 // Payments
-export const paymentMethodsSimpleOptions = [
+export const paymentTypesOptions = [
   {
-    label: "Pagamento mensile",
-    value: "monthly",
+    label: "Carta di Credito",
+    value: "credit-card",
   },
   {
-    label: "Pagamento annuale",
-    value: "annual",
-  },
-  {
-    label: "Pagamento anticipato di 3 anni",
-    value: "3yearsAdvance",
-  },
-  {
-    label: "Pagamento anticipato di 5 anni",
-    value: "5yearsAdvance",
+    label: "Bonifico Bancario",
+    value: "transfer-sdd",
   },
 ] as const;
-export type PaymentMethodsSimple =
-  (typeof paymentMethodsSimpleOptions)[number]["value"];
+export type PaymentType =
+  | (typeof paymentTypesOptions)[number]["value"]
+  | "legacy";
 
-export function paymentMethodsOptions(premium: number) {
+export function paymentMethodsOptions(premium: number = 0) {
   return [
+    {
+      label: `Pagamento annuale di ${toCurrency(premium)}`,
+      value: "cc-annual",
+      type: "credit-card",
+    },
+    {
+      label: `Pagamento mensile di ${toCurrency(premium / 12)}`,
+      value: "cc-monthly",
+      type: "credit-card",
+    },
+    {
+      label: `Pagamento mensile di ${toCurrency(premium / 12)} con anticipo di 3 mesi (${toCurrency((premium / 12) * 3)})`,
+      value: "sdd-3monthsAdvance",
+      type: "transfer-sdd",
+    },
+    {
+      label: `Pagamento annuale di ${toCurrency(premium)}`,
+      value: "sdd-annual",
+      type: "transfer-sdd",
+    },
+    {
+      label: `Pagamento anticipato di 3 anni (${toCurrency(premium * 3)}) e
+    a seguire pagamento annuale di ${toCurrency(premium)}`,
+      value: "sdd-3yearsAdvance",
+      type: "transfer-sdd",
+    },
+    {
+      label: `Pagamento anticipato di 5 anni (${toCurrency(premium * 5)}) e
+    a seguire pagamento annuale di ${toCurrency(premium)}`,
+      value: "sdd-5yearsAdvance",
+      type: "transfer-sdd",
+    },
     {
       label: `Pagamento mensile di ${toCurrency(premium / 12)} con anticipo di 3 mesi (${toCurrency((premium / 12) * 3)})`,
       value: "monthly",
-      // disabled: premium < 480, Da riattivare dopo il rilascio del 3 febb
+      type: "legacy",
     },
     {
       label: `Pagamento annuale di ${toCurrency(premium)}`,
       value: "annual",
+      type: "legacy",
     },
     {
       label: `Pagamento anticipato di 3 anni (${toCurrency(premium * 3)}) e
     a seguire pagamento mensile di ${toCurrency(premium / 12)}`,
       value: "3yearsAdvance",
+      type: "legacy",
     },
     {
       label: `Pagamento anticipato di 5 anni (${toCurrency(premium * 5)}) e
     a seguire pagamento mensile di ${toCurrency(premium / 12)}`,
       value: "5yearsAdvance",
+      type: "legacy",
     },
   ] as const;
 }

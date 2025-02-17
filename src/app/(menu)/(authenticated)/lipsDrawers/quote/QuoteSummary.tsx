@@ -18,7 +18,7 @@ import {
 } from "@fortawesome/pro-duotone-svg-icons";
 import {faDollar} from "@fortawesome/pro-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {Col, Row} from "react-bootstrap";
+import {Alert, Col, Row} from "react-bootstrap";
 import {useStore} from "../../lips/[id]/store";
 
 export function QuoteSummary() {
@@ -72,6 +72,14 @@ export function QuoteSummary() {
           {getCoverageDuration("death", quoteData.birthDate)} anni
         </p>
       </Col>
+      {calendarYearAge(quoteData.birthDate) > 65 && (
+        <Col xs={12}>
+          <Alert variant="warning" className="mb-0">
+            In virtù dell'età assicurativa dell'Assicurato maggiore di 65 anni,
+            la proposta di Polizza sarà soggetta ad ulteriori approfondimenti.
+          </Alert>
+        </Col>
+      )}
       <Col>
         <h4 className="text-primary">
           <FontAwesomeIcon icon={faShieldPlus} /> Coperture complementari

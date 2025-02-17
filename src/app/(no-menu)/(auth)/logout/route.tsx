@@ -7,7 +7,7 @@ export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const next = searchParams.get("next");
 
-  cookies().delete(AUTH_COOKIE_NAME);
+  (await cookies()).delete(AUTH_COOKIE_NAME);
 
   if (next) {
     return redirect(next);

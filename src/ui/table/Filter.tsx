@@ -1,6 +1,6 @@
 import {TableContext} from "@/ui/table/react-table";
 import {Column} from "@tanstack/table-core";
-import useDebouncedCallback from "beautiful-react-hooks/useDebouncedCallback";
+import useDebouncedCallback from "@restart/hooks/useDebouncedCallback";
 import {ReactNode} from "react";
 import {FormControl} from "react-bootstrap";
 
@@ -44,12 +44,9 @@ export function Filter<Row>({
 }: FilterProps<Row>) {
   const filterValue = column.getFilterValue() as string;
 
-  const setFilterValueDebounced = useDebouncedCallback(
-    (value: string) => {
-      column.setFilterValue(value);
-    },
-    [column],
-  );
+  const setFilterValueDebounced = useDebouncedCallback((value: string) => {
+    column.setFilterValue(value);
+  }, 600);
 
   const setFilterValue = (value: string) => {
     column.setFilterValue(value);

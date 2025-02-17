@@ -2,7 +2,7 @@ import React, {FC} from "react";
 import {Card} from "react-bootstrap";
 
 interface DebugProps {
-  children?: any;
+  children?: unknown;
   className?: string;
 }
 

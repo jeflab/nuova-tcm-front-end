@@ -68,7 +68,7 @@ export function ContractorDataSummary() {
           <a href={`tel:${contractor.phone}`}>{contractor.phone}</a>
         </p>
         <p className="mb-0">
-          <strong>Email:</strong>{" "}
+          <strong>E-Mail:</strong>{" "}
           <a href={`mailto:${contractor.email}`}>{contractor.email}</a>
         </p>
       </Col>

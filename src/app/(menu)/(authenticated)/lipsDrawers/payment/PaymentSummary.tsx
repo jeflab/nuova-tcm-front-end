@@ -82,6 +82,7 @@ export function PaymentSummary() {
         </h4>
         <PaymentMethod
           paymentMethod={paymentData.paymentMethod}
+          paymentType={paymentData.paymentType}
           premium={premium}
         />
       </div>
@@ -101,6 +102,7 @@ export function PaymentSummary() {
             </h4>
             <PaymentMethod
               paymentMethod={paymentData.paymentMethod}
+              paymentType={paymentData.paymentType}
               premium={underwritingData.extraPremium.value}
             />
           </div>
@@ -162,29 +164,71 @@ export function PaymentSummary() {
         <h4 className="w-100 text-primary">
           <FontAwesomeIcon icon={faCreditCard} /> Modalità di pagamento
         </h4>
-        <dl>
-          <dt>Primo pagamento tramite bonifico bancario:</dt>
-          <dd>
-            il pagamento andrà effettuato a favore di Bright Life. sul c/c
-            italiano aperto presso Banca Intesa-Sanpaolo - Via Cesare Battisti
-            n. 11 - Milano 20122 Filiale: 1886 IBAN IT26W0306909483100000019829,
-            indicando nella causale il numero della presente Proposta:{" "}
-            {lip?.lipNumber}
-          </dd>
-          <dt>
-            Pagamenti successivi tramite mandato per addebito diretto SEPA -
-            S.D.D.
-          </dt>
-          <dd>
-            Il riferimento di Mandato coincide con il numero della presente
-            proposta di polizza: ({lip?.lipNumber})
-          </dd>
-          <dt>Creditore:</dt>
-          <dd>
-            Bright Life, Viale Bianca Maria, 9 – 20122 – Milano (MI) Codice
-            identificativo del creditore: IT11ZZZ0000013276280966
-          </dd>
-        </dl>
+        {["legacy", "transfer-sdd"].includes(paymentData.paymentType) && (
+          <dl>
+            <dt>Primo pagamento tramite Bonifico bancario:</dt>
+            <dd>
+              il pagamento andrà effettuato a favore di Bright Life. sul c/c
+              italiano aperto presso Banca Intesa-Sanpaolo - Via Cesare Battisti
+              n. 11 - Milano 20122 Filiale: 1886 IBAN
+              IT26W0306909483100000019829, indicando nella causale il numero
+              della presente Proposta: {lip?.lipNumber}
+            </dd>
+            <dt>
+              Pagamenti successivi tramite mandato per addebito diretto SEPA -
+              S.D.D.
+            </dt>
+            <dd>
+              Il riferimento di Mandato coincide con il numero della presente
+              proposta di polizza: ({lip?.lipNumber})
+            </dd>
+            <dt>Creditore:</dt>
+            <dd>
+              Bright Life, Piazza della Repubblica, 32 – 20122 – Milano (MI)
+              Codice identificativo del creditore: IT11ZZZ0000013276280966
+            </dd>
+          </dl>
+        )}
+        {paymentData.paymentType === "credit-card" && (
+          <dl>
+            <dt>Primo pagamento tramite Carta di Credito o Debito:</dt>
+            <dd>
+              il pagamento andrà effettuato a favore di Bright Life s.r.l.
+              (Master Broker per LifeStar Insurance sul mercato italiano)
+              tramite Carta di Credito o Carta di Debito collegata ad un c/c
+              italiano, di cui il medesimo dichiara di essere il titolare.
+            </dd>
+            <ul>
+              <li>
+                Nella causale di pagamento deve sempre essere indicato il numero
+                della presente Proposta.
+              </li>
+              <li>
+                Non è possibile pagare il premio di polizza tramite Carte di
+                Credito o Debito emesse da banche estere o Carte c.d.
+                Ricaricabili / Prepagate.
+              </li>
+              <li>
+                Il Contraente autorizza espressamente l’addebito automatico di
+                tutti i premi di polizza successivi al primo (annuali o con
+                frazionamento diverso) sulla medesima Carta di Credito o Debito
+                di cui è titolare esclusivo. I premi successivi verranno
+                addebitati automaticamente alle scadenze previste dal
+                frazionamento prescelto dal Contraente.
+              </li>
+            </ul>
+            <dt>Tipo di pagamento: ricorrente</dt>
+            <dd>
+              Con la sottoscrizione della presente autorizzazione, il Contraente
+              si obbliga a pagare tutti i premi successivi al primo tramite
+              addebito diretto sulla propria Carta di Credito o Debito.
+              Specificatamente, il Contraente si obbliga ed impegna a fornire
+              prontamente i dati dell’eventuale Carta di Credito o Debito
+              sostitutiva (in caso di furto/smarrimento o sostituzione per
+              scadenza).
+            </dd>
+          </dl>
+        )}
       </div>
     </Stack>
   );
