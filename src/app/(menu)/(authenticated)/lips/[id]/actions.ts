@@ -2,7 +2,6 @@
 
 import {BeneficiariesFormValues} from "@/app/(menu)/(authenticated)/lipsDrawers/beneficiaries/BeneficiariesForm";
 import {HealthQuestionnaireFormValues} from "@/app/(menu)/(authenticated)/lipsDrawers/healthQuestionnaire/HealthQuestionnaireForm";
-import {PaymentFormValues} from "@/app/(menu)/(authenticated)/lipsDrawers/payment/PaymentForm";
 import {
   dependentFamilyMembersOptions,
   DependentFamilyMembersOptions,
@@ -539,7 +538,7 @@ export async function updateBeneficiaries(
 }
 
 export async function updatePaymentData(
-  payment: PaymentFormValues,
+  payment: Lip["payment"],
   lipId: number,
 ) {
   return patch(`/lips/${lipId}`, {

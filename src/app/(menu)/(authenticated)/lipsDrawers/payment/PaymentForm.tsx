@@ -5,6 +5,8 @@ import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {
   PaymentMethods,
   paymentMethodsOptions,
+  PaymentType,
+  paymentTypesOptions,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
 import {normalizeError} from "@/helpers/errors";
 import {Lip} from "@/models/entities/lip";
@@ -40,6 +42,7 @@ const paymentDefaultValues = (paymentData?: Lip["payment"]) => ({
   effectiveDate: paymentData?.effectiveDate ?? "",
   duration: paymentData?.duration ?? "",
   expirationDate: paymentData?.expirationDate ?? "",
+  paymentType: paymentData?.paymentType ?? ("" as PaymentType),
   paymentMethod: paymentData?.paymentMethod ?? ("" as PaymentMethods),
   contractorFullName: paymentData?.contractorFullName ?? "",
   jointOwners: paymentData?.jointOwners ?? "",
@@ -77,6 +80,8 @@ export function PaymentForm() {
     (state) => state.lip?.quotation?.underwriting?.extraPremium?.value,
   );
   const realPremium = extraPremium ?? premium;
+
+  const paymentTypeValue = formMethods.watch("paymentType");
 
   return (
     <>
@@ -153,13 +158,41 @@ export function PaymentForm() {
                 </Alert>
               </Col>
             ) : null}
-            <Col className="d-flex">
+            <Col className="d-flex" xs={12}>
+              <FormGroup controlId="paymentType" as={BorderFeedback}>
+                <FormLabel>Metodo di pagamento</FormLabel>
+                <FieldError />
+                <CheckGroup
+                  type="radio"
+                  onChange={() => {
+                    formMethods.setValue("paymentMethod", "" as PaymentMethods);
+                  }}
+                  options={paymentTypesOptions}
+                  validation={{
+                    required: "Seleziona un metodo di pagamento",
+                  }}
+                />
+              </FormGroup>
+            </Col>
+            <Col className="d-flex" xs={12}>
               <FormGroup controlId="paymentMethod" as={BorderFeedback}>
                 <FormLabel>Frazionamento del premio</FormLabel>
                 <FieldError />
                 <CheckGroup
                   type="radio-switch"
-                  options={paymentMethodsOptions(realPremium)}
+                  disabled={!paymentTypeValue}
+                  options={
+                    !paymentTypeValue
+                      ? [
+                          {
+                            label: "Seleziona prima un metodo di pagamento",
+                            value: "should-not-be-selected",
+                          },
+                        ]
+                      : paymentMethodsOptions(realPremium).filter(
+                          (method) => method.type === paymentTypeValue,
+                        )
+                  }
                   validation={{
                     required: "Seleziona un frazionamento di pagamento",
                   }}

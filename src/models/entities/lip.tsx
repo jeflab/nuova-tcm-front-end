@@ -8,7 +8,8 @@ import {
   idTypeOptions,
   lipTypeOptions,
   nominationOptions,
-  paymentMethodsSimpleOptions,
+  paymentMethodsOptions,
+  paymentTypesOptions,
   relationshipOptions,
   sportRiskIndexOptions,
   yesNoOptions,
@@ -350,12 +351,16 @@ const paymentSchema = z.object({
   effectiveDate: z.string(),
   duration: z.string(),
   expirationDate: z.string(),
-  paymentMethod: z.enum(getOptionsValues(paymentMethodsSimpleOptions)),
+  paymentType: z
+    .enum([...getOptionsValues(paymentTypesOptions), "legacy"])
+    .default("legacy"),
+  paymentMethod: z.enum(getOptionsValues(paymentMethodsOptions())),
   contractorFullName: z.string(),
   jointOwners: z.string().nullish(),
   bank: z.string(),
   bicSwift: z.string(),
   iban: z.string(),
+  clicPayLinkClicked: z.boolean().optional(),
 });
 
 export const eSignSchema = z.object({

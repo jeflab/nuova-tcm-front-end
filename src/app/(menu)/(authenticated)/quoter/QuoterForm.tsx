@@ -198,17 +198,36 @@ export function QuoterForm() {
                 {premium && (
                   <FormGroup>
                     <h4>Modalità di pagamento</h4>
-                    {paymentMethodsOptions(premium).map(({label, value}) => (
-                      <FormCheck
-                        key={value}
-                        label={label}
-                        type="radio"
-                        value={value}
-                        className="form-switch"
-                        name="non-quote-form"
-                        id={`non-quote-form-${value}`}
-                      />
-                    ))}
+                    <h5>
+                      Pagamento elettronico tramite Carta di Credito o Debito
+                    </h5>
+                    {paymentMethodsOptions(premium)
+                      .filter((method) => method.type === "credit-card")
+                      .map(({label, value}) => (
+                        <FormCheck
+                          key={value}
+                          label={label}
+                          type="radio"
+                          value={value}
+                          className="form-switch"
+                          name="non-quote-form"
+                          id={`non-quote-form-${value}`}
+                        />
+                      ))}
+                    <h5>Pagamento tramite Bonifico - Addebito diretto SDD</h5>
+                    {paymentMethodsOptions(premium)
+                      .filter((method) => method.type === "transfer-sdd")
+                      .map(({label, value}) => (
+                        <FormCheck
+                          key={value}
+                          label={label}
+                          type="radio"
+                          value={value}
+                          className="form-switch"
+                          name="non-quote-form"
+                          id={`non-quote-form-${value}`}
+                        />
+                      ))}
                   </FormGroup>
                 )}
               </Card>

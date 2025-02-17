@@ -8,6 +8,7 @@ import {
   useFormContext,
 } from "react-hook-form";
 import invariant from "tiny-invariant";
+import {useAutoAnimate} from "@formkit/auto-animate/react";
 
 interface SingleValue<TValue> {
   type: "radio" | "radio-switch";
@@ -45,6 +46,7 @@ export function CheckGroup<
   validation,
   validationStyle,
 }: CheckGroupProps<TFieldValues, TValue>) {
+  const [animateContainer] = useAutoAnimate();
   const {controlId} = useContext(FormContext);
   const controlName = name || controlId;
   invariant(controlName, "name or controlId is required");
@@ -52,7 +54,7 @@ export function CheckGroup<
   const {getValues} = useFormContext();
 
   return (
-    <div>
+    <div ref={animateContainer}>
       {options.map(({label, value, disabled: singleDisabled}) => {
         return (
           <CheckboxField
