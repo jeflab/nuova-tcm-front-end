@@ -1,5 +1,11 @@
 # Changelog
 
+### v2.1.1
+
+#### Fix:
+
+- Corretto bug controllo età contraente se != assicurato
+
 ## v2.1.0
 
 #### Added:
