@@ -11,10 +11,13 @@ const maintenanceMode = process.env.MAINTENANCE_MODE === "true";
 console.info(`Maintenance mode: ${maintenanceMode}`);
 
 let nextConfig: NextConfig = {
-  // React compiler pronto
-  // experimental: {
-  //   reactCompiler: true,
-  // },
+  experimental: {
+    // React compiler pronto
+    //   reactCompiler: true,
+    serverActions: {
+      bodySizeLimit: "8mb",
+    },
+  },
   logging: {fetches: {fullUrl: true}},
   images: {
     remotePatterns: process.env

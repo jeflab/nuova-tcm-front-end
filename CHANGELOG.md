@@ -1,5 +1,11 @@
 # Changelog
 
+### v2.1.2
+
+#### Fix:
+
+- Aumentata dimensione massima server actions a 8mb
+
 ### v2.1.1
 
 #### Fix:
