@@ -1,18 +1,18 @@
 # Changelog
 
-### v2.1.2
+### v2.1.2 (2025-02-18)
 
 #### Fix:
 
 - Aumentata dimensione massima server actions a 8mb
 
-### v2.1.1
+### v2.1.1 (2025-02-18)
 
 #### Fix:
 
 - Corretto bug controllo età contraente se != assicurato
 
-## v2.1.0
+## v2.1.0 (2025-02-18)
 
 #### Added:
 
@@ -35,7 +35,7 @@
 
 - Risolto bug che impediva al onChange degli input di venir eseguito quando c'era anche la normalizzazione
 
-# v2.0.0
+# v2.0.0 (2025-02-03)
 
 #### Added:
 
