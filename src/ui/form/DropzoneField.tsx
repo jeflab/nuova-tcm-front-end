@@ -11,7 +11,7 @@ import styles from "./DropzoneField.module.scss";
 
 const mbExponent = 20;
 const mb = 2 ** mbExponent; // 1 MB
-const maxSize = 16 * mb;
+const maxSize = 8 * mb;
 
 interface DropzoneFieldProps extends WithChildren {
   // renderContent: (dropzoneState: DropzoneState) => ReactElement;
@@ -50,7 +50,6 @@ export function DropzoneField({
         message: errors[ErrorCodes.ID_FILE_NOT_VALID].message,
       });
     } else if (accepted[0] && accepted[0].size > maxSize) {
-      // 16MB
       setError(controlName, {
         type: "custom",
         message: errors[ErrorCodes.ID_FILE_TOO_BIG].message,
