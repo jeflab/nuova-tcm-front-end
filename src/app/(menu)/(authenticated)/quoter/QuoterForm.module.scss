@@ -1,3 +1,5 @@
+@value isValid from "@/ui/form/BorderFeedback.module.scss";
+
 .rotateOnFocus {
   svg {
     transform: rotate(0deg);
@@ -8,5 +10,72 @@
   svg {
     transform: rotate(-360deg);
     transition: transform 0.5s;
+  }
+}
+
+.quoterForm {
+  @media print {
+    *,
+    *::before,
+    *::after {
+      text-shadow: none !important;
+      box-shadow: none !important;
+      color: black !important; // Black prints faster
+      background: transparent !important;
+    }
+
+    h2,
+    h3 {
+      page-break-after: avoid;
+    }
+
+    @page {
+      size: a4;
+    }
+
+    body {
+      min-width: 992px !important;
+    }
+
+    .container {
+      min-width: 992px !important;
+    }
+
+    .table {
+      border-collapse: collapse !important;
+    }
+    .table td,
+    .table th {
+      background-color: #fff !important;
+    }
+
+    :global(.position-sticky) {
+      position: static !important;
+    }
+    :global(.collapse:not(.show)) {
+      display: block !important;
+    }
+
+    .isValid,
+    :global(.form-check-input.is-valid) {
+      border-color: black;
+    }
+
+    /* This is what simulates a checkmark icon */
+    input[type="radio"]:checked:after {
+      content: "";
+      display: block;
+      width: 4px;
+      height: 7px;
+
+      /* "Center" the checkmark */
+      position: relative;
+      top: 3px;
+      left: 5px;
+
+      border: solid #000;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
   }
 }

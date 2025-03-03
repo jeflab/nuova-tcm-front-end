@@ -1,5 +1,6 @@
 import {HelpLink} from "@/app/(menu)/HelpLink";
 import {getAccount, isLoggedIn} from "@/app/(no-menu)/(auth)/actions";
+import {cns} from "@/helpers/cns";
 import {getVersion} from "@/helpers/release";
 import {Broker} from "@/models/entities/broker";
 import {AppContainer} from "@/ui/AppContainer";
@@ -42,8 +43,11 @@ export async function Footer() {
               />
             </>
           ) : null}
-          <span className={styles.divider}> | </span>
-          <HelpLink className="footer-link" fiscalCode={fiscalCode} />
+          <span className={cns("d-print-none", styles.divider)}> | </span>
+          <HelpLink
+            className="d-print-none footer-link"
+            fiscalCode={fiscalCode}
+          />
         </div>
         <small className="ms-auto text-muted">Versione {getVersion()}</small>
       </div>

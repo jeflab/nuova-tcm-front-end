@@ -8,7 +8,7 @@ export default async function Quoter() {
     <Stack gap={3}>
       <AppContainer className="vstack gap-3">
         <PageTitle>Preventivatore</PageTitle>
-        <Alert variant="info" className="mb-0">
+        <Alert variant="info" className="d-print-none mb-0">
           Si prega di compilare il form per il preventivo della polizza vita con
           attenzione alle normative vigenti e principi etici. Concentrarsi sul
           benessere del Contraente, garantendo chiarezza, trasparenza e

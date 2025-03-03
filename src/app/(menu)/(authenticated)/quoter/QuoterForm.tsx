@@ -88,7 +88,7 @@ export function QuoterForm() {
     <Form
       onSubmit={handleSubmit}
       formMethods={formMethods}
-      className="vstack gap-3"
+      className={cns(styles.quoterForm, "vstack gap-3")}
       onChange={(e) => {
         if (formMethods.formState.isSubmitted) {
           if (

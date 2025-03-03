@@ -43,7 +43,7 @@ export async function Navbar() {
   return (
     <BSNavbar
       expand="md"
-      className="bg-body-tertiary"
+      className={cns(styles.navbar, "bg-body-tertiary")}
       fixed="top"
       collapseOnSelect
     >
@@ -62,8 +62,11 @@ export async function Navbar() {
             {broker?.name ?? "Smart Broker Space"}
           </span>
         </NavbarBrand>
-        <NavbarToggle aria-controls="basic-navbar-nav" />
-        <NavbarCollapse id="basic-navbar-nav">
+        <NavbarToggle
+          className="d-print-none"
+          aria-controls="basic-navbar-nav"
+        />
+        <NavbarCollapse className="d-print-none" id="basic-navbar-nav">
           <Nav className={cns("ms-auto", styles.navbarNav)}>
             {loggedIn ? (
               <>

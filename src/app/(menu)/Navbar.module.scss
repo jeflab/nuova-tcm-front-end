@@ -1,11 +1,25 @@
 @import "../variables";
 
+.navbar {
+  @media print {
+    position: static;
+  }
+}
+
 .navbarBrandText {
   font-weight: 700;
   background: $logo-gradient;
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+
+  @media print {
+    color: black;
+    background: white;
+    background-clip: initial !important;
+    -webkit-background-clip: initial !important;
+    -webkit-text-fill-color: initial !important;
+  }
 }
 
 .navbarBrandLink {
@@ -13,6 +27,9 @@
   text-overflow: ellipsis;
   color: var(--bs-primary);
   max-width: calc(100% - 16px - 56px); // 100% - margin - toggle button width
+  @media print {
+    max-width: 100%;
+  }
 }
 
 .navbarNav :global(.nav-link) {
