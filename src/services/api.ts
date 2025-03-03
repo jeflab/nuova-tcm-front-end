@@ -252,7 +252,7 @@ export async function apiCall<ResponsePayloadShape extends ZodRawShape>(
     });
 
     if (serverResponseJson.responseStatus === 401) {
-      console.error("Chiamata non autorizzata, logout");
+      console.info("Chiamata non autorizzata, logout");
 
       redirect("/logout");
 
