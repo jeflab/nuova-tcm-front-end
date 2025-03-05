@@ -1,5 +1,11 @@
 # Changelog
 
+### v2.1.3 (2025-03-05)
+
+#### Changed:
+
+- Modificata sede legale a Via Felice Casati
+
 ### v2.1.2 (2025-02-18)
 
 #### Fix:
