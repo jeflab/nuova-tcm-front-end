@@ -184,7 +184,7 @@ export function PaymentSummary() {
             </dd>
             <dt>Creditore:</dt>
             <dd>
-              Bright Life, Piazza della Repubblica, 32 – 20122 – Milano (MI)
+              Bright Life Srl, Via Felice Casati, 32 - 20124 – Milano (MI)
               Codice identificativo del creditore: IT11ZZZ0000013276280966
             </dd>
           </dl>

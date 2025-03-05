@@ -15,7 +15,7 @@ let nextConfig: NextConfig = {
     // React compiler pronto
     //   reactCompiler: true,
     serverActions: {
-      bodySizeLimit: "8mb",
+      bodySizeLimit: "16mb",
     },
   },
   logging: {fetches: {fullUrl: true}},

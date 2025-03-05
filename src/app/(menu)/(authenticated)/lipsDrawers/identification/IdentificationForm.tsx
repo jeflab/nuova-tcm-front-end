@@ -83,9 +83,10 @@ export function IdentificationForm() {
           onSubmit={async (values) => {
             invariant(fiscalCode, "Fiscal code is required");
             invariant(lipId, "lipId is required");
+            let identificationContractorResponse;
 
-            const identificationContractorResponse =
-              await identificationContractor(
+            try {
+              identificationContractorResponse = await identificationContractor(
                 getTypedFormDataFromObject(
                   omit(values, [
                     "metContractorInPerson",
@@ -97,6 +98,14 @@ export function IdentificationForm() {
                 fiscalCode,
                 lipId,
               );
+            } catch (e) {
+              throw {
+                root: {
+                  type: "server",
+                  message: normalizeError(e).message,
+                },
+              };
+            }
 
             if (identificationContractorResponse?.status !== "success") {
               throw {
