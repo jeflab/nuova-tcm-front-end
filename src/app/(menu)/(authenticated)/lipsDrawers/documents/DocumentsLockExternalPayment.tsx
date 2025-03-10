@@ -68,7 +68,11 @@ export function DocumentsLockExternalPayment() {
       <Alert className="mb-0" variant="success">
         <div className="d-flex justify-content-between align-items-center">
           <p className="mb-0">
-            <FontAwesomeIcon icon={faCheckCircle} className="me-2" size="xl" />
+            <FontAwesomeIcon
+              icon={faCheckCircle}
+              className="me-2 text-success"
+              size="xl"
+            />
             La procedura di pagamento è stata presa in carico da ClicPay.
           </p>
           <Button
