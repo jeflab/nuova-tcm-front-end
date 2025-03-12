@@ -1,5 +1,24 @@
 # Changelog
 
+### v2.1.4 (2025-03-12)
+
+#### Added:
+
+- Aggiunto blocco iban "proibiti", per ora c'è quello della compagnia
+
+#### Changed:
+
+- Aggiunta ripetizione email e telefono anche per il contraente
+- Aggiunto log delle date per debbugare errore su sentry
+
+#### Removed:
+
+- Rimosso alert con bottone per scaricamento questionari aggiuntivi underwriting
+
+#### Fixed:
+
+- Corretto colore icona checkmark pagamento ClickPay
+
 ### v2.1.3 (2025-03-05)
 
 #### Changed:
@@ -8,13 +27,13 @@
 
 ### v2.1.2 (2025-02-18)
 
-#### Fix:
+#### fixed:
 
 - Aumentata dimensione massima server actions a 8mb
 
 ### v2.1.1 (2025-02-18)
 
-#### Fix:
+#### fixed:
 
 - Corretto bug controllo età contraente se != assicurato
 
