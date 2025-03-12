@@ -150,6 +150,7 @@ export function RequestOTPForm<TPayload>({
           }}
           normalize={onlyNumbersNormalizer}
           autocomplete="one-time-code"
+          inputmode="numeric"
           autoFocus
         />
       </FormGroup>
