@@ -43,6 +43,8 @@ interface RequestOTPFormProps<TPayload> {
   whoESign: ESign["whoESign"];
 }
 
+// TODO: questa libreria crea un OTP input headless per react https://github.com/guilhermerodz/input-otp
+
 const requestOTPFormDefaultValues = {
   otp: "",
 };
@@ -147,6 +149,7 @@ export function RequestOTPForm<TPayload>({
             required: "Inserisci l'OTP che hai ricevuto sul tuo cellulare",
           }}
           normalize={onlyNumbersNormalizer}
+          autocomplete="one-time-code"
           autoFocus
         />
       </FormGroup>
