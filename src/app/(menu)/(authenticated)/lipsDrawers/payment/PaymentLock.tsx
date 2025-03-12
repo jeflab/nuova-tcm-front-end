@@ -2,20 +2,12 @@
 
 import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {PDFType} from "@/models/entities/esign";
-import {backendUrl, Tags} from "@/services/const";
-import {ButtonLink} from "@/ui/ButtonLink";
+import {Tags} from "@/services/const";
 import RequestOTPModal from "@/ui/eSign/RequestOTPModal";
-import {
-  faArrowUpRightFromSquare,
-  faDownload,
-} from "@fortawesome/pro-duotone-svg-icons";
 import {faSquareArrowUpRight} from "@fortawesome/pro-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {useState} from "react";
 import {Alert, Button} from "react-bootstrap";
-
-const professionalSportQuestionnaireUrl =
-  backendUrl + "questionario_professionale_sportivo.pdf";
 
 interface PaymentLockProps {
   hideUnderwritingAction?: boolean;
@@ -51,10 +43,6 @@ export function PaymentLock({
   const underwritingUnderInvestigation =
     lipState.id === 2 || hideUnderwritingAction;
 
-  const showProfessionalSportQuestionnaire =
-    lip?.healthcareQuestionnaire?.professionalRisk.check === "yes" ||
-    lip?.healthcareQuestionnaire?.sportRisk.check === "yes";
-
   const underwritingNotApproved = lipState.id === 15;
 
   const setUnderwriting = async () => {
@@ -83,71 +71,35 @@ export function PaymentLock({
 
   if (askForUnderwriting) {
     return (
-      <>
-        {showProfessionalSportQuestionnaire && (
-          <Alert variant="info" className="mb-0">
-            <p>
-              In virtù delle risposte fornite nella compilazione del
-              questionario sanitario, il Contraente è tenuto alla compilazione
-              del seguente questionario aggiuntivo. È obbligatorio utilizzare{" "}
-              <strong>Adobe Acrobat Reader</strong> (
-              <a
-                href="https://get.adobe.com/it/reader/"
-                target="_blank"
-                className="alert-link"
-              >
-                Scarica <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
-              </a>
-              ) per la compilazione del modulo. Una volta compilato, deve essere
-              inviato via e-mail all'indirizzo{" "}
-              <a
-                href="mailto:supporto.underwriting@brightlife.it"
-                className="alert-link"
-              >
-                supporto.underwriting@brightlife.it
-              </a>
-              .
-            </p>
-            <ButtonLink
-              href={professionalSportQuestionnaireUrl}
-              download
-              target="_blank"
-            >
-              <FontAwesomeIcon icon={faDownload} /> Scarica i questionari per il
-              rischio professionale e sportivo
-            </ButtonLink>
-          </Alert>
-        )}
-        <Alert className="mb-0" variant="danger">
-          <p>
-            La proposta di Polizza non può essere emessa direttamente in virtù
-            delle risposte fornite nella compilazione del questionario
-            sanitario/non sanitario. Per procedere è necessario richiedere
-            l'underwriting.
-            <br />
-            <strong>
-              Dopo aver richiesto l'underwriting i dati inseriti non saranno più
-              modificabili.
-            </strong>
-          </p>
-          <Button type="button" variant="primary" onClick={setUnderwriting}>
-            <FontAwesomeIcon icon={faSquareArrowUpRight} className="me-2" />
-            Richiedi underwriting
-          </Button>
-          <RequestOTPModal
-            lipId={lip.id}
-            onHide={() => setIsUnderwritingOpen(false)}
-            pdfType={PDFType.Underwriting}
-            onEsignComplete={async () => {
-              setIsUnderwritingOpen(false);
-            }}
-            show={isUnderwritingOpen}
-            personalData={lip.contractor}
-            whoESign="contractor"
-            tagToRevalidate={Tags.getLip(lip.id)}
-          />
-        </Alert>
-      </>
+      <Alert className="mb-0" variant="danger">
+        <p>
+          La proposta di Polizza non può essere emessa direttamente in virtù
+          delle risposte fornite nella compilazione del questionario
+          sanitario/non sanitario. Per procedere è necessario richiedere
+          l'underwriting.
+          <br />
+          <strong>
+            Dopo aver richiesto l'underwriting i dati inseriti non saranno più
+            modificabili.
+          </strong>
+        </p>
+        <Button type="button" variant="primary" onClick={setUnderwriting}>
+          <FontAwesomeIcon icon={faSquareArrowUpRight} className="me-2" />
+          Richiedi underwriting
+        </Button>
+        <RequestOTPModal
+          lipId={lip.id}
+          onHide={() => setIsUnderwritingOpen(false)}
+          pdfType={PDFType.Underwriting}
+          onEsignComplete={async () => {
+            setIsUnderwritingOpen(false);
+          }}
+          show={isUnderwritingOpen}
+          personalData={lip.contractor}
+          whoESign="contractor"
+          tagToRevalidate={Tags.getLip(lip.id)}
+        />
+      </Alert>
     );
   }
 
