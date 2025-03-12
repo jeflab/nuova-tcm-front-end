@@ -39,6 +39,8 @@ const contractorPersonalAreaActivationDefaultValues = (
 ) => ({
   phone: contractorData?.phone ?? "",
   email: contractorData?.email ?? "",
+  repeatEmail: contractorData?.email ?? "",
+  repeatPhone: contractorData?.phone ?? "",
 });
 
 interface ContractorContactsFormProps {
@@ -150,6 +152,11 @@ export function ContractorContactsForm({
                 <InputField
                   type="tel"
                   placeholder="Cellulare del Contraente"
+                  onChange={() => {
+                    if (!!formMethods.getValues("repeatPhone")) {
+                      formMethods.trigger("repeatPhone");
+                    }
+                  }}
                   validation={{
                     required: "Inserisci il Cellulare del Contraente",
                     validate: {
@@ -176,6 +183,11 @@ export function ContractorContactsForm({
                 <InputField
                   type="email"
                   placeholder="Email del Contraente"
+                  onChange={() => {
+                    if (!!formMethods.getValues("repeatEmail")) {
+                      formMethods.trigger("repeatEmail");
+                    }
+                  }}
                   validation={{
                     required: "Inserisci l'email del Contraente",
                     validate: {
@@ -192,6 +204,50 @@ export function ContractorContactsForm({
                           value === loggedUser.email
                         ) {
                           return "L'email inserita non può essere uguale a quella dell'Advisor";
+                        }
+                      },
+                    },
+                  }}
+                  normalize={emailNormalizer}
+                />
+              </FormGroup>
+            </Col>
+            <Col className="d-flex" xs={12} sm={6}>
+              <FormGroup controlId="repeatPhone" as={BorderFeedback}>
+                <FormLabel>Conferma il cellulare</FormLabel>
+                <FieldError />
+                <InputField
+                  type="tel"
+                  placeholder="Cellulare del Contraente"
+                  validation={{
+                    required: "Conferma il Cellulare del Contraente",
+                    validate: (value: string, values) => {
+                      if (!!value && value !== values.phone) {
+                        return "Il cellulare non corrisponde";
+                      }
+                    },
+                  }}
+                  normalize={onlyNumbersNormalizer}
+                />
+              </FormGroup>
+            </Col>
+            <Col className="d-flex" xs={12} sm={6}>
+              <FormGroup controlId="repeatEmail" as={BorderFeedback}>
+                <FormLabel>Conferma l'e-mail</FormLabel>
+                <FieldError />
+                <InputField
+                  type="email"
+                  placeholder="Email del Contraente"
+                  validation={{
+                    validate: {
+                      required: (value) => {
+                        if (!value) {
+                          return "Conferma l'e-mail del Contraente";
+                        }
+                      },
+                      validate: (value: string, values) => {
+                        if (!!value && value !== values.email) {
+                          return "L'e-mail non corrisponde";
                         }
                       },
                     },

@@ -52,7 +52,6 @@ export function RequestOTPModalContent<TPayload>({
   } = useMutation({
     mutationKey: ["createFEATransaction", lipId],
     mutationFn: async (data: {contractorId?: number; lipId: number}) => {
-      console.log("Calling createFEATransaction from useQuery");
       setCounter(60);
 
       const response = await createFEATransaction(data);

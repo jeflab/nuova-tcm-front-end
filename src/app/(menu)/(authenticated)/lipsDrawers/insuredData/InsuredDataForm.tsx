@@ -292,13 +292,13 @@ export function InsuredDataForm() {
                 <InputField
                   type="tel"
                   onChange={() => {
-                    if (!!formMethods.getValues("contact.repeatEmail")) {
+                    if (!!formMethods.getValues("contact.repeatPhone")) {
                       formMethods.trigger("contact.repeatPhone");
                     }
                   }}
                   placeholder="Cellulare dell'Assicurato"
                   validation={{
-                    required: "Inserisci il Cellulare del Assicurato",
+                    required: "Inserisci il Cellulare dell'Assicurato",
                   }}
                   normalize={onlyNumbersNormalizer}
                 />
