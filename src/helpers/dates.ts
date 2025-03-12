@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/nextjs";
 import {format} from "date-fns/format";
 import {it} from "date-fns/locale";
 
@@ -19,5 +20,6 @@ export const dbDateString = (date?: Date | string) => {
 
 const dateTimePattern = "dd MMMM yyyy 'alle' HH:mm";
 export const dateTimeString = (date?: Date | string) => {
+  Sentry.captureMessage(`dateTimeString: ${date}`);
   return format(dateOrNow(date), dateTimePattern, locale);
 };

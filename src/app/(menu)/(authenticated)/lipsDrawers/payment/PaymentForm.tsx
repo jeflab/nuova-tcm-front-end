@@ -2,6 +2,7 @@
 
 import {updatePaymentData} from "@/app/(menu)/(authenticated)/lips/[id]/actions";
 import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {bannedIbanCodes} from "@/app/(menu)/(authenticated)/lipsDrawers/payment/consts";
 import {
   PaymentMethods,
   paymentMethodsOptions,
@@ -266,6 +267,11 @@ export function PaymentForm() {
                         required: (value) => {
                           if (!value) {
                             return "Inserisci l'IBAN del Contraente";
+                          }
+                        },
+                        banned: (value) => {
+                          if (bannedIbanCodes.includes("IT" + value)) {
+                            return "L'IBAN inserito non è valido";
                           }
                         },
                         format: (value) => {
