@@ -31,3 +31,30 @@ export const searchPramsSchema = z.discriminatedUnion("uri", [
   }),
 ]);
 export type DownloadDocumentsSearchParams = z.infer<typeof searchPramsSchema>;
+
+export const lipDocumentsKeys = [
+  "fileAllegato3",
+  "fileAllegato4",
+  "fileAllegato4TER",
+  "fileElencoCompagnie",
+  "fileSetInformativo",
+  "fileCertificatoXML",
+  "fileCertificatoPDF",
+  "filePolizza",
+] as const;
+
+export const lipDocToUriMap: Partial<
+  Record<
+    (typeof lipDocumentsKeys)[number],
+    DownloadDocumentsSearchParams["uri"]
+  >
+> = {
+  fileAllegato3: "pdf-allegato3",
+  fileAllegato4: "pdf-allegato4",
+  fileAllegato4TER: "pdf-allegato4ter",
+  fileElencoCompagnie: "pdf-elenco-compagnie",
+  fileSetInformativo: "set-informativo",
+  fileCertificatoPDF: "pdf-certificato",
+  filePolizza: "pdf-proposta",
+  // fileCertificatoXML: "",
+};

@@ -14,6 +14,7 @@ import {
   sportRiskIndexOptions,
   yesNoOptions,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
+import {lipDocumentsKeys} from "@/app/download-doc/schema";
 import {getOptionsValues} from "@/helpers/getOptionsLabel";
 import {agentSchema} from "@/models/entities/agent";
 import {personalDataSchema} from "@/models/entities/personalData";
@@ -218,6 +219,8 @@ const quotationSchema = z
     ...data,
     notApproveUnderwriting: not_approve_underwriting,
   }));
+
+const documentsSchema = z.record(z.enum(lipDocumentsKeys), z.string());
 
 const healthcareQuestionnaireSchema = z.object({
   weight: z.string(),
@@ -451,6 +454,7 @@ export const lipSchema = z
     insured: personalDataSchema.nullish(),
     lip_number: z.coerce.string(),
     json_den: zu.stringToJSON().pipe(denSchema).nullish(),
+    json_documents: zu.stringToJSON().pipe(documentsSchema).nullish(),
     json_quotation: zu.stringToJSON().pipe(quotationSchema).nullish(),
     json_survey_healthcare: zu
       .stringToJSON()
@@ -480,6 +484,7 @@ export const lipSchema = z
       lip_number,
       contractor_insured_relationship,
       json_den,
+      json_documents,
       json_quotation,
       json_survey_healthcare,
       must_ask_underwriting,
@@ -506,6 +511,7 @@ export const lipSchema = z
         contractorInsuredRelationship,
         contractorInsuredRelationshipOther,
         den: json_den,
+        documents: json_documents,
         quotation: json_quotation,
         healthcareQuestionnaire: json_survey_healthcare,
         mustAskUnderwriting: must_ask_underwriting,
