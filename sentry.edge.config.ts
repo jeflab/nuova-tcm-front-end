@@ -10,7 +10,7 @@ Sentry.init({
   dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
   release: getRelease(),
 
-  ignoreErrors: ["NEXT_REDIRECT"],
+  // ignoreErrors: ["NEXT_REDIRECT"],
 
   // Adjust this value in production, or use tracesSampler for greater control
   tracesSampleRate: 1,
