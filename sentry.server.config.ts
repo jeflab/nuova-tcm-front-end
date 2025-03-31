@@ -9,14 +9,11 @@ Sentry.init({
   dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
   release: getRelease(),
 
-  // Adjust this value in production, or use tracesSampler for greater control
+  // Define how likely traces are sampled. Adjust this value in production, or use tracesSampler for greater control.
   tracesSampleRate: 1,
 
-  ignoreErrors: ["NEXT_REDIRECT"],
+  // ignoreErrors: ["NEXT_REDIRECT"],
 
   // Setting this option to true will print useful information to the console while you're setting up Sentry.
   debug: false,
-
-  // Uncomment the line below to enable Spotlight (https://spotlightjs.com)
-  // spotlight: process.env.NODE_ENV === 'development',
 });
