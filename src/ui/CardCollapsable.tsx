@@ -43,7 +43,7 @@ export function CardCollapsable({
     >
       <CardHeader
         aria-expanded={isOpen}
-        aria-controls={id}
+        aria-controls={`card-collapsable-${id}`}
         onClick={toggleIsOpen}
         onKeyDown={(e) => {
           if (e.key === "Enter" || e.key === " ") {
@@ -60,7 +60,7 @@ export function CardCollapsable({
         </div>
         <div className="flex-grow-1">{header}</div>
       </CardHeader>
-      {isOpen && <CardBody id={id}>{children}</CardBody>}
+      {isOpen && <CardBody id={`card-collapsable-${id}`}>{children}</CardBody>}
     </Card>
   );
 }
