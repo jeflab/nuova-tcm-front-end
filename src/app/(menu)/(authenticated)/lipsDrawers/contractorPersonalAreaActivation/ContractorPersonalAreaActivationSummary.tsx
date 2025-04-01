@@ -7,11 +7,13 @@ import {faCheck} from "@fortawesome/pro-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Stack} from "react-bootstrap";
 
+const emptyObject = {};
+
 export function ContractorPersonalAreaActivationSummary() {
   const lipId = useStore((state) => state.lip?.id);
   const agentId = useStore((state) => state.lip?.agent.id);
   const contractor = useStore((state) => state.lip?.contractor);
-  const documents = useStore((state) => state.lip?.documents ?? {});
+  const documents = useStore((state) => state.lip?.documents ?? emptyObject);
 
   if (!contractor) {
     return null;
