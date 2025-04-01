@@ -1,3 +1,4 @@
+import {lipDocumentsSchema} from "@/models/entities/lip";
 import {z} from "zod";
 
 export const searchPramsSchema = z.discriminatedUnion("uri", [
@@ -29,25 +30,31 @@ export const searchPramsSchema = z.discriminatedUnion("uri", [
     agentId: z.coerce.number(),
     contractorId: z.coerce.number(),
   }),
+  z.object({
+    uri: z.enum(["pdf-dur"]),
+    lipId: z.coerce.number(),
+    year: z.coerce.string(),
+  }),
 ]);
 export type DownloadDocumentsSearchParams = z.infer<typeof searchPramsSchema>;
 
-export const lipDocumentsKeys = [
-  "fileAllegato3",
-  "fileAllegato4",
-  "fileAllegato4TER",
-  "fileElencoCompagnie",
-  "fileSetInformativo",
-  "fileCertificatoXML",
-  "fileCertificatoPDF",
-  "filePolizza",
-] as const;
+export type DocumentManagementDownloadUris =
+  | "pdf-identificazione"
+  | "pdf-identificazione-assicurato"
+  | "pdf-allegato4"
+  | "set-informativo"
+  | "pdf-proposta";
+export type DocumentManagementPreviewUris =
+  | "pdf-identificazione-preview"
+  | "pdf-identificazione-assicurato-preview"
+  | "pdf-allegato4"
+  | "set-informativo"
+  | "pdf-proposta-preview";
+
+type LipDocumentsKeys = keyof z.infer<typeof lipDocumentsSchema>;
 
 export const lipDocToUriMap: Partial<
-  Record<
-    (typeof lipDocumentsKeys)[number],
-    DownloadDocumentsSearchParams["uri"]
-  >
+  Record<LipDocumentsKeys, DownloadDocumentsSearchParams["uri"]>
 > = {
   fileAllegato3: "pdf-allegato3",
   fileAllegato4: "pdf-allegato4",
@@ -56,5 +63,6 @@ export const lipDocToUriMap: Partial<
   fileSetInformativo: "set-informativo",
   fileCertificatoPDF: "pdf-certificato",
   filePolizza: "pdf-proposta",
+  fileDUR: "pdf-dur",
   // fileCertificatoXML: "",
 };

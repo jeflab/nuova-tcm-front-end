@@ -14,7 +14,6 @@ import {
   sportRiskIndexOptions,
   yesNoOptions,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
-import {lipDocumentsKeys} from "@/app/download-doc/schema";
 import {getOptionsValues} from "@/helpers/getOptionsLabel";
 import {agentSchema} from "@/models/entities/agent";
 import {personalDataSchema} from "@/models/entities/personalData";
@@ -220,7 +219,17 @@ const quotationSchema = z
     notApproveUnderwriting: not_approve_underwriting,
   }));
 
-const documentsSchema = z.record(z.enum(lipDocumentsKeys), z.string());
+export const lipDocumentsSchema = z.object({
+  fileAllegato3: z.string().optional(),
+  fileAllegato4: z.string().optional(),
+  fileAllegato4TER: z.string().optional(),
+  fileElencoCompagnie: z.string().optional(),
+  fileSetInformativo: z.string().optional(),
+  fileCertificatoXML: z.string().optional(),
+  fileCertificatoPDF: z.string().optional(),
+  filePolizza: z.string().optional(),
+  fileDUR: z.record(z.string(), z.object({date: z.coerce.date()})).optional(),
+});
 
 const healthcareQuestionnaireSchema = z.object({
   weight: z.string(),
@@ -454,7 +463,7 @@ export const lipSchema = z
     insured: personalDataSchema.nullish(),
     lip_number: z.coerce.string(),
     json_den: zu.stringToJSON().pipe(denSchema).nullish(),
-    json_documents: zu.stringToJSON().pipe(documentsSchema).nullish(),
+    json_documents: zu.stringToJSON().pipe(lipDocumentsSchema).nullish(),
     json_quotation: zu.stringToJSON().pipe(quotationSchema).nullish(),
     json_survey_healthcare: zu
       .stringToJSON()
