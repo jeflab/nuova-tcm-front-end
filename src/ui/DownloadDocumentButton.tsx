@@ -9,7 +9,7 @@ import {
 } from "@fortawesome/react-fontawesome";
 import {ButtonProps} from "react-bootstrap";
 
-type DownloadDocumentButtonProps = {
+export type DownloadDocumentButtonProps = {
   size?: ButtonProps["size"];
   className?: string;
   icon?: FontAwesomeIconProps["icon"];

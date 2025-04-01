@@ -34,9 +34,14 @@ export function createDocumentUrl(params: DownloadDocumentsSearchParams) {
   const queryString = new URLSearchParams({
     uri: safeParams.data.uri,
     lipId: safeParams.data.lipId.toString(),
-    agentId: safeParams.data.agentId.toString(),
+    ...("agentId" in safeParams.data && {
+      agentId: safeParams.data.agentId.toString(),
+    }),
     ...("contractorId" in safeParams.data && {
       contractorId: safeParams.data.contractorId.toString(),
+    }),
+    ...("year" in safeParams.data && {
+      year: safeParams.data.year.toString(),
     }),
   });
 

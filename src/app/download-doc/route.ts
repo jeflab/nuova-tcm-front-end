@@ -46,6 +46,7 @@ const mimeTypes: Record<
   "set-informativo": "application/zip",
   "pdf-identificazione-assicurato": "application/pdf",
   "pdf-identificazione-assicurato-preview": "application/pdf",
+  "pdf-dur": "application/pdf",
 };
 
 export const GET = async (request: NextRequest) => {
@@ -59,9 +60,14 @@ export const GET = async (request: NextRequest) => {
 
   const queryString = new URLSearchParams({
     lipId: searchParams.lipId.toString(),
-    agentId: searchParams.agentId.toString(),
+    ...("agentId" in searchParams && {
+      agentId: searchParams.agentId.toString(),
+    }),
     ...("contractorId" in searchParams && {
       contractorId: searchParams.contractorId.toString(),
+    }),
+    ...("year" in searchParams && {
+      year: searchParams.year.toString(),
     }),
   });
 
