@@ -67,7 +67,7 @@ const ContractorFormSchema = (lipType: LipType) =>
           }
 
           const date = new Date(value);
-          return date > startOfYear(subYears(Date(), 74));
+          return date > startOfYear(subYears(Date(), 75));
         }, "L'età assicurativa del Contraente deve essere inferiore a 75 anni"),
       birthPlace: z.object({
         city: z
@@ -283,7 +283,7 @@ export function ContractorFiscalCodeForm({
                   max={dbDateString(subYears(Date(), 18))}
                   min={
                     lipType === "self-insured"
-                      ? dbDateString(startOfYear(subYears(Date(), 74)))
+                      ? dbDateString(startOfYear(subYears(Date(), 75)))
                       : "1900-01-01"
                   }
                 />
