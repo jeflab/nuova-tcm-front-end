@@ -6,6 +6,7 @@ import {
   searchPramsSchema,
 } from "@/app/download-doc/schema";
 import {apiUrl} from "@/services/const";
+import * as Sentry from "@sentry/nextjs";
 import {cookies} from "next/headers";
 import {NextRequest, NextResponse} from "next/server";
 
@@ -76,6 +77,10 @@ export const GET = async (request: NextRequest) => {
     headers,
   });
   if (document.status !== 200) {
+    Sentry.captureMessage(
+      `Errore nel caricamento del documento: ${await document.clone().text()}`,
+    );
+
     const json = await document.json();
     return new NextResponse(
       JSON.stringify({
