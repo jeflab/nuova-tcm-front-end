@@ -1,5 +1,11 @@
 # Changelog
 
+### v2.1.5 (2025-03-02)
+
+#### Fixed:
+
+- Corretta età massima per il contraente === assicurato
+
 ### v2.1.4 (2025-03-12)
 
 #### Added:
