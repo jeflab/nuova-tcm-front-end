@@ -105,7 +105,9 @@ export function Policy({lip, insured, contractor}: PolicyProps) {
                       key={year}
                       className={dataTableStyles.rowStopStretching}
                     >
-                      <td data-label="Anno di riferimento">{year}</td>
+                      <td data-label="Anno di riferimento">
+                        {parseInt(year, 10) - 1}
+                      </td>
                       <td data-label="Data di emissione">
                         {dateString(file.date)}
                       </td>
