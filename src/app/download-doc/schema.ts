@@ -3,6 +3,7 @@ import {z} from "zod";
 export const searchPramsSchema = z.discriminatedUnion("uri", [
   z.object({
     uri: z.enum([
+      "pdf-mup",
       "pdf-allegato3",
       "pdf-allegato4ter",
       "pdf-elenco-compagnie",
@@ -33,6 +34,7 @@ export const searchPramsSchema = z.discriminatedUnion("uri", [
 export type DownloadDocumentsSearchParams = z.infer<typeof searchPramsSchema>;
 
 export const lipDocumentsKeys = [
+  "fileMUP",
   "fileAllegato3",
   "fileAllegato4",
   "fileAllegato4TER",
