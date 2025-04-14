@@ -7,10 +7,13 @@ import {faCheck} from "@fortawesome/pro-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Stack} from "react-bootstrap";
 
+const emptyObject = {};
+
 export function ContractorPersonalAreaActivationSummary() {
   const lipId = useStore((state) => state.lip?.id);
   const agentId = useStore((state) => state.lip?.agent.id);
   const contractor = useStore((state) => state.lip?.contractor);
+  const documents = useStore((state) => state.lip?.documents ?? emptyObject);
 
   if (!contractor) {
     return null;
@@ -39,27 +42,33 @@ export function ContractorPersonalAreaActivationSummary() {
           >
             Privacy e consensi
           </DownloadDocumentButton>
-          <DownloadDocumentButton
-            uri="pdf-allegato3"
-            lipId={lipId}
-            agentId={agentId}
-          >
-            Allegato 3
-          </DownloadDocumentButton>
-          <DownloadDocumentButton
-            uri="pdf-allegato4ter"
-            lipId={lipId}
-            agentId={agentId}
-          >
-            Allegato 4 TER
-          </DownloadDocumentButton>
-          <DownloadDocumentButton
-            uri="pdf-elenco-compagnie"
-            lipId={lipId}
-            agentId={agentId}
-          >
-            Elenco compagnie
-          </DownloadDocumentButton>
+          {"fileAllegato3" in documents && (
+            <DownloadDocumentButton
+              uri="pdf-allegato3"
+              lipId={lipId}
+              agentId={agentId}
+            >
+              Allegato 3
+            </DownloadDocumentButton>
+          )}
+          {"fileAllegato4TER" in documents && (
+            <DownloadDocumentButton
+              uri="pdf-allegato4ter"
+              lipId={lipId}
+              agentId={agentId}
+            >
+              Allegato 4 TER
+            </DownloadDocumentButton>
+          )}
+          {"fileElencoCompagnie" in documents && (
+            <DownloadDocumentButton
+              uri="pdf-elenco-compagnie"
+              lipId={lipId}
+              agentId={agentId}
+            >
+              Elenco compagnie
+            </DownloadDocumentButton>
+          )}
         </Stack>
       )}
     </Stack>

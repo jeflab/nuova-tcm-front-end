@@ -219,6 +219,18 @@ const quotationSchema = z
     notApproveUnderwriting: not_approve_underwriting,
   }));
 
+export const lipDocumentsSchema = z.object({
+  fileAllegato3: z.string().optional(),
+  fileAllegato4: z.string().optional(),
+  fileAllegato4TER: z.string().optional(),
+  fileElencoCompagnie: z.string().optional(),
+  fileSetInformativo: z.string().optional(),
+  fileCertificatoXML: z.string().optional(),
+  fileCertificatoPDF: z.string().optional(),
+  filePolizza: z.string().optional(),
+  fileDUR: z.record(z.string(), z.object({date: z.coerce.date()})).optional(),
+});
+
 const healthcareQuestionnaireSchema = z.object({
   weight: z.string(),
   height: z.string(),
@@ -451,6 +463,7 @@ export const lipSchema = z
     insured: personalDataSchema.nullish(),
     lip_number: z.coerce.string(),
     json_den: zu.stringToJSON().pipe(denSchema).nullish(),
+    json_documents: zu.stringToJSON().pipe(lipDocumentsSchema).nullish(),
     json_quotation: zu.stringToJSON().pipe(quotationSchema).nullish(),
     json_survey_healthcare: zu
       .stringToJSON()
@@ -480,6 +493,7 @@ export const lipSchema = z
       lip_number,
       contractor_insured_relationship,
       json_den,
+      json_documents,
       json_quotation,
       json_survey_healthcare,
       must_ask_underwriting,
@@ -506,6 +520,7 @@ export const lipSchema = z
         contractorInsuredRelationship,
         contractorInsuredRelationshipOther,
         den: json_den,
+        documents: json_documents,
         quotation: json_quotation,
         healthcareQuestionnaire: json_survey_healthcare,
         mustAskUnderwriting: must_ask_underwriting,

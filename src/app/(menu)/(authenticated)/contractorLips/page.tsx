@@ -14,7 +14,7 @@ export default async function ContractorLipsPage() {
 
   return (
     <AppContainer className="vstack gap-3">
-      <PageTitle>Le tue polizze</PageTitle>
+      <PageTitle>Le tue Polizze</PageTitle>
       {contractorLips.contractor &&
         contractorLips.lips.map((lip) => (
           <Policy
