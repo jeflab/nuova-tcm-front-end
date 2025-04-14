@@ -1,5 +1,20 @@
 # Changelog
 
+### v2.1.6 (2025-04-14)
+
+#### Added:
+
+- Aggiunta tabella per documenti di rendicontazione (DUR)
+
+#### Changed:
+
+- Migliorata integrazione di Sentry
+- Aggiornato il sistema di gestione documenti
+
+#### Fixed:
+
+- Sistemato bug cursore in CardCollapsable
+
 ### v2.1.5 (2025-03-02)
 
 #### Fixed:
