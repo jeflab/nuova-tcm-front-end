@@ -78,7 +78,7 @@ export const GET = async (request: NextRequest) => {
   });
   if (document.status !== 200) {
     Sentry.captureMessage(
-      `Errore nel caricamento del documento: ${await document.clone().text()}`,
+      `Errore nel caricamento del documento: ${JSON.stringify({response: await document.clone().text(), url: `${apiUrl}/${searchParams.uri}?${queryString}`})}`,
     );
 
     const json = await document.json();
