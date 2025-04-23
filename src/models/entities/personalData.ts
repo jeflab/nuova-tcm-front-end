@@ -28,7 +28,7 @@ const fatcaSchema = z.object({
   }),
 });
 
-const jobSchema = z.object({
+const contractorJobSchema = z.object({
   position: z.object({
     options: z.array(
       z.object({
@@ -55,7 +55,7 @@ const jobSchema = z.object({
   country: z.string().optional(),
 });
 
-const pepSchema = z.object({
+const contractorPepSchema = z.object({
   isPep: z.object({
     options: z.array(
       z.object({
@@ -83,10 +83,10 @@ const pepSchema = z.object({
     ),
     response: z.enum(getOptionsValues(yesNoOptions)),
   }),
-  job: jobSchema,
+  job: contractorJobSchema,
 });
 
-export const personalDataSchema = z
+export const contractorSchema = z
   .object({
     id: z.number(),
     name: z.string(),
@@ -109,7 +109,7 @@ export const personalDataSchema = z
     citizenship_instance: citizenshipSchema.nullish(),
     second_citizenship: z.string().nullable(),
     second_citizenship_instance: citizenshipSchema.nullish(),
-    json_pep: zu.stringToJSON().pipe(pepSchema).nullable().optional(),
+    json_pep: zu.stringToJSON().pipe(contractorPepSchema).nullable().optional(),
     identitydocument: z.array(identityDocumentSchema).optional(),
   })
   .transform(
@@ -147,4 +147,76 @@ export const personalDataSchema = z
       };
     },
   );
-export type PersonalData = Prettify<z.infer<typeof personalDataSchema>>;
+export type Contractor = Prettify<z.infer<typeof contractorSchema>>;
+
+const insuredJobSchema = z.object({
+  positionOther: z.string().optional(),
+});
+
+const insuredPepSchema = z.object({
+  job: insuredJobSchema,
+});
+export const insuredSchema = z
+  .object({
+    id: z.number(),
+    name: z.string(),
+    surname: z.string(),
+    email: z.string(),
+    phone: z.string(),
+    date_birth: z.coerce.date(),
+    place_birth: z.string(),
+    region_birth: z.string(),
+    fiscal_code: z.string(),
+    gender: z.enum(["male", "female"]),
+    last_privacy_esign_id: z.number().nullable(),
+    json_fatca: zu.stringToJSON().pipe(fatcaSchema),
+    address: z.string().nullable(),
+    street_number: z.string().nullable(),
+    zip_code: z.string().nullable(),
+    city: z.string().nullable(),
+    region: z.string().nullable(),
+    citizenship: z.string().nullable(),
+    citizenship_instance: citizenshipSchema.nullish(),
+    second_citizenship: z.string().nullable(),
+    second_citizenship_instance: citizenshipSchema.nullish(),
+    json_pep: zu.stringToJSON().pipe(insuredPepSchema).nullable().optional(),
+    identitydocument: z.array(identityDocumentSchema).optional(),
+  })
+  .transform(
+    ({
+      date_birth,
+      place_birth,
+      region_birth,
+      fiscal_code,
+      last_privacy_esign_id,
+      json_fatca,
+      street_number,
+      zip_code,
+      citizenship_instance,
+      second_citizenship,
+      second_citizenship_instance,
+      json_pep,
+      identitydocument,
+      ...data
+    }) => {
+      return {
+        ...data,
+        birthDate: date_birth,
+        birthPlace: place_birth,
+        birthProvince: region_birth,
+        fiscalCode: fiscal_code,
+        lastPrivacyESignId: last_privacy_esign_id,
+        fatca: json_fatca,
+        streetNumber: street_number,
+        zipCode: zip_code,
+        citizenshipInstance: citizenship_instance,
+        secondCitizenship: second_citizenship,
+        secondCitizenshipInstance: second_citizenship_instance,
+        pep: json_pep,
+        identityDocument: identitydocument,
+      };
+    },
+  );
+export type Insured = Prettify<z.infer<typeof insuredSchema>>;
+
+export type PersonalData = Contractor | Insured;

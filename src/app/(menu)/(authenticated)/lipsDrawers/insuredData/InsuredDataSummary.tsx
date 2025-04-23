@@ -9,6 +9,7 @@ import {dateString} from "@/helpers/dates";
 import {getOptionsLabel} from "@/helpers/getOptionsLabel";
 import {
   faAddressBook,
+  faBriefcase,
   faUser,
   faUserGroup,
 } from "@fortawesome/pro-duotone-svg-icons";
@@ -69,7 +70,7 @@ export function InsuredDataSummary() {
           <a href={`mailto:${insured.email}`}>{insured.email}</a>
         </p>
       </Col>
-      <Col xs={12}>
+      <Col xs={12} sm={6} md={12} lg={6}>
         <h4 className="w-100 text-primary">
           <FontAwesomeIcon icon={faUserGroup} /> Rapporto con il Contraente
         </h4>
@@ -81,6 +82,14 @@ export function InsuredDataSummary() {
                 insuredRelationshipOptions,
                 lip.contractorInsuredRelationship ?? "ad",
               )}
+        </p>
+      </Col>
+      <Col xs={12} sm={6} md={12} lg={6}>
+        <h4 className="w-100 text-primary">
+          <FontAwesomeIcon icon={faBriefcase} /> Situazione professionale
+        </h4>
+        <p className="mb-0">
+          <strong>Attività esercitata:</strong> {insured.pep?.job.positionOther}
         </p>
       </Col>
     </Row>

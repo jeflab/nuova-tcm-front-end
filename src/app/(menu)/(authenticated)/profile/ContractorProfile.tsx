@@ -1,11 +1,11 @@
 import {genderOptions} from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
 import {dateString} from "@/helpers/dates";
 import {getOptionsLabel} from "@/helpers/getOptionsLabel";
-import {PersonalData} from "@/models/entities/personalData";
+import {Contractor} from "@/models/entities/personalData";
 import {Card, CardBody, CardHeader, Col, Row} from "react-bootstrap";
 
 interface ContractorProfileProps {
-  contractor: PersonalData;
+  contractor: Contractor;
 }
 
 export function ContractorProfile({contractor}: ContractorProfileProps) {

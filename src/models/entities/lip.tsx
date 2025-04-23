@@ -16,7 +16,7 @@ import {
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
 import {getOptionsValues} from "@/helpers/getOptionsLabel";
 import {agentSchema} from "@/models/entities/agent";
-import {personalDataSchema} from "@/models/entities/personalData";
+import {contractorSchema, insuredSchema} from "@/models/entities/personalData";
 import {IconStack} from "@/ui/IconStack";
 import {
   faCheckCircle,
@@ -458,9 +458,9 @@ export const lipSchema = z
     id: z.number(),
     created_at: z.coerce.date(),
     agent: agentSchema,
-    contractor: personalDataSchema,
+    contractor: contractorSchema,
     contractor_insured_relationship: z.string().nullish(),
-    insured: personalDataSchema.nullish(),
+    insured: insuredSchema.nullish(),
     lip_number: z.coerce.string(),
     json_den: zu.stringToJSON().pipe(denSchema).nullish(),
     json_documents: zu.stringToJSON().pipe(lipDocumentsSchema).nullish(),
