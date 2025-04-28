@@ -22,6 +22,8 @@ import {
   faCheckCircle,
   faCircleEuro,
   faCircleHalf,
+  faCirclePause,
+  faCircleStop,
   faCircleXmark,
   faQuestionCircle,
 } from "@fortawesome/pro-duotone-svg-icons";
@@ -119,6 +121,10 @@ const LipStatesIcons: Record<number, ReactNode> = {
   17: <FontAwesomeIcon icon={faCircleXmark} className="text-danger" />,
   // 18: Revocata
   18: <FontAwesomeIcon icon={faCircleXmark} className="text-danger" />,
+  // 19: Sospesa
+  19: <FontAwesomeIcon icon={faCirclePause} className="text-warning" />,
+  // 20: Terminata
+  20: <FontAwesomeIcon icon={faCircleStop} className="text-danger" />,
 } as const;
 
 const denSchema = z.object({
