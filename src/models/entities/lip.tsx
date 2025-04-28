@@ -16,12 +16,14 @@ import {
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
 import {getOptionsValues} from "@/helpers/getOptionsLabel";
 import {agentSchema} from "@/models/entities/agent";
-import {personalDataSchema} from "@/models/entities/personalData";
+import {contractorSchema, insuredSchema} from "@/models/entities/personalData";
 import {IconStack} from "@/ui/IconStack";
 import {
   faCheckCircle,
   faCircleEuro,
   faCircleHalf,
+  faCirclePause,
+  faCircleStop,
   faCircleXmark,
   faQuestionCircle,
 } from "@fortawesome/pro-duotone-svg-icons";
@@ -119,6 +121,10 @@ const LipStatesIcons: Record<number, ReactNode> = {
   17: <FontAwesomeIcon icon={faCircleXmark} className="text-danger" />,
   // 18: Revocata
   18: <FontAwesomeIcon icon={faCircleXmark} className="text-danger" />,
+  // 19: Sospesa
+  19: <FontAwesomeIcon icon={faCirclePause} className="text-warning" />,
+  // 20: Terminata
+  20: <FontAwesomeIcon icon={faCircleStop} className="text-danger" />,
 } as const;
 
 const denSchema = z.object({
@@ -458,9 +464,9 @@ export const lipSchema = z
     id: z.number(),
     created_at: z.coerce.date(),
     agent: agentSchema,
-    contractor: personalDataSchema,
+    contractor: contractorSchema,
     contractor_insured_relationship: z.string().nullish(),
-    insured: personalDataSchema.nullish(),
+    insured: insuredSchema.nullish(),
     lip_number: z.coerce.string(),
     json_den: zu.stringToJSON().pipe(denSchema).nullish(),
     json_documents: zu.stringToJSON().pipe(lipDocumentsSchema).nullish(),

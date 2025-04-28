@@ -3,7 +3,7 @@
 import {cns} from "@/helpers/cns";
 import {dateString} from "@/helpers/dates";
 import {Lip} from "@/models/entities/lip";
-import {PersonalData} from "@/models/entities/personalData";
+import {Contractor, Insured} from "@/models/entities/personalData";
 import {ButtonLink} from "@/ui/ButtonLink";
 import {CardCollapsable} from "@/ui/CardCollapsable";
 import {DownloadDocumentButton} from "@/ui/DownloadDocumentButton";
@@ -16,8 +16,8 @@ import {Alert, Button, Placeholder, Stack, Table} from "react-bootstrap";
 
 interface PolicyProps {
   lip: Lip;
-  insured?: PersonalData | null;
-  contractor: PersonalData;
+  insured?: Insured | null;
+  contractor: Contractor;
 }
 
 export function Policy({lip, insured, contractor}: PolicyProps) {

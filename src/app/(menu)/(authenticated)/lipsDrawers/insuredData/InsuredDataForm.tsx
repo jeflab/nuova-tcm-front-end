@@ -16,7 +16,7 @@ import {dbDateString} from "@/helpers/dates";
 import {normalizeError} from "@/helpers/errors";
 import {Nullable, Nullish} from "@/helpers/TypesHelper";
 import {Lip} from "@/models/entities/lip";
-import {PersonalData} from "@/models/entities/personalData";
+import {Insured} from "@/models/entities/personalData";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {CheckGroup} from "@/ui/form/CheckGroup";
 import {CitizenshipAutocompleteField} from "@/ui/form/CitizenshipAutocompleteField";
@@ -68,7 +68,7 @@ if (toSortedPolyfillNeeded) {
   Sentry.captureMessage("[].toSorted polyfill applied. " + [].toSorted);
 }
 
-function getDefaultValues(insured: Nullish<PersonalData>, lip: Nullable<Lip>) {
+function getDefaultValues(insured: Nullish<Insured>, lip: Nullable<Lip>) {
   return {
     insuredPersonalData: {
       birthDate: insured ? dbDateString(insured.birthDate) : "",
@@ -101,6 +101,9 @@ function getDefaultValues(insured: Nullish<PersonalData>, lip: Nullable<Lip>) {
     relationship:
       lip?.contractorInsuredRelationship ?? ("" as InsuredRelationship),
     relationshipOther: lip?.contractorInsuredRelationshipOther ?? "",
+    job: {
+      positionOther: insured?.pep?.job.positionOther ?? "",
+    },
   };
 }
 
@@ -476,6 +479,56 @@ export function InsuredDataForm() {
                     },
                   }}
                   normalize={(value) => value.replace(/\D/g, "")}
+                />
+              </FormGroup>
+            </Col>
+            <h4 className="w-100">Situazione professionale</h4>
+            <Col className="d-flex" xs={12}>
+              <Alert variant="info" className="mb-0">
+                <p>
+                  Inserire una descrizione dettagliata e specifica dell’attività
+                  e della professione svolta dall’assicurato. Evitare
+                  indicazioni generiche come “impiegato”, “operaio” o “libero
+                  professionista” senza ulteriori precisazioni.
+                </p>
+                <p>Esempi corretti:</p>
+                <ul>
+                  <li>Impiegato amministrativo presso azienda di logistica</li>
+                  <li>Tecnico manutentore di impianti elettrici civili</li>
+                  <li>Medico chirurgo specializzato in ortopedia</li>
+                  <li>
+                    Titolare di impresa edile con attività operativa in cantiere
+                  </li>
+                </ul>
+                Queste informazioni sono fondamentali per la corretta
+                valutazione del rischio e la definizione della copertura
+                assicurativa.
+              </Alert>
+            </Col>
+            <Col className="d-flex" xs={12}>
+              <FormGroup controlId="job.positionOther" as={BorderFeedback}>
+                <FormLabel>Attività e professione esercitata</FormLabel>
+                <FieldError />
+                <InputField
+                  type="text"
+                  placeholder="Attività e professione esercitata"
+                  validation={{
+                    required: "Inserisci l'attività e professione esercitata",
+                    validate: (value) => {
+                      const forbiddenWords = [
+                        "operaio",
+                        "operaia",
+                        "impiegato",
+                        "impiegata",
+                      ];
+
+                      if (forbiddenWords.includes(value.toLowerCase())) {
+                        return "Descrizione troppo generica. Specifica meglio la professione.";
+                      }
+
+                      return true;
+                    },
+                  }}
                 />
               </FormGroup>
             </Col>

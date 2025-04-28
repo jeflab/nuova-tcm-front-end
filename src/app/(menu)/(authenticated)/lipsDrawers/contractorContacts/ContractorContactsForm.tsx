@@ -9,7 +9,7 @@ import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {cns} from "@/helpers/cns";
 import {normalizeError} from "@/helpers/errors";
 import {Role} from "@/models/account";
-import {PersonalData} from "@/models/entities/personalData";
+import {Contractor} from "@/models/entities/personalData";
 import {User} from "@/models/entities/user";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {CheckboxField} from "@/ui/form/CheckboxField";
@@ -35,7 +35,7 @@ import {useForm} from "react-hook-form";
 import invariant from "tiny-invariant";
 
 const contractorPersonalAreaActivationDefaultValues = (
-  contractorData?: PersonalData,
+  contractorData?: Contractor,
 ) => ({
   phone: contractorData?.phone ?? "",
   email: contractorData?.email ?? "",

@@ -3,7 +3,7 @@
 import {AUTH_COOKIE_NAME, COOKIE_DURATION} from "@/app/(no-menu)/(auth)/const";
 import {accountSchema} from "@/models/account";
 import {agentSchema} from "@/models/entities/agent";
-import {personalDataSchema} from "@/models/entities/personalData";
+import {contractorSchema} from "@/models/entities/personalData";
 import {userSchema} from "@/models/entities/user";
 import * as api from "@/services/api";
 import {Tags} from "@/services/const";
@@ -103,7 +103,7 @@ export async function getAccount() {
 const getProfileShape = {
   user: userSchema,
   agent: agentSchema.nullable(),
-  contractor: personalDataSchema.nullable(),
+  contractor: contractorSchema.nullable(),
 };
 export async function getProfile() {
   return await api.get("/profile-me", {payloadShape: getProfileShape});
