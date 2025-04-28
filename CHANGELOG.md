@@ -1,5 +1,16 @@
 # Changelog
 
+### v2.1.7 (2025-04-28)
+
+#### Added:
+
+- Aggiunti nuovi stati per la gestione delle polizze lato admin
+- Aggiunto campo situazione professionale per l'assicurato
+
+#### Fixed:
+
+- Corretto bug che calcolava la durata delle polizza su contraente e non su assicurato
+
 ### v2.1.6 (2025-04-14)
 
 #### Added:
