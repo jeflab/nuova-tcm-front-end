@@ -55,7 +55,7 @@ export type PaymentFormValues = ReturnType<typeof paymentDefaultValues>;
 
 export function PaymentForm() {
   const lipId = useStore((state) => state.lip?.id);
-  const birthDate = useStore((state) => state.lip?.contractor.birthDate)!;
+  const birthDate = useStore((state) => state.lip?.insured?.birthDate)!;
   const contractorName = useStore((state) => state.lip?.contractor.name);
   const contractorSurname = useStore((state) => state.lip?.contractor.surname);
   const paymentData = useStore((state) => state.lip?.payment);

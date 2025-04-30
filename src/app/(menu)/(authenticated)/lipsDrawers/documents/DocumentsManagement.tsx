@@ -2,7 +2,6 @@
 
 import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {DocumentsChapterDetails} from "@/app/(menu)/(authenticated)/lipsDrawers/documents/DocumentsChapterDetails";
-import {DownloadDocumentsSearchParams} from "@/app/download-doc/schema";
 import {PDFType} from "@/models/entities/esign";
 import {Lip} from "@/models/entities/lip";
 import {DownloadDocumentButton} from "@/ui/DownloadDocumentButton";
@@ -23,6 +22,10 @@ import {
   ModalFooter,
 } from "react-bootstrap";
 import styles from "./DocumentsManagement.module.scss";
+import {
+  DocumentManagementDownloadUris,
+  DocumentManagementPreviewUris,
+} from "@/app/download-doc/schema";
 
 export interface ESign {
   key: string;
@@ -40,8 +43,8 @@ export interface Document {
     | "identificazione_assicurato"
     | "polizza";
   fileName: string;
-  urlPreview: DownloadDocumentsSearchParams["uri"];
-  urlDownload: DownloadDocumentsSearchParams["uri"];
+  urlPreview: DocumentManagementPreviewUris;
+  urlDownload: DocumentManagementDownloadUris;
   type: PDFType;
   eSigns: ESign[];
 }

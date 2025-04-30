@@ -1,5 +1,31 @@
 # Changelog
 
+### v2.1.7 (2025-04-28)
+
+#### Added:
+
+- Aggiunti nuovi stati per la gestione delle polizze lato admin
+- Aggiunto campo situazione professionale per l'assicurato
+
+#### Fixed:
+
+- Corretto bug che calcolava la durata delle polizza su contraente e non su assicurato
+
+### v2.1.6 (2025-04-14)
+
+#### Added:
+
+- Aggiunta tabella per documenti di rendicontazione (DUR)
+
+#### Changed:
+
+- Migliorata integrazione di Sentry
+- Aggiornato il sistema di gestione documenti
+
+#### Fixed:
+
+- Sistemato bug cursore in CardCollapsable
+
 ### v2.1.5 (2025-03-02)
 
 #### Fixed:

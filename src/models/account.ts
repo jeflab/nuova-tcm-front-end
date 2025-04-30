@@ -1,5 +1,5 @@
 import {brokerSchema} from "@/models/entities/broker";
-import {personalDataSchema} from "@/models/entities/personalData";
+import {contractorSchema} from "@/models/entities/personalData";
 import {userSchema} from "@/models/entities/user";
 import {z} from "zod";
 import {agentSchema} from "./entities/agent";
@@ -27,6 +27,6 @@ export type Account = z.infer<typeof accountSchema>;
 export const profileSchema = z.object({
   user: userSchema,
   agent: agentSchema.nullable(),
-  contractor: personalDataSchema.nullable(),
+  contractor: contractorSchema.nullable(),
 });
 export type Profile = z.infer<typeof profileSchema>;

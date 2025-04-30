@@ -14,15 +14,16 @@ import {
   sportRiskIndexOptions,
   yesNoOptions,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
-import {lipDocumentsKeys} from "@/app/download-doc/schema";
 import {getOptionsValues} from "@/helpers/getOptionsLabel";
 import {agentSchema} from "@/models/entities/agent";
-import {personalDataSchema} from "@/models/entities/personalData";
+import {contractorSchema, insuredSchema} from "@/models/entities/personalData";
 import {IconStack} from "@/ui/IconStack";
 import {
   faCheckCircle,
   faCircleEuro,
   faCircleHalf,
+  faCirclePause,
+  faCircleStop,
   faCircleXmark,
   faQuestionCircle,
 } from "@fortawesome/pro-duotone-svg-icons";
@@ -120,6 +121,10 @@ const LipStatesIcons: Record<number, ReactNode> = {
   17: <FontAwesomeIcon icon={faCircleXmark} className="text-danger" />,
   // 18: Revocata
   18: <FontAwesomeIcon icon={faCircleXmark} className="text-danger" />,
+  // 19: Sospesa
+  19: <FontAwesomeIcon icon={faCirclePause} className="text-warning" />,
+  // 20: Terminata
+  20: <FontAwesomeIcon icon={faCircleStop} className="text-danger" />,
 } as const;
 
 const denSchema = z.object({
@@ -220,7 +225,17 @@ const quotationSchema = z
     notApproveUnderwriting: not_approve_underwriting,
   }));
 
-const documentsSchema = z.record(z.enum(lipDocumentsKeys), z.string());
+export const lipDocumentsSchema = z.object({
+  fileAllegato3: z.string().optional(),
+  fileAllegato4: z.string().optional(),
+  fileAllegato4TER: z.string().optional(),
+  fileElencoCompagnie: z.string().optional(),
+  fileSetInformativo: z.string().optional(),
+  fileCertificatoXML: z.string().optional(),
+  fileCertificatoPDF: z.string().optional(),
+  filePolizza: z.string().optional(),
+  fileDUR: z.record(z.string(), z.object({date: z.coerce.date()})).optional(),
+});
 
 const healthcareQuestionnaireSchema = z.object({
   weight: z.string(),
@@ -449,12 +464,12 @@ export const lipSchema = z
     id: z.number(),
     created_at: z.coerce.date(),
     agent: agentSchema,
-    contractor: personalDataSchema,
+    contractor: contractorSchema,
     contractor_insured_relationship: z.string().nullish(),
-    insured: personalDataSchema.nullish(),
+    insured: insuredSchema.nullish(),
     lip_number: z.coerce.string(),
     json_den: zu.stringToJSON().pipe(denSchema).nullish(),
-    json_documents: zu.stringToJSON().pipe(documentsSchema).nullish(),
+    json_documents: zu.stringToJSON().pipe(lipDocumentsSchema).nullish(),
     json_quotation: zu.stringToJSON().pipe(quotationSchema).nullish(),
     json_survey_healthcare: zu
       .stringToJSON()

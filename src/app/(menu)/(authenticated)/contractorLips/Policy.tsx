@@ -1,19 +1,23 @@
 "use client";
 
-import {PersonalData} from "@/models/entities/personalData";
-import {Lip} from "@/models/entities/lip";
+import {cns} from "@/helpers/cns";
 import {dateString} from "@/helpers/dates";
+import {Lip} from "@/models/entities/lip";
+import {Contractor, Insured} from "@/models/entities/personalData";
 import {ButtonLink} from "@/ui/ButtonLink";
 import {CardCollapsable} from "@/ui/CardCollapsable";
+import {DownloadDocumentButton} from "@/ui/DownloadDocumentButton";
 import {LipStateBadge, LipStateBadgeSkeleton} from "@/ui/LipStateBadge";
+import dataTableStyles from "@/ui/table/DataTable.module.scss";
+import responsiveStyles from "@/ui/table/ResponsiveTable.module.scss";
 import {faEye} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {Button, Placeholder, Stack} from "react-bootstrap";
+import {Alert, Button, Placeholder, Stack, Table} from "react-bootstrap";
 
 interface PolicyProps {
   lip: Lip;
-  insured?: PersonalData | null;
-  contractor: PersonalData;
+  insured?: Insured | null;
+  contractor: Contractor;
 }
 
 export function Policy({lip, insured, contractor}: PolicyProps) {
@@ -51,7 +55,7 @@ export function Policy({lip, insured, contractor}: PolicyProps) {
         </Stack>
       }
     >
-      <div className="vstack gap-3">
+      <div className="vstack gap-2">
         <p className="mb-0">
           <strong>Creata il:</strong> {dateString(lip.createdAt)}
         </p>
@@ -74,6 +78,65 @@ export function Policy({lip, insured, contractor}: PolicyProps) {
         <p className="mb-0">
           <strong>Agente:</strong> {lip.agent.name} {lip.agent.surname}
         </p>
+        <hr />
+        <div>
+          <h4>Documenti di rendicontazione</h4>
+          {lip.documents?.fileDUR ? (
+            <Table
+              size="sm"
+              hover
+              className={cns(
+                responsiveStyles.responsiveTableWrapper,
+                "mb-0 align-middle",
+              )}
+            >
+              <thead>
+                <tr>
+                  <th>Anno di riferimento</th>
+                  <th>Data di emissione</th>
+                  <th style={{width: "1px"}}>Download</th>
+                </tr>
+              </thead>
+              <tbody>
+                {Object.entries(lip.documents.fileDUR)
+                  .reverse()
+                  .map(([year, file]) => (
+                    <tr
+                      key={year}
+                      className={dataTableStyles.rowStopStretching}
+                    >
+                      <td data-label="Anno di riferimento">
+                        {parseInt(year, 10) - 1}
+                      </td>
+                      <td data-label="Data di emissione">
+                        {dateString(file.date)}
+                      </td>
+                      <td>
+                        <DownloadDocumentButton
+                          uri="pdf-dur"
+                          year={year}
+                          lipId={lip.id}
+                          size="sm"
+                          className={cns(
+                            "w-100 text-nowrap",
+                            dataTableStyles.rowDefaultLink,
+                          )}
+                        >
+                          Download PDF
+                        </DownloadDocumentButton>
+                      </td>
+                    </tr>
+                  ))}
+              </tbody>
+            </Table>
+          ) : (
+            <Alert className="mb-0" variant="info">
+              Al momento non ci sono Documenti di rendicontazione per questa
+              proposta. Non appena saranno disponibili, verranno visualizzati
+              qui.
+            </Alert>
+          )}
+        </div>
       </div>
     </CardCollapsable>
   );

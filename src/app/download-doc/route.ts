@@ -6,6 +6,7 @@ import {
   searchPramsSchema,
 } from "@/app/download-doc/schema";
 import {apiUrl} from "@/services/const";
+import * as Sentry from "@sentry/nextjs";
 import {cookies} from "next/headers";
 import {NextRequest, NextResponse} from "next/server";
 
@@ -46,6 +47,7 @@ const mimeTypes: Record<
   "set-informativo": "application/zip",
   "pdf-identificazione-assicurato": "application/pdf",
   "pdf-identificazione-assicurato-preview": "application/pdf",
+  "pdf-dur": "application/pdf",
   "pdf-mup": "application/pdf",
 };
 
@@ -60,9 +62,14 @@ export const GET = async (request: NextRequest) => {
 
   const queryString = new URLSearchParams({
     lipId: searchParams.lipId.toString(),
-    agentId: searchParams.agentId.toString(),
+    ...("agentId" in searchParams && {
+      agentId: searchParams.agentId.toString(),
+    }),
     ...("contractorId" in searchParams && {
       contractorId: searchParams.contractorId.toString(),
+    }),
+    ...("year" in searchParams && {
+      year: searchParams.year.toString(),
     }),
   });
 
@@ -71,6 +78,10 @@ export const GET = async (request: NextRequest) => {
     headers,
   });
   if (document.status !== 200) {
+    Sentry.captureMessage(
+      `Errore nel caricamento del documento: ${JSON.stringify({response: await document.clone().text(), url: `${apiUrl}/${searchParams.uri}?${queryString}`})}`,
+    );
+
     const json = await document.json();
     return new NextResponse(
       JSON.stringify({

@@ -190,14 +190,18 @@ interface UpdatePersonalDataParams {
     publicOffice: PublicOffices;
     otherPep: YesNoAnswer;
   };
-  job?: {
-    position: JobPosition;
-    positionOther: string;
-    tAECode: "" | TAECode;
-    type: string;
-    province: string;
-    country: string;
-  };
+  job?:
+    | {
+        position: JobPosition;
+        positionOther: string;
+        tAECode: "" | TAECode;
+        type: string;
+        province: string;
+        country: string;
+      }
+    | {
+        positionOther: string;
+      };
   contact: {
     phone: string;
     email: string;
@@ -244,28 +248,35 @@ export async function updatePersonalData(
               response: formData.pep.publicOffice,
             },
             otherPep: {options: yesNoOptions, response: formData.pep.otherPep},
-            job: {
-              position: {
-                options: jobPositionOptions,
-                response: formData.job.position,
-              },
-              positionOther: formData.job.positionOther,
-              ...(["entrepreneur", "freelancer", "selfEmployed"].includes(
-                formData.job.position,
-              ) && {
-                tAECode: {
-                  options: tAECodeOptions,
-                  response: formData.job.tAECode,
-                },
-              }),
-              ...(["employee", "manager"].includes(formData.job.position) && {
-                type: formData.job.type,
-              }),
-              province: formData.job.province,
-              country: formData.job.country,
-            },
+            job:
+              "position" in formData.job
+                ? {
+                    position: {
+                      options: jobPositionOptions,
+                      response: formData.job.position,
+                    },
+                    positionOther: formData.job.positionOther,
+                    ...(["entrepreneur", "freelancer", "selfEmployed"].includes(
+                      formData.job.position,
+                    ) && {
+                      tAECode: {
+                        options: tAECodeOptions,
+                        response: formData.job.tAECode,
+                      },
+                    }),
+                    ...(["employee", "manager"].includes(
+                      formData.job.position,
+                    ) && {
+                      type: formData.job.type,
+                    }),
+                    province: formData.job.province,
+                    country: formData.job.country,
+                  }
+                : {positionOther: formData.job.positionOther},
           })
-        : undefined,
+        : formData.job
+          ? JSON.stringify({job: {positionOther: formData.job.positionOther}})
+          : undefined,
     email: formData.contact.email,
     phone: formData.contact.phone,
     lipRelationship:
@@ -273,6 +284,9 @@ export async function updatePersonalData(
         ? "other:" + formData.relationshipOther
         : formData.relationship,
   };
+
+  console.log(formData.pep, formData.job, formData.pep && formData.job);
+  console.log("updatePersonalData", data);
 
   return patch(`/personal-datas/${personalDataId}`, {
     data,
@@ -309,6 +323,9 @@ interface AddInsuredDataParams {
   };
   relationship: string;
   relationshipOther: string;
+  job: {
+    positionOther: string;
+  };
 }
 export async function addInsuredData(
   lipId: number,
@@ -342,6 +359,7 @@ export async function addInsuredData(
       formData.relationship === "other"
         ? "other:" + formData.relationshipOther
         : formData.relationship,
+    json_pep: JSON.stringify({job: formData.job}),
   };
 
   return post(`/lips/${lipId}/addInsured`, {
