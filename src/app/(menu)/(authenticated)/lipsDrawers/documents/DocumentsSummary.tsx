@@ -55,7 +55,7 @@ export function DocumentsSummary() {
     return null;
   }
 
-  const documents = createDocuments(lip.type);
+  const documents = createDocuments(lip.type, lip.documents);
 
   return (
     <Stack gap={3}>
