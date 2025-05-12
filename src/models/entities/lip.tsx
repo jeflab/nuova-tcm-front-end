@@ -234,6 +234,7 @@ export const lipDocumentsSchema = z.object({
   fileCertificatoXML: z.string().optional(),
   fileCertificatoPDF: z.string().optional(),
   filePolizza: z.string().optional(),
+  fileMUP: z.string().optional(),
   fileDUR: z.record(z.string(), z.object({date: z.coerce.date()})).optional(),
 });
 

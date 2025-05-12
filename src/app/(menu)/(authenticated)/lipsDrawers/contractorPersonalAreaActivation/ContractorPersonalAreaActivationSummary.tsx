@@ -42,6 +42,15 @@ export function ContractorPersonalAreaActivationSummary() {
           >
             Privacy e consensi
           </DownloadDocumentButton>
+          {"fileMUP" in documents && (
+            <DownloadDocumentButton
+              uri="pdf-mup"
+              lipId={lipId}
+              agentId={agentId}
+            >
+              Documento precontrattuale
+            </DownloadDocumentButton>
+          )}
           {"fileAllegato3" in documents && (
             <DownloadDocumentButton
               uri="pdf-allegato3"

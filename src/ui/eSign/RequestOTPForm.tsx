@@ -149,7 +149,7 @@ export function RequestOTPForm<TPayload>({
             required: "Inserisci l'OTP che hai ricevuto sul tuo cellulare",
           }}
           normalize={onlyNumbersNormalizer}
-          autocomplete="one-time-code"
+          autoComplete="one-time-code"
           inputmode="numeric"
           autoFocus
         />

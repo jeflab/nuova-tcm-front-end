@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   title: "Smart Broker Space",
   description: "Web app per la gestione delle polizze TCM",
   other: {
-    "data-git-commit": process.env.VERCEL_COMMIT_SHA ?? "development",
+    "data-git-commit": process.env.VERCEL_GIT_COMMIT_SHA ?? "development",
   },
 };
 
