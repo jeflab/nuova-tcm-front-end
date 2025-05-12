@@ -4,6 +4,7 @@ import {z} from "zod";
 export const searchPramsSchema = z.discriminatedUnion("uri", [
   z.object({
     uri: z.enum([
+      "pdf-mup",
       "pdf-allegato3",
       "pdf-allegato4ter",
       "pdf-elenco-compagnie",
@@ -44,6 +45,7 @@ export type DocumentManagementDownloadUris =
   | "pdf-allegato4"
   | "set-informativo"
   | "pdf-proposta";
+// fileMUP
 export type DocumentManagementPreviewUris =
   | "pdf-identificazione-preview"
   | "pdf-identificazione-assicurato-preview"

@@ -48,6 +48,7 @@ const mimeTypes: Record<
   "pdf-identificazione-assicurato": "application/pdf",
   "pdf-identificazione-assicurato-preview": "application/pdf",
   "pdf-dur": "application/pdf",
+  "pdf-mup": "application/pdf",
 };
 
 export const GET = async (request: NextRequest) => {

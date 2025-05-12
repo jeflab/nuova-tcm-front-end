@@ -48,9 +48,10 @@ export interface Document {
   type: PDFType;
   eSigns: ESign[];
 }
-export const createDocuments: (lipType: Lip["type"]) => Document[] = (
-  lipType,
-) =>
+export const createDocuments: (
+  lipType: Lip["type"],
+  lipDocuments: Lip["documents"],
+) => readonly Document[] = (lipType, lipDocuments) =>
   [
     {
       key: "identificazione",
@@ -88,14 +89,18 @@ export const createDocuments: (lipType: Lip["type"]) => Document[] = (
           },
         ]
       : []) satisfies Document[]),
-    {
-      key: "allegato4",
-      fileName: "Allegato 4",
-      urlPreview: "pdf-allegato4",
-      urlDownload: "pdf-allegato4",
-      type: PDFType.Allegato4,
-      eSigns: [],
-    },
+    ...((lipDocuments && "fileAllegato4" in lipDocuments
+      ? [
+          {
+            key: "allegato4",
+            fileName: "Allegato 4",
+            urlPreview: "pdf-allegato4",
+            urlDownload: "pdf-allegato4",
+            type: PDFType.Allegato4,
+            eSigns: [],
+          },
+        ]
+      : []) satisfies Document[]),
     {
       key: "setInformativo",
       fileName: "Set informativo",
@@ -189,7 +194,7 @@ export function DocumentsManagement() {
     return null;
   }
 
-  const documents = createDocuments(lip.type);
+  const documents = createDocuments(lip.type, lip.documents);
 
   const allAdvisorESigns = documents.every((document) => {
     const [partialAdvisorESign, totalAdvisorESign] = eSignsCount(
