@@ -1,5 +1,15 @@
 # Changelog
 
+## v2.2.0 (2025-05-12)
+
+#### Added:
+
+- Aggiunta gestione MUP con supporto ai vecchi file per le vecchie polizze
+
+### Fixed:
+
+- Corretto bug che mostrava un numero di hash sbagliato nell'html
+
 ### v2.1.7 (2025-04-28)
 
 #### Added:
