@@ -285,9 +285,6 @@ export async function updatePersonalData(
         : formData.relationship,
   };
 
-  console.log(formData.pep, formData.job, formData.pep && formData.job);
-  console.log("updatePersonalData", data);
-
   return patch(`/personal-datas/${personalDataId}`, {
     data,
     revalidateTags: [Tags.getLip(lipId)],
