@@ -210,6 +210,15 @@ const underwritingSchema = z
   }));
 export type Underwriting = z.infer<typeof underwritingSchema>;
 
+const inceptionSchema = z
+  .object({
+    loaded_premium: z.object({value: z.number(), note: z.string().optional()}),
+  })
+  .transform(({loaded_premium, ...data}) => ({
+    ...data,
+    loadedPremium: loaded_premium,
+  }));
+
 const quotationSchema = z
   .object({
     birthDate: z.string(),
@@ -226,6 +235,7 @@ const quotationSchema = z
     tpd: z.object({enabled: z.boolean(), coverage: z.coerce.number().catch(0)}),
     premium: z.number(),
     underwriting: underwritingSchema.nullish(),
+    inception: inceptionSchema.nullish(),
     not_approve_underwriting: z.string().nullish(),
   })
   .transform(({not_approve_underwriting, ...data}) => ({
