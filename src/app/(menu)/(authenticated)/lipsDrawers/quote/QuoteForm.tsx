@@ -34,6 +34,7 @@ export function QuoteForm() {
   const [quotation, setQuotation] = useState<{
     premium: number;
     originalPremium: number;
+    version: string;
   }>();
   const [isSaving, setIsSaving] = useState(false);
   const [firstTry, setFirstTry] = useState(true);
