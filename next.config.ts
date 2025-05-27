@@ -7,13 +7,16 @@ import process from "node:process";
 
 process.env.SENTRY_RELEASE = getRelease();
 console.info(`Sentry release: ${process.env.SENTRY_RELEASE}`);
+
 const maintenanceMode = process.env.MAINTENANCE_MODE === "true";
 console.info(`Maintenance mode: ${maintenanceMode}`);
 
+const enableReactCompiler = process.env.ENABLE_TRACT_COMPILER === "true";
+console.info(`React compiler enabled: ${enableReactCompiler}`);
+
 let nextConfig: NextConfig = {
   experimental: {
-    // React compiler pronto
-    //   reactCompiler: true,
+    reactCompiler: enableReactCompiler,
     serverActions: {
       bodySizeLimit: "16mb",
     },
