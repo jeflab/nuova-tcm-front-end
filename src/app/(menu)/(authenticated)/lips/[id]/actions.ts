@@ -493,6 +493,7 @@ interface UpdateQuotationParams {
   tpd: {enabled: boolean; coverage: string};
   premium: number;
   originalPremium: number;
+  version?: string;
 }
 export async function updateQuotation(
   formData: UpdateQuotationParams,
@@ -520,6 +521,7 @@ export async function updateQuotation(
     },
     premium: Math.round(formData.premium * 100) / 100,
     originalPremium: formData.originalPremium,
+    quotation_engine_version: formData.version,
   };
 
   return patch(`/lips/${lipId}`, {
