@@ -9,6 +9,7 @@ const getQuoteResponseSchema = {
   quotazione: z.object({
     premium: z.number(),
     originalPremium: z.number(),
+    version: z.string(),
   }),
 };
 interface GetQuoteParams {

@@ -29,6 +29,7 @@ import {
 } from "@fortawesome/pro-duotone-svg-icons";
 import {
   faCircle,
+  faCross,
   faHeartPulse,
   faPaperPlane,
   faSackDollar,
@@ -125,6 +126,13 @@ const LipStatesIcons: Record<number, ReactNode> = {
   19: <FontAwesomeIcon icon={faCirclePause} className="text-warning" />,
   // 20: Terminata
   20: <FontAwesomeIcon icon={faCircleStop} className="text-danger" />,
+  // 21: Decesso
+  21: (
+    <IconStack className="text-danger">
+      <FontAwesomeIcon icon={faCircle} className="fa-stack-2x" opacity={0.4} />
+      <FontAwesomeIcon icon={faCross} className="fa-stack-1x" />
+    </IconStack>
+  ),
 } as const;
 
 const denSchema = z.object({
@@ -202,6 +210,15 @@ const underwritingSchema = z
   }));
 export type Underwriting = z.infer<typeof underwritingSchema>;
 
+const inceptionSchema = z
+  .object({
+    loaded_premium: z.object({value: z.number(), note: z.string().optional()}),
+  })
+  .transform(({loaded_premium, ...data}) => ({
+    ...data,
+    loadedPremium: loaded_premium,
+  }));
+
 const quotationSchema = z
   .object({
     birthDate: z.string(),
@@ -218,6 +235,7 @@ const quotationSchema = z
     tpd: z.object({enabled: z.boolean(), coverage: z.coerce.number().catch(0)}),
     premium: z.number(),
     underwriting: underwritingSchema.nullish(),
+    inception: inceptionSchema.nullish(),
     not_approve_underwriting: z.string().nullish(),
   })
   .transform(({not_approve_underwriting, ...data}) => ({

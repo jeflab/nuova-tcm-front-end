@@ -1,5 +1,13 @@
 # Changelog
 
+## v2.3.0 (2025-05-30)
+
+#### Added:
+
+- Gestione versione del quotatore durante il preventivo
+- Aggiunta icona polizza in stato decesso
+- Aggiunto inception e loadedPremium nella lip
+
 ## v2.2.0 (2025-05-12)
 
 #### Added:

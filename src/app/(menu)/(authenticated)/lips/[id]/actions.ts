@@ -285,9 +285,6 @@ export async function updatePersonalData(
         : formData.relationship,
   };
 
-  console.log(formData.pep, formData.job, formData.pep && formData.job);
-  console.log("updatePersonalData", data);
-
   return patch(`/personal-datas/${personalDataId}`, {
     data,
     revalidateTags: [Tags.getLip(lipId)],
@@ -496,6 +493,7 @@ interface UpdateQuotationParams {
   tpd: {enabled: boolean; coverage: string};
   premium: number;
   originalPremium: number;
+  version?: string;
 }
 export async function updateQuotation(
   formData: UpdateQuotationParams,
@@ -523,6 +521,7 @@ export async function updateQuotation(
     },
     premium: Math.round(formData.premium * 100) / 100,
     originalPremium: formData.originalPremium,
+    quotation_engine_version: formData.version,
   };
 
   return patch(`/lips/${lipId}`, {
