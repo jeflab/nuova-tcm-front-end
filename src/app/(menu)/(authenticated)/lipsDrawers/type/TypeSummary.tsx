@@ -28,7 +28,7 @@ export function TypeSummary() {
           fixedWidth
           className="text-primary"
         />{" "}
-        Il Contraente è diverso dall'assicurato
+        Il Contraente è diverso dall'Assicurato
       </p>
     );
   }

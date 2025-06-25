@@ -142,7 +142,7 @@ export function ComplementaryCoverages({lipType}: ComplementaryCoveragesProps) {
         <FormGroup
           controlId="exemptionFromPaying"
           as={BorderFeedback}
-          disabled={isMoreThan55}
+          disabled={isMoreThan55 || (lipType && lipType !== "self-insured")}
           className="position-relative"
         >
           <CheckboxField
@@ -159,20 +159,29 @@ export function ComplementaryCoverages({lipType}: ComplementaryCoveragesProps) {
             resto della durata del contratto.
           </HelpText>
           <div>
-            {!isMoreThan55 ? (
-              <strong>
-                Durata: {getCoverageDurationOld(watch("birthDate"), 10, 65)}{" "}
-                {getCoverageDurationOld(watch("birthDate"), 10, 65) === 1
-                  ? "anno"
-                  : "anni"}
-              </strong>
-            ) : (
+            {isMoreThan55 ? (
               <strong className="text-warning">
                 <FontAwesomeIcon
                   icon={faTriangleExclamation}
                   className="me-2"
                 />
                 Opzione non attivabile per gli assicurati con più di 55 anni
+              </strong>
+            ) : lipType && lipType !== "self-insured" ? (
+              <strong className="text-warning">
+                <FontAwesomeIcon
+                  icon={faTriangleExclamation}
+                  className="me-2"
+                />
+                Opzione non attivabile per le polizze con Contraente diverso
+                dall'Assicurato
+              </strong>
+            ) : (
+              <strong>
+                Durata: {getCoverageDurationOld(watch("birthDate"), 10, 65)}{" "}
+                {getCoverageDurationOld(watch("birthDate"), 10, 65) === 1
+                  ? "anno"
+                  : "anni"}
               </strong>
             )}
           </div>
