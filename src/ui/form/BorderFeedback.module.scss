@@ -1,6 +1,6 @@
 @import "../../app/variables";
-@value isDragAccept from "./DropzoneField.module.scss";
-@value isDragReject from "./DropzoneField.module.scss";
+@value isDragReject from "./FileDropzoneField.module.scss";
+@value isDragAccept from "./FileDropzoneField.module.scss";
 
 .base {
   padding: map-get($spacers, 3);

@@ -20,6 +20,7 @@ import {
   IdType,
   JobPosition,
   jobPositionOptions,
+  LipSalesMode,
   LipType,
   needsToMeetOptions,
   NeedsToMeetOptions,
@@ -55,6 +56,7 @@ const checkContractorShape = {
 };
 interface ActivateContractorParams {
   type: LipType;
+  salesMode: LipSalesMode;
   fatca: {
     label: string;
     text: string;
@@ -84,6 +86,7 @@ export async function activateContractor(
 ) {
   const data = {
     type: contractorData.type,
+    sales_mode: contractorData.salesMode,
     json_fatca: JSON.stringify({
       fatcaCheck: contractorData.fatca,
       residencyCheck: contractorData.italianResidency,

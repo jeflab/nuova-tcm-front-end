@@ -1,6 +1,7 @@
 "use client";
 
 import {normalizeError} from "@/helpers/errors";
+import {FileDropzoneField} from "@/ui/form/FileDropzoneField";
 import {HelpText} from "@/ui/form/HelpText";
 import omit from "lodash/omit";
 import {identificationContractor} from "@/app/(menu)/(authenticated)/lips/[id]/actions";
@@ -12,7 +13,7 @@ import {
 import {createIDImageUrl} from "@/helpers/createResourcesUrl";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {CheckboxField} from "@/ui/form/CheckboxField";
-import {DropzoneField} from "@/ui/form/DropzoneField";
+import {ImageDropzoneField} from "@/ui/form/ImageDropzoneField";
 import {FieldError} from "@/ui/form/FieldError";
 import {Form} from "@/ui/form/Form";
 import {
@@ -43,11 +44,15 @@ export function IdentificationForm() {
   const identityDocument = useStore((state) =>
     state.lip?.contractor.identityDocument?.at(-1),
   );
+  const salesMode = useStore((state) => state.lip?.salesMode);
 
   const formMethods = useForm({
     mode: "onChange",
     defaultValues: {
-      ...getIdentityDocumentDefaultValues(identityDocument),
+      ...getIdentityDocumentDefaultValues(
+        identityDocument,
+        salesMode === "remote",
+      ),
       frontPicture: null as unknown as File,
       backPicture: null as unknown as File,
       metContractorInPerson: !!identityDocument,
@@ -124,7 +129,7 @@ export function IdentificationForm() {
         >
           <Row className="row-gap-3">
             <h4>Documento d'identità:</h4>
-            <IdentityDocumentForm />
+            <IdentityDocumentForm onlyIdentityCard={salesMode === "remote"} />
             <Col className="d-flex" xs={12} sm={6}>
               <FormGroup controlId="frontPicture" as={BorderFeedback}>
                 <FormLabel>Documento fronte</FormLabel>
@@ -134,7 +139,7 @@ export function IdentificationForm() {
                   che riempia lo spazio disponibile.
                 </HelpText>
                 <FieldError />
-                <DropzoneField
+                <ImageDropzoneField
                   preselectedImageUrl={existingFrontImageUrl}
                   validation={{
                     validate: {
@@ -151,7 +156,7 @@ export function IdentificationForm() {
                     tuo computer
                   </p>
                   <FontAwesomeIcon icon={faIdCard} size="5x" />
-                </DropzoneField>
+                </ImageDropzoneField>
               </FormGroup>
             </Col>
             <Col className="d-flex" xs={12} sm={6}>
@@ -163,7 +168,7 @@ export function IdentificationForm() {
                   che riempia lo spazio disponibile.
                 </HelpText>
                 <FieldError />
-                <DropzoneField
+                <ImageDropzoneField
                   preselectedImageUrl={existingBackImageUrl}
                   validation={{
                     validate: {
@@ -180,9 +185,58 @@ export function IdentificationForm() {
                     tuo computer
                   </p>
                   <FontAwesomeIcon icon={faCreditCard} size="5x" />
-                </DropzoneField>
+                </ImageDropzoneField>
               </FormGroup>
-            </Col>{" "}
+            </Col>
+            <h4>Conferma residenza:</h4>
+            <Col>
+              <Alert variant="info">
+                Si ricorda che è OBBLIGATORIO fornire un documento che
+                certifichi la residenza del contraente nei seguiti casi:
+                <ol>
+                  <li>
+                    se l’indirizzo di residenza indicato in proposta NON
+                    coincide con quello presente sul documento di identità del
+                    Contraente;
+                  </li>
+                  <li>
+                    se è stato caricato un documento di identificazione DIVERSO
+                    dalla carta di identità;
+                  </li>
+                  <li>
+                    in caso di <strong>vendita a distanza</strong>.
+                  </li>
+                </ol>
+                Può essere caricato uno dei seguenti documenti:
+                <ul className="mb-0">
+                  <li>
+                    Bolletta delle utenze domestiche (energia elettrica, gas,
+                    acqua, telefono, internet etc.) intestata al Contraente;
+                  </li>
+                  <li>Estratto conto bancario del Contraente;</li>
+                  <li>
+                    Qualsiasi bollettino di pagamento (es. tassa rifiuti,
+                    sanzioni stradali etc.) intestato al Contraente;
+                  </li>
+                  <li>Il certificato di residenza del Contraente.</li>
+                  <li>
+                    Il documento può essere fornito anche successivamente al
+                    completamento della proposta MA è requisito essenziale per
+                    l’accettazione della stessa.
+                  </li>
+                </ul>
+              </Alert>
+              <FormGroup controlId="test" as={BorderFeedback}>
+                <FormLabel>Documento a conferma della residenza</FormLabel>
+                <FieldError />
+                <FileDropzoneField>
+                  <p className="mb-0">
+                    Trascina il file qui, oppure clicca per cercare il file sul
+                    tuo computer
+                  </p>
+                </FileDropzoneField>
+              </FormGroup>
+            </Col>
             <h4>L'Intermediario dichiara:</h4>
             <Col xs={12}>
               <FormGroup
@@ -193,10 +247,16 @@ export function IdentificationForm() {
                 <FieldError />
                 <CheckboxField
                   type="checkbox"
-                  label="Di aver incontrato il Contraente di persona"
+                  label={
+                    salesMode === "remote"
+                      ? "Di aver identificato il Contraente a distanza"
+                      : "Di aver incontrato il Contraente di persona"
+                  }
                   validation={{
                     required:
-                      "Per procedere devi dichiarare di aver incontrato il Contraente di persona",
+                      salesMode === "remote"
+                        ? "Per procedere devi dichiarare di aver identificato il Contraente a distanza"
+                        : "Per procedere devi dichiarare di aver incontrato il Contraente di persona",
                   }}
                   stretchedLabel
                 />

@@ -16,6 +16,7 @@ import {Col, Row} from "react-bootstrap";
 export function IdentificationSummary() {
   const agentId = useStore((state) => state.lip?.agent.id);
   const contractorId = useStore((state) => state.lip?.contractor.id);
+  const salesMode = useStore((state) => state.lip?.salesMode);
   const identification = useStore((state) =>
     state.lip?.contractor.identityDocument?.at(-1),
   );
@@ -84,7 +85,9 @@ export function IdentificationSummary() {
         </h4>
         <p className="mb-0">
           <FontAwesomeIcon icon={faSquareCheck} className="me-2" />
-          Di aver incontrato il Contraente di persona
+          {salesMode === "remote"
+            ? "Di aver identificato il Contraente a distanza"
+            : "Di aver incontrato il Contraente di persona"}
         </p>
         <p className="mb-0">
           <FontAwesomeIcon icon={faSquareCheck} className="me-2" />

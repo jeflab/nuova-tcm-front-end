@@ -31,8 +31,19 @@ export const lipTypeOptions = [
     label: "Il Contraente è diverso dall'Assicurato",
     value: "third-party-insured",
   },
+  {
+    label: "Il Contraente è una persona giuridica (In arrivo!)",
+    value: "corporate-insured",
+    disabled: true,
+  },
 ] as const;
 export type LipType = (typeof lipTypeOptions)[number]["value"];
+
+export const lipSalesModeOptions = [
+  {label: "Vendita in presenza", value: "in-person"},
+  {label: "Vendita a distanza", value: "remote"},
+] as const;
+export type LipSalesMode = (typeof lipSalesModeOptions)[number]["value"];
 
 // Contractor data
 

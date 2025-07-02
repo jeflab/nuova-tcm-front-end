@@ -6,6 +6,7 @@ import {
   fundSourceOptions,
   genderOptions,
   idTypeOptions,
+  lipSalesModeOptions,
   lipTypeOptions,
   nominationOptions,
   paymentMethodsOptions,
@@ -511,6 +512,7 @@ export const lipSchema = z
         return states?.[states.length - 1] ?? lipStateSchema.parse(undefined);
       }),
     type: z.enum(getOptionsValues(lipTypeOptions)),
+    sales_mode: z.enum(getOptionsValues(lipSalesModeOptions)),
   })
   .transform(
     ({
@@ -528,6 +530,7 @@ export const lipSchema = z
       json_esign,
       json_privacy_company,
       lipstates,
+      sales_mode,
       ...data
     }) => {
       const contractorInsuredRelationship =
@@ -555,6 +558,7 @@ export const lipSchema = z
         eSigns: json_esign,
         privacyCompany: json_privacy_company,
         lipStates: lipstates,
+        salesMode: sales_mode,
       };
     },
   );

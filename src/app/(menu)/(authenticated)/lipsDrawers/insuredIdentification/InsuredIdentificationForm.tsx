@@ -12,7 +12,7 @@ import {
 import {createIDImageUrl} from "@/helpers/createResourcesUrl";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {CheckboxField} from "@/ui/form/CheckboxField";
-import {DropzoneField} from "@/ui/form/DropzoneField";
+import {ImageDropzoneField} from "@/ui/form/ImageDropzoneField";
 import {FieldError} from "@/ui/form/FieldError";
 import {Form} from "@/ui/form/Form";
 import {
@@ -124,7 +124,7 @@ export function InsuredIdentificationForm() {
                   che riempia lo spazio disponibile.
                 </HelpText>
                 <FieldError />
-                <DropzoneField
+                <ImageDropzoneField
                   preselectedImageUrl={existingFrontImageUrl}
                   validation={{
                     validate: {
@@ -141,7 +141,7 @@ export function InsuredIdentificationForm() {
                     tuo computer
                   </p>
                   <FontAwesomeIcon icon={faIdCard} size="5x" />
-                </DropzoneField>
+                </ImageDropzoneField>
               </FormGroup>
             </Col>
             <Col className="d-flex" xs={12} sm={6}>
@@ -153,7 +153,7 @@ export function InsuredIdentificationForm() {
                   che riempia lo spazio disponibile.
                 </HelpText>
                 <FieldError />
-                <DropzoneField
+                <ImageDropzoneField
                   preselectedImageUrl={existingBackImageUrl}
                   validation={{
                     validate: {
@@ -170,7 +170,7 @@ export function InsuredIdentificationForm() {
                     tuo computer
                   </p>
                   <FontAwesomeIcon icon={faCreditCard} size="5x" />
-                </DropzoneField>
+                </ImageDropzoneField>
               </FormGroup>
             </Col>{" "}
             <h4>L'Intermediario dichiara:</h4>
