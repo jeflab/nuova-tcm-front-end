@@ -55,6 +55,7 @@ export function IdentificationForm() {
       ),
       frontPicture: null as unknown as File,
       backPicture: null as unknown as File,
+      residenceProof: null as unknown as File,
       metContractorInPerson: !!identityDocument,
       documentIsCopyShownByContractor: !!identityDocument,
       photoIsOfContractor: !!identityDocument,
@@ -226,7 +227,7 @@ export function IdentificationForm() {
                   </li>
                 </ul>
               </Alert>
-              <FormGroup controlId="test" as={BorderFeedback}>
+              <FormGroup controlId="residenceProof" as={BorderFeedback}>
                 <FormLabel>Documento a conferma della residenza</FormLabel>
                 <FieldError />
                 <FileDropzoneField>

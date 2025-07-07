@@ -371,6 +371,7 @@ export async function addInsuredData(
 interface IdentificationParams {
   frontPicture: File;
   backPicture: File;
+  residenceProof: File;
   idType: IdType;
   number: string;
   issuedBy: string;
@@ -388,6 +389,7 @@ export async function identification(
   const formData = getTypedFormDataFromObject({
     idFront: documentFormData.get("frontPicture"),
     idBack: documentFormData.get("backPicture"),
+    residenceProof: documentFormData.get("residenceProof"),
     type: documentFormData.get("idType"),
     number: documentFormData.get("number"),
     issued_by: documentFormData.get("issuedBy"),

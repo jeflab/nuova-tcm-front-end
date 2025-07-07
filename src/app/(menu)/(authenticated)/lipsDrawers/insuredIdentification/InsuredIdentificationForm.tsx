@@ -50,6 +50,7 @@ export function InsuredIdentificationForm() {
       ...getIdentityDocumentDefaultValues(identityDocument),
       frontPicture: null as unknown as File,
       backPicture: null as unknown as File,
+      residenceProof: null as unknown as File,
       metInsuredInPerson: !!identityDocument,
       documentIsCopyShownByInsured: !!identityDocument,
       photoIsOfInsured: !!identityDocument,
