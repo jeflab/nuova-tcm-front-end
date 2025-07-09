@@ -192,8 +192,9 @@ export function IdentificationForm() {
             <h4>Conferma residenza:</h4>
             <Col>
               <Alert variant="info">
-                Si ricorda che è OBBLIGATORIO fornire un documento che
-                certifichi la residenza del contraente nei seguiti casi:
+                Si ricorda che è <strong>obbligatorio</strong> fornire un
+                documento che certifichi la residenza del contraente nei seguiti
+                casi:
                 <ol>
                   <li>
                     se l’indirizzo di residenza indicato in proposta NON
@@ -230,7 +231,16 @@ export function IdentificationForm() {
               <FormGroup controlId="residenceProof" as={BorderFeedback}>
                 <FormLabel>Documento a conferma della residenza</FormLabel>
                 <FieldError />
-                <FileDropzoneField>
+                <FileDropzoneField
+                  validation={
+                    salesMode === "remote"
+                      ? {
+                          required:
+                            "Carica un documento a conferma della residenza",
+                        }
+                      : undefined
+                  }
+                >
                   <p className="mb-0">
                     Trascina il file qui, oppure clicca per cercare il file sul
                     tuo computer
