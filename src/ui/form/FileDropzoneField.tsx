@@ -8,6 +8,8 @@ import Dropzone, {FileRejection} from "react-dropzone";
 import {RegisterOptions, useController, useFormContext} from "react-hook-form";
 import invariant from "tiny-invariant";
 import styles from "./FileDropzoneField.module.scss";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faFilePdf} from "@fortawesome/pro-duotone-svg-icons";
 
 const mbExponent = 20;
 const mb = 2 ** mbExponent; // 1 MB
@@ -15,13 +17,14 @@ const maxSize = 8 * mb;
 
 interface FileDropzoneFieldProps extends WithChildren {
   name?: string;
-  preselectedImageUrl?: string;
+  preselectedFileName?: string;
   validation?: RegisterOptions;
 }
 
 export function FileDropzoneField({
   children,
   name,
+  preselectedFileName,
   validation,
 }: FileDropzoneFieldProps) {
   const {controlId} = useContext(FormContext);
@@ -89,9 +92,15 @@ export function FileDropzoneField({
             )}
           >
             <input {...getInputProps()} />
-            {value && (
-              <div className={styles.dropzoneAreaThumbnail}>
-                File selezionato: {value.path.replace("./", "")}
+            {(value || preselectedFileName) && (
+              <div className={styles.dropzoneAreaThumbnail + " mb-3"}>
+                <FontAwesomeIcon
+                  className="align-middle"
+                  icon={faFilePdf}
+                  size="2x"
+                />{" "}
+                File selezionato:{" "}
+                {value?.path.replace("./", "") ?? preselectedFileName}
               </div>
             )}
             <div

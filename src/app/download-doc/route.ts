@@ -47,6 +47,8 @@ const mimeTypes: Record<
   "set-informativo": "application/zip",
   "pdf-identificazione-assicurato": "application/pdf",
   "pdf-identificazione-assicurato-preview": "application/pdf",
+  "pdf-residence-proof": "application/pdf",
+  "pdf-residence-proof-assicurato": "application/pdf",
   "pdf-dur": "application/pdf",
   "pdf-mup": "application/pdf",
 };

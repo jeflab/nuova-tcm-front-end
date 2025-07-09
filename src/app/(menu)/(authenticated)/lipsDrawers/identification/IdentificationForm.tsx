@@ -81,6 +81,9 @@ export function IdentificationForm() {
     size: "full",
   });
 
+  const existingResidenceProofUrl =
+    identityDocument?.identification?.fileResidenceProofName;
+
   return (
     <>
       <ModalBody>
@@ -232,14 +235,20 @@ export function IdentificationForm() {
                 <FormLabel>Documento a conferma della residenza</FormLabel>
                 <FieldError />
                 <FileDropzoneField
-                  validation={
-                    salesMode === "remote"
-                      ? {
-                          required:
-                            "Carica un documento a conferma della residenza",
+                  preselectedFileName={existingResidenceProofUrl}
+                  validation={{
+                    validate: {
+                      required: (value) => {
+                        if (
+                          salesMode === "remote" &&
+                          !value &&
+                          !existingResidenceProofUrl
+                        ) {
+                          return "Carica un documento a conferma della residenza";
                         }
-                      : undefined
-                  }
+                      },
+                    },
+                  }}
                 >
                   <p className="mb-0">
                     Trascina il file qui, oppure clicca per cercare il file sul

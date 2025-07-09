@@ -81,6 +81,9 @@ export function InsuredIdentificationForm() {
     size: "full",
   });
 
+  const existingResidenceProofUrl =
+    identityDocument?.identification?.fileResidenceProofName;
+
   return (
     <>
       <ModalBody>
@@ -178,7 +181,7 @@ export function InsuredIdentificationForm() {
                   <FontAwesomeIcon icon={faCreditCard} size="5x" />
                 </ImageDropzoneField>
               </FormGroup>
-            </Col>{" "}
+            </Col>
             <h4>Conferma residenza:</h4>
             <Col>
               <Alert variant="info">
@@ -222,14 +225,20 @@ export function InsuredIdentificationForm() {
                 <FormLabel>Documento a conferma della residenza</FormLabel>
                 <FieldError />
                 <FileDropzoneField
-                  validation={
-                    salesMode === "remote"
-                      ? {
-                          required:
-                            "Carica un documento a conferma della residenza",
+                  preselectedFileName={existingResidenceProofUrl}
+                  validation={{
+                    validate: {
+                      required: (value) => {
+                        if (
+                          salesMode === "remote" &&
+                          !value &&
+                          !existingResidenceProofUrl
+                        ) {
+                          return "Carica un documento a conferma della residenza";
                         }
-                      : undefined
-                  }
+                      },
+                    },
+                  }}
                 >
                   <p className="mb-0">
                     Trascina il file qui, oppure clicca per cercare il file sul
