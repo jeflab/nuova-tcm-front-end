@@ -19,6 +19,7 @@ export function InsuredIdentificationSummary() {
   const lipId = useStore((state) => state.lip?.id);
   const agentId = useStore((state) => state.lip?.agent.id);
   const insuredId = useStore((state) => state.lip?.insured?.id);
+  const lipSalesMode = useStore((state) => state.lip?.salesMode);
   const identification = useStore((state) =>
     state.lip?.insured?.identityDocument?.at(-1),
   );
@@ -94,12 +95,25 @@ export function InsuredIdentificationSummary() {
           <p>È stato caricato un documento che attesta la residenza:</p>
           <p className="mb-0">
             <DownloadDocumentButton
-              uri="pdf-residence-proof"
+              uri="pdf-residence-proof-assicurato"
               lipId={lipId}
               agentId={agentId}
             >
               Scarica conferma residenza
             </DownloadDocumentButton>
+          </p>
+        </Col>
+      )}
+      {lipSalesMode === "remote" && !fileResidenceProofName && (
+        <Col xs={12}>
+          <h4 className="text-primary">
+            <FontAwesomeIcon icon={faHouseCircleCheck} className="me-2" />{" "}
+            Conferma residenza
+          </h4>
+          <p className="mb-0">
+            <FontAwesomeIcon icon={faSquareCheck} className="me-2" />
+            L'Intermediario dichiara che l documento a conferma della residenza
+            verrà fornito successivamente
           </p>
         </Col>
       )}
@@ -110,7 +124,9 @@ export function InsuredIdentificationSummary() {
         </h4>
         <p className="mb-0">
           <FontAwesomeIcon icon={faSquareCheck} className="me-2" />
-          Di aver incontrato l'Assicurato di persona
+          {lipSalesMode === "remote"
+            ? "Di aver identificato l'Assicurato a distanza"
+            : "Di aver incontrato l'Assicurato di persona"}
         </p>
         <p className="mb-0">
           <FontAwesomeIcon icon={faSquareCheck} className="me-2" />

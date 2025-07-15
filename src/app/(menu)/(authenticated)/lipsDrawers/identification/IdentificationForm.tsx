@@ -1,9 +1,5 @@
 "use client";
 
-import {normalizeError} from "@/helpers/errors";
-import {FileDropzoneField} from "@/ui/form/FileDropzoneField";
-import {HelpText} from "@/ui/form/HelpText";
-import omit from "lodash/omit";
 import {identificationContractor} from "@/app/(menu)/(authenticated)/lips/[id]/actions";
 import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {
@@ -11,11 +7,15 @@ import {
   IdentityDocumentForm,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/IdentityDocumentForm";
 import {createIDImageUrl} from "@/helpers/createResourcesUrl";
+import {normalizeError} from "@/helpers/errors";
+import {getTypedFormDataFromObject} from "@/helpers/typedFormData";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {CheckboxField} from "@/ui/form/CheckboxField";
-import {ImageDropzoneField} from "@/ui/form/ImageDropzoneField";
 import {FieldError} from "@/ui/form/FieldError";
+import {FileDropzoneField} from "@/ui/form/FileDropzoneField";
 import {Form} from "@/ui/form/Form";
+import {HelpText} from "@/ui/form/HelpText";
+import {ImageDropzoneField} from "@/ui/form/ImageDropzoneField";
 import {
   faCreditCard,
   faIdCard,
@@ -24,6 +24,7 @@ import {
   faXmark,
 } from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import omit from "lodash/omit";
 import {
   Alert,
   Button,
@@ -36,7 +37,6 @@ import {
 } from "react-bootstrap";
 import {useForm} from "react-hook-form";
 import invariant from "tiny-invariant";
-import {getTypedFormDataFromObject} from "@/helpers/typedFormData";
 
 export function IdentificationForm() {
   const agentId = useStore((state) => state.lip?.agent.id);
@@ -44,14 +44,17 @@ export function IdentificationForm() {
   const identityDocument = useStore((state) =>
     state.lip?.contractor.identityDocument?.at(-1),
   );
-  const salesMode = useStore((state) => state.lip?.salesMode);
+  const lipSalesMode = useStore((state) => state.lip?.salesMode);
+
+  const existingResidenceProofUrl =
+    identityDocument?.identification?.fileResidenceProofName;
 
   const formMethods = useForm({
     mode: "onChange",
     defaultValues: {
       ...getIdentityDocumentDefaultValues(
         identityDocument,
-        salesMode === "remote",
+        lipSalesMode === "remote",
       ),
       frontPicture: null as unknown as File,
       backPicture: null as unknown as File,
@@ -60,6 +63,10 @@ export function IdentificationForm() {
       documentIsCopyShownByContractor: !!identityDocument,
       photoIsOfContractor: !!identityDocument,
       contractorHasBeenIdentified: !!identityDocument,
+      residenceProofProvidedLater:
+        !!identityDocument &&
+        lipSalesMode === "remote" &&
+        !existingResidenceProofUrl,
     },
   });
 
@@ -81,8 +88,10 @@ export function IdentificationForm() {
     size: "full",
   });
 
-  const existingResidenceProofUrl =
-    identityDocument?.identification?.fileResidenceProofName;
+  const residenceProofValue = formMethods.getValues("residenceProof");
+  const residenceProofProvidedLaterValue = formMethods.getValues(
+    "residenceProofProvidedLater",
+  );
 
   return (
     <>
@@ -102,6 +111,7 @@ export function IdentificationForm() {
                     "documentIsCopyShownByContractor",
                     "photoIsOfContractor",
                     "contractorHasBeenIdentified",
+                    "residenceProofProvidedLater",
                   ]),
                 ),
                 fiscalCode,
@@ -133,7 +143,9 @@ export function IdentificationForm() {
         >
           <Row className="row-gap-3">
             <h4>Documento d'identità:</h4>
-            <IdentityDocumentForm onlyIdentityCard={salesMode === "remote"} />
+            <IdentityDocumentForm
+              onlyIdentityCard={lipSalesMode === "remote"}
+            />
             <Col className="d-flex" xs={12} sm={6}>
               <FormGroup controlId="frontPicture" as={BorderFeedback}>
                 <FormLabel>Documento fronte</FormLabel>
@@ -193,7 +205,7 @@ export function IdentificationForm() {
               </FormGroup>
             </Col>
             <h4>Conferma residenza:</h4>
-            <Col>
+            <Col xs={12}>
               <Alert variant="info">
                 Si ricorda che è <strong>obbligatorio</strong> fornire un
                 documento che certifichi la residenza del contraente nei seguiti
@@ -224,11 +236,6 @@ export function IdentificationForm() {
                     sanzioni stradali etc.) intestato al Contraente;
                   </li>
                   <li>Il certificato di residenza del Contraente.</li>
-                  <li>
-                    Il documento può essere fornito anche successivamente al
-                    completamento della proposta MA è requisito essenziale per
-                    l’accettazione della stessa.
-                  </li>
                 </ul>
               </Alert>
               <FormGroup controlId="residenceProof" as={BorderFeedback}>
@@ -236,11 +243,21 @@ export function IdentificationForm() {
                 <FieldError />
                 <FileDropzoneField
                   preselectedFileName={existingResidenceProofUrl}
+                  onChange={() => {
+                    setTimeout(() => {
+                      formMethods.setValue(
+                        "residenceProofProvidedLater",
+                        false,
+                        {shouldValidate: true},
+                      );
+                    }, 0);
+                  }}
                   validation={{
                     validate: {
                       required: (value) => {
                         if (
-                          salesMode === "remote" &&
+                          !residenceProofProvidedLaterValue &&
+                          lipSalesMode === "remote" &&
                           !value &&
                           !existingResidenceProofUrl
                         ) {
@@ -257,6 +274,41 @@ export function IdentificationForm() {
                 </FileDropzoneField>
               </FormGroup>
             </Col>
+            {lipSalesMode === "remote" && (
+              <Col xs={12}>
+                <Alert variant="warning">
+                  Il documento può essere fornito anche successivamente al
+                  completamento della proposta MA è requisito essenziale per
+                  l’accettazione della stessa.
+                </Alert>
+                <FormGroup
+                  controlId="residenceProofProvidedLater"
+                  as={BorderFeedback}
+                  className="position-relative"
+                >
+                  <FieldError />
+                  <CheckboxField
+                    type="checkbox"
+                    label="L'Intermediario dichiara che l documento verrà fornito successivamente"
+                    disabled={
+                      !!existingResidenceProofUrl || !!residenceProofValue
+                    }
+                    onChange={() => {
+                      setTimeout(() => {
+                        formMethods.trigger("residenceProof");
+                      }, 0);
+                    }}
+                    validation={{
+                      required:
+                        lipSalesMode === "remote" &&
+                        !(residenceProofValue || existingResidenceProofUrl) &&
+                        "Per procedere devi caricare un documento a conferma della residenza o dichiarare che verrà fornito successivamente",
+                    }}
+                    stretchedLabel
+                  />
+                </FormGroup>
+              </Col>
+            )}
             <h4>L'Intermediario dichiara:</h4>
             <Col xs={12}>
               <FormGroup
@@ -268,13 +320,13 @@ export function IdentificationForm() {
                 <CheckboxField
                   type="checkbox"
                   label={
-                    salesMode === "remote"
+                    lipSalesMode === "remote"
                       ? "Di aver identificato il Contraente a distanza"
                       : "Di aver incontrato il Contraente di persona"
                   }
                   validation={{
                     required:
-                      salesMode === "remote"
+                      lipSalesMode === "remote"
                         ? "Per procedere devi dichiarare di aver identificato il Contraente a distanza"
                         : "Per procedere devi dichiarare di aver incontrato il Contraente di persona",
                   }}

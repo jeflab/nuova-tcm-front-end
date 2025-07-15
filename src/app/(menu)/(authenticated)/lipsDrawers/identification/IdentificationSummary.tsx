@@ -19,7 +19,7 @@ export function IdentificationSummary() {
   const lipId = useStore((state) => state.lip?.id);
   const agentId = useStore((state) => state.lip?.agent.id);
   const contractorId = useStore((state) => state.lip?.contractor.id);
-  const salesMode = useStore((state) => state.lip?.salesMode);
+  const lipSalesMode = useStore((state) => state.lip?.salesMode);
   const identification = useStore((state) =>
     state.lip?.contractor.identityDocument?.at(-1),
   );
@@ -104,6 +104,19 @@ export function IdentificationSummary() {
           </p>
         </Col>
       )}
+      {lipSalesMode === "remote" && !fileResidenceProofName && (
+        <Col xs={12}>
+          <h4 className="text-primary">
+            <FontAwesomeIcon icon={faHouseCircleCheck} className="me-2" />{" "}
+            Conferma residenza
+          </h4>
+          <p className="mb-0">
+            <FontAwesomeIcon icon={faSquareCheck} className="me-2" />
+            L'Intermediario dichiara che l documento a conferma della residenza
+            verrà fornito successivamente
+          </p>
+        </Col>
+      )}
       <Col xs={12}>
         <h4 className="text-primary">
           <FontAwesomeIcon icon={faClipboardListCheck} className="me-2" />
@@ -111,7 +124,7 @@ export function IdentificationSummary() {
         </h4>
         <p className="mb-0">
           <FontAwesomeIcon icon={faSquareCheck} className="me-2" />
-          {salesMode === "remote"
+          {lipSalesMode === "remote"
             ? "Di aver identificato il Contraente a distanza"
             : "Di aver incontrato il Contraente di persona"}
         </p>

@@ -17,6 +17,7 @@ const maxSize = 8 * mb;
 
 interface FileDropzoneFieldProps extends WithChildren {
   name?: string;
+  onChange?: (file: File) => void;
   preselectedFileName?: string;
   validation?: RegisterOptions;
 }
@@ -24,6 +25,7 @@ interface FileDropzoneFieldProps extends WithChildren {
 export function FileDropzoneField({
   children,
   name,
+  onChange: onChangeProp,
   preselectedFileName,
   validation,
 }: FileDropzoneFieldProps) {
@@ -56,6 +58,8 @@ export function FileDropzoneField({
       });
     } else if (accepted[0]) {
       const newFile = accepted[0];
+
+      onChangeProp?.(newFile);
       onChange(newFile);
       onBlur();
     }
