@@ -1,4 +1,3 @@
-import {ErrorCodes, errors} from "@/helpers/errors";
 import z, {ZodRawShape} from "zod";
 
 function createServerSuccessSchema<ResponsePayloadShape extends ZodRawShape>(
@@ -67,4 +66,17 @@ if (profile.status === "success") {
   //   status: "success"
   //   responseStatus: number
   // }
+}
+
+// Soluzione possibile: creare un type guard da usare nella funzione apiCall che controlli l'esistenza di "status"
+//  Funziona ma aspettiamo una risposta su github prima di implementarla
+function isErrorResponse(
+  response: unknown,
+): response is z.infer<typeof serverErrorSchema> {
+  return (
+    typeof response === "object" &&
+    response !== null &&
+    "status" in response &&
+    (response as Record<string, unknown>).status === "failed"
+  );
 }
