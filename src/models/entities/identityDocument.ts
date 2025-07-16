@@ -1,7 +1,7 @@
 import {idTypeOptions} from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
 import {getOptionsValues} from "@/helpers/getOptionsLabel";
+import {stringToJSON} from "@/helpers/stringToJSON";
 import {z} from "zod";
-import {zu} from "zod_utilz";
 
 const identificationSchema = z.object({
   fileIdFrontName: z.string(),
@@ -18,10 +18,7 @@ export const identityDocumentSchema = z
     issued_by_org: z.string(),
     issuing_date: z.coerce.date(),
     expiring_date: z.coerce.date(),
-    json_identification: zu
-      .stringToJSON()
-      .pipe(identificationSchema)
-      .nullable(),
+    json_identification: stringToJSON().pipe(identificationSchema).nullable(),
     personal_data_id: z.number(),
     id: z.number(),
   })

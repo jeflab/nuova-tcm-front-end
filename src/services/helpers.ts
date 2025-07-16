@@ -29,9 +29,9 @@ export const createServerSuccessSchema = <
   successDataShape: ResponsePayloadShape,
 ) =>
   z.object({
+    ...successDataShape,
     status: z.literal("success"),
     responseStatus: z.number(),
-    ...successDataShape,
   });
 
 export function invalidateTag(tag: Tag) {

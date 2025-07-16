@@ -4,12 +4,12 @@ import {
   tAECodeOptions,
   yesNoOptions,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
+import {stringToJSON} from "@/helpers/stringToJSON";
 import {citizenshipSchema} from "@/models/entities/citizenship";
 import {identityDocumentSchema} from "@/models/entities/identityDocument";
 import {getOptionsValues} from "@/helpers/getOptionsLabel";
 import {Prettify} from "@/helpers/TypesHelper";
 import {z} from "zod";
-import {zu} from "zod_utilz";
 
 const fatcaSchema = z.object({
   fatcaCheck: z.object({
@@ -99,7 +99,7 @@ export const contractorSchema = z
     fiscal_code: z.string(),
     gender: z.enum(["male", "female"]),
     last_privacy_esign_id: z.number().nullable(),
-    json_fatca: zu.stringToJSON().pipe(fatcaSchema),
+    json_fatca: stringToJSON().pipe(fatcaSchema),
     address: z.string().nullable(),
     street_number: z.string().nullable(),
     zip_code: z.string().nullable(),
@@ -109,7 +109,7 @@ export const contractorSchema = z
     citizenship_instance: citizenshipSchema.nullish(),
     second_citizenship: z.string().nullable(),
     second_citizenship_instance: citizenshipSchema.nullish(),
-    json_pep: zu.stringToJSON().pipe(contractorPepSchema).nullable().optional(),
+    json_pep: stringToJSON().pipe(contractorPepSchema).nullable().optional(),
     identitydocument: z.array(identityDocumentSchema).optional(),
   })
   .transform(
@@ -169,7 +169,7 @@ export const insuredSchema = z
     fiscal_code: z.string(),
     gender: z.enum(["male", "female"]),
     last_privacy_esign_id: z.number().nullable(),
-    json_fatca: zu.stringToJSON().pipe(fatcaSchema),
+    json_fatca: stringToJSON().pipe(fatcaSchema),
     address: z.string().nullable(),
     street_number: z.string().nullable(),
     zip_code: z.string().nullable(),
@@ -179,7 +179,7 @@ export const insuredSchema = z
     citizenship_instance: citizenshipSchema.nullish(),
     second_citizenship: z.string().nullable(),
     second_citizenship_instance: citizenshipSchema.nullish(),
-    json_pep: zu.stringToJSON().pipe(insuredPepSchema).nullable().optional(),
+    json_pep: stringToJSON().pipe(insuredPepSchema).nullable().optional(),
     identitydocument: z.array(identityDocumentSchema).optional(),
   })
   .transform(

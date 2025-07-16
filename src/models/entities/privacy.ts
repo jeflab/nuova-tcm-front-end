@@ -1,5 +1,5 @@
+import {stringToJSON} from "@/helpers/stringToJSON";
 import {z} from "zod";
-import {zu} from "zod_utilz";
 
 const privacyDataSchema = z.array(
   z.object({
@@ -19,7 +19,7 @@ export const privacySchema = z
     version: z.coerce.number(),
     date: z.coerce.date(),
     description: z.string(),
-    json_data: zu.stringToJSON().pipe(privacyDataSchema),
+    json_data: stringToJSON().pipe(privacyDataSchema),
   })
   .transform(({json_data, ...data}) => {
     return {

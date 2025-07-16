@@ -16,6 +16,7 @@ import {
   yesNoOptions,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
 import {getOptionsValues} from "@/helpers/getOptionsLabel";
+import {stringToJSON} from "@/helpers/stringToJSON";
 import {agentSchema} from "@/models/entities/agent";
 import {contractorSchema, insuredSchema} from "@/models/entities/personalData";
 import {IconStack} from "@/ui/IconStack";
@@ -39,7 +40,6 @@ import {
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {ReactNode} from "react";
 import {z} from "zod";
-import {zu} from "zod_utilz";
 
 const LipStatesIcons: Record<number, ReactNode> = {
   // 0: Sconosciuto
@@ -228,12 +228,18 @@ const quotationSchema = z
     accidentalDeath: z.boolean(),
     trafficAccidentalDeath: z.boolean(),
     exemptionFromPaying: z.boolean(),
-    tpi: z.object({enabled: z.boolean(), coverage: z.coerce.number().catch(0)}),
+    tpi: z.object({
+      enabled: z.boolean(),
+      coverage: z.coerce.number<number | string>().default(0),
+    }),
     cancer: z.object({
       enabled: z.boolean(),
-      coverage: z.coerce.number().catch(0),
+      coverage: z.coerce.number<number | string>().default(0),
     }),
-    tpd: z.object({enabled: z.boolean(), coverage: z.coerce.number().catch(0)}),
+    tpd: z.object({
+      enabled: z.boolean(),
+      coverage: z.coerce.number<number | string>().default(0),
+    }),
     premium: z.number(),
     underwriting: underwritingSchema.nullish(),
     inception: inceptionSchema.nullish(),
@@ -254,13 +260,15 @@ export const lipDocumentsSchema = z.object({
   fileCertificatoPDF: z.string().optional(),
   filePolizza: z.string().optional(),
   fileMUP: z.string().optional(),
-  fileDUR: z.record(z.string(), z.object({date: z.coerce.date()})).optional(),
+  fileDUR: z
+    .record(z.string(), z.object({date: z.coerce.date<string>()}))
+    .optional(),
 });
 
 const healthcareQuestionnaireSchema = z.object({
   weight: z.string(),
   height: z.string(),
-  IMC: z.coerce.number(),
+  IMC: z.coerce.number<number | string>(),
   hospitalization: z.object({
     check: z.enum(getOptionsValues(yesNoOptions)),
     details: z.string().nullish(),
@@ -318,8 +326,8 @@ const identityDocumentSchema = z.object({
   number: z.string(),
   issuedBy: z.string(),
   issuedByOrg: z.string(),
-  issuedDate: z.coerce.date(),
-  expiringDate: z.coerce.date(),
+  issuedDate: z.coerce.date<string>(),
+  expiringDate: z.coerce.date<string>(),
 });
 
 const beneficiarySchema = z.object({
@@ -474,7 +482,7 @@ export const lipStateSchema = z
 export type LipState = z.infer<typeof lipStateSchema>;
 
 const certificateSchema = z
-  .object({effective_date: z.coerce.date()})
+  .object({effective_date: z.coerce.date<string>()})
   .transform(({effective_date}) => ({
     effectiveDate: effective_date,
   }));
@@ -482,29 +490,25 @@ const certificateSchema = z
 export const lipSchema = z
   .object({
     id: z.number(),
-    created_at: z.coerce.date(),
+    created_at: z.coerce.date<string>(),
     agent: agentSchema,
     contractor: contractorSchema,
     contractor_insured_relationship: z.string().nullish(),
     insured: insuredSchema.nullish(),
     lip_number: z.coerce.string(),
-    json_den: zu.stringToJSON().pipe(denSchema).nullish(),
-    json_documents: zu.stringToJSON().pipe(lipDocumentsSchema).nullish(),
-    json_quotation: zu.stringToJSON().pipe(quotationSchema).nullish(),
-    json_survey_healthcare: zu
-      .stringToJSON()
+    json_den: stringToJSON().pipe(denSchema).nullish(),
+    json_documents: stringToJSON().pipe(lipDocumentsSchema).nullish(),
+    json_quotation: stringToJSON().pipe(quotationSchema).nullish(),
+    json_survey_healthcare: stringToJSON()
       .pipe(healthcareQuestionnaireSchema)
       .nullish(),
     must_ask_underwriting: z.boolean(),
-    json_beneficiary: zu.stringToJSON().pipe(beneficiariesSchema).nullish(),
-    json_payment: zu.stringToJSON().pipe(paymentSchema).nullish(),
-    json_certificate: zu.stringToJSON().pipe(certificateSchema).nullish(),
-    json_esign: zu.stringToJSON().pipe(eSignSchema).nullish(),
+    json_beneficiary: stringToJSON().pipe(beneficiariesSchema).nullish(),
+    json_payment: stringToJSON().pipe(paymentSchema).nullish(),
+    json_certificate: stringToJSON().pipe(certificateSchema).nullish(),
+    json_esign: stringToJSON().pipe(eSignSchema).nullish(),
     aml: amlSchema.nullish(),
-    json_privacy_company: zu
-      .stringToJSON()
-      .pipe(privacyCompanySchema)
-      .nullish(),
+    json_privacy_company: stringToJSON().pipe(privacyCompanySchema).nullish(),
     lipstates: z
       .array(lipStateSchema)
       .nullish()
