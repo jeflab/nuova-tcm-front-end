@@ -72,8 +72,7 @@ export async function apiCall<ResponsePayloadShape extends ZodRawShape>(
   | z.infer<typeof serverErrorSchema>
   | undefined
 > {
-  const payloadShapeOrDefault: ResponsePayloadShape =
-    payloadShape ?? ({} as ResponsePayloadShape);
+  const payloadShapeOrDefault = payloadShape ?? ({} as ResponsePayloadShape);
   const body = data instanceof FormData ? data : JSON.stringify(data);
   const searchParamsString = searchParams
     ? "?" + new URLSearchParams(searchParams).toString()

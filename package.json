@@ -37,8 +37,7 @@
     "server-only-context": "^0.1.0",
     "sharp": "^0.34.1",
     "tiny-invariant": "^1.3.1",
-    "zod": "^3.22.4",
-    "zod_utilz": "^0.8.1-beta",
+    "zod": "^4.0.0",
     "zustand": "^5"
   },
   "devDependencies": {
