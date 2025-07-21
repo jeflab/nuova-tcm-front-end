@@ -1,3 +1,4 @@
+import {normalizeError} from "@/helpers/errors";
 import {z} from "zod";
 
 const stringToJSONSchema = z
@@ -6,7 +7,11 @@ const stringToJSONSchema = z
     try {
       return JSON.parse(str);
     } catch (e) {
-      ctx.addIssue({code: "custom", message: "Invalid JSON"});
+      ctx.issues.push({
+        code: "custom",
+        message: "Invalid JSON: " + normalizeError(e).message,
+        input: ctx.value,
+      });
       return z.NEVER;
     }
   });

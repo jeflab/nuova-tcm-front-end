@@ -12,6 +12,7 @@ import {
 import {
   createServerSuccessSchema,
   invalidateTag,
+  isServerError,
   serverErrorSchema,
 } from "@/services/helpers";
 import * as Sentry from "@sentry/nextjs";
@@ -219,7 +220,7 @@ export async function apiCall<ResponsePayloadShape extends ZodRawShape>(
     >;
   }
 
-  if (serverResponseJson.status !== "success") {
+  if (isServerError(serverResponseJson)) {
     console.error(
       chalk.red.inverse("Errore nella risposta del server"),
       chalk.redBright(serverResponseJson.message),

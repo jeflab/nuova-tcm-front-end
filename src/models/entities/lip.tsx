@@ -411,7 +411,7 @@ const paymentSchema = z.object({
 
 export const eSignSchema = z.object({
   identificazione: z
-    .record(
+    .partialRecord(
       z.enum(["esign_agente"]),
       z.object({
         file: z.string(),
@@ -421,7 +421,7 @@ export const eSignSchema = z.object({
     )
     .optional(),
   identificazione_assicurato: z
-    .record(
+    .partialRecord(
       z.enum(["esign_agente"]),
       z.object({
         file: z.string(),
@@ -431,7 +431,7 @@ export const eSignSchema = z.object({
     )
     .optional(),
   polizza: z
-    .record(
+    .partialRecord(
       z.enum([
         "esign_agente",
         "esign_contraente",

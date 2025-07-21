@@ -17,9 +17,10 @@ export function isServerError(
   json: unknown,
 ): json is z.infer<typeof serverErrorSchema> {
   return (
-    "status" in (json as z.infer<typeof serverErrorSchema>) &&
-    "message" in (json as z.infer<typeof serverErrorSchema>) &&
-    (json as z.infer<typeof serverErrorSchema>).status === "failed"
+    typeof json === "object" &&
+    json !== null &&
+    "status" in json &&
+    (json as Record<string, unknown>).status !== "success"
   );
 }
 
