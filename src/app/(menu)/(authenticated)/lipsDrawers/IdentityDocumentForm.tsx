@@ -20,9 +20,12 @@ export interface IdentityDocumentFormValues {
 
 export function getIdentityDocumentDefaultValues(
   defaultValues?: IdentityDocumentFormValues,
+  onlyIdentityCard?: boolean,
 ) {
   return {
-    idType: defaultValues?.idType ?? ("" as IdType),
+    idType:
+      defaultValues?.idType ??
+      ((onlyIdentityCard ? "identity_card" : "") as IdType),
     number: defaultValues?.number ?? "",
     issuedBy: defaultValues?.issuedBy ?? "",
     issuedByOrg: defaultValues?.issuedByOrg ?? "",
@@ -37,10 +40,17 @@ export function getIdentityDocumentDefaultValues(
 
 interface IdentityDocumentFormProps {
   name?: string;
+  onlyIdentityCard?: boolean;
 }
 
-export function IdentityDocumentForm({name}: IdentityDocumentFormProps) {
+export function IdentityDocumentForm({
+  name,
+  onlyIdentityCard,
+}: IdentityDocumentFormProps) {
   const namePrefix = name ? `${name}.` : "";
+  const typeOptionsAvailable = onlyIdentityCard
+    ? [idTypeOptions.find((type) => type.value === "identity_card")!]
+    : idTypeOptions;
 
   return (
     <>
@@ -49,11 +59,13 @@ export function IdentityDocumentForm({name}: IdentityDocumentFormProps) {
           <FormLabel>Tipo di documento</FormLabel>
           <FieldError />
           <SelectField
-            options={idTypeOptions}
+            options={typeOptionsAvailable}
             placeholder="Seleziona il tipo di documento"
             validation={{
               required: "Seleziona il tipo di documento",
             }}
+            readOnly={onlyIdentityCard}
+            disabled={onlyIdentityCard}
           />
         </FormGroup>
       </Col>

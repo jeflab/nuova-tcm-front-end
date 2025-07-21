@@ -9,6 +9,8 @@ export const searchPramsSchema = z.discriminatedUnion("uri", [
       "pdf-allegato4ter",
       "pdf-elenco-compagnie",
       "pdf-certificato",
+      "pdf-residence-proof",
+      "pdf-residence-proof-assicurato",
     ]),
     lipId: z.coerce.number(),
     agentId: z.coerce.number(),

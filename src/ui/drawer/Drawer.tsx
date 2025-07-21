@@ -71,7 +71,7 @@ export function Drawer({
             </Button>
           )}
         </CardHeader>
-        <CardBody ref={animateContainer}>{children}</CardBody>
+        <CardBody ref={animateContainer}>{variant && children}</CardBody>
       </Card>
       {!readonly && (
         <Modal

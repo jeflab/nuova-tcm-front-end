@@ -76,6 +76,10 @@ export function ContractorContactsForm({
               try {
                 invariant(preliminaryData.type, "Tipo di polizza mancante");
                 invariant(
+                  preliminaryData.salesMode,
+                  "Modalità di vendita mancante",
+                );
+                invariant(
                   preliminaryData.contractorPersonalData,
                   "Dati del Contraente mancanti",
                 );
@@ -88,6 +92,7 @@ export function ContractorContactsForm({
                 activateContractorResponse = await activateContractor({
                   ...values,
                   type: preliminaryData.type,
+                  salesMode: preliminaryData.salesMode,
                   ...preliminaryData.contractorPersonalData,
                   fatca: {
                     ...fatcaQuestions.fatcaCheck,
