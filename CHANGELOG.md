@@ -1,5 +1,11 @@
 # Changelog
 
+## v2.4.0 (2025-07-21)
+
+#### Added:
+
+- Aggiunta gestione vendita polizze a distanza
+
 ## v2.3.0 (2025-05-30)
 
 #### Added:
