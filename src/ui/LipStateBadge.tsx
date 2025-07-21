@@ -23,7 +23,7 @@ export function LipStateBadgeSkeleton() {
         className="rounded-circle"
         style={{width: "1em"}}
       />{" "}
-      <Placeholder as="span" style={{width: `${45 + Math.random() * 115}px`}} />
+      <Placeholder as="span" style={{width: `${45 + Math.random() * 165}px`}} />
     </Placeholder>
   );
 }

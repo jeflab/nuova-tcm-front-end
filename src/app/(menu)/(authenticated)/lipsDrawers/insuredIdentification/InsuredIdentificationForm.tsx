@@ -1,8 +1,5 @@
 "use client";
 
-import {normalizeError} from "@/helpers/errors";
-import {HelpText} from "@/ui/form/HelpText";
-import omit from "lodash/omit";
 import {identificationInsured} from "@/app/(menu)/(authenticated)/lips/[id]/actions";
 import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {
@@ -10,11 +7,15 @@ import {
   IdentityDocumentForm,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/IdentityDocumentForm";
 import {createIDImageUrl} from "@/helpers/createResourcesUrl";
+import {normalizeError} from "@/helpers/errors";
+import {getTypedFormDataFromObject} from "@/helpers/typedFormData";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {CheckboxField} from "@/ui/form/CheckboxField";
-import {DropzoneField} from "@/ui/form/DropzoneField";
 import {FieldError} from "@/ui/form/FieldError";
+import {FileDropzoneField} from "@/ui/form/FileDropzoneField";
 import {Form} from "@/ui/form/Form";
+import {HelpText} from "@/ui/form/HelpText";
+import {ImageDropzoneField} from "@/ui/form/ImageDropzoneField";
 import {
   faCreditCard,
   faIdCard,
@@ -23,6 +24,7 @@ import {
   faXmark,
 } from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import omit from "lodash/omit";
 import {
   Alert,
   Button,
@@ -35,7 +37,6 @@ import {
 } from "react-bootstrap";
 import {useForm} from "react-hook-form";
 import invariant from "tiny-invariant";
-import {getTypedFormDataFromObject} from "@/helpers/typedFormData";
 
 export function InsuredIdentificationForm() {
   const agentId = useStore((state) => state.lip?.agent.id);
@@ -43,17 +44,29 @@ export function InsuredIdentificationForm() {
   const identityDocument = useStore((state) =>
     state.lip?.insured?.identityDocument?.at(-1),
   );
+  const lipSalesMode = useStore((state) => state.lip?.salesMode);
+
+  const existingResidenceProofUrl =
+    identityDocument?.identification?.fileResidenceProofName;
 
   const formMethods = useForm({
     mode: "onChange",
     defaultValues: {
-      ...getIdentityDocumentDefaultValues(identityDocument),
+      ...getIdentityDocumentDefaultValues(
+        identityDocument,
+        lipSalesMode === "remote",
+      ),
       frontPicture: null as unknown as File,
       backPicture: null as unknown as File,
+      residenceProof: null as unknown as File,
       metInsuredInPerson: !!identityDocument,
       documentIsCopyShownByInsured: !!identityDocument,
       photoIsOfInsured: !!identityDocument,
       insuredHasBeenIdentified: !!identityDocument,
+      residenceProofProvidedLater:
+        !!identityDocument &&
+        lipSalesMode === "remote" &&
+        !existingResidenceProofUrl,
     },
   });
 
@@ -75,6 +88,11 @@ export function InsuredIdentificationForm() {
     size: "full",
   });
 
+  const residenceProofValue = formMethods.getValues("residenceProof");
+  const residenceProofProvidedLaterValue = formMethods.getValues(
+    "residenceProofProvidedLater",
+  );
+
   return (
     <>
       <ModalBody>
@@ -91,6 +109,7 @@ export function InsuredIdentificationForm() {
                   "documentIsCopyShownByInsured",
                   "photoIsOfInsured",
                   "insuredHasBeenIdentified",
+                  "residenceProofProvidedLater",
                 ]),
               ),
               fiscalCode,
@@ -114,7 +133,9 @@ export function InsuredIdentificationForm() {
         >
           <Row className="row-gap-3">
             <h4>Documento d'identità:</h4>
-            <IdentityDocumentForm />
+            <IdentityDocumentForm
+              onlyIdentityCard={lipSalesMode === "remote"}
+            />
             <Col className="d-flex" xs={12} sm={6}>
               <FormGroup controlId="frontPicture" as={BorderFeedback}>
                 <FormLabel>Documento fronte</FormLabel>
@@ -124,7 +145,7 @@ export function InsuredIdentificationForm() {
                   che riempia lo spazio disponibile.
                 </HelpText>
                 <FieldError />
-                <DropzoneField
+                <ImageDropzoneField
                   preselectedImageUrl={existingFrontImageUrl}
                   validation={{
                     validate: {
@@ -141,7 +162,7 @@ export function InsuredIdentificationForm() {
                     tuo computer
                   </p>
                   <FontAwesomeIcon icon={faIdCard} size="5x" />
-                </DropzoneField>
+                </ImageDropzoneField>
               </FormGroup>
             </Col>
             <Col className="d-flex" xs={12} sm={6}>
@@ -153,7 +174,7 @@ export function InsuredIdentificationForm() {
                   che riempia lo spazio disponibile.
                 </HelpText>
                 <FieldError />
-                <DropzoneField
+                <ImageDropzoneField
                   preselectedImageUrl={existingBackImageUrl}
                   validation={{
                     validate: {
@@ -170,9 +191,114 @@ export function InsuredIdentificationForm() {
                     tuo computer
                   </p>
                   <FontAwesomeIcon icon={faCreditCard} size="5x" />
-                </DropzoneField>
+                </ImageDropzoneField>
               </FormGroup>
-            </Col>{" "}
+            </Col>
+            <h4>Conferma residenza:</h4>
+            <Col xs={12}>
+              <Alert variant="info">
+                Si ricorda che è <strong>obbligatorio</strong> fornire un
+                documento che certifichi la residenza del contraente nei seguiti
+                casi:
+                <ol>
+                  <li>
+                    se l’indirizzo di residenza indicato in proposta NON
+                    coincide con quello presente sul documento di identità del
+                    Contraente;
+                  </li>
+                  <li>
+                    se è stato caricato un documento di identificazione DIVERSO
+                    dalla carta di identità;
+                  </li>
+                  <li>
+                    in caso di <strong>vendita a distanza</strong>.
+                  </li>
+                </ol>
+                Può essere caricato uno dei seguenti documenti:
+                <ul className="mb-0">
+                  <li>
+                    Bolletta delle utenze domestiche (energia elettrica, gas,
+                    acqua, telefono, internet etc.) intestata al Contraente;
+                  </li>
+                  <li>Estratto conto bancario del Contraente;</li>
+                  <li>
+                    Qualsiasi bollettino di pagamento (es. tassa rifiuti,
+                    sanzioni stradali etc.) intestato al Contraente;
+                  </li>
+                  <li>Il certificato di residenza del Contraente.</li>
+                </ul>
+              </Alert>
+              <FormGroup controlId="residenceProof" as={BorderFeedback}>
+                <FormLabel>Documento a conferma della residenza</FormLabel>
+                <FieldError />
+                <FileDropzoneField
+                  preselectedFileName={existingResidenceProofUrl}
+                  onChange={() => {
+                    setTimeout(() => {
+                      formMethods.setValue(
+                        "residenceProofProvidedLater",
+                        false,
+                        {shouldValidate: true},
+                      );
+                    }, 0);
+                  }}
+                  validation={{
+                    validate: {
+                      required: (value) => {
+                        if (
+                          !residenceProofProvidedLaterValue &&
+                          lipSalesMode === "remote" &&
+                          !value &&
+                          !existingResidenceProofUrl
+                        ) {
+                          return "Carica un documento a conferma della residenza";
+                        }
+                      },
+                    },
+                  }}
+                >
+                  <p className="mb-0">
+                    Trascina il file qui, oppure clicca per cercare il file sul
+                    tuo computer
+                  </p>
+                </FileDropzoneField>
+              </FormGroup>
+            </Col>
+            {lipSalesMode === "remote" && (
+              <Col xs={12}>
+                <Alert variant="warning">
+                  Il documento può essere fornito anche successivamente al
+                  completamento della proposta MA è requisito essenziale per
+                  l’accettazione della stessa.
+                </Alert>
+                <FormGroup
+                  controlId="residenceProofProvidedLater"
+                  as={BorderFeedback}
+                  className="position-relative"
+                >
+                  <FieldError />
+                  <CheckboxField
+                    type="checkbox"
+                    label="L'Intermediario dichiara che l documento verrà fornito successivamente"
+                    disabled={
+                      !!existingResidenceProofUrl || !!residenceProofValue
+                    }
+                    onChange={() => {
+                      setTimeout(() => {
+                        formMethods.trigger("residenceProof");
+                      }, 0);
+                    }}
+                    validation={{
+                      required:
+                        lipSalesMode === "remote" &&
+                        !(residenceProofValue || existingResidenceProofUrl) &&
+                        "Per procedere devi caricare un documento a conferma della residenza o dichiarare che verrà fornito successivamente",
+                    }}
+                    stretchedLabel
+                  />
+                </FormGroup>
+              </Col>
+            )}
             <h4>L'Intermediario dichiara:</h4>
             <Col xs={12}>
               <FormGroup
@@ -183,10 +309,16 @@ export function InsuredIdentificationForm() {
                 <FieldError />
                 <CheckboxField
                   type="checkbox"
-                  label="Di aver incontrato l'Assicurato di persona"
+                  label={
+                    lipSalesMode === "remote"
+                      ? "Di aver identificato il Contraente a distanza"
+                      : "Di aver incontrato il Contraente di persona"
+                  }
                   validation={{
                     required:
-                      "Per procedere devi dichiarare di aver incontrato l'Assicurato di persona",
+                      lipSalesMode === "remote"
+                        ? "Per procedere devi dichiarare di aver identificato il Contraente a distanza"
+                        : "Per procedere devi dichiarare di aver incontrato il Contraente di persona",
                   }}
                   stretchedLabel
                 />

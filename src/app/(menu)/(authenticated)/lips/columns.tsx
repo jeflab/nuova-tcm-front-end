@@ -7,35 +7,39 @@ import {Lip} from "@/models/entities/lip";
 import {ButtonLink} from "@/ui/ButtonLink";
 import {LipStateBadge, LipStateBadgeSkeleton} from "@/ui/LipStateBadge";
 import dataTableStyles from "@/ui/table/DataTable.module.scss";
+import styles from "@/ui/table/DataTable.module.scss";
 import {
+  faBuilding,
   faEye,
   faFilterCircleXmark,
+  faHandshake,
+  faLaptopMobile,
   faUser,
   faUserGroupSimple,
 } from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {ColumnDef, createColumnHelper} from "@tanstack/react-table";
 import {Button, FormControl, FormSelect, Placeholder} from "react-bootstrap";
-import styles from "@/ui/table/DataTable.module.scss";
 
 const columnHelper = createColumnHelper<Lip>();
 export const columns = [
   columnHelper.accessor("lipNumber", {
     header: "Numero proposta",
     cell: (props) => {
-      const lipType = props.row.original.type;
+      const lipSalesMode = props.row.original.salesMode;
+
       return (
         <>
           <span
             className={styles.rowOtherLink}
             title={
-              lipType === "self-insured"
-                ? "Il Contraente e l'Assicurato coincidono"
-                : "Il Contraente è diverso dall'Assicurato"
+              lipSalesMode === "in-person"
+                ? "Vendita in presenza"
+                : "Vendita a distanza"
             }
           >
             <FontAwesomeIcon
-              icon={lipType === "self-insured" ? faUser : faUserGroupSimple}
+              icon={lipSalesMode === "in-person" ? faHandshake : faLaptopMobile}
               fixedWidth
               className="cursor-help"
             />
@@ -54,6 +58,37 @@ export const columns = [
     {
       id: "contractor",
       header: "Contraente",
+      cell: (props) => {
+        const lipType = props.row.original.type;
+
+        return (
+          <>
+            <span
+              className={styles.rowOtherLink}
+              title={
+                lipType === "self-insured"
+                  ? "Il Contraente e l'Assicurato coincidono"
+                  : lipType === "third-party-insured"
+                    ? "Il Contraente è diverso dall'Assicurato"
+                    : "Il Contraente è una persona giuridica"
+              }
+            >
+              <FontAwesomeIcon
+                icon={
+                  lipType === "self-insured"
+                    ? faUser
+                    : lipType === "third-party-insured"
+                      ? faUserGroupSimple
+                      : faBuilding
+                }
+                fixedWidth
+                className="cursor-help"
+              />
+            </span>{" "}
+            {props.getValue()}
+          </>
+        );
+      },
     },
   ),
   columnHelper.accessor("createdAt", {
@@ -177,6 +212,11 @@ export const skeletonColumns = [
     id: "contractor",
     cell: () => (
       <Placeholder as="span" animation="glow">
+        <Placeholder
+          as="span"
+          className="rounded-circle"
+          style={{width: "1em"}}
+        />{" "}
         <Placeholder
           as="span"
           style={{width: `${40 + Math.random() * 35}px`}}

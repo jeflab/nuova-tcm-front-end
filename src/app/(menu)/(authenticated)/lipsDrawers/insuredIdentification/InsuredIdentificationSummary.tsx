@@ -1,23 +1,32 @@
 "use client";
 
-import {IdImage} from "@/ui/IdImage";
-import {idTypeOptions} from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
 import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {idTypeOptions} from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
 import {dateString} from "@/helpers/dates";
 import {getOptionsLabel} from "@/helpers/getOptionsLabel";
+import {DownloadDocumentButton} from "@/ui/DownloadDocumentButton";
+import {IdImage} from "@/ui/IdImage";
 import {
   faAddressCard,
   faClipboardListCheck,
+  faHouseCircleCheck,
   faSquareCheck,
 } from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Col, Row} from "react-bootstrap";
 
 export function InsuredIdentificationSummary() {
+  const lipId = useStore((state) => state.lip?.id);
   const agentId = useStore((state) => state.lip?.agent.id);
   const insuredId = useStore((state) => state.lip?.insured?.id);
+  const lipSalesMode = useStore((state) => state.lip?.salesMode);
   const identification = useStore((state) =>
     state.lip?.insured?.identityDocument?.at(-1),
+  );
+  const fileResidenceProofName = useStore(
+    (state) =>
+      state.lip?.insured?.identityDocument?.at(-1)?.identification
+        ?.fileResidenceProofName,
   );
 
   if (!identification) {
@@ -77,6 +86,37 @@ export function InsuredIdentificationSummary() {
             )}
         </div>
       </Col>
+      {fileResidenceProofName && lipId && agentId && (
+        <Col xs={12}>
+          <h4 className="text-primary">
+            <FontAwesomeIcon icon={faHouseCircleCheck} className="me-2" />{" "}
+            Conferma residenza
+          </h4>
+          <p>È stato caricato un documento che attesta la residenza:</p>
+          <p className="mb-0">
+            <DownloadDocumentButton
+              uri="pdf-residence-proof-assicurato"
+              lipId={lipId}
+              agentId={agentId}
+            >
+              Scarica conferma residenza
+            </DownloadDocumentButton>
+          </p>
+        </Col>
+      )}
+      {lipSalesMode === "remote" && !fileResidenceProofName && (
+        <Col xs={12}>
+          <h4 className="text-primary">
+            <FontAwesomeIcon icon={faHouseCircleCheck} className="me-2" />{" "}
+            Conferma residenza
+          </h4>
+          <p className="mb-0">
+            <FontAwesomeIcon icon={faSquareCheck} className="me-2" />
+            L'Intermediario dichiara che l documento a conferma della residenza
+            verrà fornito successivamente
+          </p>
+        </Col>
+      )}
       <Col xs={12}>
         <h4 className="text-primary">
           <FontAwesomeIcon icon={faClipboardListCheck} className="me-2" />
@@ -84,7 +124,9 @@ export function InsuredIdentificationSummary() {
         </h4>
         <p className="mb-0">
           <FontAwesomeIcon icon={faSquareCheck} className="me-2" />
-          Di aver incontrato l'Assicurato di persona
+          {lipSalesMode === "remote"
+            ? "Di aver identificato l'Assicurato a distanza"
+            : "Di aver incontrato l'Assicurato di persona"}
         </p>
         <p className="mb-0">
           <FontAwesomeIcon icon={faSquareCheck} className="me-2" />

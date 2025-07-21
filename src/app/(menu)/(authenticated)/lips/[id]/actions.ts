@@ -20,6 +20,7 @@ import {
   IdType,
   JobPosition,
   jobPositionOptions,
+  LipSalesMode,
   LipType,
   needsToMeetOptions,
   NeedsToMeetOptions,
@@ -55,6 +56,7 @@ const checkContractorShape = {
 };
 interface ActivateContractorParams {
   type: LipType;
+  salesMode: LipSalesMode;
   fatca: {
     label: string;
     text: string;
@@ -84,6 +86,7 @@ export async function activateContractor(
 ) {
   const data = {
     type: contractorData.type,
+    sales_mode: contractorData.salesMode,
     json_fatca: JSON.stringify({
       fatcaCheck: contractorData.fatca,
       residencyCheck: contractorData.italianResidency,
@@ -368,6 +371,7 @@ export async function addInsuredData(
 interface IdentificationParams {
   frontPicture: File;
   backPicture: File;
+  residenceProof: File;
   idType: IdType;
   number: string;
   issuedBy: string;
@@ -385,6 +389,7 @@ export async function identification(
   const formData = getTypedFormDataFromObject({
     idFront: documentFormData.get("frontPicture"),
     idBack: documentFormData.get("backPicture"),
+    residenceProof: documentFormData.get("residenceProof"),
     type: documentFormData.get("idType"),
     number: documentFormData.get("number"),
     issued_by: documentFormData.get("issuedBy"),

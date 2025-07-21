@@ -6,6 +6,7 @@ import {zu} from "zod_utilz";
 const identificationSchema = z.object({
   fileIdFrontName: z.string(),
   fileIdBackName: z.string(),
+  fileResidenceProofName: z.string().optional(),
   date: z.string(),
 });
 

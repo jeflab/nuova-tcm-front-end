@@ -2,34 +2,36 @@ import {cns} from "@/helpers/cns";
 import {ErrorCodes, errors} from "@/helpers/errors";
 import {useValidationState} from "@/ui/form/hooks";
 import {WithChildren} from "@/ui/types";
-import {useContext, useState} from "react";
+import {useContext} from "react";
 import FormContext from "react-bootstrap/FormContext";
 import Dropzone, {FileRejection} from "react-dropzone";
 import {RegisterOptions, useController, useFormContext} from "react-hook-form";
 import invariant from "tiny-invariant";
-import styles from "./DropzoneField.module.scss";
+import styles from "./FileDropzoneField.module.scss";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faFilePdf} from "@fortawesome/pro-duotone-svg-icons";
 
 const mbExponent = 20;
 const mb = 2 ** mbExponent; // 1 MB
 const maxSize = 8 * mb;
 
-interface DropzoneFieldProps extends WithChildren {
-  // renderContent: (dropzoneState: DropzoneState) => ReactElement;
+interface FileDropzoneFieldProps extends WithChildren {
   name?: string;
-  preselectedImageUrl?: string;
+  onChange?: (file: File) => void;
+  preselectedFileName?: string;
   validation?: RegisterOptions;
 }
 
-export function DropzoneField({
+export function FileDropzoneField({
   children,
   name,
-  preselectedImageUrl,
+  onChange: onChangeProp,
+  preselectedFileName,
   validation,
-}: DropzoneFieldProps) {
+}: FileDropzoneFieldProps) {
   const {controlId} = useContext(FormContext);
   const controlName = name || controlId;
   invariant(controlName, "name or controlId is required");
-  const [thumbUrl, setThumbUrl] = useState<string>();
 
   const {setError} = useFormContext();
   const {
@@ -56,7 +58,8 @@ export function DropzoneField({
       });
     } else if (accepted[0]) {
       const newFile = accepted[0];
-      setThumbUrl(URL.createObjectURL(newFile));
+
+      onChangeProp?.(newFile);
       onChange(newFile);
       onBlur();
     }
@@ -65,11 +68,11 @@ export function DropzoneField({
   return (
     <Dropzone
       accept={{
-        "image/*": [".jpg", ".jpeg", ".png", ".bmp"],
+        "application/pdf": [".pdf"],
       }}
       multiple={false}
       minSize={0}
-      maxSize={50000000}
+      maxSize={maxSize}
       onDrop={handleDrop}
     >
       {({
@@ -83,7 +86,7 @@ export function DropzoneField({
           <div
             {...getRootProps()}
             className={cns(
-              "ratio ratio-4x3 p-3",
+              "p-3",
               styles.dropzoneField,
               isDragActive && styles.isDragActive,
               isDragReject && styles.isDragReject,
@@ -93,18 +96,21 @@ export function DropzoneField({
             )}
           >
             <input {...getInputProps()} />
-            {(value || preselectedImageUrl) && (
-              <div
-                className={styles.dropzoneAreaThumbnail}
-                style={{
-                  backgroundImage: `url(${thumbUrl ?? preselectedImageUrl})`,
-                }}
-              />
+            {(value || preselectedFileName) && (
+              <div className={styles.dropzoneAreaThumbnail + " mb-3"}>
+                <FontAwesomeIcon
+                  className="align-middle"
+                  icon={faFilePdf}
+                  size="2x"
+                />{" "}
+                File selezionato:{" "}
+                {value?.path.replace("./", "") ?? preselectedFileName}
+              </div>
             )}
             <div
               className={cns(
                 styles.dropzoneAreaPlaceholder,
-                !!(value || preselectedImageUrl) && styles.hasThumbnail,
+                !!value && styles.hasThumbnail,
               )}
             >
               {children}
