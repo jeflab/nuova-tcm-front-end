@@ -1,4 +1,4 @@
-import appInfo from "../package.json" assert {type: "json"};
+import appInfo from "../package.json" with {type: "json"};
 import semver from "semver";
 import chalk from "chalk";
 
