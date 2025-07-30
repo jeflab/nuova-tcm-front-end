@@ -15,6 +15,7 @@ import {faSignInAlt} from "@fortawesome/pro-duotone-svg-icons/faSignInAlt";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import jwt from "jsonwebtoken";
 import {redirect} from "next/navigation";
+import {useState} from "react";
 import {Alert, FormGroup, FormLabel} from "react-bootstrap";
 
 const defaultValues = {
@@ -27,6 +28,8 @@ interface LoginFormProps {
 }
 
 export function LoginForm({searchParamsJson}: LoginFormProps) {
+  const [isRedirecting, setIsRedirecting] = useState(false);
+
   const handleSubmit = async (data: typeof defaultValues) => {
     let loginResponse: Awaited<ReturnType<typeof login>>;
 
@@ -46,6 +49,8 @@ export function LoginForm({searchParamsJson}: LoginFormProps) {
         root: {type: "server", message: normalizeError(loginResponse).message},
       };
     }
+
+    setIsRedirecting(true);
 
     if (searchParamsJson) {
       const searchParams = JSON.parse(searchParamsJson);
@@ -82,9 +87,9 @@ export function LoginForm({searchParamsJson}: LoginFormProps) {
           (permission) => permission === "contractor-read-lip",
         )
       ) {
-        redirect("/contractorLips");
+        return redirect("/contractorLips");
       } else {
-        redirect("/profile");
+        return redirect("/profile");
       }
     }
     return redirect("/");
@@ -122,14 +127,21 @@ export function LoginForm({searchParamsJson}: LoginFormProps) {
         <FieldError />
       </FormGroup>
       <FieldError name="root" as={Alert} variant="danger" className="mb-0" />
-      <SubmitButton variant="primary" className="w-100">
+      <SubmitButton
+        variant="primary"
+        className="w-100"
+        disabled={isRedirecting}
+      >
         {(isLoggingIn) => (
           <>
             <FontAwesomeIcon
-              icon={isLoggingIn ? faSpinner : faSignInAlt}
-              className={cns("me-2", isLoggingIn && "fa-spin")}
+              icon={isLoggingIn || isRedirecting ? faSpinner : faSignInAlt}
+              className={cns(
+                "me-2",
+                (isLoggingIn || isRedirecting) && "fa-spin",
+              )}
             />
-            Login
+            {isRedirecting ? "Reindirizzamento..." : "Login"}
           </>
         )}
       </SubmitButton>
