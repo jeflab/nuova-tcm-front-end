@@ -8,7 +8,10 @@ export const isSubmitErrors = <TFieldValues extends FieldValues>(
   const keys = ["root", ...Object.keys(flatten(data))] as [string, ...string[]];
 
   const SubmitErrorsSchema = z
-    .record(z.enum(keys), z.object({type: z.string(), message: z.string()}))
+    .partialRecord(
+      z.enum(keys),
+      z.object({type: z.string(), message: z.string()}),
+    )
     .refine((data) => {
       return Object.keys(data).length > 0;
     });
