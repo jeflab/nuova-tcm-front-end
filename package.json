@@ -41,6 +41,7 @@
     "zustand": "^5"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "^3.3.1",
     "@faker-js/faker": "^9.0.0",
     "@hookform/devtools": "^4.3.1",
     "@next/bundle-analyzer": "^15.1.4",
@@ -83,7 +84,7 @@
     "dev": "next dev",
     "dev-only": "next dev",
     "format": "prettier --write .",
-    "lint": "next lint",
+    "lint": "eslint .",
     "lint-staged": "lint-staged",
     "predev": "node ./scripts/checkNodeVersion.mjs && npm i",
     "prepare": "husky",
