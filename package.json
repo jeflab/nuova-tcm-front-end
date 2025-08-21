@@ -90,6 +90,7 @@
     "preturbo": "npm i",
     "start": "next start",
     "turbo": "next dev --turbo",
+    "turbobuild": "next build --turbo",
     "u": "npm update && npm run validate",
     "validate": "npm-run-all --print-label --sequential clean-cache --parallel check-format lint check-types --sequential build"
   }
