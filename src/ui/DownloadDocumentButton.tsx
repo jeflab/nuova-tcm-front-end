@@ -42,10 +42,20 @@ export function DownloadDocumentButton({
 
     try {
       const response = await fetch(url);
+
+      // Prendiamo il nome del file dall'header "Content-Disposition"
+      const contentDisposition = response.headers.get("Content-Disposition");
+
+      const filenameMatch = contentDisposition?.match(
+        /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/,
+      );
+      const filename = filenameMatch?.[1]?.replace(/['"]/g, "");
+
       const blob = await response.blob();
+
       const link = document.createElement("a");
       link.href = window.URL.createObjectURL(blob);
-      link.download = ""; // opzionale: puoi impostare il nome file
+      link.download = filename ?? "documento.pdf";
       document.body.appendChild(link);
 
       link.click();
@@ -69,6 +79,7 @@ export function DownloadDocumentButton({
       size={size}
       onClick={handleClick}
       style={{pointerEvents: loading ? "none" : "auto"}}
+      prefetch={false}
     >
       {loading ? (
         <FontAwesomeIcon icon={faSpinner} className="fa-spin" />
