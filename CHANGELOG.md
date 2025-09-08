@@ -20,7 +20,7 @@
 
 - Aggiunta gestione MUP con supporto ai vecchi file per le vecchie polizze
 
-### Fixed:
+#### Fixed:
 
 - Corretto bug che mostrava un numero di hash sbagliato nell'html
 
