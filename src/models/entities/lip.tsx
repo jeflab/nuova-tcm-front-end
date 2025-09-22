@@ -134,6 +134,8 @@ const LipStatesIcons: Record<number, ReactNode> = {
       <FontAwesomeIcon icon={faCross} className="fa-stack-1x" />
     </IconStack>
   ),
+  // 22: Inception
+  22: <FontAwesomeIcon icon={faCircleEuro} className="text-danger" />,
 } as const;
 
 const denSchema = z.object({
