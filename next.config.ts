@@ -35,17 +35,29 @@ let nextConfig: NextConfig = {
         };
       }),
   },
-  ...(maintenanceMode && {
-    async redirects() {
-      return [
-        {
-          source: "/((?!maintenance).*)",
-          destination: "/maintenance",
-          permanent: false,
+  ...(maintenanceMode
+    ? {
+        async redirects() {
+          return [
+            {
+              source: "/((?!maintenance).*)",
+              destination: "/maintenance",
+              permanent: false,
+            },
+          ];
         },
-      ];
-    },
-  }),
+      }
+    : {
+        async redirects() {
+          return [
+            {
+              source: "/maintenance",
+              destination: "/",
+              permanent: false,
+            },
+          ];
+        },
+      }),
 };
 
 nextConfig = withSentryConfig(nextConfig, {
