@@ -284,6 +284,7 @@ export function DataTable<Row>({
                     <div
                       onClick={header.column.getToggleSortingHandler()}
                       className={cns(
+                        "text-nowrap",
                         header.column.getCanSort() && styles.sortableColumn,
                       )}
                       title={

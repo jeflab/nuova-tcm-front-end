@@ -11,7 +11,6 @@ import {
   FontAwesomeIcon,
   FontAwesomeIconProps,
 } from "@fortawesome/react-fontawesome";
-import {CSSProperties} from "react";
 
 interface DrawerIconProps extends Omit<FontAwesomeIconProps, "icon"> {
   className?: string;
@@ -70,7 +69,7 @@ export function DrawerIcon({
           {...fontawesomeProps}
           icon={faCirclePause}
           className={cns("fa-fade", className)}
-          style={{"--fa-animation-duration": "2s"} as CSSProperties}
+          style={{"--fa-animation-duration": "2s"}}
         />
       </>
     );

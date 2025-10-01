@@ -20,6 +20,17 @@ export const dbDateString = (date?: Date | string) => {
 
 const dateTimePattern = "dd MMMM yyyy 'alle' HH:mm";
 export const dateTimeString = (date?: Date | string) => {
-  Sentry.captureMessage(`dateTimeString: ${date}`);
-  return format(dateOrNow(date), dateTimePattern, locale);
+  // questa funziona crasha spesso, proviamo a loggare l'errore e torniamo un fallback. In futuro
+  //  torneremo a tornare direttamente il format
+  try {
+    return format(dateOrNow(date), dateTimePattern, locale);
+  } catch (error) {
+    Sentry.captureException(error, {
+      extra: {
+        date,
+        dateTimePattern,
+      },
+    });
+    return (typeof date === "string" ? date : date?.toString()) || "";
+  }
 };

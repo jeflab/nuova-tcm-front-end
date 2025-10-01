@@ -88,7 +88,7 @@ const ContractorFormSchema = (lipType: LipType) =>
         .refine(required, "Inserisci il genere del Contraente")
         .and(
           z.enum(getOptionsValues(genderOptions), {
-            errorMap: () => ({
+            error: () => ({
               message: "Il genere del Contraente non è valido",
             }),
           }),

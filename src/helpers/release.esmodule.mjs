@@ -1,4 +1,4 @@
-import appInfo from "../../package.json" assert {type: "json"};
+import appInfo from "../../package.json" with {type: "json"};
 
 export function getRelease() {
   return `${appInfo.name}@${getVersion()}`;

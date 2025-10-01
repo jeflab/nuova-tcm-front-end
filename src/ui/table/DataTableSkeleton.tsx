@@ -112,7 +112,7 @@ export function DataTableSkeleton<Row>({
                       "align-top",
                     )}
                   >
-                    <div>
+                    <div className="text-nowrap">
                       {flexRender(
                         header.column.columnDef.header,
                         header.getContext(),

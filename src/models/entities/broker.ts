@@ -1,14 +1,14 @@
+import {stringToJSON} from "@/helpers/stringToJSON";
 import {backendUrl} from "@/services/const";
 import {z} from "zod";
-import zu from "zod_utilz";
 
 const informationSchema = z
   .object({
     FE_logo: z
       .object({
         url: z.string(),
-        width: z.coerce.number(),
-        height: z.coerce.number(),
+        width: z.coerce.number<string | number>(),
+        height: z.coerce.number<string | number>(),
       })
       .transform(({height, width, ...logo}) => ({
         url: backendUrl + logo.url,
@@ -28,7 +28,7 @@ const informationSchema = z
 export const brokerSchema = z
   .object({
     name: z.string(),
-    json_information: zu.stringToJSON().pipe(informationSchema),
+    json_information: stringToJSON().pipe(informationSchema),
   })
   .transform(({json_information, ...broker}) => ({
     ...broker,
