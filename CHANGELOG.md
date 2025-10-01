@@ -1,5 +1,19 @@
 # Changelog
 
+## v2.5.0 (2025-10-01)
+
+#### Added:
+
+- Aggiunto loader per il download dei documenti
+- Aggiunto nuovo stato "Inception" per le lip
+
+#### Changed:
+
+- Aggiornato node alla versione 22.17
+- Aggiornato Zod alla versione 4
+- Aggiunto loader dopo il login
+- Migliorate le intestazioni delle tabelle
+
 ## v2.4.0 (2025-07-21)
 
 #### Added:
