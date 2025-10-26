@@ -69,6 +69,9 @@ function createState(state: State & Actions) {
   const externalPaymentBlocked =
     state.lip?.payment?.paymentType === "credit-card" &&
     !state.lip?.payment?.clicPayLinkClicked;
+  const molliePaymentBlocked =
+    state.lip?.payment?.paymentType === "mollie" &&
+    !state.lip?.payment?.mollieLinkClicked;
 
   if (isPreliminary) {
     // type
@@ -391,9 +394,7 @@ function createState(state: State & Actions) {
       requiredProposalESign++;
     }
     if (state.drawerStates.payment?.variant === "success") {
-      if (amlBlocked) {
-        state.drawerStates.documentation = {variant: "waiting", isLocked: true};
-      } else if (externalPaymentBlocked) {
+      if (amlBlocked || externalPaymentBlocked || molliePaymentBlocked) {
         state.drawerStates.documentation = {variant: "waiting", isLocked: true};
       } else if (
         state.lip?.eSigns?.polizza &&

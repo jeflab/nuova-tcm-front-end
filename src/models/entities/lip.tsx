@@ -400,7 +400,7 @@ const paymentSchema = z.object({
   duration: z.string(),
   expirationDate: z.string(),
   paymentType: z
-    .enum([...getOptionsValues(paymentTypesOptions), "legacy"])
+    .enum([...getOptionsValues(paymentTypesOptions), "legacy", "credit-card"])
     .default("legacy"),
   paymentMethod: z.enum(getOptionsValues(paymentMethodsOptions())),
   contractorFullName: z.string(),
@@ -409,6 +409,7 @@ const paymentSchema = z.object({
   bicSwift: z.string(),
   iban: z.string(),
   clicPayLinkClicked: z.boolean().optional(),
+  mollieLinkClicked: z.boolean().optional(),
 });
 
 export const eSignSchema = z.object({
