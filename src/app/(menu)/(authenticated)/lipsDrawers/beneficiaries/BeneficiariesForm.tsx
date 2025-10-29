@@ -470,7 +470,10 @@ export function BeneficiariesForm() {
                                       }
                                     },
                                     custom: (value) => {
-                                      if (!fiscalCodeValidator(value)) {
+                                      if (
+                                        value &&
+                                        !fiscalCodeValidator(value)
+                                      ) {
                                         return "Il codice fiscale inserito non è valido";
                                       }
                                     },
@@ -627,7 +630,7 @@ export function BeneficiariesForm() {
                                       }
                                     },
                                     pattern: (value) => {
-                                      if (!emailValidator(value)) {
+                                      if (value && !emailValidator(value)) {
                                         return "L'email inserita non è valida";
                                       }
                                     },
@@ -955,7 +958,7 @@ export function BeneficiariesForm() {
                                 }
                               },
                               custom: (value) => {
-                                if (!fiscalCodeValidator(value)) {
+                                if (value && !fiscalCodeValidator(value)) {
                                   return "Il codice fiscale inserito non è valido";
                                 }
                               },
@@ -1107,7 +1110,7 @@ export function BeneficiariesForm() {
                                 }
                               },
                               pattern: (value) => {
-                                if (!emailValidator(value)) {
+                                if (value && !emailValidator(value)) {
                                   return "L'email inserita non è valida";
                                 }
                               },
