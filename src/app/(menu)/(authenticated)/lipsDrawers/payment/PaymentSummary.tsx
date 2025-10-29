@@ -1,39 +1,26 @@
 "use client";
 
-import {getActiveSubscriptionQuery} from "@/app/(menu)/(authenticated)/lips/[id]/queries";
 import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {
   ExclusionList,
   getExcludedCoverages,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/payment/ExclusionList";
+import {MollieSubscriptionStatus} from "@/app/(menu)/(authenticated)/lipsDrawers/payment/MollieSubscriptionStatus";
 import {PaymentMethod} from "@/app/(menu)/(authenticated)/lipsDrawers/payment/PaymentMethod";
-import {dateString} from "@/helpers/dates";
 import {DownloadDocumentButton} from "@/ui/DownloadDocumentButton";
 import {IconStack} from "@/ui/IconStack";
 import {
   faBank,
   faCalendar,
-  faCheck,
   faCirclePlay,
   faCreditCard,
   faShieldXmark,
 } from "@fortawesome/pro-duotone-svg-icons";
-import {
-  faArrowsSpin,
-  faDollarSign,
-  faCreditCard as faCreditCardSolid,
-} from "@fortawesome/pro-solid-svg-icons";
+import {faDollarSign} from "@fortawesome/pro-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {useQuery} from "@tanstack/react-query";
-import {useParams} from "next/navigation";
 import {Alert, Stack} from "react-bootstrap";
 
 export function PaymentSummary() {
-  const lipId = Number(useParams<{id: string}>().id);
-  const {data: activeSubscription} = useQuery(
-    getActiveSubscriptionQuery(lipId),
-  );
-
   const lip = useStore((state) => state.lip);
   const paymentData = useStore((state) => state.lip?.payment);
   const premium = useStore((state) => state.lip?.quotation?.premium);
@@ -246,42 +233,8 @@ export function PaymentSummary() {
           )}
         </dl>
       </div>
-      {activeSubscription?.subscription && (
-        <div>
-          <h4 className="w-100 text-primary">
-            <IconStack>
-              <FontAwesomeIcon
-                icon={faCreditCardSolid}
-                className="fa-stack-2x"
-                opacity={0.4}
-              />
-              <FontAwesomeIcon
-                icon={faArrowsSpin}
-                className="fa-stack-1x"
-                transform="right-12 down-8 grow-7"
-              />
-            </IconStack>{" "}
-            Pagamento automatico
-          </h4>
-          <p className="mb-0">
-            <FontAwesomeIcon
-              icon={faCheck}
-              className="text-success"
-              fixedWidth
-            />{" "}
-            <strong>È attivo il pagamento automatico</strong>
-            <br />
-            <strong>Prossimo addebito:</strong>{" "}
-            {dateString(activeSubscription.subscription.nextPaymentDate)}
-            {lip?.expirationDate && (
-              <>
-                <br />
-                <strong>Scadenza abbonamento:</strong>{" "}
-                {dateString(lip.expirationDate)}
-              </>
-            )}
-          </p>
-        </div>
+      {lip?.payment?.paymentType === "mollie" && (
+        <MollieSubscriptionStatus lip={lip} />
       )}
     </Stack>
   );
