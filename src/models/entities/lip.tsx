@@ -516,10 +516,12 @@ export const lipSchema = z
       .array(lipStateSchema)
       .nullish()
       .transform((states) => {
-        return states?.[states.length - 1] ?? lipStateSchema.parse(undefined);
+        return states?.[0] ?? lipStateSchema.parse(undefined);
       }),
     type: z.enum(getOptionsValues(lipTypeOptions)),
     sales_mode: z.enum(getOptionsValues(lipSalesModeOptions)),
+    expiration_date: z.string().nullish(),
+    termination_date: z.string().nullish(),
   })
   .transform(
     ({
@@ -538,6 +540,8 @@ export const lipSchema = z
       json_privacy_company,
       lipstates,
       sales_mode,
+      expiration_date,
+      termination_date,
       ...data
     }) => {
       const contractorInsuredRelationship =
@@ -566,6 +570,8 @@ export const lipSchema = z
         privacyCompany: json_privacy_company,
         lipStates: lipstates,
         salesMode: sales_mode,
+        expirationDate: expiration_date,
+        terminationDate: termination_date,
       };
     },
   );

@@ -271,11 +271,15 @@ export function PaymentSummary() {
             />{" "}
             <strong>È attivo il pagamento automatico</strong>
             <br />
-            <strong>Pagamenti rimasti:</strong>{" "}
-            {activeSubscription.subscription.timesRemaining}
-            <br />
             <strong>Prossimo addebito:</strong>{" "}
             {dateString(activeSubscription.subscription.nextPaymentDate)}
+            {lip?.expirationDate && (
+              <>
+                <br />
+                <strong>Scadenza abbonamento:</strong>{" "}
+                {dateString(lip.expirationDate)}
+              </>
+            )}
           </p>
         </div>
       )}

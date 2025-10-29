@@ -26,6 +26,5 @@ export type MolliePayment = z.infer<typeof molliePaymentSchema>;
 export const mollieSubscriptionSchema = z.object({
   resource: z.string(),
   id: z.string(),
-  timesRemaining: z.number(),
   nextPaymentDate: z.string(),
 });
