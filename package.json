@@ -1,6 +1,6 @@
 {
   "name": "nuova-tcm-front-end",
-  "version": "2.6.0-mollie",
+  "version": "2.6.0-mollie.2",
   "author": "Fabio Lazzaroni <lazzaroni@jeflab.it> (http://jeflab.it/)",
   "contributors": [
     "Andrea Mangiavini <mangiavini@jeflab.it> (http://jeflab.it/)"
@@ -24,8 +24,8 @@
     "flat": "^6.0.1",
     "ibantools": "^4.5.0",
     "immer": "^10.0.3",
+    "jose": "^6.1.0",
     "js-cookie": "^3.0.5",
-    "jsonwebtoken": "^9.0.2",
     "match-sorter": "^8.0.0",
     "next": "^15.1.4",
     "react": "^19.0.0",
@@ -47,7 +47,6 @@
     "@next/bundle-analyzer": "^15.1.4",
     "@tanstack/eslint-plugin-query": "^5.72.2",
     "@types/js-cookie": "^3.0.6",
-    "@types/jsonwebtoken": "^9.0.8",
     "@types/node": "^22",
     "@types/react": "^19",
     "@types/react-dom": "^19",
