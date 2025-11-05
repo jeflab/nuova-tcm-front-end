@@ -251,6 +251,7 @@ const quotationSchema = z
     ...data,
     notApproveUnderwriting: not_approve_underwriting,
   }));
+export type Quotation = z.infer<typeof quotationSchema>;
 
 export const lipDocumentsSchema = z.object({
   fileAllegato3: z.string().optional(),
@@ -411,6 +412,7 @@ const paymentSchema = z.object({
   clicPayLinkClicked: z.boolean().optional(),
   mollieLinkClicked: z.boolean().optional(),
 });
+export type Payment = z.infer<typeof paymentSchema>;
 
 export const eSignSchema = z.object({
   identificazione: z

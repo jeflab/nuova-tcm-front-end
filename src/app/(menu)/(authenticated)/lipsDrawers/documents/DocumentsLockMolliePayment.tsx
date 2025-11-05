@@ -20,9 +20,9 @@ import {
 import {faLink, faPlus} from "@fortawesome/pro-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import useTimeout from "@restart/hooks/useTimeout";
-import {useQuery} from "@tanstack/react-query";
+import {useSuspenseQuery} from "@tanstack/react-query";
 import {useParams} from "next/navigation";
-import {useState} from "react";
+import {Suspense, useState} from "react";
 import {Alert, Button} from "react-bootstrap";
 import {Variant} from "react-bootstrap/esm/types";
 
@@ -210,56 +210,54 @@ function MolliePaymentClickedState({lipId}: MolliePaymentClickedStateProps) {
   );
 }
 
-export function DocumentsLockMolliePayment() {
-  const lipId = Number(useParams<{id: string}>().id);
-
-  const paymentValues = useStore((state) => state.lip?.payment);
+interface PaymentStatusProps {
+  lipId: number;
+}
+function PaymentStatus({lipId}: PaymentStatusProps) {
+  const mollieLinkClicked = useStore(
+    (state) => state.lip?.payment?.mollieLinkClicked,
+  );
 
   const {
     data: firstPaymentData,
     error: firstPaymentError,
     isFetching: firstPaymentFetching,
-    isPending: firstPaymentIsPending,
     isError: firstPaymentIsError,
     refetch: firstPaymentRefetch,
-  } = useQuery(getActiveFirstPaymentQuery(lipId));
+  } = useSuspenseQuery(getActiveFirstPaymentQuery(lipId));
 
-  if (!paymentValues || !lipId) {
-    return null;
-  }
-
-  const molliePaymentBlocked =
-    paymentValues?.paymentType === "mollie" &&
-    !paymentValues?.mollieLinkClicked;
-
-  const molliePaymentClicked =
-    paymentValues?.paymentType === "mollie" && paymentValues?.mollieLinkClicked;
-
-  if (molliePaymentBlocked || molliePaymentClicked) {
-    if (firstPaymentIsPending) {
-      return <FirstPaymentPending />;
-    }
-
-    if (firstPaymentIsError) {
-      return (
-        <FirstPaymentError
-          firstPaymentError={firstPaymentError}
-          onRetry={firstPaymentRefetch}
-          firstPaymentFetching={firstPaymentFetching}
-        />
-      );
-    }
-
-    if (firstPaymentData.first_payment !== null) {
-      return <FirstPaymentLink firstPayment={firstPaymentData.first_payment} />;
-    }
-
-    return molliePaymentClicked ? (
-      <MolliePaymentClickedState lipId={lipId} />
-    ) : (
-      <MolliePaymentPendingState lipId={lipId} />
+  if (firstPaymentIsError) {
+    return (
+      <FirstPaymentError
+        firstPaymentError={firstPaymentError}
+        onRetry={firstPaymentRefetch}
+        firstPaymentFetching={firstPaymentFetching}
+      />
     );
   }
 
-  return null;
+  if (firstPaymentData.first_payment !== null) {
+    return <FirstPaymentLink firstPayment={firstPaymentData.first_payment} />;
+  }
+
+  if (mollieLinkClicked) {
+    return <MolliePaymentClickedState lipId={lipId} />;
+  }
+
+  return <MolliePaymentPendingState lipId={lipId} />;
+}
+
+export function DocumentsLockMolliePayment() {
+  const lipId = Number(useParams<{id: string}>().id);
+  const paymentType = useStore((state) => state.lip?.payment?.paymentType);
+
+  if (paymentType !== "mollie" || !lipId) {
+    return null;
+  }
+
+  return (
+    <Suspense fallback={<FirstPaymentPending />}>
+      <PaymentStatus lipId={lipId} />
+    </Suspense>
+  );
 }
