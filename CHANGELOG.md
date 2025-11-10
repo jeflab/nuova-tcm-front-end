@@ -1,5 +1,11 @@
 # Changelog
 
+## v2.6.0 (2025-11-10)
+
+#### Added:
+
+- Aggiunto il nuovo metodo di pagamento Mollie con creazione link e visualizzazione stato abbonamaento
+
 ## v2.5.0 (2025-10-01)
 
 #### Added:
