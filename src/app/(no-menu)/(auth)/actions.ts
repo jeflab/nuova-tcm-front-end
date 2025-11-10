@@ -33,7 +33,7 @@ export async function login(data: LoginParams) {
     (await cookies()).set(AUTH_COOKIE_NAME, loginResponse.access_token, {
       httpOnly: true,
       secure: true,
-      sameSite: "strict",
+      sameSite: "lax",
       maxAge: COOKIE_DURATION,
       expires: new Date(Date.now() + COOKIE_DURATION * 1000),
     });

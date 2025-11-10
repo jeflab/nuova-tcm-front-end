@@ -1,6 +1,6 @@
 @import "@/app/variables";
 @import "bootstrap/scss/mixins";
-@value visible from "@/ui/ScrollReveal/ScrollReveal.module.scss";
+@value visible from "../../../../../ui/ScrollReveal/ScrollReveal.module.scss";
 
 .connectedList {
   position: sticky;
