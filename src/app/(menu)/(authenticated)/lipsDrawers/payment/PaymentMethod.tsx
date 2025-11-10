@@ -22,15 +22,11 @@ export function PaymentMethod({
         <p className="mb-0">
           <strong>Pagamento tramite Bonifico - Addebito diretto SDD</strong>
         </p>
-      ) : paymentType === "credit-card" ? (
+      ) : ["credit-card", "mollie"].includes(paymentType) ? (
         <p className="mb-0">
           <strong>
             Pagamento elettronico tramite Carta di Credito o Debito
           </strong>
-        </p>
-      ) : paymentType === "mollie" ? (
-        <p className="mb-0">
-          <strong>Pagamento elettronico tramite Mollie</strong>
         </p>
       ) : null}
       <p className="mb-0">

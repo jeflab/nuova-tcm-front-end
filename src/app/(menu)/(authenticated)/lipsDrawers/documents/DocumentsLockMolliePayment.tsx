@@ -1,7 +1,10 @@
 "use client";
 
 import {useCreateRecurringPaymentMutation} from "@/app/(menu)/(authenticated)/lips/[id]/mutations";
-import {getActiveFirstPaymentQuery} from "@/app/(menu)/(authenticated)/lips/[id]/queries";
+import {
+  getActiveFirstPaymentQuery,
+  getActiveSubscriptionQuery,
+} from "@/app/(menu)/(authenticated)/lips/[id]/queries";
 import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {cns} from "@/helpers/cns";
 import {dateTimeString} from "@/helpers/dates";
@@ -195,6 +198,8 @@ interface MolliePaymentClickedStateProps {
   lipId: number;
 }
 function MolliePaymentClickedState({lipId}: MolliePaymentClickedStateProps) {
+  const {data} = useSuspenseQuery(getActiveSubscriptionQuery(lipId));
+
   return (
     <PaymentAlert variant="success">
       <FontAwesomeIcon
@@ -204,6 +209,10 @@ function MolliePaymentClickedState({lipId}: MolliePaymentClickedStateProps) {
       />
       <p className="mb-0 me-auto">
         La procedura di pagamento è stata presa in carico da Mollie.
+        <br />{" "}
+        {data.subscription
+          ? "È attivo il pagamento automatico"
+          : "Non è attivo un pagamento automatico"}
       </p>
       <CreateRecurringPaymentButton lipId={lipId} />
     </PaymentAlert>

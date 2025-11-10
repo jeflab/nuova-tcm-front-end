@@ -19,6 +19,7 @@ import {
 } from "@fortawesome/pro-duotone-svg-icons";
 import {faDollarSign} from "@fortawesome/pro-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {Suspense} from "react";
 import {Alert, Stack} from "react-bootstrap";
 
 function InsuranceEffectiveDate() {
@@ -303,7 +304,9 @@ export function PaymentSummary() {
       <BankDetails paymentData={paymentData} />
       <PaymentModality paymentData={paymentData} lip={lip} />
       {lip?.payment?.paymentType === "mollie" && (
-        <MollieSubscriptionStatus lip={lip} />
+        <Suspense>
+          <MollieSubscriptionStatus lip={lip} />
+        </Suspense>
       )}
     </Stack>
   );

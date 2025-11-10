@@ -411,7 +411,7 @@ export type DeprecatedPaymentType =
   (typeof deprecatedPaymentTypesOptions)[number]["value"];
 export const paymentTypesOptions = [
   {
-    label: "Mollie (Carta di Credito o Debito, Apple Pay, Google Pay)",
+    label: "carta di credito / debito (visa - mastercard - american express)",
     value: "mollie",
   },
   {
