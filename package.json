@@ -1,6 +1,6 @@
 {
   "name": "nuova-tcm-front-end",
-  "version": "2.6.0-mollie.2",
+  "version": "2.6.0",
   "author": "Fabio Lazzaroni <lazzaroni@jeflab.it> (http://jeflab.it/)",
   "contributors": [
     "Andrea Mangiavini <mangiavini@jeflab.it> (http://jeflab.it/)"
@@ -65,8 +65,8 @@
     "typescript": "^5"
   },
   "engines": {
-    "npm": "^10.9 | ^11.0",
-    "node": "^22.17"
+    "npm": "~10 | ~11",
+    "node": "~22"
   },
   "overrides": {
     "react": "^19.0.0",
