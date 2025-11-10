@@ -40,12 +40,8 @@ export function DocumentsLockExternalPayment() {
     return (
       <Alert className="mb-0" variant="danger">
         <div className="d-flex justify-content-between align-items-center">
-          <p className="mb-0">
-            <FontAwesomeIcon
-              icon={faCircleExclamation}
-              className="me-2"
-              size="xl"
-            />
+          <FontAwesomeIcon icon={faCircleExclamation} size="xl" />
+          <p className="mb-0 mx-2">
             Per proseguire con il pagamento è necessario effettuare il pagamento
             tramite il portale di ClicPay.
           </p>
@@ -54,6 +50,7 @@ export function DocumentsLockExternalPayment() {
             href="https://clicpay.worldlineitalia.it/login"
             target="_blank"
             onClick={handleLinkClick}
+            className="ms-auto"
           >
             <FontAwesomeIcon icon={faArrowUpRightFromSquare} className="me-2" />
             Login ClicPay

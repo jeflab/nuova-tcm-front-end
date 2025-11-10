@@ -1,9 +1,7 @@
 import {queryOptions} from "@tanstack/react-query";
 import {getCitizenships} from "../actions/citizenships";
 
-const oneDayInMs = 1000 * 60 * 60 * 24;
-
-export function citizenshipsOptions() {
+export function citizenshipsQuery() {
   return queryOptions({
     queryKey: ["citizenships"],
     queryFn: async () => {
@@ -14,7 +12,7 @@ export function citizenshipsOptions() {
 
       return citizenships.citizenships;
     },
-    staleTime: oneDayInMs,
+    staleTime: "static",
     retry: 5,
   });
 }

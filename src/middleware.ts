@@ -1,7 +1,7 @@
 import {AUTH_COOKIE_NAME} from "@/app/(no-menu)/(auth)/const";
 import {jwtSchema} from "@/models/jwt";
+import {decodeJwt} from "jose";
 import {NextRequest, NextResponse} from "next/server";
-import jwt from "jsonwebtoken";
 
 export const config = {
   matcher: [
@@ -38,7 +38,7 @@ export default async function middleware(request: NextRequest) {
 
   if (token) {
     try {
-      const decodedToken = jwt.decode(token);
+      const decodedToken = decodeJwt(token);
       const parsedToken = jwtSchema.parse(decodedToken);
 
       userPermissions = Object.values(parsedToken.permissions ?? {});

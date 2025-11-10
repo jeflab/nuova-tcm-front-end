@@ -13,7 +13,7 @@ import {fiscalCodeValidator} from "@/ui/form/validators/fiscalCode";
 import {faSpinner} from "@fortawesome/pro-duotone-svg-icons";
 import {faSignInAlt} from "@fortawesome/pro-duotone-svg-icons/faSignInAlt";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import jwt from "jsonwebtoken";
+import {decodeJwt} from "jose";
 import {redirect} from "next/navigation";
 import {useState} from "react";
 import {Alert, FormGroup, FormLabel} from "react-bootstrap";
@@ -71,7 +71,7 @@ export function LoginForm({searchParamsJson}: LoginFormProps) {
     if (loginResponse.access_token) {
       let userPermissions: string[] = [];
       try {
-        const decodedToken = jwt.decode(loginResponse.access_token);
+        const decodedToken = decodeJwt(loginResponse.access_token);
         const parsedToken = jwtSchema.parse(decodedToken);
 
         userPermissions = Object.values(parsedToken.permissions ?? {});

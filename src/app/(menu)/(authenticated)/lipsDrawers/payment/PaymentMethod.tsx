@@ -2,11 +2,12 @@ import {
   paymentMethodsOptions,
   PaymentMethods,
   PaymentType,
+  DeprecatedPaymentType,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
 
 interface PaymentMethodProps {
   paymentMethod: PaymentMethods;
-  paymentType: PaymentType;
+  paymentType: PaymentType | DeprecatedPaymentType;
   premium: number;
 }
 
@@ -21,7 +22,7 @@ export function PaymentMethod({
         <p className="mb-0">
           <strong>Pagamento tramite Bonifico - Addebito diretto SDD</strong>
         </p>
-      ) : paymentType === "credit-card" ? (
+      ) : ["credit-card", "mollie"].includes(paymentType) ? (
         <p className="mb-0">
           <strong>
             Pagamento elettronico tramite Carta di Credito o Debito

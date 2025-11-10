@@ -37,6 +37,10 @@ import {
   TypedFormData,
 } from "@/helpers/typedFormData";
 import {Lip, lipSchema} from "@/models/entities/lip";
+import {
+  molliePaymentSchema,
+  mollieSubscriptionSchema,
+} from "@/models/entities/mollie/payment";
 import {privacySchema} from "@/models/entities/privacy";
 import {get, patch, post} from "@/services/api";
 import {Tags} from "@/services/const";
@@ -576,5 +580,29 @@ export async function saveCompanyPrivacyConsent(
   return post(`/lips/${lipId}/privacy-company`, {
     data: consent,
     revalidateTags: [Tags.getLip(lipId)],
+  });
+}
+
+export async function getActiveFirstPayment(lipId: number) {
+  return get(`/lips/${lipId}/recurring-payments/active-first-payment`, {
+    payloadShape: {
+      first_payment: molliePaymentSchema.nullable(),
+    },
+  });
+}
+
+export async function createRecurringPayment(lipId: number) {
+  return post(`/lips/${lipId}/recurring-payments`, {
+    payloadShape: {
+      first_payment: molliePaymentSchema.nullable(),
+    },
+  });
+}
+
+export async function getActiveSubscription(lipId: number) {
+  return get(`/lips/${lipId}/recurring-payments/subscription`, {
+    payloadShape: {
+      subscription: mollieSubscriptionSchema.nullable(),
+    },
   });
 }

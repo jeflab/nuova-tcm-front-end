@@ -397,22 +397,42 @@ export const nominationOptions = [
 export type Nomination = (typeof nominationOptions)[number]["value"];
 
 // Payments
-export const paymentTypesOptions = [
+export const deprecatedPaymentTypesOptions = [
   {
     label: "Carta di Credito",
     value: "credit-card",
+  },
+  {
+    label: "Vecchio sistema di pagamento",
+    value: "legacy",
+  },
+] as const;
+export type DeprecatedPaymentType =
+  (typeof deprecatedPaymentTypesOptions)[number]["value"];
+export const paymentTypesOptions = [
+  {
+    label: "carta di credito / debito (visa - mastercard - american express)",
+    value: "mollie",
   },
   {
     label: "Bonifico Bancario",
     value: "transfer-sdd",
   },
 ] as const;
-export type PaymentType =
-  | (typeof paymentTypesOptions)[number]["value"]
-  | "legacy";
+export type PaymentType = (typeof paymentTypesOptions)[number]["value"];
 
 export function paymentMethodsOptions(premium: number = 0) {
   return [
+    {
+      label: `Pagamento annuale di ${toCurrency(premium)}`,
+      value: "mollie-annual",
+      type: "mollie",
+    },
+    {
+      label: `Pagamento mensile di ${toCurrency(premium / 12)}`,
+      value: "mollie-monthly",
+      type: "mollie",
+    },
     {
       label: `Pagamento annuale di ${toCurrency(premium)}`,
       value: "cc-annual",

@@ -1,5 +1,5 @@
 import {cns} from "@/helpers/cns";
-import {citizenshipsOptions} from "@/services/queries/citizenshipsOptions";
+import {citizenshipsQuery} from "@/services/queries/citizenships";
 import {InputField} from "@/ui/form/InputField";
 import {upperCaseWordsNormalizer} from "@/ui/form/normalizers";
 import {
@@ -63,7 +63,7 @@ export function CitizenshipAutocompleteField({
     isError: isCitizenshipsError,
     refetch: refetchCitizenships,
     isRefetching: isCitizenshipsRefetching,
-  } = useQuery(citizenshipsOptions());
+  } = useQuery(citizenshipsQuery());
 
   if (isCitizenshipsError) {
     return (
