@@ -37,6 +37,7 @@ import {
   fiscalCodeMatchDataValidator,
   fiscalCodeValidator,
 } from "@/ui/form/validators/fiscalCode";
+import {useDrawerModal} from "@/ui/ModalContext";
 import {useAutoAnimate} from "@formkit/auto-animate/react";
 import {
   faSave,
@@ -153,7 +154,7 @@ export function BeneficiariesForm() {
 
   const beneficiariesData = useStore((state) => state.lip?.beneficiaries);
   const lipId = useStore((state) => state.lip?.id);
-  const closeModal = useStore((state) => state.closeModal);
+  const {closeModal} = useDrawerModal();
 
   const formMethods = useForm({
     mode: "onChange",

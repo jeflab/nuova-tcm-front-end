@@ -26,6 +26,7 @@ import {InputField} from "@/ui/form/InputField";
 import {emailNormalizer, onlyNumbersNormalizer} from "@/ui/form/normalizers";
 import {SelectField} from "@/ui/form/SelectField";
 import {emailValidator} from "@/ui/form/validators/email";
+import {useDrawerModal} from "@/ui/ModalContext";
 import {faSave, faSpinner, faXmark} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import * as Sentry from "@sentry/nextjs";
@@ -41,6 +42,7 @@ import {
 } from "react-bootstrap";
 import {useForm} from "react-hook-form";
 import invariant from "tiny-invariant";
+import "core-js/actual/array/to-sorted";
 
 // Polyfill per safari 15.
 let toSortedPolyfillNeeded = false;
@@ -48,8 +50,6 @@ if ([].toSorted === undefined) {
   Sentry.captureMessage("[].toSorted method is undefined. " + [].toSorted);
   toSortedPolyfillNeeded = true;
 }
-
-import "core-js/actual/array/to-sorted";
 
 if (toSortedPolyfillNeeded) {
   Sentry.captureMessage("[].toSorted polyfill applied. " + [].toSorted);
@@ -105,7 +105,7 @@ export function ContractorDataForm() {
     },
   });
 
-  const closeModal = useStore((state) => state.closeModal);
+  const {closeModal} = useDrawerModal();
 
   const jobPositionValue = formMethods.watch("job.position");
 

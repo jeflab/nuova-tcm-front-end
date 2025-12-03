@@ -10,6 +10,7 @@ import {CheckGroup} from "@/ui/form/CheckGroup";
 import {FieldError} from "@/ui/form/FieldError";
 import {Form} from "@/ui/form/Form";
 import {HelpText} from "@/ui/form/HelpText";
+import {useDrawerModal} from "@/ui/ModalContext";
 import {faSave, faSpinner, faXmark} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {
@@ -64,7 +65,7 @@ export function FatcaForm() {
     },
   });
 
-  const closeModal = useStore((state) => state.closeModal);
+  const {closeModal} = useDrawerModal();
   const updatePreliminaryData = useStore(
     (state) => state.updatePreliminaryData,
   );

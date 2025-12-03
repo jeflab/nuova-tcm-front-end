@@ -4,8 +4,8 @@ import {
   activateContractor,
   updateContractorContacts,
 } from "@/app/(menu)/(authenticated)/lips/[id]/actions";
-import {fatcaQuestions} from "@/app/(menu)/(authenticated)/lipsDrawers/fatca/FatcaForm";
 import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {fatcaQuestions} from "@/app/(menu)/(authenticated)/lipsDrawers/fatca/FatcaForm";
 import {cns} from "@/helpers/cns";
 import {normalizeError} from "@/helpers/errors";
 import {Role} from "@/models/account";
@@ -18,6 +18,7 @@ import {Form} from "@/ui/form/Form";
 import {InputField} from "@/ui/form/InputField";
 import {emailNormalizer, onlyNumbersNormalizer} from "@/ui/form/normalizers";
 import {emailValidator} from "@/ui/form/validators/email";
+import {useDrawerModal} from "@/ui/ModalContext";
 import {faSave, faSpinner, faXmark} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {useRouter} from "next/navigation";
@@ -56,7 +57,7 @@ export function ContractorContactsForm({
 
   const contractor = useStore((state) => state.lip?.contractor);
   const lipId = useStore((state) => state.lip?.id);
-  const closeModal = useStore((state) => state.closeModal);
+  const {closeModal} = useDrawerModal();
   const preliminaryData = useStore((state) => state.preliminaryData);
 
   const formMethods = useForm({

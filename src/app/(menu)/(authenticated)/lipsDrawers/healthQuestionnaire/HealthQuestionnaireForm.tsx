@@ -18,6 +18,7 @@ import {FieldError} from "@/ui/form/FieldError";
 import {Form} from "@/ui/form/Form";
 import {HelpText} from "@/ui/form/HelpText";
 import {InputField} from "@/ui/form/InputField";
+import {useDrawerModal} from "@/ui/ModalContext";
 import {faSave, faSpinner, faXmark} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {
@@ -98,7 +99,7 @@ export function HealthQuestionnaireForm() {
     (state) => state.lip?.healthcareQuestionnaire,
   );
   const lipId = useStore((state) => state.lip?.id);
-  const closeModal = useStore((state) => state.closeModal);
+  const {closeModal} = useDrawerModal();
   const hasCancerCoverage = useStore(
     (state) => state.lip?.quotation?.cancer.enabled,
   );

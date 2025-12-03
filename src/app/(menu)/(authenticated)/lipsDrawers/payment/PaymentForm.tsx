@@ -10,7 +10,9 @@ import {
   paymentTypesOptions,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
 import {normalizeError} from "@/helpers/errors";
+import {toCurrency} from "@/helpers/numbers";
 import {Lip} from "@/models/entities/lip";
+import {Currency} from "@/ui/Currency";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {CheckGroup} from "@/ui/form/CheckGroup";
 import {FieldError} from "@/ui/form/FieldError";
@@ -19,6 +21,7 @@ import {HelpText} from "@/ui/form/HelpText";
 import {InputField} from "@/ui/form/InputField";
 import {upperCaseNormalizer} from "@/ui/form/normalizers";
 import {validateIBAN} from "@/ui/form/validators/iban";
+import {useDrawerModal} from "@/ui/ModalContext";
 import {faSave, faSpinner, faXmark} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {addYears} from "date-fns/addYears";
@@ -35,8 +38,6 @@ import {
 } from "react-bootstrap";
 import {useForm} from "react-hook-form";
 import invariant from "tiny-invariant";
-import {Currency} from "@/ui/Currency";
-import {toCurrency} from "@/helpers/numbers";
 import {getCoverageDuration} from "../quote/ComplementaryCoverages";
 
 const paymentDefaultValues = (paymentData?: Lip["payment"]) => ({
@@ -75,7 +76,7 @@ export function PaymentForm() {
     },
   });
 
-  const closeModal = useStore((state) => state.closeModal);
+  const {closeModal} = useDrawerModal();
   const premium = useStore((state) => state.lip?.quotation?.premium)!;
   const extraPremium = useStore(
     (state) => state.lip?.quotation?.underwriting?.extraPremium?.value,

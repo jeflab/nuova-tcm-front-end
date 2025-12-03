@@ -57,6 +57,8 @@ export default async function NewLipPage(props: NewLipPageProps) {
     lip = lipResponse.lip;
   }
 
+  console.count("Rendering Lip Page");
+
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <AppContainer className="vstack gap-3 align-items-start">

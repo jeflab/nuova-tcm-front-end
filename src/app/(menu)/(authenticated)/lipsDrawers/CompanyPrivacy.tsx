@@ -10,6 +10,7 @@ import {normalizeError} from "@/helpers/errors";
 import {CheckGroup} from "@/ui/form/CheckGroup";
 import {FieldError} from "@/ui/form/FieldError";
 import {Form} from "@/ui/form/Form";
+import {useDrawerModal} from "@/ui/ModalContext";
 import {
   faClipboardCheck,
   faClipboardListCheck,
@@ -42,7 +43,7 @@ export function CompanyPrivacy({
 }: CompanyPrivacyProps) {
   const privacyCompany = useStore((state) => state.lip?.privacyCompany?.at(-1));
   const lip = useStore((state) => state.lip);
-  const closeModalFromStore = useStore((state) => state.closeModal);
+  const {closeModal: closeModalFromContext} = useDrawerModal();
 
   const formMethods = useForm({
     defaultValues: {flags: privacyCompany?.flags ?? ([] as ConsentOptions[])},
@@ -54,7 +55,7 @@ export function CompanyPrivacy({
       Object.keys(lip?.eSigns?.polizza).some(
         (key) => key !== "esign_contraente_underwriting",
       ));
-  const closeModal = onHide ?? closeModalFromStore;
+  const closeModal = onHide ?? closeModalFromContext;
 
   const extendedPrivacyUrl = createDocumentUrl({
     uri: "pdf-proposta-preview",

@@ -27,6 +27,7 @@ import {
   fiscalCodeMatchDataSuperRefine,
   fiscalCodeValidator,
 } from "@/ui/form/validators/fiscalCode";
+import {useDrawerModal} from "@/ui/ModalContext";
 import {faSave, faSpinner, faXmark} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {zodResolver} from "@hookform/resolvers/zod";
@@ -148,7 +149,7 @@ export function ContractorFiscalCodeForm({
     defaultValues: contractorFiscalCodeDefaultValues,
     resolver: zodResolver(ContractorFormSchema(lipType as LipType)),
   });
-  const closeModal = useStore((state) => state.closeModal);
+  const {closeModal} = useDrawerModal();
   const updatePreliminaryData = useStore(
     (state) => state.updatePreliminaryData,
   );

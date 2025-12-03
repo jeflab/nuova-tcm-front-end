@@ -35,9 +35,13 @@ import {
   checkFiscalCodeDataConsistencyValidator,
   fiscalCodeValidator,
 } from "@/ui/form/validators/fiscalCode";
+import {useDrawerModal} from "@/ui/ModalContext";
 import {faSave, faSpinner, faXmark} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import * as Sentry from "@sentry/nextjs";
+import {getDate} from "date-fns/getDate";
+import {getMonth} from "date-fns/getMonth";
+import {getYear} from "date-fns/getYear";
 import {startOfYear} from "date-fns/startOfYear";
 import {subYears} from "date-fns/subYears";
 import {
@@ -53,9 +57,6 @@ import {
 import {useForm} from "react-hook-form";
 import invariant from "tiny-invariant";
 import "core-js/actual/array/to-sorted";
-import {getDate} from "date-fns/getDate";
-import {getMonth} from "date-fns/getMonth";
-import {getYear} from "date-fns/getYear";
 
 // Polyfill per safari 15.
 let toSortedPolyfillNeeded = false;
@@ -119,7 +120,7 @@ export function InsuredDataForm() {
 
   const relationshipValue = formMethods.watch("relationship");
 
-  const closeModal = useStore((state) => state.closeModal);
+  const {closeModal} = useDrawerModal();
 
   return (
     <>

@@ -1,6 +1,7 @@
 "use client";
 
 import {updateDen} from "@/app/(menu)/(authenticated)/lips/[id]/actions";
+import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {
   dependentFamilyMembersOptions,
   DependentFamilyMembersOptions,
@@ -23,7 +24,6 @@ import {
   YesNoAnswer,
   yesNoOptions,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
-import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {normalizeError} from "@/helpers/errors";
 import {getOptionsLabel} from "@/helpers/getOptionsLabel";
 import {Nullish, Optional} from "@/helpers/TypesHelper";
@@ -35,6 +35,7 @@ import {Form} from "@/ui/form/Form";
 import {HelpText} from "@/ui/form/HelpText";
 import {InputField} from "@/ui/form/InputField";
 import {SelectField} from "@/ui/form/SelectField";
+import {useDrawerModal} from "@/ui/ModalContext";
 import {faSave, faSpinner, faXmark} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {
@@ -89,7 +90,7 @@ export function DenForm() {
   });
 
   const lipId = useStore((state) => state.lip?.id);
-  const closeModal = useStore((state) => state.closeModal);
+  const {closeModal} = useDrawerModal();
 
   const dependentFamilyMembersValue = formMethods.watch(
     "dependentFamilyMembers",

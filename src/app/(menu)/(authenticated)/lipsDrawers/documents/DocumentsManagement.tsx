@@ -2,9 +2,14 @@
 
 import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {DocumentsChapterDetails} from "@/app/(menu)/(authenticated)/lipsDrawers/documents/DocumentsChapterDetails";
+import {
+  DocumentManagementDownloadUris,
+  DocumentManagementPreviewUris,
+} from "@/app/download-doc/schema";
 import {PDFType} from "@/models/entities/esign";
 import {Lip} from "@/models/entities/lip";
 import {DownloadDocumentButton} from "@/ui/DownloadDocumentButton";
+import {useDrawerModal} from "@/ui/ModalContext";
 import {
   faCheckCircle,
   faEye,
@@ -22,10 +27,6 @@ import {
   ModalFooter,
 } from "react-bootstrap";
 import styles from "./DocumentsManagement.module.scss";
-import {
-  DocumentManagementDownloadUris,
-  DocumentManagementPreviewUris,
-} from "@/app/download-doc/schema";
 
 export interface ESign {
   key: string;
@@ -188,7 +189,7 @@ export function DocumentsManagement() {
     useState<`${"advisor" | "contractor" | "insured"}-${(typeof documents)[number]["fileName"]}`>();
 
   const lip = useStore((state) => state.lip);
-  const closeModal = useStore((state) => state.closeModal);
+  const {closeModal} = useDrawerModal();
 
   if (!lip) {
     return null;

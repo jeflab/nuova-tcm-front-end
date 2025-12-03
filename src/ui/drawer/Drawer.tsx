@@ -6,6 +6,7 @@ import {cns} from "@/helpers/cns";
 import {DrawerIcon} from "@/ui/drawer/DrawerIcon";
 import {buttonMap} from "@/ui/drawer/types";
 import {upperCaseFirstNormalizer} from "@/ui/form/normalizers";
+import {useDrawerModal} from "@/ui/ModalContext";
 import {useAutoAnimate} from "@formkit/auto-animate/react";
 import {faPenToSquare} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
@@ -36,9 +37,7 @@ export function Drawer({
   title,
 }: DrawerProps) {
   const [animateContainer] = useAutoAnimate();
-  const modalOpen = useStore((state) => state.modalOpen);
-  const openModal = useStore((state) => state.openModal);
-  const closeModal = useStore((state) => state.closeModal);
+  const {modalOpen, openModal, closeModal} = useDrawerModal();
   const {variant, buttonLabel, buttonIcon, isLocked} =
     useStore((state) => state.drawerStates[name]) ?? {};
 

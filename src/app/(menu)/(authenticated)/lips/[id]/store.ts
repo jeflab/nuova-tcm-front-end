@@ -11,12 +11,9 @@ interface State {
   account?: Account;
   drawerStates: Partial<Record<DrawerName, DrawerState>>;
   lip: Lip | null;
-  modalOpen: DrawerName | null;
   preliminaryData: PreliminaryData;
 }
 interface Actions {
-  closeModal: () => void;
-  openModal: (id: DrawerName) => void;
   resetState: () => void;
   updateLip: (lip: Lip | null) => void;
   updatePreliminaryData: (data: Partial<PreliminaryData> | null) => void;
@@ -26,7 +23,6 @@ interface Actions {
 const initialState: State = {
   drawerStates: {type: {variant: "active", ...presetButtons.compile}},
   lip: null,
-  modalOpen: null,
   preliminaryData: {},
 };
 
@@ -442,14 +438,6 @@ function createState(state: State & Actions) {
 export const useStore = create<State & Actions>()(
   immer((set) => ({
     ...initialState,
-    openModal: (id) =>
-      set((state) => {
-        state.modalOpen = id;
-      }),
-    closeModal: () =>
-      set((state) => {
-        state.modalOpen = null;
-      }),
     updatePreliminaryData: (preliminaryData) =>
       set((state) => {
         if (preliminaryData) {

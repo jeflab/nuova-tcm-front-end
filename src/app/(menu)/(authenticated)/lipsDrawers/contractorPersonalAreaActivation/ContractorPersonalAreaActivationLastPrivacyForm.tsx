@@ -11,6 +11,7 @@ import {CheckboxField} from "@/ui/form/CheckboxField";
 import {FieldError} from "@/ui/form/FieldError";
 import {Form} from "@/ui/form/Form";
 import {SubmitButton} from "@/ui/form/SubmitButton";
+import {useDrawerModal} from "@/ui/ModalContext";
 import {faFileSignature, faSpinner} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {startTransition, useState} from "react";
@@ -30,7 +31,7 @@ export function ContractorPersonalAreaActivationLastPrivacyForm({
   });
   const [esignModalOpen, setEsignModalOpen] = useState(false);
   const lip = useStore((state) => state.lip);
-  const closeModal = useStore((state) => state.closeModal);
+  const {closeModal} = useDrawerModal();
 
   return (
     <Form

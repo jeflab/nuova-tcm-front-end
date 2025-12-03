@@ -16,6 +16,7 @@ import {FileDropzoneField} from "@/ui/form/FileDropzoneField";
 import {Form} from "@/ui/form/Form";
 import {HelpText} from "@/ui/form/HelpText";
 import {ImageDropzoneField} from "@/ui/form/ImageDropzoneField";
+import {useDrawerModal} from "@/ui/ModalContext";
 import {
   faCreditCard,
   faIdCard,
@@ -72,7 +73,7 @@ export function IdentificationForm() {
 
   const fiscalCode = useStore((state) => state.lip?.contractor?.fiscalCode);
   const lipId = useStore((state) => state.lip?.id);
-  const closeModal = useStore((state) => state.closeModal);
+  const {closeModal} = useDrawerModal();
 
   const existingFrontImageUrl = createIDImageUrl({
     personalDataId: contractorId,

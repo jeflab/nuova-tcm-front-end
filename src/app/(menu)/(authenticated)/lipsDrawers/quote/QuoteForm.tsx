@@ -16,6 +16,7 @@ import {normalizeError} from "@/helpers/errors";
 import {Currency} from "@/ui/Currency";
 import {FieldError} from "@/ui/form/FieldError";
 import {Form} from "@/ui/form/Form";
+import {useDrawerModal} from "@/ui/ModalContext";
 import {
   faArrowRotateLeft,
   faCalculator,
@@ -44,7 +45,7 @@ export function QuoteForm() {
   const income = useStore((state) => state.lip?.den?.income);
   const lipId = useStore((state) => state.lip?.id);
   const lipType = useStore((state) => state.lip?.type);
-  const closeModal = useStore((state) => state.closeModal);
+  const {closeModal} = useDrawerModal();
   const isHealthQuestionnaireCompiled = useStore(
     (state) => state.lip?.healthcareQuestionnaire,
   );
