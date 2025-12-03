@@ -23,6 +23,7 @@ import {
   Alert,
   Button,
   Card,
+  Col,
   Collapse,
   FormCheck,
   FormGroup,
@@ -83,6 +84,7 @@ export function QuoterForm() {
   };
 
   const birthDate = formMethods.watch("birthDate");
+  const deathValue = formMethods.watch("death");
 
   return (
     <Form
@@ -109,6 +111,15 @@ export function QuoterForm() {
             premium={premium ?? 0}
             duration={getCoverageDuration("death", birthDate)}
           />
+          {Number(deathValue) > 300_000 ? (
+            <Col className="w-100">
+              <Alert variant="warning" className="mb-0">
+                In virtù dell'importo del capitale assicurato per il caso di
+                morte superiore a € 300.000, la proposta di Polizza sarà
+                soggetta ad ulteriori approfondimenti.
+              </Alert>
+            </Col>
+          ) : null}
           <ComplementaryCoverages />
         </Row>
       </AppContainer>

@@ -1,3 +1,6 @@
+import {getCoverageFactorByAge} from "@/app/(menu)/(authenticated)/quoter/getCoverageFactorByAge";
+import {QuoterFormValues} from "@/app/(menu)/(authenticated)/quoter/QuoterForm";
+import {calendarYearAge} from "@/helpers/ages";
 import {toCurrency} from "@/helpers/numbers";
 import {Currency} from "@/ui/Currency";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
@@ -8,8 +11,20 @@ import {Col, FormGroup, FormLabel, InputGroup} from "react-bootstrap";
 import {useFormContext} from "react-hook-form";
 import {getCoverageDuration} from "../lipsDrawers/quote/ComplementaryCoverages";
 
-export function Coverages() {
-  const {watch, setValue} = useFormContext();
+interface CoveragesProps {
+  income?: number;
+}
+export function Coverages({income}: CoveragesProps) {
+  const {watch, setValue} = useFormContext<QuoterFormValues>();
+
+  const birthDateValue = watch("birthDate");
+  const coverFactor = birthDateValue
+    ? getCoverageFactorByAge(calendarYearAge(birthDateValue))
+    : null;
+  const maxDeath =
+    income && coverFactor
+      ? Math.min(1_000_000, Math.max(20_000, income * coverFactor))
+      : 1_000_000;
 
   return (
     <>
@@ -20,10 +35,10 @@ export function Coverages() {
           <HelpText hideOnError="min" id="death-help-text">
             Il capitale assicurato deve essere maggiore o uguale a{" "}
             <Currency>{20_000}</Currency> e minore o uguale a{" "}
-            <Currency>{300_000}</Currency>
+            <Currency>{maxDeath}</Currency>
           </HelpText>
           <strong>
-            Durata: {getCoverageDuration("death", watch("birthDate"))} anni
+            Durata: {getCoverageDuration("death", birthDateValue)} anni
           </strong>
           <FieldError />
           <div className="d-flex flex-column flex-md-row align-items-md-center column-gap-3 row-gap-1">
@@ -41,7 +56,7 @@ export function Coverages() {
                 }}
                 aria-describedby="death-help-text"
                 min={20_000}
-                max={300_000}
+                max={maxDeath}
                 placeholder="Capitale assicurato"
                 step={1_000}
                 type="number"
@@ -54,9 +69,9 @@ export function Coverages() {
                     )}`,
                   },
                   max: {
-                    value: 300_000,
+                    value: maxDeath,
                     message: `Il capitale assicurato deve essere minore o uguale a ${toCurrency(
-                      300_000,
+                      maxDeath,
                     )}`,
                   },
                   validate: (value) => {

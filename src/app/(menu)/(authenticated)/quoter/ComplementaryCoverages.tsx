@@ -40,6 +40,11 @@ export function ComplementaryCoverages({lipType}: ComplementaryCoveragesProps) {
     calendarYearAge(birthDateValue) > 55 &&
     calendarYearAge(birthDateValue) <= 85; // per escludere date erronee tipo 0001-06-24
 
+  const accidentalDeathCoverageValue =
+    Number(deathValue) <= 500_000 ? Number(deathValue) * 2 : 0;
+  const trafficAccidentalDeathCoverageValue =
+    Number(deathValue) <= 333_333 ? Number(deathValue) * 3 : 0;
+
   const tpdOptions: Option[] = [];
   for (
     let i = 500;
@@ -58,11 +63,11 @@ export function ComplementaryCoverages({lipType}: ComplementaryCoveragesProps) {
         <FormGroup
           controlId="accidentalDeath"
           as={BorderFeedback}
-          disabled={isMoreThan75}
+          disabled={isMoreThan75 || accidentalDeathCoverageValue === 0}
           className="position-relative"
         >
           <CheckboxField
-            disabled={isMoreThan75}
+            disabled={isMoreThan75 || accidentalDeathCoverageValue === 0}
             type="switch"
             label="Morte da infortunio"
             validationStyle={watch("accidentalDeath")}
@@ -74,11 +79,7 @@ export function ComplementaryCoverages({lipType}: ComplementaryCoveragesProps) {
             morte.
           </HelpText>
           <div>
-            {!isMoreThan75 ? (
-              <strong>
-                Durata: {getCoverageDurationOld(watch("birthDate"))} anni
-              </strong>
-            ) : (
+            {isMoreThan75 ? (
               <strong className="text-warning">
                 <FontAwesomeIcon
                   icon={faTriangleExclamation}
@@ -86,12 +87,25 @@ export function ComplementaryCoverages({lipType}: ComplementaryCoveragesProps) {
                 />
                 Opzione non attivabile per gli assicurati con più di 75 anni
               </strong>
+            ) : accidentalDeathCoverageValue === 0 ? (
+              <strong className="text-warning">
+                <FontAwesomeIcon
+                  icon={faTriangleExclamation}
+                  className="me-2"
+                />
+                Opzione non attivabile con capitale assicurato superiore a{" "}
+                <Currency>{500_000}</Currency>
+              </strong>
+            ) : (
+              <strong>
+                Durata: {getCoverageDurationOld(watch("birthDate"))} anni
+              </strong>
             )}
           </div>
           <div>
             <strong>
               Capitale assicurato:{" "}
-              <Currency>{parseInt(deathValue, 10) * 2}</Currency>
+              <Currency>{accidentalDeathCoverageValue}</Currency>
             </strong>
           </div>
         </FormGroup>
@@ -100,11 +114,11 @@ export function ComplementaryCoverages({lipType}: ComplementaryCoveragesProps) {
         <FormGroup
           controlId="trafficAccidentalDeath"
           as={BorderFeedback}
-          disabled={isMoreThan75}
+          disabled={isMoreThan75 || trafficAccidentalDeathCoverageValue === 0}
           className="position-relative"
         >
           <CheckboxField
-            disabled={isMoreThan75}
+            disabled={isMoreThan75 || trafficAccidentalDeathCoverageValue === 0}
             type="switch"
             label="Morte per incidente stradale"
             validationStyle={watch("trafficAccidentalDeath")}
@@ -116,11 +130,7 @@ export function ComplementaryCoverages({lipType}: ComplementaryCoveragesProps) {
             morte.
           </HelpText>
           <div>
-            {!isMoreThan75 ? (
-              <strong>
-                Durata: {getCoverageDurationOld(watch("birthDate"))} anni
-              </strong>
-            ) : (
+            {isMoreThan75 ? (
               <strong className="text-warning">
                 <FontAwesomeIcon
                   icon={faTriangleExclamation}
@@ -128,12 +138,25 @@ export function ComplementaryCoverages({lipType}: ComplementaryCoveragesProps) {
                 />
                 Opzione non attivabile per gli assicurati con più di 75 anni
               </strong>
+            ) : trafficAccidentalDeathCoverageValue === 0 ? (
+              <strong className="text-warning">
+                <FontAwesomeIcon
+                  icon={faTriangleExclamation}
+                  className="me-2"
+                />
+                Opzione non attivabile con capitale assicurato superiore a{" "}
+                <Currency>{333_333}</Currency>
+              </strong>
+            ) : (
+              <strong>
+                Durata: {getCoverageDurationOld(watch("birthDate"))} anni
+              </strong>
             )}
           </div>
           <div>
             <strong>
               Capitale assicurato:{" "}
-              <Currency>{parseInt(deathValue, 10) * 3}</Currency>
+              <Currency>{trafficAccidentalDeathCoverageValue}</Currency>
             </strong>
           </div>
         </FormGroup>

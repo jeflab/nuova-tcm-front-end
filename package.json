@@ -65,7 +65,7 @@
     "typescript": "^5"
   },
   "engines": {
-    "npm": "~10 | ~11",
+    "npm": "~10 || ~11",
     "node": "~22"
   },
   "overrides": {
