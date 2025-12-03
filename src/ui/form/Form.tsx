@@ -12,22 +12,23 @@ import {
 import {WithChildren} from "../types";
 
 interface BaseFormProps<TFieldValues extends FieldValues>
-  extends WithChildren,
-    Omit<RBFormProps, "onSubmit"> {
+  extends WithChildren, Omit<RBFormProps, "onSubmit"> {
   onSubmit: (
     values: TFieldValues,
     event?: BaseSyntheticEvent,
   ) => void | Promise<void>;
 }
 
-interface FormWithDefaultValues<TFieldValues extends FieldValues>
-  extends BaseFormProps<TFieldValues> {
+interface FormWithDefaultValues<
+  TFieldValues extends FieldValues,
+> extends BaseFormProps<TFieldValues> {
   defaultValues: DefaultValues<TFieldValues>;
   formMethods?: never;
 }
 
-interface FormWithFormMethods<TFieldValues extends FieldValues>
-  extends BaseFormProps<TFieldValues> {
+interface FormWithFormMethods<
+  TFieldValues extends FieldValues,
+> extends BaseFormProps<TFieldValues> {
   defaultValues?: never;
   formMethods: UseFormReturn<TFieldValues>;
 }
