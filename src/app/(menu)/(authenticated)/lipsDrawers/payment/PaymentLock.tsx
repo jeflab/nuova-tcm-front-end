@@ -3,6 +3,7 @@
 import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {PDFType} from "@/models/entities/esign";
 import {Tags} from "@/services/const";
+import {Currency} from "@/ui/Currency";
 import RequestOTPModal from "@/ui/eSign/RequestOTPModal";
 import {faSquareArrowUpRight} from "@fortawesome/pro-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
@@ -61,10 +62,25 @@ export function PaymentLock({
   if (underwritingUnderInvestigation) {
     return (
       <Alert className="mb-0" variant="danger">
-        La proposta di Polizza non può essere emessa direttamente in virtù delle
-        risposte fornite nella compilazione del questionario sanitario/non
-        sanitario. Valuteremo la situazione singolarmente e la avviseremo quando
-        avremo concluso il processo di underwriting.
+        <p>
+          La proposta di Polizza non può essere emessa direttamente a causa di
+          una o più delle seguenti condizioni:
+        </p>
+        <ul>
+          <li>
+            risposte fornite nella compilazione del questionario sanitario/non
+            sanitario;
+          </li>
+          <li>età dell'assicurato maggiore di 65 anni;</li>
+          <li>
+            coperture richieste per <em>Caso morte</em> superiori a{" "}
+            <Currency>{300_000}</Currency>.
+          </li>
+        </ul>
+        <p className="mb-0">
+          Valuteremo la situazione singolarmente e la avviseremo quando avremo
+          concluso il processo di underwriting.
+        </p>
       </Alert>
     );
   }
@@ -73,10 +89,22 @@ export function PaymentLock({
     return (
       <Alert className="mb-0" variant="danger">
         <p>
-          La proposta di Polizza non può essere emessa direttamente in virtù
-          delle risposte fornite nella compilazione del questionario
-          sanitario/non sanitario. Per procedere è necessario richiedere
-          l'underwriting.
+          La proposta di Polizza non può essere emessa direttamente a causa di
+          una o più delle seguenti condizioni:
+        </p>
+        <ul>
+          <li>
+            risposte fornite nella compilazione del questionario sanitario/non
+            sanitario;
+          </li>
+          <li>età dell'assicurato maggiore di 65 anni;</li>
+          <li>
+            coperture richieste per <em>Caso morte</em> superiori a{" "}
+            <Currency>{300_000}</Currency>.
+          </li>
+        </ul>
+        <p>
+          Per procedere è necessario richiedere l'underwriting.
           <br />
           <strong>
             Dopo aver richiesto l'underwriting i dati inseriti non saranno più
