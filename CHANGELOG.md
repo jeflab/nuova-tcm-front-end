@@ -1,5 +1,11 @@
 # Changelog
 
+### v2.6.1 (2025-12-12)
+
+#### Fixed:
+
+- Aggiornato nextjs alla versione 15.1.4 per correggere vulnerabilità di sicurezza
+
 ## v2.6.0 (2025-11-10)
 
 #### Added:
