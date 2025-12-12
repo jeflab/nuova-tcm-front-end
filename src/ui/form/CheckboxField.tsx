@@ -9,11 +9,10 @@ import styles from "./CheckboxField.module.scss";
 
 type InputTypes = "checkbox" | "radio" | "switch";
 
-interface CheckboxFieldProps
-  extends Omit<
-    ComponentPropsWithoutRef<typeof FormCheck>,
-    "onChange" | "Input" | "Label"
-  > {
+interface CheckboxFieldProps extends Omit<
+  ComponentPropsWithoutRef<typeof FormCheck>,
+  "onChange" | "Input" | "Label"
+> {
   name?: string;
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
   type: InputTypes;
