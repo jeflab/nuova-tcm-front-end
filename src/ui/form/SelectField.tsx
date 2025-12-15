@@ -5,8 +5,9 @@ import FormContext from "react-bootstrap/FormContext";
 import {RegisterOptions, useFormContext} from "react-hook-form";
 import invariant from "tiny-invariant";
 
-interface SelectFieldProps<TValue extends string | number>
-  extends ComponentProps<typeof FormSelect> {
+interface SelectFieldProps<
+  TValue extends string | number,
+> extends ComponentProps<typeof FormSelect> {
   name?: string;
   options: readonly {label: string; value: TValue}[];
   placeholder?: string;
