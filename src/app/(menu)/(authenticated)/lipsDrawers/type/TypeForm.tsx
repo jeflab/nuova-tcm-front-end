@@ -1,10 +1,12 @@
 "use client";
 
-import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {getLipQuery} from "@/app/(menu)/(authenticated)/lips/[id]/queries";
+import {useUpdateLipLocalDataMutation} from "@/app/(menu)/(authenticated)/lips/[id]/mutations";
 import {
   lipSalesModeOptions,
   lipTypeOptions,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
+import {validateLipIdOrNotFound} from "@/app/(menu)/(authenticated)/lipsDrawers/validateLipIdOrNotFound";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {CheckGroup} from "@/ui/form/CheckGroup";
 import {FieldError} from "@/ui/form/FieldError";
@@ -12,6 +14,8 @@ import {Form} from "@/ui/form/Form";
 import {useDrawerModal} from "@/ui/ModalContext";
 import {faSave, faSpinner, faXmark} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {useSuspenseQuery} from "@tanstack/react-query";
+import {useParams} from "next/navigation";
 import {
   Button,
   Col,
@@ -23,30 +27,39 @@ import {
 import {useForm} from "react-hook-form";
 
 export function TypeForm() {
-  const typeData = useStore((state) => state.preliminaryData.type);
-  const salesModeData = useStore((state) => state.preliminaryData.salesMode);
+  const lipId = validateLipIdOrNotFound(useParams<{id: string}>().id);
+  const {
+    data: {lip},
+  } = useSuspenseQuery(getLipQuery(lipId));
+  const {mutateAsync: updateLip} = useUpdateLipLocalDataMutation();
 
   const formMethods = useForm({
     mode: "onChange",
-    defaultValues: {type: typeData, salesMode: salesModeData},
+    defaultValues: {type: lip.type, salesMode: lip.salesMode},
   });
 
   const {closeModal} = useDrawerModal();
-  const updatePreliminaryData = useStore(
-    (state) => state.updatePreliminaryData,
-  );
 
   return (
     <>
       <ModalBody>
         <Form
           id="fatca-form"
-          onSubmit={(values) => {
-            updatePreliminaryData({
-              type: values.type,
-              salesMode: values.salesMode,
-            });
-            closeModal();
+          onSubmit={async (values) => {
+            await updateLip(
+              {
+                lipId: "new",
+                data: {
+                  type: values.type,
+                  salesMode: values.salesMode,
+                },
+              },
+              {
+                onSuccess: () => {
+                  closeModal();
+                },
+              },
+            );
           }}
           formMethods={formMethods}
           className="vstack gap-3"

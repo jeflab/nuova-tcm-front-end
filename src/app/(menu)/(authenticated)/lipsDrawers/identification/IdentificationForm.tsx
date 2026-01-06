@@ -1,11 +1,13 @@
 "use client";
 
-import {identificationContractor} from "@/app/(menu)/(authenticated)/lips/[id]/actions";
-import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {useIdentificationContractor} from "@/app/(menu)/(authenticated)/lips/[id]/mutations";
+import {getLipQuery} from "@/app/(menu)/(authenticated)/lips/[id]/queries";
+import {isContractorDataValid} from "@/app/(menu)/(authenticated)/lipsDrawers/contractorData/contractorDataValidators";
 import {
   getIdentityDocumentDefaultValues,
   IdentityDocumentForm,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/IdentityDocumentForm";
+import {validateLipIdOrNotFound} from "@/app/(menu)/(authenticated)/lipsDrawers/validateLipIdOrNotFound";
 import {createIDImageUrl} from "@/helpers/createResourcesUrl";
 import {normalizeError} from "@/helpers/errors";
 import {getTypedFormDataFromObject} from "@/helpers/typedFormData";
@@ -25,7 +27,9 @@ import {
   faXmark,
 } from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {useSuspenseQuery} from "@tanstack/react-query";
 import omit from "lodash/omit";
+import {useParams} from "next/navigation";
 import {
   Alert,
   Button,
@@ -37,15 +41,20 @@ import {
   Row,
 } from "react-bootstrap";
 import {useForm} from "react-hook-form";
-import invariant from "tiny-invariant";
 
 export function IdentificationForm() {
-  const agentId = useStore((state) => state.lip?.agent.id);
-  const contractorId = useStore((state) => state.lip?.contractor.id);
-  const identityDocument = useStore((state) =>
-    state.lip?.contractor.identityDocument?.at(-1),
-  );
-  const lipSalesMode = useStore((state) => state.lip?.salesMode);
+  const lipId = validateLipIdOrNotFound(useParams<{id: string}>().id) as number;
+  const {
+    data: {lip},
+  } = useSuspenseQuery(getLipQuery(lipId));
+  const {closeModal} = useDrawerModal();
+  const {mutateAsync: identificationContractor} = useIdentificationContractor();
+
+  if (!isContractorDataValid(lip)) {
+    throw new Error("Lip non valida per l'identificazione del contraente");
+  }
+
+  const identityDocument = lip.contractor.identityDocument?.at(-1);
 
   const existingResidenceProofUrl =
     identityDocument?.identification?.fileResidenceProofName;
@@ -55,7 +64,7 @@ export function IdentificationForm() {
     defaultValues: {
       ...getIdentityDocumentDefaultValues(
         identityDocument,
-        lipSalesMode === "remote",
+        lip.salesMode === "remote",
       ),
       frontPicture: null as unknown as File,
       backPicture: null as unknown as File,
@@ -66,25 +75,21 @@ export function IdentificationForm() {
       contractorHasBeenIdentified: !!identityDocument,
       residenceProofProvidedLater:
         !!identityDocument &&
-        lipSalesMode === "remote" &&
+        lip.salesMode === "remote" &&
         !existingResidenceProofUrl,
     },
   });
 
-  const fiscalCode = useStore((state) => state.lip?.contractor?.fiscalCode);
-  const lipId = useStore((state) => state.lip?.id);
-  const {closeModal} = useDrawerModal();
-
   const existingFrontImageUrl = createIDImageUrl({
-    personalDataId: contractorId,
-    agentId,
+    personalDataId: lip.contractor.id,
+    agentId: lip.agent.id,
     fileName: identityDocument?.identification?.fileIdFrontName,
     size: "full",
   });
 
   const existingBackImageUrl = createIDImageUrl({
-    personalDataId: contractorId,
-    agentId,
+    personalDataId: lip.contractor.id,
+    agentId: lip.agent.id,
     fileName: identityDocument?.identification?.fileIdBackName,
     size: "full",
   });
@@ -100,13 +105,10 @@ export function IdentificationForm() {
         <Form
           id="identification-form"
           onSubmit={async (values) => {
-            invariant(fiscalCode, "Fiscal code is required");
-            invariant(lipId, "lipId is required");
-            let identificationContractorResponse;
-
             try {
-              identificationContractorResponse = await identificationContractor(
-                getTypedFormDataFromObject(
+              await identificationContractor({
+                lipId: lip.id,
+                formData: getTypedFormDataFromObject(
                   omit(values, [
                     "metContractorInPerson",
                     "documentIsCopyShownByContractor",
@@ -115,29 +117,20 @@ export function IdentificationForm() {
                     "residenceProofProvidedLater",
                   ]),
                 ),
-                fiscalCode,
-                lipId,
-              );
-            } catch (e) {
+                contractorFiscalCode: lip.contractor.fiscalCode,
+              });
+              closeModal();
+            } catch (error) {
               throw {
                 root: {
                   type: "server",
-                  message: normalizeError(e).message,
+                  message: normalizeError(
+                    error,
+                    "Errore imprevisto nell'aggiornamento dell'identificazione del contraente, riprova più tardi.",
+                  ).message,
                 },
               };
             }
-
-            if (identificationContractorResponse?.status !== "success") {
-              throw {
-                root: {
-                  type: "server",
-                  message: normalizeError(identificationContractorResponse)
-                    .message,
-                },
-              };
-            }
-
-            closeModal();
           }}
           formMethods={formMethods}
           className="vstack gap-3"
@@ -145,7 +138,7 @@ export function IdentificationForm() {
           <Row className="row-gap-3">
             <h4>Documento d'identità:</h4>
             <IdentityDocumentForm
-              onlyIdentityCard={lipSalesMode === "remote"}
+              onlyIdentityCard={lip.salesMode === "remote"}
             />
             <Col className="d-flex" xs={12} sm={6}>
               <FormGroup controlId="frontPicture" as={BorderFeedback}>
@@ -258,7 +251,7 @@ export function IdentificationForm() {
                       required: (value) => {
                         if (
                           !residenceProofProvidedLaterValue &&
-                          lipSalesMode === "remote" &&
+                          lip.salesMode === "remote" &&
                           !value &&
                           !existingResidenceProofUrl
                         ) {
@@ -275,7 +268,7 @@ export function IdentificationForm() {
                 </FileDropzoneField>
               </FormGroup>
             </Col>
-            {lipSalesMode === "remote" && (
+            {lip.salesMode === "remote" && (
               <Col xs={12}>
                 <Alert variant="warning">
                   Il documento può essere fornito anche successivamente al
@@ -301,7 +294,7 @@ export function IdentificationForm() {
                     }}
                     validation={{
                       required:
-                        lipSalesMode === "remote" &&
+                        lip.salesMode === "remote" &&
                         !(residenceProofValue || existingResidenceProofUrl) &&
                         "Per procedere devi caricare un documento a conferma della residenza o dichiarare che verrà fornito successivamente",
                     }}
@@ -321,13 +314,13 @@ export function IdentificationForm() {
                 <CheckboxField
                   type="checkbox"
                   label={
-                    lipSalesMode === "remote"
+                    lip.salesMode === "remote"
                       ? "Di aver identificato il Contraente a distanza"
                       : "Di aver incontrato il Contraente di persona"
                   }
                   validation={{
                     required:
-                      lipSalesMode === "remote"
+                      lip.salesMode === "remote"
                         ? "Per procedere devi dichiarare di aver identificato il Contraente a distanza"
                         : "Per procedere devi dichiarare di aver incontrato il Contraente di persona",
                   }}

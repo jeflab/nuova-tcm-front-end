@@ -1,6 +1,15 @@
+import {computeDrawerStates} from "@/app/(menu)/(authenticated)/lipsDrawers/drawerState";
 import {normalizeError} from "@/helpers/errors";
-import {getActiveFirstPayment, getActiveSubscription} from "./actions";
+import {Lip} from "@/models/entities/lip";
+import {PreliminaryData} from "@/models/preliminaryData";
 import {queryOptions} from "@tanstack/react-query";
+import {notFound} from "next/navigation";
+import {
+  getActiveFirstPayment,
+  getActiveSubscription,
+  getLastPrivacy,
+  getLip,
+} from "./actions";
 
 function msUntilExpire(expireAt?: string): number | false {
   if (!expireAt) {
@@ -15,6 +24,66 @@ function msUntilExpire(expireAt?: string): number | false {
   const remaining = time - Date.now();
   return remaining > 0 ? remaining : 10000;
 }
+
+export function getLipQuery(lipId: "new" | number) {
+  return queryOptions({
+    queryKey: ["lip", lipId],
+    queryFn: async () => {
+      if (lipId === "new") {
+        return {
+          lip: {} as PreliminaryData,
+          drawerStates: computeDrawerStates({} as PreliminaryData),
+        };
+      }
+
+      console.log("Fetching lipquery with id:", lipId);
+      const response = await getLip(Number(lipId));
+      console.log({response});
+
+      if (!response) {
+        throw new Error(
+          "Impossibile recuperare la proposta di polizza, riprova più tardi",
+        );
+      }
+
+      if (response.status !== "success") {
+        if (response?.responseStatus === 404) {
+          notFound();
+        }
+
+        throw normalizeError(response);
+      }
+
+      return {
+        lip: response.lip as Lip,
+        drawerStates: computeDrawerStates(response.lip),
+      };
+    },
+    enabled: lipId === "new" || !!Number(lipId),
+    staleTime: lipId === "new" ? Infinity : 60_000,
+  });
+}
+
+export const getLastPrivacyQuery = () =>
+  queryOptions({
+    queryKey: ["lastPrivacy"] as const,
+    queryFn: async () => {
+      const response = await getLastPrivacy();
+
+      if (!response) {
+        throw new Error(
+          "Impossibile recuperare l'ultima privacy, riprova più tardi",
+        );
+      }
+
+      if (response.status !== "success") {
+        throw normalizeError(response);
+      }
+
+      return response.privacy;
+    },
+    staleTime: Infinity,
+  });
 
 export const getActiveFirstPaymentQuery = (lipId: number) =>
   queryOptions({
@@ -33,7 +102,7 @@ export const getActiveFirstPaymentQuery = (lipId: number) =>
 
       return response;
     },
-    enabled: !!lipId,
+    enabled: !isNaN(lipId) && !!lipId,
     refetchInterval: (data) => {
       return msUntilExpire(data.state.data?.first_payment?.expiresAt);
     },
@@ -57,5 +126,5 @@ export const getActiveSubscriptionQuery = (lipId: number) =>
 
       return response;
     },
-    enabled: !!lipId,
+    enabled: !isNaN(lipId) && !!lipId,
   });

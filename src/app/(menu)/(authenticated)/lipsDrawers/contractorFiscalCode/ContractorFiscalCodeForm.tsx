@@ -1,17 +1,19 @@
 "use client";
 
 import {checkIfFiscalCodeExists} from "@/app/(menu)/(authenticated)/lips/[id]/actions";
-import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {useUpdateLipLocalDataMutation} from "@/app/(menu)/(authenticated)/lips/[id]/mutations";
+import {getLipQuery} from "@/app/(menu)/(authenticated)/lips/[id]/queries";
 import {
   Gender,
   genderOptions,
   LipType,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
+import {validateLipIdOrNotFound} from "@/app/(menu)/(authenticated)/lipsDrawers/validateLipIdOrNotFound";
+import {getAccountQuery} from "@/app/(menu)/(authenticated)/queries";
 import {cns} from "@/helpers/cns";
 import {dbDateString} from "@/helpers/dates";
 import {normalizeError} from "@/helpers/errors";
 import {getOptionsValues} from "@/helpers/getOptionsLabel";
-import {User} from "@/models/entities/user";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {CheckGroup} from "@/ui/form/CheckGroup";
 import {ComuneProvAutocompleteField} from "@/ui/form/ComuneProvAutocompleteField";
@@ -31,12 +33,13 @@ import {useDrawerModal} from "@/ui/ModalContext";
 import {faSave, faSpinner, faXmark} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {zodResolver} from "@hookform/resolvers/zod";
+import {useSuspenseQuery} from "@tanstack/react-query";
 import {getDate} from "date-fns/getDate";
 import {getMonth} from "date-fns/getMonth";
 import {getYear} from "date-fns/getYear";
 import {startOfYear} from "date-fns/startOfYear";
 import {subYears} from "date-fns/subYears";
-import {useRouter} from "next/navigation";
+import {useParams, useRouter} from "next/navigation";
 import {
   Alert,
   Button,
@@ -52,7 +55,7 @@ import invariant from "tiny-invariant";
 import {z} from "zod";
 
 // Usiamo uno schema come validazione vista la complessità del form e la dipendenza del cf con gli altri campi
-const ContractorFormSchema = (lipType: LipType) =>
+const ContractorFormSchema = (lipType: LipType | undefined) =>
   z
     .object({
       birthDate: z
@@ -128,31 +131,23 @@ const contractorFiscalCodeDefaultValues = {
   surname: "",
 };
 
-interface ContractorFiscalCodeFormProps {
-  loggedUser: User;
-}
-
-export function ContractorFiscalCodeForm({
-  loggedUser,
-}: ContractorFiscalCodeFormProps) {
+export function ContractorFiscalCodeForm() {
   const router = useRouter();
-
-  const preliminaryLipType = useStore((state) => state.preliminaryData.type);
-
-  // Lip dovrebbe essere sempre a undefined la prima volta, ma così siamo future proof
-  const lip = useStore((state) => state.lip);
-
-  const lipType = preliminaryLipType || lip?.type;
+  const lipId = validateLipIdOrNotFound(useParams<{id: string}>().id);
+  const {
+    data: {lip},
+  } = useSuspenseQuery(getLipQuery(lipId));
+  const {
+    data: {user: loggedUser},
+  } = useSuspenseQuery(getAccountQuery());
+  const {mutateAsync: updateLip} = useUpdateLipLocalDataMutation();
 
   const formMethods = useForm({
     mode: "onChange",
     defaultValues: contractorFiscalCodeDefaultValues,
-    resolver: zodResolver(ContractorFormSchema(lipType as LipType)),
+    resolver: zodResolver(ContractorFormSchema(lip.type)),
   });
   const {closeModal} = useDrawerModal();
-  const updatePreliminaryData = useStore(
-    (state) => state.updatePreliminaryData,
-  );
 
   return (
     <>
@@ -162,7 +157,8 @@ export function ContractorFiscalCodeForm({
             let checkIfFiscalCodeExistsResponse: Awaited<
               ReturnType<typeof checkIfFiscalCodeExists>
             >;
-            invariant(lipType, "lipType is required");
+            invariant(lip.type, "lipType is required");
+            invariant(lip.contractor, "lip.contractor is required");
 
             if (loggedUser.fiscalCode === values.fiscalCode) {
               throw {
@@ -176,7 +172,7 @@ export function ContractorFiscalCodeForm({
             try {
               checkIfFiscalCodeExistsResponse = await checkIfFiscalCodeExists(
                 values.fiscalCode,
-                lipType,
+                lip.type,
               );
             } catch (error) {
               console.error(error);
@@ -208,7 +204,30 @@ export function ContractorFiscalCodeForm({
                 closeModal();
                 return;
               }
-              updatePreliminaryData({contractorPersonalData: values});
+
+              const transformedValues = (({
+                birthDate,
+                birthPlace,
+                ...rest
+              }: typeof contractorFiscalCodeDefaultValues) => ({
+                ...rest,
+                birthDate: new Date(birthDate),
+                birthPlace: birthPlace.city,
+                birthProvince: birthPlace.province,
+              }))(values);
+
+              console.log({
+                values,
+                transformedValues,
+              });
+
+              await updateLip({
+                lipId: "new",
+                data: {
+                  contractor: {...lip.contractor, ...transformedValues},
+                },
+              });
+
               closeModal();
               return;
             }
@@ -217,7 +236,10 @@ export function ContractorFiscalCodeForm({
               checkIfFiscalCodeExistsResponse?.message ===
               "Utente già censito da un altro Advisor"
             ) {
-              updatePreliminaryData({contractorAlreadyRegistered: true});
+              await updateLip({
+                lipId: "new",
+                data: {contractorAlreadyRegistered: true},
+              });
               closeModal();
               return;
             }
@@ -283,7 +305,7 @@ export function ContractorFiscalCodeForm({
                   placeholder="Data di nascita"
                   max={dbDateString(subYears(Date(), 18))}
                   min={
-                    lipType === "self-insured"
+                    lip.type === "self-insured"
                       ? dbDateString(startOfYear(subYears(Date(), 75)))
                       : "1900-01-01"
                   }

@@ -2,11 +2,11 @@
 
 import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {CompanyPrivacy} from "@/app/(menu)/(authenticated)/lipsDrawers/CompanyPrivacy";
+import {isDenValid} from "@/app/(menu)/(authenticated)/lipsDrawers/den/denValidators";
 import {
   createDocuments,
   ESign,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/documents/DocumentsManagement";
-import {validateDen} from "@/helpers/lip-validator";
 import {DownloadDocumentButton} from "@/ui/DownloadDocumentButton";
 import {
   faCheckCircle,
@@ -49,7 +49,7 @@ const eSignsCount = (
 export function DocumentsSummary() {
   const [isConsentCheckOpen, setIsConsentCheckOpen] = useState(false);
   const lip = useStore((state) => state.lip);
-  const denValid = useStore((state) => validateDen(state.lip?.den));
+  const denValid = useStore((state) => isDenValid(state.lip));
 
   if (!lip || !denValid) {
     return null;

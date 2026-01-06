@@ -1,25 +1,25 @@
 "use client";
 
-import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {getLipQuery} from "@/app/(menu)/(authenticated)/lips/[id]/queries";
+import {
+  isContractorAlreadyRegistered,
+  isContractorFiscalCodeActive,
+} from "@/app/(menu)/(authenticated)/lipsDrawers/contractorFiscalCode/contractorFiscalCodeValidators";
+import {validateLipIdOrNotFound} from "@/app/(menu)/(authenticated)/lipsDrawers/validateLipIdOrNotFound";
 import {faCheck, faXmark} from "@fortawesome/pro-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {useSuspenseQuery} from "@tanstack/react-query";
+import {useParams} from "next/navigation";
 
 export function ContractorFiscalCodeSummary() {
-  const contractorAlreadyRegistered = useStore(
-    (state) => state.preliminaryData.contractorAlreadyRegistered,
-  );
+  const lipId = validateLipIdOrNotFound(useParams<{id: string}>().id);
+  const {
+    data: {lip},
+  } = useSuspenseQuery(getLipQuery(lipId));
 
-  const contractorFiscalCodeDataPreliminary = useStore(
-    (state) => state.preliminaryData.contractorPersonalData,
-  );
-  const contractorFiscalCodeDataLip = useStore(
-    (state) => state.lip?.contractor?.fiscalCode,
-  );
+  const contractorAlreadyRegistered = isContractorAlreadyRegistered(lip);
 
-  const contractorFiscalCodeData =
-    contractorFiscalCodeDataLip ?? contractorFiscalCodeDataPreliminary;
-
-  if (!contractorFiscalCodeData && !contractorAlreadyRegistered) {
+  if (isContractorFiscalCodeActive(lip)) {
     return null;
   }
 

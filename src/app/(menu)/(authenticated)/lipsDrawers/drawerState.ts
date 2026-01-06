@@ -1,32 +1,208 @@
-import {DrawerName} from "./drawers";
-import {validateDen} from "@/helpers/lip-validator";
-import {Lip} from "@/models/entities/lip";
+import {isContractorContactsValid} from "@/app/(menu)/(authenticated)/lipsDrawers/contractorContacts/contractorContactsValidors";
+import {isContractorDataValid} from "@/app/(menu)/(authenticated)/lipsDrawers/contractorData/contractorDataValidators";
+import {
+  isContractorFiscalCodeActive,
+  isContractorFiscalCodeValid,
+} from "@/app/(menu)/(authenticated)/lipsDrawers/contractorFiscalCode/contractorFiscalCodeValidators";
+import {isContractorPersonalAreaActivationValid} from "@/app/(menu)/(authenticated)/lipsDrawers/contractorPersonalAreaActivation/contractorPersonalAreaActivationValidators";
+import {
+  isDenActive,
+  isDenValid,
+} from "@/app/(menu)/(authenticated)/lipsDrawers/den/denValidators";
+import {fatcaValidators} from "@/app/(menu)/(authenticated)/lipsDrawers/fatca/fatcaValidators";
+import {isContractorIdentificationValid} from "@/app/(menu)/(authenticated)/lipsDrawers/identification/identificationValidators";
+import {isInsuredDataValid} from "@/app/(menu)/(authenticated)/lipsDrawers/insuredData/insuredDataValidators";
+import {isLip, Lip} from "@/models/entities/lip";
 import {PreliminaryData} from "@/models/preliminaryData";
 import {DrawerState, presetButtons} from "@/ui/drawer/types";
+import {DrawerName} from "../lips/[id]/drawers";
 
-// Funzione pura: calcola solo drawerStates a partire dalla lip (o dai preliminaryData)
+function isPrivacyESigned(lip: Lip) {
+  return !!lip?.contractor?.lastPrivacyESignId;
+}
+
+function allowUpdatesBeforePayment(lip: Lip) {
+  const atLeastOneESign =
+    (lip.eSigns?.polizza && Object.keys(lip.eSigns.polizza).length > 0) ||
+    (lip.eSigns?.identificazione &&
+      Object.keys(lip.eSigns.identificazione).length > 0);
+
+  const underwritingUnderInvestigation = lip.lipState.id === 2; // 2: Underwriting sanitario
+  const underwritingNotApproved = lip.lipState.id === 15; // 15: Non approvata dopo revisione underwriting sanitario
+  const underwritingApproved = lip.lipState.id === 14; // 14: Approvata dopo revisione underwriting sanitario
+
+  return (
+    !atLeastOneESign &&
+    !underwritingUnderInvestigation &&
+    !underwritingNotApproved &&
+    !underwritingApproved
+  );
+}
+
 export function computeDrawerStates(
-  lip: Lip | null,
-  preliminaryData?: PreliminaryData,
+  lip: Lip | PreliminaryData | null,
 ): Partial<Record<DrawerName, DrawerState>> {
-  // initial
   const drawerStates: Partial<Record<DrawerName, DrawerState>> = {};
 
-  const isPreliminary = !lip;
+  if (!lip) {
+    return {type: {variant: "active", ...presetButtons.compile}};
+  }
 
-  // set base type state
-  if (isPreliminary) {
-    if (preliminaryData?.type === undefined) {
-      drawerStates.type = {variant: "active", ...presetButtons.compile};
+  // type
+  if (lip.type === undefined) {
+    drawerStates.type = {variant: "active", ...presetButtons.compile};
+  } else {
+    drawerStates.type = {variant: "success"};
+  }
+
+  // fatca
+  if (drawerStates.type?.variant === "success") {
+    if (lip.contractor?.fatca === undefined) {
+      drawerStates.fatca = {variant: "active", ...presetButtons.compile};
+    } else if (fatcaValidators(lip)) {
+      drawerStates.fatca = {variant: "success"};
     } else {
-      drawerStates.type = {variant: "success"};
+      drawerStates.fatca = {variant: "danger", ...presetButtons.update};
     }
   } else {
-    if (lip?.type === undefined) {
-      drawerStates.type = {variant: "active", ...presetButtons.compile};
+    drawerStates.fatca = undefined;
+  }
+
+  // contractor fiscal code
+  if (drawerStates.fatca?.variant === "success") {
+    if (isContractorFiscalCodeActive(lip)) {
+      drawerStates.contractorFiscalCode = {
+        variant: "active",
+        ...presetButtons.compile,
+      };
+    } else if (isContractorFiscalCodeValid(lip)) {
+      drawerStates.contractorFiscalCode = {variant: "success"};
     } else {
-      drawerStates.type = {variant: "success"};
+      drawerStates.contractorFiscalCode = {variant: "danger"};
     }
+  } else {
+    drawerStates.contractorFiscalCode = undefined;
+  }
+
+  // Contatti Contraente
+  if (drawerStates.contractorFiscalCode?.variant === "success") {
+    if (!isLip(lip) || !isContractorContactsValid(lip)) {
+      drawerStates.contractorContacts = {
+        variant: "active",
+        ...presetButtons.compile,
+      };
+    } else {
+      drawerStates.contractorContacts = {
+        variant: "success",
+        ...(!isPrivacyESigned(lip) && presetButtons.update),
+      };
+    }
+  } else {
+    drawerStates.contractorContacts = undefined;
+  }
+
+  if (!isLip(lip)) {
+    return drawerStates;
+  }
+
+  // Attesa creazione area Contraente
+  if (drawerStates.contractorContacts?.variant === "success") {
+    if (!isContractorPersonalAreaActivationValid(lip)) {
+      drawerStates.contractorPersonalAreaActivation = {
+        variant: "active",
+        ...presetButtons.privacyEsign,
+      };
+    } else {
+      drawerStates.contractorPersonalAreaActivation = {
+        variant: "success",
+      };
+    }
+  } else {
+    drawerStates.contractorPersonalAreaActivation = undefined;
+  }
+
+  // Censimento Contraente
+  if (drawerStates.contractorPersonalAreaActivation?.variant === "success") {
+    if (!isContractorDataValid(lip)) {
+      drawerStates.contractorData = {
+        variant: "active",
+        ...presetButtons.compile,
+      };
+    } else {
+      drawerStates.contractorData = {
+        variant: "success",
+        ...(allowUpdatesBeforePayment(lip) && presetButtons.update),
+      };
+    }
+  } else {
+    drawerStates.contractorData = undefined;
+  }
+
+  // Identificazione Contraente
+  if (drawerStates.contractorData?.variant === "success") {
+    if (!isContractorIdentificationValid(lip)) {
+      drawerStates.identification = {
+        variant: "active",
+        ...presetButtons.compile,
+      };
+    } else {
+      drawerStates.identification = {
+        variant: "success",
+        ...(allowUpdatesBeforePayment(lip) && presetButtons.update),
+      };
+    }
+  } else {
+    drawerStates.identification = undefined;
+  }
+
+  // Demand and needs
+  if (drawerStates.identification?.variant === "success") {
+    if (isDenActive(lip)) {
+      drawerStates.den = {variant: "active", ...presetButtons.compile};
+    } else if (isDenValid(lip)) {
+      drawerStates.den = {
+        variant: "success",
+        ...(allowUpdatesBeforePayment(lip) && presetButtons.update),
+      };
+    } else {
+      drawerStates.den = {
+        variant: "danger",
+        ...(allowUpdatesBeforePayment(lip) && presetButtons.update),
+      };
+    }
+  } else {
+    drawerStates.den = undefined;
+  }
+
+  // Censimento Assicurato
+  if (drawerStates.den?.variant === "success") {
+    if (!isInsuredDataValid(lip)) {
+      drawerStates.insuredData = {
+        variant: "active",
+        ...presetButtons.compile,
+      };
+    } else {
+      drawerStates.insuredData = {
+        variant: "success",
+        ...(allowUpdatesBeforePayment(lip) && presetButtons.update),
+      };
+    }
+  } else {
+    drawerStates.insuredData = undefined;
+  }
+
+  return drawerStates;
+}
+
+export function computeDrawerStatesOld(
+  lip: Lip | PreliminaryData | null,
+): Partial<Record<DrawerName, DrawerState>> {
+  const drawerStates: Partial<Record<DrawerName, DrawerState>> = {};
+
+  if (lip.type === undefined) {
+    drawerStates.type = {variant: "active", ...presetButtons.compile};
+  } else {
+    drawerStates.type = {variant: "success"};
   }
 
   // Shared helpers
@@ -40,10 +216,10 @@ export function computeDrawerStates(
     (lip?.mustAskUnderwriting ?? false) &&
     lip &&
     lip?.beneficiaries &&
-    (lip?.lipStates?.id === 0 || lip?.lipStates.id === 1);
-  const underwritingUnderInvestigation = lip?.lipStates?.id === 2;
-  const underwritingNotApproved = lip?.lipStates?.id === 15;
-  const underwritingApproved = lip?.lipStates?.id === 14;
+    (lip?.lipState?.id === 0 || lip?.lipState.id === 1);
+  const underwritingUnderInvestigation = lip?.lipState?.id === 2;
+  const underwritingNotApproved = lip?.lipState?.id === 15;
+  const underwritingApproved = lip?.lipState?.id === 14;
   const allowUpdatesBeforePayment =
     !atLeastOneESign &&
     !underwritingUnderInvestigation &&

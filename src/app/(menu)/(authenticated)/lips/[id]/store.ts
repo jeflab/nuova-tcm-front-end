@@ -1,5 +1,5 @@
 import {DrawerName} from "@/app/(menu)/(authenticated)/lips/[id]/drawers";
-import {validateDen} from "@/helpers/lip-validator";
+import {isDenValid} from "@/app/(menu)/(authenticated)/lipsDrawers/den/denValidators";
 import {Account} from "@/models/account";
 import {Lip} from "@/models/entities/lip";
 import {PreliminaryData} from "@/models/preliminaryData";
@@ -45,10 +45,10 @@ function createState(state: State & Actions) {
     state.lip &&
     state.lip?.beneficiaries &&
     // se lo stato è sconosciuto, o incompleto)
-    (state.lip?.lipStates?.id === 0 || state.lip?.lipStates.id === 1);
-  const underwritingUnderInvestigation = state.lip?.lipStates?.id === 2;
-  const underwritingNotApproved = state.lip?.lipStates?.id === 15;
-  const underwritingApproved = state.lip?.lipStates?.id === 14;
+    (state.lip?.lipState?.id === 0 || state.lip?.lipState.id === 1);
+  const underwritingUnderInvestigation = state.lip?.lipState?.id === 2;
+  const underwritingNotApproved = state.lip?.lipState?.id === 15;
+  const underwritingApproved = state.lip?.lipState?.id === 14;
   const allowUpdatesBeforePayment =
     !atLeastOneESign &&
     !underwritingUnderInvestigation &&
@@ -254,7 +254,7 @@ function createState(state: State & Actions) {
     if (state.drawerStates.identification?.variant === "success") {
       if (state.lip?.den === null) {
         state.drawerStates.den = {variant: "active", ...presetButtons.compile};
-      } else if (validateDen(state.lip?.den)) {
+      } else if (isDenValid(state.lip)) {
         state.drawerStates.den = {
           variant: "success",
           ...(allowUpdatesBeforePayment && presetButtons.update),

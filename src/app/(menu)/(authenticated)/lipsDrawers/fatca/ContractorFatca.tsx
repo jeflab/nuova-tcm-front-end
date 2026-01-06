@@ -1,26 +1,19 @@
 "use client";
 
-import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {getLipQuery} from "@/app/(menu)/(authenticated)/lips/[id]/queries";
+import {validateLipIdOrNotFound} from "@/app/(menu)/(authenticated)/lipsDrawers/validateLipIdOrNotFound";
 import {faCheck, faXmark} from "@fortawesome/pro-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {useSuspenseQuery} from "@tanstack/react-query";
+import {useParams} from "next/navigation";
 
 export function ContractorFatca() {
-  const fatcaPreliminary = useStore((state) => state.preliminaryData.fatca);
-  const residencyPreliminary = useStore(
-    (state) => state.preliminaryData.italianResidency,
-  );
+  const lipId = validateLipIdOrNotFound(useParams<{id: string}>().id);
+  const {
+    data: {lip},
+  } = useSuspenseQuery(getLipQuery(lipId));
 
-  const fatcaLip = useStore(
-    (state) => state.lip?.contractor?.fatca.fatcaCheck.response,
-  );
-  const residencyLip = useStore(
-    (state) => state.lip?.contractor?.fatca.residencyCheck.response,
-  );
-
-  const fatcaData = fatcaLip ?? fatcaPreliminary;
-  const residencyData = residencyLip ?? residencyPreliminary;
-
-  if (fatcaData === "yes") {
+  if (lip.contractor?.fatca?.fatcaCheck.response === "yes") {
     return (
       <p className="mb-0">
         <FontAwesomeIcon icon={faXmark} className="text-danger" fixedWidth />{" "}
@@ -29,7 +22,7 @@ export function ContractorFatca() {
       </p>
     );
   }
-  if (residencyData === "no") {
+  if (lip.contractor?.fatca?.residencyCheck.response === "no") {
     return (
       <p className="mb-0">
         <FontAwesomeIcon icon={faXmark} className="text-danger" fixedWidth />{" "}
@@ -38,7 +31,10 @@ export function ContractorFatca() {
       </p>
     );
   }
-  if (fatcaData === "no" && residencyData === "yes") {
+  if (
+    lip.contractor?.fatca?.fatcaCheck.response === "no" &&
+    lip.contractor?.fatca?.residencyCheck.response === "yes"
+  ) {
     return (
       <p className="mb-0">
         <FontAwesomeIcon icon={faCheck} className="text-success" fixedWidth />{" "}

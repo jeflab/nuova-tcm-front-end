@@ -42,7 +42,7 @@ export default async function NewLipPage(props: NewLipPageProps) {
       <InitStoreWithServerData lip={lip} />
       <div>
         <PageTitle>Polizza n° {lip.lipNumber}</PageTitle>
-        {lip.lipStates && <LipStateBadge lipState={lip.lipStates} />}
+        {lip.lipState && <LipStateBadge lipState={lip.lipState} />}
       </div>
       <ButtonLink href="/contractorLips">
         <FontAwesomeIcon icon={faArrowLeft} /> Torna alle tue polizze
@@ -57,7 +57,7 @@ export default async function NewLipPage(props: NewLipPageProps) {
                   <br />
                   {lip.lipNumber}
                 </PageTitle>
-                <LipStateBadge lipState={lip.lipStates} />
+                <LipStateBadge lipState={lip.lipState} />
               </div>
             </ScrollReveal>
             <div className={styles.navLinks}>

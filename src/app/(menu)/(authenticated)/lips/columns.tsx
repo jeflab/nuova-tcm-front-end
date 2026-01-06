@@ -133,7 +133,7 @@ export const columns = [
       },
     },
   }),
-  columnHelper.accessor("lipStates", {
+  columnHelper.accessor("lipState", {
     header: "Stato",
     enableColumnFilter: true,
     cell: (props) => <LipStateBadge lipState={props.getValue()} />,
@@ -262,7 +262,7 @@ export const skeletonColumns = [
       },
     },
   }),
-  columnHelper.accessor("lipStates", {
+  columnHelper.accessor("lipState", {
     header: "Stato",
     enableColumnFilter: true,
     cell: () => <LipStateBadgeSkeleton />,

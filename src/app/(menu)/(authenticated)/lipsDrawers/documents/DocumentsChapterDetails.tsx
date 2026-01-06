@@ -101,7 +101,7 @@ export function DocumentsChapterDetails({
                         setEsignModalOpen(undefined);
                       });
                     }}
-                    onEsignComplete={async () => {
+                    onESignComplete={async () => {
                       setEsignModalOpen(undefined);
                       if (lastESign) {
                         onHide();

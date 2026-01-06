@@ -1,7 +1,9 @@
+import {getAccountQuery} from "@/app/(menu)/(authenticated)/queries";
 import {checkAuth, getAccount} from "@/app/(no-menu)/(auth)/actions";
 import {normalizeError} from "@/helpers/errors";
+import {getQueryClient} from "@/ui/getQueryClient";
+import {dehydrate, HydrationBoundary} from "@tanstack/react-query";
 import {ReactNode} from "react";
-import {SyncAccountToStore} from "./SyncAccountToStore";
 
 interface AuthLayoutProps {
   children: ReactNode;
@@ -9,6 +11,9 @@ interface AuthLayoutProps {
 
 export default async function AuthLayout({children}: AuthLayoutProps) {
   await checkAuth();
+  const queryClient = getQueryClient();
+  void queryClient.prefetchQuery(getAccountQuery());
+
   const account = await getAccount();
 
   if (account?.status !== "success") {
@@ -16,9 +21,8 @@ export default async function AuthLayout({children}: AuthLayoutProps) {
   }
 
   return (
-    <>
-      <SyncAccountToStore account={account} />
+    <HydrationBoundary state={dehydrate(queryClient)}>
       {children}
-    </>
+    </HydrationBoundary>
   );
 }

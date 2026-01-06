@@ -23,7 +23,7 @@ export function PaymentLock({
     (state) => state.drawerStates.payment?.isLocked,
   );
   const lip = useStore((state) => state.lip);
-  const lipState = useStore((state) => state.lip?.lipStates);
+  const lipState = useStore((state) => state.lip?.lipState);
 
   if (!isPaymentLocked || !lipState) {
     return null;
@@ -119,7 +119,7 @@ export function PaymentLock({
           lipId={lip.id}
           onHide={() => setIsUnderwritingOpen(false)}
           pdfType={PDFType.Underwriting}
-          onEsignComplete={async () => {
+          onESignComplete={async () => {
             setIsUnderwritingOpen(false);
           }}
           show={isUnderwritingOpen}

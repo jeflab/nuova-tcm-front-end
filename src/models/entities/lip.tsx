@@ -19,6 +19,7 @@ import {getOptionsValues} from "@/helpers/getOptionsLabel";
 import {stringToJSON} from "@/helpers/stringToJSON";
 import {agentSchema} from "@/models/entities/agent";
 import {contractorSchema, insuredSchema} from "@/models/entities/personalData";
+import {PreliminaryData} from "@/models/preliminaryData";
 import {IconStack} from "@/ui/IconStack";
 import {
   faCheckCircle,
@@ -492,89 +493,89 @@ const certificateSchema = z
     effectiveDate: effective_date,
   }));
 
-export const lipSchema = z
-  .object({
-    id: z.number(),
-    created_at: z.coerce.date<string>(),
-    agent: agentSchema,
-    contractor: contractorSchema,
-    contractor_insured_relationship: z.string().nullish(),
-    insured: insuredSchema.nullish(),
-    lip_number: z.coerce.string(),
-    json_den: stringToJSON().pipe(denSchema).nullish(),
-    json_documents: stringToJSON().pipe(lipDocumentsSchema).nullish(),
-    json_quotation: stringToJSON().pipe(quotationSchema).nullish(),
-    json_survey_healthcare: stringToJSON()
-      .pipe(healthcareQuestionnaireSchema)
-      .nullish(),
-    must_ask_underwriting: z.boolean(),
-    json_beneficiary: stringToJSON().pipe(beneficiariesSchema).nullish(),
-    json_payment: stringToJSON().pipe(paymentSchema).nullish(),
-    json_certificate: stringToJSON().pipe(certificateSchema).nullish(),
-    json_esign: stringToJSON().pipe(eSignSchema).nullish(),
-    aml: amlSchema.nullish(),
-    json_privacy_company: stringToJSON().pipe(privacyCompanySchema).nullish(),
-    lipstates: z
-      .array(lipStateSchema)
-      .nullish()
-      .transform((states) => {
-        return states?.[0] ?? lipStateSchema.parse(undefined);
-      }),
-    type: z.enum(getOptionsValues(lipTypeOptions)),
-    sales_mode: z.enum(getOptionsValues(lipSalesModeOptions)),
-    expiration_date: z.string().nullish(),
-    termination_date: z.string().nullish(),
-  })
-  .transform(
-    ({
-      created_at,
-      lip_number,
-      contractor_insured_relationship,
-      json_den,
-      json_documents,
-      json_quotation,
-      json_survey_healthcare,
-      must_ask_underwriting,
-      json_beneficiary,
-      json_payment,
-      json_certificate,
-      json_esign,
-      json_privacy_company,
-      lipstates,
-      sales_mode,
-      expiration_date,
-      termination_date,
-      ...data
-    }) => {
-      const contractorInsuredRelationship =
-        contractor_insured_relationship?.startsWith("other:")
-          ? contractor_insured_relationship.slice(0, 5)
-          : contractor_insured_relationship;
-      const contractorInsuredRelationshipOther =
-        contractor_insured_relationship?.startsWith("other:")
-          ? contractor_insured_relationship.slice(6)
-          : undefined;
-      return {
-        ...data,
-        createdAt: created_at,
-        lipNumber: lip_number,
-        contractorInsuredRelationship,
-        contractorInsuredRelationshipOther,
-        den: json_den,
-        documents: json_documents,
-        quotation: json_quotation,
-        healthcareQuestionnaire: json_survey_healthcare,
-        mustAskUnderwriting: must_ask_underwriting,
-        beneficiaries: json_beneficiary,
-        payment: json_payment,
-        certificate: json_certificate,
-        eSigns: json_esign,
-        privacyCompany: json_privacy_company,
-        lipStates: lipstates,
-        salesMode: sales_mode,
-        expirationDate: expiration_date,
-        terminationDate: termination_date,
-      };
-    },
-  );
+export const lipRawSchema = z.object({
+  id: z.number(),
+  created_at: z.coerce.date<string>(),
+  agent: agentSchema,
+  contractor: contractorSchema,
+  contractor_insured_relationship: z.string().nullish(),
+  insured: insuredSchema.nullish(),
+  lip_number: z.coerce.string(),
+  json_den: stringToJSON().pipe(denSchema).nullish(),
+  json_documents: stringToJSON().pipe(lipDocumentsSchema).nullish(),
+  json_quotation: stringToJSON().pipe(quotationSchema).nullish(),
+  json_survey_healthcare: stringToJSON()
+    .pipe(healthcareQuestionnaireSchema)
+    .nullish(),
+  must_ask_underwriting: z.boolean(),
+  json_beneficiary: stringToJSON().pipe(beneficiariesSchema).nullish(),
+  json_payment: stringToJSON().pipe(paymentSchema).nullish(),
+  json_certificate: stringToJSON().pipe(certificateSchema).nullish(),
+  json_esign: stringToJSON().pipe(eSignSchema).nullish(),
+  aml: amlSchema.nullish(),
+  json_privacy_company: stringToJSON().pipe(privacyCompanySchema).nullish(),
+  lipstates: z.array(lipStateSchema).nullish(),
+  type: z.enum(getOptionsValues(lipTypeOptions)),
+  sales_mode: z.enum(getOptionsValues(lipSalesModeOptions)),
+  expiration_date: z.string().nullish(),
+  termination_date: z.string().nullish(),
+});
+
+export const lipTransformer = <
+  T extends Partial<z.infer<typeof lipRawSchema>>,
+>({
+  created_at,
+  lip_number,
+  contractor_insured_relationship,
+  json_den,
+  json_documents,
+  json_quotation,
+  json_survey_healthcare,
+  must_ask_underwriting,
+  json_beneficiary,
+  json_payment,
+  json_certificate,
+  json_esign,
+  json_privacy_company,
+  lipstates,
+  sales_mode,
+  expiration_date,
+  termination_date,
+  ...data
+}: T) => {
+  const contractorInsuredRelationship =
+    contractor_insured_relationship?.startsWith("other:")
+      ? contractor_insured_relationship.slice(0, 5)
+      : contractor_insured_relationship;
+  const contractorInsuredRelationshipOther =
+    contractor_insured_relationship?.startsWith("other:")
+      ? contractor_insured_relationship.slice(6)
+      : undefined;
+  return {
+    ...data,
+    createdAt: created_at,
+    lipNumber: lip_number,
+    contractorInsuredRelationship,
+    contractorInsuredRelationshipOther,
+    den: json_den,
+    documents: json_documents,
+    quotation: json_quotation,
+    healthcareQuestionnaire: json_survey_healthcare,
+    mustAskUnderwriting: must_ask_underwriting,
+    beneficiaries: json_beneficiary,
+    payment: json_payment,
+    certificate: json_certificate,
+    eSigns: json_esign,
+    privacyCompany: json_privacy_company,
+    lipState: lipstates?.[0] ?? lipStateSchema.parse(undefined),
+    salesMode: sales_mode,
+    expirationDate: expiration_date,
+    terminationDate: termination_date,
+  };
+};
+export const lipSchema = lipRawSchema.transform(lipTransformer);
 export type Lip = z.infer<typeof lipSchema>;
+
+export function isLip(data: Lip | PreliminaryData | null): data is Lip {
+  return (data as Lip)?.lipNumber !== undefined;
+}

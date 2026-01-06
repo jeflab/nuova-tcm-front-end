@@ -8,7 +8,7 @@ import {Modal, ModalBody} from "react-bootstrap";
 
 interface RequestOTPModalProps<TPayload> {
   lipId: number;
-  onEsignComplete?: (
+  onESignComplete?: (
     response: Extract<
       Awaited<ReturnType<typeof signFEADoc>>,
       {status: "success"}
@@ -25,7 +25,7 @@ interface RequestOTPModalProps<TPayload> {
 
 export function RequestOTPModal<TPayload>({
   lipId,
-  onEsignComplete,
+  onESignComplete,
   onHide,
   payload,
   pdfType,
@@ -43,7 +43,7 @@ export function RequestOTPModal<TPayload>({
           payload={payload}
           pdfType={pdfType}
           lipId={lipId}
-          onEsignComplete={onEsignComplete}
+          onESignComplete={onESignComplete}
           tagToRevalidate={tagToRevalidate}
           whoESign={whoESign}
         />

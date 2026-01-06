@@ -4,7 +4,7 @@ import {Lip} from "@/models/entities/lip";
 import {Placeholder} from "react-bootstrap";
 
 interface LipStateBadgeProps {
-  lipState: Lip["lipStates"];
+  lipState: Lip["lipState"];
 }
 
 export function LipStateBadge({lipState}: LipStateBadgeProps) {

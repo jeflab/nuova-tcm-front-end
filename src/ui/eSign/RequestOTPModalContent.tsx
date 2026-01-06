@@ -1,23 +1,22 @@
 import {ESign} from "@/app/(menu)/(authenticated)/lipsDrawers/documents/DocumentsManagement";
-import {normalizeError} from "@/helpers/errors";
 import {PDFType} from "@/models/entities/esign";
 import {PersonalData} from "@/models/entities/personalData";
 import {Tag} from "@/services/const";
-import {createFEATransaction, signFEADoc} from "@/ui/eSign/actions";
+import {signFEADoc} from "@/ui/eSign/actions";
 import {InsertPhoneForm} from "@/ui/eSign/InsertPhoneForm";
+import {useRequestOTPMutation} from "@/ui/eSign/mutations";
 import {RequestOTPForm} from "@/ui/eSign/RequestOTPForm";
 import {faRotate, faSpinner, faXmark} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import useInterval from "@restart/hooks/useInterval";
 import useMountEffect from "@restart/hooks/useMountEffect";
-import {useMutation} from "@tanstack/react-query";
 import {useState} from "react";
 import {Alert, Button, Stack} from "react-bootstrap";
 
 interface RequestOTPModalContentProps<TPayload> {
   lipId: number;
   onCancel: () => void;
-  onEsignComplete?: (
+  onESignComplete?: (
     response: Extract<
       Awaited<ReturnType<typeof signFEADoc>>,
       {status: "success"}
@@ -32,7 +31,7 @@ interface RequestOTPModalContentProps<TPayload> {
 export function RequestOTPModalContent<TPayload>({
   lipId,
   onCancel,
-  onEsignComplete,
+  onESignComplete,
   payload,
   pdfType,
   personalData,
@@ -43,41 +42,22 @@ export function RequestOTPModalContent<TPayload>({
   const [updatePhoneOpen, setUpdatePhoneOpen] = useState(false);
 
   const {
-    mutate: requestOTP,
+    mutate: createFEATransaction,
     data: createdFEATransaction,
     error: createdFEATransactionError,
     isIdle: isCreatedFEATransactionIdle,
     isPending: isCreatedFEATransactionPending,
     isError: isCreatedFEATransactionError,
-  } = useMutation({
-    mutationKey: ["createFEATransaction", lipId],
-    mutationFn: async (data: {contractorId?: number; lipId: number}) => {
-      setCounter(60);
+  } = useRequestOTPMutation({lipId: lipId, contractorId: personalData?.id});
 
-      const response = await createFEATransaction(data);
-
-      if (!response) {
-        throw new Error("Impossibile richiedere l'OTP, riprova più tardi");
-      }
-      if (response.featTransaction?.status !== "success") {
-        throw normalizeError(response.featTransaction);
-      }
-      if (response.profile?.status !== "success") {
-        throw normalizeError(response.profile);
-      }
-
-      return {
-        featTransaction: response.featTransaction,
-        profile: response.profile,
-      };
-    },
-  });
+  const requestOTP = () => {
+    createFEATransaction();
+    setCounter(60);
+  };
 
   useMountEffect(() => {
     // Uso un timeout per evitare che la richiesta venga fatta più volte
-    const timeout = setTimeout(() => {
-      requestOTP({contractorId: personalData?.id, lipId: lipId});
-    }, 100);
+    const timeout = setTimeout(requestOTP, 100);
     return () => clearTimeout(timeout);
   });
 
@@ -100,9 +80,7 @@ export function RequestOTPModalContent<TPayload>({
               variant="secondary"
               type="button"
               disabled={counter > 0}
-              onClick={() => {
-                requestOTP({contractorId: personalData?.id, lipId: lipId});
-              }}
+              onClick={requestOTP}
             >
               <FontAwesomeIcon icon={faRotate} className="me-2" />
               Invia di nuovo
@@ -122,13 +100,7 @@ export function RequestOTPModalContent<TPayload>({
       <>
         <Alert variant="danger">{createdFEATransactionError.message}</Alert>
         <Stack direction="horizontal" gap={2}>
-          <Button
-            variant="secondary"
-            type="button"
-            onClick={() => {
-              requestOTP({contractorId: personalData?.id, lipId: lipId});
-            }}
-          >
+          <Button variant="secondary" type="button" onClick={requestOTP}>
             <FontAwesomeIcon icon={faRotate} className="me-2" />
             Riprova
           </Button>
@@ -151,11 +123,9 @@ export function RequestOTPModalContent<TPayload>({
       lipId={lipId}
       pdfType={pdfType}
       transactionId={createdFEATransaction.featTransaction.esign.transactionId}
-      onEsignComplete={onEsignComplete}
+      onESignComplete={onESignComplete}
       payload={payload}
-      resendOTP={() => {
-        requestOTP({contractorId: personalData?.id, lipId: lipId});
-      }}
+      resendOTP={requestOTP}
       tagToRevalidate={tagToRevalidate}
       whoESign={whoESign}
     />
@@ -170,9 +140,7 @@ export function RequestOTPModalContent<TPayload>({
       }}
       lipId={lipId}
       onCancel={onCancel}
-      onNumberUpdated={() => {
-        requestOTP({contractorId: personalData?.id, lipId: lipId});
-      }}
+      onNumberUpdated={requestOTP}
       personalData={personalData}
       profile={createdFEATransaction.profile}
     />

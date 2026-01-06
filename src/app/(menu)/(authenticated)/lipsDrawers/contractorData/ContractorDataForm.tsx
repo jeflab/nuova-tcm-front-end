@@ -1,7 +1,8 @@
 "use client";
 
-import {updatePersonalData} from "@/app/(menu)/(authenticated)/lips/[id]/actions";
-import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import "@/helpers/logToSortedPolyfill";
+import {useUpdatePersonalDataMutation} from "@/app/(menu)/(authenticated)/lips/[id]/mutations";
+import {getLipQuery} from "@/app/(menu)/(authenticated)/lips/[id]/queries";
 import {
   genderOptions,
   JobPosition,
@@ -12,9 +13,11 @@ import {
   tAECodeOptions,
   YesNoAnswer,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
+import {validateLipIdOrNotFound} from "@/app/(menu)/(authenticated)/lipsDrawers/validateLipIdOrNotFound";
 import {cns} from "@/helpers/cns";
 import {dbDateString} from "@/helpers/dates";
 import {normalizeError} from "@/helpers/errors";
+import {isLip} from "@/models/entities/lip";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {CheckGroup} from "@/ui/form/CheckGroup";
 import {CitizenshipAutocompleteField} from "@/ui/form/CitizenshipAutocompleteField";
@@ -29,7 +32,8 @@ import {emailValidator} from "@/ui/form/validators/email";
 import {useDrawerModal} from "@/ui/ModalContext";
 import {faSave, faSpinner, faXmark} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import * as Sentry from "@sentry/nextjs";
+import {useSuspenseQuery} from "@tanstack/react-query";
+import {useParams} from "next/navigation";
 import {
   Alert,
   Button,
@@ -41,66 +45,62 @@ import {
   Row,
 } from "react-bootstrap";
 import {useForm} from "react-hook-form";
-import invariant from "tiny-invariant";
 import "core-js/actual/array/to-sorted";
 
-// Polyfill per safari 15.
-let toSortedPolyfillNeeded = false;
-if ([].toSorted === undefined) {
-  Sentry.captureMessage("[].toSorted method is undefined. " + [].toSorted);
-  toSortedPolyfillNeeded = true;
-}
-
-if (toSortedPolyfillNeeded) {
-  Sentry.captureMessage("[].toSorted polyfill applied. " + [].toSorted);
-}
-
 export function ContractorDataForm() {
-  const lipId = useStore((state) => state.lip?.id);
-  const contractor = useStore((state) => state.lip?.contractor);
+  const lipId = validateLipIdOrNotFound(useParams<{id: string}>().id) as number;
+  const {
+    data: {lip},
+  } = useSuspenseQuery(getLipQuery(lipId));
+  const {mutateAsync: updatePersonalData} = useUpdatePersonalDataMutation();
+
+  if (!isLip(lip)) {
+    throw new Error("Lip non valida per la modifica dei dati del contraente");
+  }
 
   const formMethods = useForm({
     mode: "onChange",
     defaultValues: {
       contractorPersonalData: {
-        birthDate: contractor ? dbDateString(contractor.birthDate) : "",
+        birthDate: lip.contractor ? dbDateString(lip.contractor.birthDate) : "",
         birthPlace: {
-          city: contractor?.birthPlace ?? "",
-          province: contractor?.birthProvince ?? "",
+          city: lip.contractor.birthPlace ?? "",
+          province: lip.contractor.birthProvince ?? "",
         },
-        fiscalCode: contractor?.fiscalCode ?? "",
-        gender: contractor?.gender ?? "",
-        name: contractor?.name ?? "",
-        surname: contractor?.surname ?? "",
+        fiscalCode: lip.contractor.fiscalCode ?? "",
+        gender: lip.contractor.gender ?? "",
+        name: lip.contractor.name ?? "",
+        surname: lip.contractor.surname ?? "",
       },
       contact: {
-        phone: contractor?.phone ?? "",
-        email: contractor?.email ?? "",
+        phone: lip.contractor.phone ?? "",
+        email: lip.contractor.email ?? "",
       },
-      citizenship: contractor?.citizenship ?? "",
-      secondCitizenship: contractor?.secondCitizenship ?? "",
+      citizenship: lip.contractor.citizenship ?? "",
+      secondCitizenship: lip.contractor.secondCitizenship ?? "",
       residence: {
         place: {
-          city: contractor?.city ?? "",
-          province: contractor?.region ?? "",
+          city: lip.contractor.city ?? "",
+          province: lip.contractor.region ?? "",
         },
-        streetName: contractor?.address ?? "",
-        streetNumber: contractor?.streetNumber ?? "",
-        zipCode: contractor?.zipCode ?? "",
+        streetName: lip.contractor.address ?? "",
+        streetNumber: lip.contractor.streetNumber ?? "",
+        zipCode: lip.contractor.zipCode ?? "",
       },
       pep: {
-        isPep: contractor?.pep?.isPep.response ?? ("" as YesNoAnswer),
+        isPep: lip.contractor.pep?.isPep.response ?? ("" as YesNoAnswer),
         publicOffice:
-          contractor?.pep?.publicOffice.response ?? ("" as PublicOffices),
-        otherPep: contractor?.pep?.otherPep.response ?? ("" as YesNoAnswer),
+          lip.contractor.pep?.publicOffice.response ?? ("" as PublicOffices),
+        otherPep: lip.contractor.pep?.otherPep.response ?? ("" as YesNoAnswer),
       },
       job: {
-        position: contractor?.pep?.job.position.response ?? ("" as JobPosition),
-        positionOther: contractor?.pep?.job.positionOther ?? "",
-        tAECode: contractor?.pep?.job.tAECode?.response ?? ("" as TAECode),
-        type: contractor?.pep?.job.type ?? "",
-        province: contractor?.pep?.job.province ?? "",
-        country: contractor?.pep?.job.country ?? "",
+        position:
+          lip.contractor.pep?.job.position.response ?? ("" as JobPosition),
+        positionOther: lip.contractor.pep?.job.positionOther ?? "",
+        tAECode: lip.contractor.pep?.job.tAECode?.response ?? ("" as TAECode),
+        type: lip.contractor.pep?.job.type ?? "",
+        province: lip.contractor.pep?.job.province ?? "",
+        country: lip.contractor.pep?.job.country ?? "",
       },
     },
   });
@@ -114,24 +114,26 @@ export function ContractorDataForm() {
       <ModalBody>
         <Form
           onSubmit={async (values) => {
-            invariant(contractor, "Contractor must be defined");
-            invariant(lipId, "Lip ID must be defined");
-            const updatedContractor = await updatePersonalData(
-              contractor.id,
-              lipId,
-              values,
-            );
+            try {
+              await updatePersonalData({
+                lipId: lip.id,
+                personalDataId: lip.contractor.id,
+                personalDataType: "contractor",
+                formData: values,
+              });
 
-            if (updatedContractor?.status !== "success") {
+              closeModal();
+            } catch (error) {
               throw {
                 root: {
                   type: "server",
-                  message: normalizeError(updatedContractor).message,
+                  message: normalizeError(
+                    error,
+                    "Errore imprevisto nell'aggiornamento dei dati della persona, riprova più tardi.",
+                  ).message,
                 },
               };
             }
-
-            closeModal();
           }}
           id="contractor-fiscal-code-form"
           formMethods={formMethods}
