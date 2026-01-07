@@ -1,3 +1,4 @@
+import {isBeneficiariesValid} from "@/app/(menu)/(authenticated)/lipsDrawers/beneficiaries/beneficiariesValidators";
 import {isContractorContactsValid} from "@/app/(menu)/(authenticated)/lipsDrawers/contractorContacts/contractorContactsValidors";
 import {isContractorDataValid} from "@/app/(menu)/(authenticated)/lipsDrawers/contractorData/contractorDataValidators";
 import {
@@ -10,8 +11,11 @@ import {
   isDenValid,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/den/denValidators";
 import {fatcaValidators} from "@/app/(menu)/(authenticated)/lipsDrawers/fatca/fatcaValidators";
+import {isHealthcareQuestionnaireValid} from "@/app/(menu)/(authenticated)/lipsDrawers/healthQuestionnaire/healthQuestionnaireValidators";
 import {isContractorIdentificationValid} from "@/app/(menu)/(authenticated)/lipsDrawers/identification/identificationValidators";
 import {isInsuredDataValid} from "@/app/(menu)/(authenticated)/lipsDrawers/insuredData/insuredDataValidators";
+import {isInsuredIdentificationValid} from "@/app/(menu)/(authenticated)/lipsDrawers/insuredIdentification/insuredIdentificationValidators";
+import {isQuoteValid} from "@/app/(menu)/(authenticated)/lipsDrawers/quote/quoteValidators";
 import {isLip, Lip} from "@/models/entities/lip";
 import {PreliminaryData} from "@/models/preliminaryData";
 import {DrawerState, presetButtons} from "@/ui/drawer/types";
@@ -189,6 +193,74 @@ export function computeDrawerStates(
     }
   } else {
     drawerStates.insuredData = undefined;
+  }
+
+  // Identificazione Assicurato
+  if (drawerStates.insuredData?.variant === "success") {
+    if (!isInsuredIdentificationValid(lip)) {
+      drawerStates.insuredIdentification = {
+        variant: "active",
+        ...presetButtons.compile,
+      };
+    } else {
+      drawerStates.insuredIdentification = {
+        variant: "success",
+        ...(allowUpdatesBeforePayment(lip) && presetButtons.update),
+      };
+    }
+  } else {
+    drawerStates.insuredIdentification = undefined;
+  }
+
+  // Preventivo
+  if (
+    (lip?.type !== "third-party-insured" &&
+      drawerStates.den?.variant === "success") ||
+    drawerStates.insuredIdentification?.variant === "success"
+  ) {
+    if (!isQuoteValid(lip)) {
+      drawerStates.quote = {
+        variant: "active",
+        ...presetButtons.compile,
+      };
+    } else {
+      drawerStates.quote = {
+        variant: "success",
+        ...(allowUpdatesBeforePayment(lip) && presetButtons.update),
+      };
+    }
+  } else {
+    drawerStates.quote = undefined;
+  }
+
+  // Questionario sanitario / non sanitario
+  if (drawerStates.quote?.variant === "success") {
+    if (!isHealthcareQuestionnaireValid(lip)) {
+      drawerStates.healthQuestionnaire = {
+        variant: "active",
+        ...presetButtons.compile,
+      };
+    } else {
+      drawerStates.healthQuestionnaire = {
+        variant: "success",
+        ...(allowUpdatesBeforePayment(lip) && presetButtons.update),
+      };
+    }
+  }
+
+  // Beneficiari
+  if (drawerStates.healthQuestionnaire?.variant === "success") {
+    if (!isBeneficiariesValid(lip)) {
+      drawerStates.beneficiaries = {
+        variant: "active",
+        ...presetButtons.compile,
+      };
+    } else {
+      drawerStates.beneficiaries = {
+        variant: "success",
+        ...(allowUpdatesBeforePayment(lip) && presetButtons.update),
+      };
+    }
   }
 
   return drawerStates;

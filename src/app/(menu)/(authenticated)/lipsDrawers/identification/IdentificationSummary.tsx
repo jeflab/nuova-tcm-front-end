@@ -1,14 +1,12 @@
 "use client";
 
 import {getLipQuery} from "@/app/(menu)/(authenticated)/lips/[id]/queries";
-import {
-  getValidIdentityDocument,
-  isContractorIdentificationValid,
-} from "@/app/(menu)/(authenticated)/lipsDrawers/identification/identificationValidators";
+import {isContractorIdentificationValid} from "@/app/(menu)/(authenticated)/lipsDrawers/identification/identificationValidators";
 import {idTypeOptions} from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
 import {validateLipIdOrNotFound} from "@/app/(menu)/(authenticated)/lipsDrawers/validateLipIdOrNotFound";
 import {dateString} from "@/helpers/dates";
 import {getOptionsLabel} from "@/helpers/getOptionsLabel";
+import {getValidIdentityDocument} from "@/models/entities/personalData";
 import {DownloadDocumentButton} from "@/ui/DownloadDocumentButton";
 import {IdImage} from "@/ui/IdImage";
 import {
@@ -32,7 +30,7 @@ export function IdentificationSummary() {
     return null;
   }
 
-  const identityDocument = getValidIdentityDocument(lip);
+  const identityDocument = getValidIdentityDocument(lip.contractor);
 
   return (
     <Row className="row-gap-3">

@@ -1,9 +1,7 @@
 "use server";
 
 import {BeneficiariesFormValues} from "@/app/(menu)/(authenticated)/lipsDrawers/beneficiaries/BeneficiariesForm";
-import {
-  HealthQuestionnaireFormValues
-} from "@/app/(menu)/(authenticated)/lipsDrawers/healthQuestionnaire/HealthQuestionnaireForm";
+import {HealthQuestionnaireFormValues} from "@/app/(menu)/(authenticated)/lipsDrawers/healthQuestionnaire/HealthQuestionnaireForm";
 import {
   dependentFamilyMembersOptions,
   DependentFamilyMembersOptions,
@@ -31,14 +29,25 @@ import {
   TAECode,
   tAECodeOptions,
   YesNoAnswer,
-  yesNoOptions
+  yesNoOptions,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
 import {Option} from "@/helpers/getOptionsLabel";
-import {getTypedFormDataFromObject, TypedFormData} from "@/helpers/typedFormData";
+import {
+  getTypedFormDataFromObject,
+  TypedFormData,
+} from "@/helpers/typedFormData";
 import {identityDocumentSchema} from "@/models/entities/identityDocument";
-import {Lip, lipRawSchema, lipSchema, lipTransformer} from "@/models/entities/lip";
-import {molliePaymentSchema, mollieSubscriptionSchema} from "@/models/entities/mollie/payment";
-import {contractorSchema} from "@/models/entities/personalData";
+import {
+  Lip,
+  lipRawSchema,
+  lipSchema,
+  lipTransformer,
+} from "@/models/entities/lip";
+import {
+  molliePaymentSchema,
+  mollieSubscriptionSchema,
+} from "@/models/entities/mollie/payment";
+import {contractorSchema, insuredSchema} from "@/models/entities/personalData";
 import {privacySchema} from "@/models/entities/privacy";
 import {get, patch, post} from "@/services/api";
 import {Tags} from "@/services/const";
@@ -166,7 +175,7 @@ export async function getLastPrivacy() {
 }
 
 const updatePersonalDataShape = {
-  personalData: contractorSchema,
+  personalData: contractorSchema.or(insuredSchema),
 };
 interface UpdatePersonalDataParams {
   insuredPersonalData?: {
@@ -297,6 +306,9 @@ export async function updatePersonalData(
   });
 }
 
+const addInsuredDataShape = {
+  lip: lipRawSchema.pick({insured: true}).transform(lipTransformer),
+};
 interface AddInsuredDataParams {
   citizenship: string;
   secondCitizenship: string;
@@ -367,7 +379,7 @@ export async function addInsuredData(
 
   return post(`/lips/${lipId}/addInsured`, {
     data,
-    revalidateTags: [Tags.getLip(lipId)],
+    payloadShape: addInsuredDataShape,
   });
 }
 
@@ -489,6 +501,9 @@ export async function updateDen(lipId: number, formData: UpdateDenParams) {
   });
 }
 
+const updateQuotationShape = {
+  lip: lipRawSchema.pick({json_quotation: true}).transform(lipTransformer),
+};
 interface UpdateQuotationParams {
   birthDate: string;
   smoker: YesNoAnswer;
@@ -539,16 +554,21 @@ export async function updateQuotation(
         json_survey_healthcare: null,
       }),
     },
-    revalidateTags: [Tags.getLip(lipId)],
+    payloadShape: updateQuotationShape,
   });
 }
+const updateHealthQuestionnaireShape = {
+  lip: lipRawSchema
+    .pick({json_survey_healthcare: true})
+    .transform(lipTransformer),
+};
 export async function updateHealthQuestionnaire(
-  formData: HealthQuestionnaireFormValues,
   lipId: number,
+  formData: HealthQuestionnaireFormValues,
 ) {
   return patch(`/lips/${lipId}`, {
     data: {json_survey_healthcare: JSON.stringify(formData)},
-    revalidateTags: [Tags.getLip(lipId)],
+    payloadShape: updateHealthQuestionnaireShape,
   });
 }
 

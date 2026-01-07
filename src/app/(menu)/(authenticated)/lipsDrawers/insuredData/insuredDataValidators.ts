@@ -1,9 +1,12 @@
-import {isDenValid} from "@/app/(menu)/(authenticated)/lipsDrawers/den/denValidators";
+import {
+  isDenValid,
+  LipWithDen,
+} from "@/app/(menu)/(authenticated)/lipsDrawers/den/denValidators";
 import {Lip} from "@/models/entities/lip";
 import {PreliminaryData} from "@/models/preliminaryData";
 
-type LipWithInsuredData = Lip & {
-  insured: Lip["insured"];
+export type LipWithInsuredData = LipWithDen & {
+  insured: NonNullable<Lip["insured"]>;
 };
 
 export function isInsuredDataValid(

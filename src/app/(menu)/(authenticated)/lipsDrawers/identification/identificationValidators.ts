@@ -1,6 +1,6 @@
 import {
   isContractorDataValid,
-  LipWithContractorPep
+  LipWithContractorPep,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/contractorData/contractorDataValidators";
 import {Lip} from "@/models/entities/lip";
 import {PreliminaryData} from "@/models/preliminaryData";
@@ -19,21 +19,11 @@ export function isContractorIdentificationValid(
   }
 
   if (
-    !lip?.contractor?.identityDocument ||
+    !lip.contractor.identityDocument ||
     lip.contractor.identityDocument.length === 0
   ) {
     return false;
   }
 
   return true;
-}
-
-export function getValidIdentityDocument(lip: LipWithContractorIdentification) {
-  const identityDocument = lip.contractor.identityDocument.at(-1);
-
-  if (!identityDocument) {
-    throw new Error("Nessun documento di identità trovato.");
-  }
-
-  return identityDocument;
 }

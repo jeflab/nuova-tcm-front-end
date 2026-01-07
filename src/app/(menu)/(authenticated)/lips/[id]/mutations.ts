@@ -1,6 +1,8 @@
 import {DrawerName} from "@/app/(menu)/(authenticated)/lips/[id]/drawers";
 import {computeDrawerStates} from "@/app/(menu)/(authenticated)/lipsDrawers/drawerState";
+import {LipWithHealthQuestionnaire} from "@/app/(menu)/(authenticated)/lipsDrawers/healthQuestionnaire/healthQuestionnaireValidators";
 import {LipWithContractorIdentification} from "@/app/(menu)/(authenticated)/lipsDrawers/identification/identificationValidators";
+import {LipWithInsuredData} from "@/app/(menu)/(authenticated)/lipsDrawers/insuredData/insuredDataValidators";
 import {normalizeError} from "@/helpers/errors";
 import {Lip} from "@/models/entities/lip";
 import {PreliminaryData} from "@/models/preliminaryData";
@@ -8,11 +10,15 @@ import {DrawerState} from "@/ui/drawer/types";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {
   activateContractor,
+  addInsuredData,
   createRecurringPayment,
   identificationContractor,
+  identificationInsured,
   updateContractorContacts,
   updateDen,
+  updateHealthQuestionnaire,
   updatePersonalData,
+  updateQuotation,
 } from "./actions";
 
 export const useCreateRecurringPaymentMutation = () => {
@@ -306,13 +312,208 @@ export const useUpdateDen = () => {
         }) => {
           const updatedLip = {
             ...old.lip,
-            den: {
-              ...lip.den!,
+            den: lip.den,
+          };
+          const updatedDrawerStates = computeDrawerStates(updatedLip);
+
+          return {
+            lip: updatedLip,
+            drawerStates: updatedDrawerStates,
+          };
+        },
+      );
+    },
+  });
+};
+
+export const useAddInsuredDataMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      lipId,
+      formData,
+    }: {
+      lipId: number;
+      formData: Parameters<typeof addInsuredData>[1];
+    }) => {
+      const response = await addInsuredData(lipId, formData);
+
+      if (!response) {
+        throw new Error(
+          "Impossibile aggiornare i dati del DEN, riprova più tardi",
+        );
+      }
+      if (response.status !== "success") {
+        throw normalizeError(response);
+      }
+
+      return response;
+    },
+    onSuccess: ({lip}, {lipId}) => {
+      queryClient.setQueryData(
+        ["lip", lipId] as const,
+        (old: {
+          lip: Lip;
+          drawerStates: Partial<Record<DrawerName, DrawerState>>;
+        }) => {
+          const updatedLip = {
+            ...old.lip,
+            insured: lip.insured,
+          };
+          const updatedDrawerStates = computeDrawerStates(updatedLip);
+
+          return {
+            lip: updatedLip,
+            drawerStates: updatedDrawerStates,
+          };
+        },
+      );
+    },
+  });
+};
+
+export const useIdentificationInsured = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      formData,
+      insuredFiscalCode,
+    }: {
+      lipId: number;
+      formData: Parameters<typeof identificationInsured>[0];
+      insuredFiscalCode: string;
+    }) => {
+      const response = await identificationInsured(formData, insuredFiscalCode);
+
+      if (!response) {
+        throw new Error(
+          "Impossibile completare l'identificazione dell'assicurato, riprova più tardi",
+        );
+      }
+      if (response.status !== "success") {
+        throw normalizeError(response);
+      }
+
+      return response;
+    },
+    onSuccess: ({identityDocument}, {lipId}) => {
+      queryClient.setQueryData(
+        ["lip", lipId] as const,
+        (old: {
+          lip: LipWithInsuredData;
+          drawerStates: Partial<Record<DrawerName, DrawerState>>;
+        }) => {
+          const updatedLip = {
+            ...old.lip,
+            insured: {
+              ...old.lip.insured,
+              identityDocument: [identityDocument],
             },
           };
           const updatedDrawerStates = computeDrawerStates(updatedLip);
 
-          console.log({oldLip: old.lip, updatedDenData: lip, updatedLip});
+          return {
+            lip: updatedLip,
+            drawerStates: updatedDrawerStates,
+          };
+        },
+      );
+    },
+  });
+};
+
+export const useUpdateQuotationMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      lipId,
+      formData,
+      shouldResetHealthQuestionnaire,
+    }: {
+      lipId: number;
+      formData: Parameters<typeof updateQuotation>[0];
+      shouldResetHealthQuestionnaire: boolean;
+    }) => {
+      const response = await updateQuotation(
+        formData,
+        lipId,
+        shouldResetHealthQuestionnaire,
+      );
+
+      if (!response) {
+        throw new Error(
+          "Impossibile aggiornare la quotazione, riprova più tardi",
+        );
+      }
+      if (response.status !== "success") {
+        throw normalizeError(response);
+      }
+
+      return response;
+    },
+    onSuccess: ({lip}, {lipId}) => {
+      queryClient.setQueryData(
+        ["lip", lipId] as const,
+        (old: {
+          lip: Lip;
+          drawerStates: Partial<Record<DrawerName, DrawerState>>;
+        }) => {
+          const updatedLip = {
+            ...old.lip,
+            quotation: lip.quotation,
+          };
+          const updatedDrawerStates = computeDrawerStates(updatedLip);
+
+          return {
+            lip: updatedLip,
+            drawerStates: updatedDrawerStates,
+          };
+        },
+      );
+    },
+  });
+};
+
+export const useUpdateHealthQuestionnaire = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      lipId,
+      formData,
+    }: {
+      lipId: number;
+      formData: Parameters<typeof updateHealthQuestionnaire>[1];
+    }) => {
+      const response = await updateHealthQuestionnaire(lipId, formData);
+
+      if (!response) {
+        throw new Error(
+          "Impossibile aggiornare il questionario sanitario, riprova più tardi",
+        );
+      }
+      if (response.status !== "success") {
+        throw normalizeError(response);
+      }
+
+      return response;
+    },
+    onSuccess: ({lip}, {lipId}) => {
+      queryClient.setQueryData(
+        ["lip", lipId] as const,
+        (old: {
+          lip: LipWithHealthQuestionnaire;
+          drawerStates: Partial<Record<DrawerName, DrawerState>>;
+        }) => {
+          const updatedLip = {
+            ...old.lip,
+            healthcareQuestionnaire: lip.healthcareQuestionnaire,
+          };
+
+          const updatedDrawerStates = computeDrawerStates(updatedLip);
 
           return {
             lip: updatedLip,

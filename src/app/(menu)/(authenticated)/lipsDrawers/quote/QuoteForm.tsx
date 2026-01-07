@@ -1,8 +1,10 @@
 "use client";
 
-import {updateQuotation} from "@/app/(menu)/(authenticated)/lips/[id]/actions";
-import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {useUpdateQuotationMutation} from "@/app/(menu)/(authenticated)/lips/[id]/mutations";
+import {getLipQuery} from "@/app/(menu)/(authenticated)/lips/[id]/queries";
+import {isInsuredIdentificationValid} from "@/app/(menu)/(authenticated)/lipsDrawers/insuredIdentification/insuredIdentificationValidators";
 import {YesNoAnswer} from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
+import {validateLipIdOrNotFound} from "@/app/(menu)/(authenticated)/lipsDrawers/validateLipIdOrNotFound";
 import {getQuote} from "@/app/(menu)/(authenticated)/quoter/actions";
 import {Advantages} from "@/app/(menu)/(authenticated)/quoter/Advantages";
 import {ComplementaryCoverages} from "@/app/(menu)/(authenticated)/quoter/ComplementaryCoverages";
@@ -25,6 +27,8 @@ import {
   faXmark,
 } from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {useSuspenseQuery} from "@tanstack/react-query";
+import {useParams} from "next/navigation";
 import {useState} from "react";
 import {Alert, Button, Col, ModalBody, ModalFooter, Row} from "react-bootstrap";
 import {useForm} from "react-hook-form";
@@ -32,6 +36,17 @@ import invariant from "tiny-invariant";
 import {getCoverageDuration} from "./ComplementaryCoverages";
 
 export function QuoteForm() {
+  const lipId = validateLipIdOrNotFound(useParams<{id: string}>().id) as number;
+  const {
+    data: {lip},
+  } = useSuspenseQuery(getLipQuery(lipId));
+  const {closeModal} = useDrawerModal();
+  const {mutateAsync: updateQuotation} = useUpdateQuotationMutation();
+
+  if (!isInsuredIdentificationValid(lip)) {
+    throw new Error("Lip non valida per la quotazione: assicurato non valido");
+  }
+
   const [quotation, setQuotation] = useState<{
     premium: number;
     originalPremium: number;
@@ -40,37 +55,27 @@ export function QuoteForm() {
   const [isSaving, setIsSaving] = useState(false);
   const [firstTry, setFirstTry] = useState(true);
 
-  const quoteData = useStore((state) => state.lip?.quotation);
-  const insuredBirthDate = useStore((state) => state.lip?.insured?.birthDate);
-  const income = useStore((state) => state.lip?.den?.income);
-  const lipId = useStore((state) => state.lip?.id);
-  const lipType = useStore((state) => state.lip?.type);
-  const {closeModal} = useDrawerModal();
-  const isHealthQuestionnaireCompiled = useStore(
-    (state) => state.lip?.healthcareQuestionnaire,
-  );
-
   const formMethods = useForm({
     mode: "onChange",
     defaultValues: {
-      smoker: quoteData?.smoker ?? ("" as YesNoAnswer),
-      death: quoteData?.death.toString() ?? "20000",
-      accidentalDeath: quoteData?.accidentalDeath ?? false,
-      trafficAccidentalDeath: quoteData?.trafficAccidentalDeath ?? false,
-      exemptionFromPaying: quoteData?.exemptionFromPaying ?? false,
+      smoker: lip.quotation?.smoker ?? ("" as YesNoAnswer),
+      death: lip.quotation?.death.toString() ?? "20000",
+      accidentalDeath: lip.quotation?.accidentalDeath ?? false,
+      trafficAccidentalDeath: lip.quotation?.trafficAccidentalDeath ?? false,
+      exemptionFromPaying: lip.quotation?.exemptionFromPaying ?? false,
       tpi: {
-        enabled: quoteData?.tpi.enabled ?? false,
-        coverage: quoteData?.tpi.coverage.toString() ?? "0",
+        enabled: lip.quotation?.tpi.enabled ?? false,
+        coverage: lip.quotation?.tpi.coverage.toString() ?? "0",
       },
       cancer: {
-        enabled: quoteData?.cancer.enabled ?? false,
-        coverage: quoteData?.cancer.coverage.toString() ?? "0",
+        enabled: lip.quotation?.cancer.enabled ?? false,
+        coverage: lip.quotation?.cancer.coverage.toString() ?? "0",
       },
       tpd: {
-        enabled: quoteData?.tpd.enabled ?? false,
-        coverage: quoteData?.tpd.coverage.toString() ?? "0",
+        enabled: lip.quotation?.tpd.enabled ?? false,
+        coverage: lip.quotation?.tpd.coverage.toString() ?? "0",
       },
-      birthDate: dbDateString(insuredBirthDate),
+      birthDate: dbDateString(lip.insured.birthDate),
     },
   });
 
@@ -84,8 +89,7 @@ export function QuoteForm() {
     let clientResponse: Awaited<ReturnType<typeof getQuote>>;
     try {
       clientResponse = await getQuote(values);
-    } catch (error) {
-      console.error(error);
+    } catch {
       throw {
         root: {
           type: "server",
@@ -102,7 +106,7 @@ export function QuoteForm() {
 
     if (
       clientResponse.quotazione.premium >
-      parseInt(income ?? "0", 10) * 0.125
+      parseInt(lip.den.income ?? "0", 10) * 0.125
     ) {
       throw {
         root: {
@@ -120,26 +124,27 @@ export function QuoteForm() {
   const handleSave = async () => {
     setIsSaving(true);
     invariant(quotation, "premium required");
-    invariant(lipId, "lipId required");
 
-    const updateQuotationResponse = await updateQuotation(
-      {
-        ...formMethods.getValues(),
-        ...quotation,
-      },
-      lipId,
-      tpiTpdCancerDirty,
-    );
-
-    if (updateQuotationResponse?.status !== "success") {
+    try {
+      await updateQuotation({
+        lipId: lip.id,
+        formData: {
+          ...formMethods.getValues(),
+          ...quotation,
+        },
+        shouldResetHealthQuestionnaire: tpiTpdCancerDirty,
+      });
+      closeModal();
+    } catch (error) {
       formMethods.setError("root", {
         type: "server",
-        message: normalizeError(updateQuotationResponse).message,
+        message: normalizeError(
+          error,
+          "Errore imprevisto durante il salvataggio della quotazione, riprova più tardi.",
+        ).message,
       });
-      setIsSaving(false);
       return;
-    } else {
-      closeModal();
+    } finally {
       setIsSaving(false);
     }
   };
@@ -163,7 +168,7 @@ export function QuoteForm() {
         >
           <Row className="row-gap-3" xs={1} sm={2}>
             <InsuredData blockBirthDate />
-            <Coverages income={Number(income)} />
+            <Coverages income={Number(lip.den.income)} />
             <Advantages
               premium={quotation?.premium ?? 0}
               duration={getCoverageDuration("death", birthDate)}
@@ -177,7 +182,7 @@ export function QuoteForm() {
                 </Alert>
               </Col>
             ) : null}
-            <ComplementaryCoverages lipType={lipType} />
+            <ComplementaryCoverages lipType={lip.type} />
           </Row>
           <FieldError
             name="root"
@@ -186,7 +191,7 @@ export function QuoteForm() {
             className="mb-0 w-100"
           />
         </Form>
-        {isHealthQuestionnaireCompiled && tpiTpdCancerDirty && (
+        {lip.healthcareQuestionnaire && tpiTpdCancerDirty && (
           <Alert variant="warning" className="mt-3">
             <strong>Attenzione:</strong> Se modifichi le coperture{" "}
             <em>invalidità permanente da infortunio o malattia</em>,{" "}
