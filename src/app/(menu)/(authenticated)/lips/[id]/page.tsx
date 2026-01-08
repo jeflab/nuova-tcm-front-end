@@ -1,7 +1,5 @@
 import {LipDetails} from "@/app/(menu)/(authenticated)/lips/[id]/LipDetails";
 import {
-  getActiveFirstPaymentQuery,
-  getActiveSubscriptionQuery,
   getLastPrivacyQuery,
   getLipQuery,
 } from "@/app/(menu)/(authenticated)/lips/[id]/queries";
@@ -22,8 +20,6 @@ export default async function NewLipPage(props: NewLipPageProps) {
   void queryClient.prefetchQuery(getLipQuery(lipId));
   if (lipId !== "new") {
     void queryClient.prefetchQuery(getLastPrivacyQuery());
-    void queryClient.prefetchQuery(getActiveFirstPaymentQuery(lipId));
-    void queryClient.prefetchQuery(getActiveSubscriptionQuery(lipId));
   }
 
   return (

@@ -1,42 +1,45 @@
 "use client";
 
-import {updatePaymentData} from "@/app/(menu)/(authenticated)/lips/[id]/actions";
-import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {useUpdatePaymentData} from "@/app/(menu)/(authenticated)/lips/[id]/mutations";
+import {getLipQuery} from "@/app/(menu)/(authenticated)/lips/[id]/queries";
+import {
+  externalPaymentBlocked,
+  externalPaymentClicked,
+} from "@/app/(menu)/(authenticated)/lipsDrawers/documents/documentsValidators";
+import {isPaymentValid} from "@/app/(menu)/(authenticated)/lipsDrawers/payment/paymentValidators";
+import {validateLipIdOrNotFound} from "@/app/(menu)/(authenticated)/lipsDrawers/validateLipIdOrNotFound";
 import {
   faArrowUpRightFromSquare,
   faCheckCircle,
   faCircleExclamation,
 } from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {useSuspenseQuery} from "@tanstack/react-query";
+import {useParams} from "next/navigation";
 import {Alert, Button} from "react-bootstrap";
 
 export function DocumentsLockExternalPayment() {
-  const paymentValues = useStore((state) => state.lip?.payment);
-  const lipId = useStore((state) => state.lip?.id);
+  const lipId = validateLipIdOrNotFound(useParams<{id: string}>().id) as number;
+  const {
+    data: {lip},
+  } = useSuspenseQuery(getLipQuery(lipId));
+  const {mutateAsync: updatePaymentData} = useUpdatePaymentData();
 
-  if (!paymentValues || !lipId) {
+  if (!isPaymentValid(lip)) {
     return null;
   }
 
-  const externalPaymentBlocked =
-    paymentValues?.paymentType === "credit-card" &&
-    !paymentValues?.clicPayLinkClicked;
-
-  const externalPaymentClicked =
-    paymentValues?.paymentType === "credit-card" &&
-    paymentValues?.clicPayLinkClicked;
-
   const handleLinkClick = () => {
-    void updatePaymentData(
-      {
-        ...paymentValues,
+    void updatePaymentData({
+      lipId: lip.id,
+      formData: {
+        ...lip.payment,
         clicPayLinkClicked: true,
       },
-      lipId,
-    );
+    });
   };
 
-  if (externalPaymentBlocked) {
+  if (externalPaymentBlocked(lip)) {
     return (
       <Alert className="mb-0" variant="danger">
         <div className="d-flex justify-content-between align-items-center">
@@ -60,7 +63,7 @@ export function DocumentsLockExternalPayment() {
     );
   }
 
-  if (externalPaymentClicked) {
+  if (externalPaymentClicked(lip)) {
     return (
       <Alert className="mb-0" variant="success">
         <div className="d-flex justify-content-between align-items-center">

@@ -576,6 +576,15 @@ export const lipTransformer = <
 export const lipSchema = lipRawSchema.transform(lipTransformer);
 export type Lip = z.infer<typeof lipSchema>;
 
+export const lipWithoutRelationsSchema = lipRawSchema
+  .omit({
+    agent: true,
+    contractor: true,
+    insured: true,
+    lipstates: true,
+  })
+  .transform(lipTransformer);
+
 export function isLip(data: Lip | PreliminaryData | null): data is Lip {
   return (data as Lip)?.lipNumber !== undefined;
 }

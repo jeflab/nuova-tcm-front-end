@@ -1,4 +1,5 @@
 import {DrawerName} from "@/app/(menu)/(authenticated)/lips/[id]/drawers";
+import {LipWithBeneficiaries} from "@/app/(menu)/(authenticated)/lipsDrawers/beneficiaries/beneficiariesValidators";
 import {computeDrawerStates} from "@/app/(menu)/(authenticated)/lipsDrawers/drawerState";
 import {LipWithHealthQuestionnaire} from "@/app/(menu)/(authenticated)/lipsDrawers/healthQuestionnaire/healthQuestionnaireValidators";
 import {LipWithContractorIdentification} from "@/app/(menu)/(authenticated)/lipsDrawers/identification/identificationValidators";
@@ -14,9 +15,11 @@ import {
   createRecurringPayment,
   identificationContractor,
   identificationInsured,
+  updateBeneficiaries,
   updateContractorContacts,
   updateDen,
   updateHealthQuestionnaire,
+  updatePaymentData,
   updatePersonalData,
   updateQuotation,
 } from "./actions";
@@ -361,6 +364,7 @@ export const useAddInsuredDataMutation = () => {
             ...old.lip,
             insured: lip.insured,
           };
+
           const updatedDrawerStates = computeDrawerStates(updatedLip);
 
           return {
@@ -412,6 +416,7 @@ export const useIdentificationInsured = () => {
               identityDocument: [identityDocument],
             },
           };
+
           const updatedDrawerStates = computeDrawerStates(updatedLip);
 
           return {
@@ -463,8 +468,9 @@ export const useUpdateQuotationMutation = () => {
         }) => {
           const updatedLip = {
             ...old.lip,
-            quotation: lip.quotation,
+            ...lip,
           };
+
           const updatedDrawerStates = computeDrawerStates(updatedLip);
 
           return {
@@ -510,7 +516,105 @@ export const useUpdateHealthQuestionnaire = () => {
         }) => {
           const updatedLip = {
             ...old.lip,
-            healthcareQuestionnaire: lip.healthcareQuestionnaire,
+            ...lip,
+          };
+
+          const updatedDrawerStates = computeDrawerStates(updatedLip);
+
+          console.log({oldLip: old.lip, lip, updatedLip});
+
+          return {
+            lip: updatedLip,
+            drawerStates: updatedDrawerStates,
+          };
+        },
+      );
+    },
+  });
+};
+
+export const useUpdateBeneficiaries = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      lipId,
+      formData,
+    }: {
+      lipId: number;
+      formData: Parameters<typeof updateBeneficiaries>[1];
+    }) => {
+      const response = await updateBeneficiaries(lipId, formData);
+
+      if (!response) {
+        throw new Error(
+          "Impossibile aggiornare i beneficiari, riprova più tardi",
+        );
+      }
+      if (response.status !== "success") {
+        throw normalizeError(response);
+      }
+
+      return response;
+    },
+    onSuccess: ({lip}, {lipId}) => {
+      queryClient.setQueryData(
+        ["lip", lipId] as const,
+        (old: {
+          lip: LipWithHealthQuestionnaire;
+          drawerStates: Partial<Record<DrawerName, DrawerState>>;
+        }) => {
+          const updatedLip = {
+            ...old.lip,
+            ...lip,
+          };
+
+          const updatedDrawerStates = computeDrawerStates(updatedLip);
+
+          return {
+            lip: updatedLip,
+            drawerStates: updatedDrawerStates,
+          };
+        },
+      );
+    },
+  });
+};
+
+export const useUpdatePaymentData = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      lipId,
+      formData,
+    }: {
+      lipId: number;
+      formData: Parameters<typeof updatePaymentData>[1];
+    }) => {
+      const response = await updatePaymentData(lipId, formData);
+
+      if (!response) {
+        throw new Error(
+          "Impossibile aggiornare i dati di pagamento, riprova più tardi",
+        );
+      }
+      if (response.status !== "success") {
+        throw normalizeError(response);
+      }
+
+      return response;
+    },
+    onSuccess: ({lip}, {lipId}) => {
+      queryClient.setQueryData(
+        ["lip", lipId] as const,
+        (old: {
+          lip: LipWithBeneficiaries;
+          drawerStates: Partial<Record<DrawerName, DrawerState>>;
+        }) => {
+          const updatedLip = {
+            ...old.lip,
+            ...lip,
           };
 
           const updatedDrawerStates = computeDrawerStates(updatedLip);

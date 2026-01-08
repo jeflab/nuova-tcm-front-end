@@ -1,12 +1,14 @@
 "use client";
 
-import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {getLipQuery} from "@/app/(menu)/(authenticated)/lips/[id]/queries";
 import {
   ExclusionList,
   getExcludedCoverages,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/payment/ExclusionList";
 import {MollieSubscriptionStatus} from "@/app/(menu)/(authenticated)/lipsDrawers/payment/MollieSubscriptionStatus";
 import {PaymentMethod} from "@/app/(menu)/(authenticated)/lipsDrawers/payment/PaymentMethod";
+import {isPaymentValid} from "@/app/(menu)/(authenticated)/lipsDrawers/payment/paymentValidators";
+import {validateLipIdOrNotFound} from "@/app/(menu)/(authenticated)/lipsDrawers/validateLipIdOrNotFound";
 import {Lip, Payment, Quotation} from "@/models/entities/lip";
 import {DownloadDocumentButton} from "@/ui/DownloadDocumentButton";
 import {IconStack} from "@/ui/IconStack";
@@ -19,6 +21,8 @@ import {
 } from "@fortawesome/pro-duotone-svg-icons";
 import {faDollarSign} from "@fortawesome/pro-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {useSuspenseQuery} from "@tanstack/react-query";
+import {useParams} from "next/navigation";
 import {Suspense} from "react";
 import {Alert, Stack} from "react-bootstrap";
 
@@ -274,14 +278,12 @@ function PaymentModality({paymentData, lip}: PaymentModalityProps) {
 }
 
 export function PaymentSummary() {
-  const lip = useStore((state) => state.lip);
-  const paymentData = useStore((state) => state.lip?.payment);
-  const quoteData = useStore((state) => state.lip?.quotation);
-  const underwritingData = useStore(
-    (state) => state.lip?.quotation?.underwriting,
-  );
+  const lipId = validateLipIdOrNotFound(useParams<{id: string}>().id) as number;
+  const {
+    data: {lip},
+  } = useSuspenseQuery(getLipQuery(lipId));
 
-  if (!lip || !paymentData || !quoteData?.premium) {
+  if (!isPaymentValid(lip)) {
     return null;
   }
 
@@ -291,20 +293,20 @@ export function PaymentSummary() {
     <Stack gap={4}>
       <InsuranceEffectiveDate />
       <PremiumInstallments
-        paymentMethod={paymentData.paymentMethod}
-        paymentType={paymentData.paymentType}
-        premium={quoteData.premium}
+        paymentMethod={lip.payment.paymentMethod}
+        paymentType={lip.payment.paymentType}
+        premium={lip.quotation.premium}
       />
-      {underwritingData && (
+      {lip.quotation.underwriting && (
         <UnderwritingSection
           lip={lip}
-          paymentData={paymentData}
-          quoteData={quoteData}
-          underwritingData={underwritingData}
+          paymentData={lip.payment}
+          quoteData={lip.quotation}
+          underwritingData={lip.quotation.underwriting}
         />
       )}
-      <BankDetails paymentData={paymentData} />
-      <PaymentModality paymentData={paymentData} lip={lip} />
+      <BankDetails paymentData={lip.payment} />
+      <PaymentModality paymentData={lip.payment} lip={lip} />
       {lip?.payment?.paymentType === "mollie" && (
         <Suspense>
           <MollieSubscriptionStatus lip={lip} />

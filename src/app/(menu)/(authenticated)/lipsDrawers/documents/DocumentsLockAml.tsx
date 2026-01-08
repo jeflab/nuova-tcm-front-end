@@ -1,12 +1,19 @@
 "use client";
 
-import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {getLipQuery} from "@/app/(menu)/(authenticated)/lips/[id]/queries";
+import {amlBlocked} from "@/app/(menu)/(authenticated)/lipsDrawers/documents/documentsValidators";
+import {validateLipIdOrNotFound} from "@/app/(menu)/(authenticated)/lipsDrawers/validateLipIdOrNotFound";
+import {useSuspenseQuery} from "@tanstack/react-query";
+import {useParams} from "next/navigation";
 import {Alert} from "react-bootstrap";
 
 export function DocumentsLockAml() {
-  const amlBlocked = useStore((state) => state.lip?.aml?.blocked ?? false);
+  const lipId = validateLipIdOrNotFound(useParams<{id: string}>().id) as number;
+  const {
+    data: {lip},
+  } = useSuspenseQuery(getLipQuery(lipId));
 
-  if (!amlBlocked) {
+  if (!amlBlocked(lip)) {
     return null;
   }
 

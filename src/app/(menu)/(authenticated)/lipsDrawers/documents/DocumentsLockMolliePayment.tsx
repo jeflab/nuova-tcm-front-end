@@ -4,8 +4,11 @@ import {useCreateRecurringPaymentMutation} from "@/app/(menu)/(authenticated)/li
 import {
   getActiveFirstPaymentQuery,
   getActiveSubscriptionQuery,
+  getLipQuery,
 } from "@/app/(menu)/(authenticated)/lips/[id]/queries";
-import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {mollieLinkClicked} from "@/app/(menu)/(authenticated)/lipsDrawers/documents/documentsValidators";
+import {isPaymentValid} from "@/app/(menu)/(authenticated)/lipsDrawers/payment/paymentValidators";
+import {validateLipIdOrNotFound} from "@/app/(menu)/(authenticated)/lipsDrawers/validateLipIdOrNotFound";
 import {cns} from "@/helpers/cns";
 import {dateTimeString} from "@/helpers/dates";
 import {MolliePayment} from "@/models/entities/mollie/payment";
@@ -126,12 +129,9 @@ function FirstPaymentLink({firstPayment}: FirstPaymentLinkProps) {
   );
 }
 
-interface CreateRecurringPaymentButtonProps {
-  lipId: number;
-}
-function CreateRecurringPaymentButton({
-  lipId,
-}: CreateRecurringPaymentButtonProps) {
+function CreateRecurringPaymentButton() {
+  const lipId = validateLipIdOrNotFound(useParams<{id: string}>().id) as number;
+
   const {
     isPending: createRecurringPaymentIsPending,
     isError: isCreateRecurringPaymentError,
@@ -174,10 +174,7 @@ function CreateRecurringPaymentButton({
   );
 }
 
-interface MolliePaymentPendingStateProps {
-  lipId: number;
-}
-function MolliePaymentPendingState({lipId}: MolliePaymentPendingStateProps) {
+function MolliePaymentPendingState() {
   return (
     <PaymentAlert variant="danger">
       <FontAwesomeIcon
@@ -189,15 +186,13 @@ function MolliePaymentPendingState({lipId}: MolliePaymentPendingStateProps) {
         Per proseguire con la proposta è necessario effettuare il pagamento
         tramite il portale di Mollie.
       </p>
-      <CreateRecurringPaymentButton lipId={lipId} />
+      <CreateRecurringPaymentButton />
     </PaymentAlert>
   );
 }
 
-interface MolliePaymentClickedStateProps {
-  lipId: number;
-}
-function MolliePaymentClickedState({lipId}: MolliePaymentClickedStateProps) {
+function MolliePaymentClickedState() {
+  const lipId = validateLipIdOrNotFound(useParams<{id: string}>().id) as number;
   const {data} = useSuspenseQuery(getActiveSubscriptionQuery(lipId));
 
   return (
@@ -214,18 +209,16 @@ function MolliePaymentClickedState({lipId}: MolliePaymentClickedStateProps) {
           ? "È attivo il pagamento automatico"
           : "Non è attivo un pagamento automatico"}
       </p>
-      <CreateRecurringPaymentButton lipId={lipId} />
+      <CreateRecurringPaymentButton />
     </PaymentAlert>
   );
 }
 
-interface PaymentStatusProps {
-  lipId: number;
-}
-function PaymentStatus({lipId}: PaymentStatusProps) {
-  const mollieLinkClicked = useStore(
-    (state) => state.lip?.payment?.mollieLinkClicked,
-  );
+function PaymentStatus() {
+  const lipId = validateLipIdOrNotFound(useParams<{id: string}>().id) as number;
+  const {
+    data: {lip},
+  } = useSuspenseQuery(getLipQuery(lipId));
 
   const {
     data: firstPaymentData,
@@ -249,24 +242,30 @@ function PaymentStatus({lipId}: PaymentStatusProps) {
     return <FirstPaymentLink firstPayment={firstPaymentData.first_payment} />;
   }
 
-  if (mollieLinkClicked) {
-    return <MolliePaymentClickedState lipId={lipId} />;
+  if (mollieLinkClicked(lip)) {
+    return <MolliePaymentClickedState />;
   }
 
-  return <MolliePaymentPendingState lipId={lipId} />;
+  return <MolliePaymentPendingState />;
 }
 
 export function DocumentsLockMolliePayment() {
-  const lipId = Number(useParams<{id: string}>().id);
-  const paymentType = useStore((state) => state.lip?.payment?.paymentType);
+  const lipId = validateLipIdOrNotFound(useParams<{id: string}>().id) as number;
+  const {
+    data: {lip},
+  } = useSuspenseQuery(getLipQuery(lipId));
 
-  if (paymentType !== "mollie" || !lipId) {
+  if (!isPaymentValid(lip)) {
+    return null;
+  }
+
+  if (lip.payment.paymentType !== "mollie") {
     return null;
   }
 
   return (
     <Suspense fallback={<FirstPaymentPending />}>
-      <PaymentStatus lipId={lipId} />
+      <PaymentStatus />
     </Suspense>
   );
 }

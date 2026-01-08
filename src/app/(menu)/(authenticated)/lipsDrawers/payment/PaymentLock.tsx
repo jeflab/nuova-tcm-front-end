@@ -1,12 +1,17 @@
 "use client";
 
-import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {getLipQuery} from "@/app/(menu)/(authenticated)/lips/[id]/queries";
+import {isBeneficiariesValid} from "@/app/(menu)/(authenticated)/lipsDrawers/beneficiaries/beneficiariesValidators";
+import {askForUnderwriting} from "@/app/(menu)/(authenticated)/lipsDrawers/payment/paymentValidators";
+import {validateLipIdOrNotFound} from "@/app/(menu)/(authenticated)/lipsDrawers/validateLipIdOrNotFound";
 import {PDFType} from "@/models/entities/esign";
 import {Tags} from "@/services/const";
 import {Currency} from "@/ui/Currency";
 import RequestOTPModal from "@/ui/eSign/RequestOTPModal";
 import {faSquareArrowUpRight} from "@fortawesome/pro-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {useSuspenseQuery} from "@tanstack/react-query";
+import {useParams} from "next/navigation";
 import {useState} from "react";
 import {Alert, Button} from "react-bootstrap";
 
@@ -17,34 +22,27 @@ interface PaymentLockProps {
 export function PaymentLock({
   hideUnderwritingAction = false,
 }: PaymentLockProps) {
+  const lipId = validateLipIdOrNotFound(useParams<{id: string}>().id) as number;
+  const {
+    data: {lip, drawerStates},
+  } = useSuspenseQuery(getLipQuery(lipId));
+
   const [isUnderwritingOpen, setIsUnderwritingOpen] = useState(false);
 
-  const isPaymentLocked = useStore(
-    (state) => state.drawerStates.payment?.isLocked,
-  );
-  const lip = useStore((state) => state.lip);
-  const lipState = useStore((state) => state.lip?.lipState);
-
-  if (!isPaymentLocked || !lipState) {
+  if (!isBeneficiariesValid(lip)) {
     return null;
   }
 
-  //TODO: questa logica è duplicata in store.ts, riusciamo a unificarla/semplificarla?
-  const askForUnderwriting =
-    // se le condizioni sanitarie non sono rispettate
-    (lip?.mustAskUnderwriting ?? false) &&
-    // e abbiamo i beneficiari, quindi siamo pre-pagamento
-    lip &&
-    lip?.beneficiaries &&
-    // se lo stato è sconosciuto, o incompleto)
-    (lipState.id === 0 || lipState.id === 1);
+  if (!drawerStates.payment?.isLocked) {
+    return null;
+  }
 
   // mostro il messaggio di underwriting in corso solo se lo stato è quello
   // dedicato o se è esplicitato di nascondere l'azione di underwriting (per l'area cliente)
   const underwritingUnderInvestigation =
-    lipState.id === 2 || hideUnderwritingAction;
+    lip.lipState.id === 2 || hideUnderwritingAction;
 
-  const underwritingNotApproved = lipState.id === 15;
+  const underwritingNotApproved = lip.lipState.id === 15;
 
   const setUnderwriting = async () => {
     setIsUnderwritingOpen(true);
@@ -85,7 +83,7 @@ export function PaymentLock({
     );
   }
 
-  if (askForUnderwriting) {
+  if (askForUnderwriting(lip)) {
     return (
       <Alert className="mb-0" variant="danger">
         <p>

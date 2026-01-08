@@ -15,9 +15,5 @@ export function isBeneficiariesValid(
     return false;
   }
 
-  if (!lip?.beneficiaries) {
-    return false;
-  }
-
-  return true;
+  return !!lip.beneficiaries;
 }

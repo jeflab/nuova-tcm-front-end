@@ -10,11 +10,20 @@ import {
   isDenActive,
   isDenValid,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/den/denValidators";
+import {
+  isDocumentsBlocked,
+  isDocumentsValid,
+  isDocumentsWaitingForConsent,
+} from "@/app/(menu)/(authenticated)/lipsDrawers/documents/documentsValidators";
 import {fatcaValidators} from "@/app/(menu)/(authenticated)/lipsDrawers/fatca/fatcaValidators";
 import {isHealthcareQuestionnaireValid} from "@/app/(menu)/(authenticated)/lipsDrawers/healthQuestionnaire/healthQuestionnaireValidators";
 import {isContractorIdentificationValid} from "@/app/(menu)/(authenticated)/lipsDrawers/identification/identificationValidators";
 import {isInsuredDataValid} from "@/app/(menu)/(authenticated)/lipsDrawers/insuredData/insuredDataValidators";
 import {isInsuredIdentificationValid} from "@/app/(menu)/(authenticated)/lipsDrawers/insuredIdentification/insuredIdentificationValidators";
+import {
+  isPaymentBlocked,
+  isPaymentValid,
+} from "@/app/(menu)/(authenticated)/lipsDrawers/payment/paymentValidators";
 import {isQuoteValid} from "@/app/(menu)/(authenticated)/lipsDrawers/quote/quoteValidators";
 import {isLip, Lip} from "@/models/entities/lip";
 import {PreliminaryData} from "@/models/preliminaryData";
@@ -26,20 +35,23 @@ function isPrivacyESigned(lip: Lip) {
 }
 
 function allowUpdatesBeforePayment(lip: Lip) {
-  const atLeastOneESign =
-    (lip.eSigns?.polizza && Object.keys(lip.eSigns.polizza).length > 0) ||
-    (lip.eSigns?.identificazione &&
-      Object.keys(lip.eSigns.identificazione).length > 0);
-
   const underwritingUnderInvestigation = lip.lipState.id === 2; // 2: Underwriting sanitario
   const underwritingNotApproved = lip.lipState.id === 15; // 15: Non approvata dopo revisione underwriting sanitario
   const underwritingApproved = lip.lipState.id === 14; // 14: Approvata dopo revisione underwriting sanitario
 
   return (
-    !atLeastOneESign &&
+    !atLeastOneESign(lip) &&
     !underwritingUnderInvestigation &&
     !underwritingNotApproved &&
     !underwritingApproved
+  );
+}
+
+function atLeastOneESign(lip: Lip) {
+  return (
+    (lip.eSigns?.polizza && Object.keys(lip.eSigns.polizza).length > 0) ||
+    (lip.eSigns?.identificazione &&
+      Object.keys(lip.eSigns.identificazione).length > 0)
   );
 }
 
@@ -259,6 +271,46 @@ export function computeDrawerStates(
       drawerStates.beneficiaries = {
         variant: "success",
         ...(allowUpdatesBeforePayment(lip) && presetButtons.update),
+      };
+    }
+  }
+
+  // Pagamento
+  const blockPayment = isPaymentBlocked(lip);
+  if (drawerStates.beneficiaries?.variant === "success") {
+    if (blockPayment) {
+      drawerStates.payment = {
+        variant: blockPayment === 2 ? "waiting" : "danger",
+        isLocked: true,
+      };
+    } else if (!isPaymentValid(lip)) {
+      drawerStates.payment = {
+        variant: "active",
+        ...presetButtons.compile,
+      };
+    } else {
+      drawerStates.payment = {
+        variant: "success",
+        ...(!atLeastOneESign(lip) && presetButtons.update),
+      };
+    }
+  }
+
+  // Documentazione
+  if (drawerStates.payment?.variant === "success") {
+    if (isDocumentsBlocked(lip)) {
+      drawerStates.documentation = {variant: "waiting", isLocked: true};
+    } else if (isDocumentsValid(lip)) {
+      drawerStates.documentation = {variant: "success"};
+    } else if (isDocumentsWaitingForConsent(lip)) {
+      drawerStates.documentation = {
+        variant: "active",
+        ...presetButtons.checkConsent,
+      };
+    } else {
+      drawerStates.documentation = {
+        variant: "active",
+        ...presetButtons.documentEsign,
       };
     }
   }

@@ -42,6 +42,7 @@ import {
   lipRawSchema,
   lipSchema,
   lipTransformer,
+  lipWithoutRelationsSchema,
 } from "@/models/entities/lip";
 import {
   molliePaymentSchema,
@@ -443,7 +444,7 @@ export async function identificationInsured(
 }
 
 const updateDenShape = {
-  lip: lipRawSchema.pick({json_den: true}).transform(lipTransformer),
+  lip: lipWithoutRelationsSchema,
 };
 interface UpdateDenParams {
   education: EducationOptions;
@@ -502,7 +503,7 @@ export async function updateDen(lipId: number, formData: UpdateDenParams) {
 }
 
 const updateQuotationShape = {
-  lip: lipRawSchema.pick({json_quotation: true}).transform(lipTransformer),
+  lip: lipWithoutRelationsSchema,
 };
 interface UpdateQuotationParams {
   birthDate: string;
@@ -557,10 +558,9 @@ export async function updateQuotation(
     payloadShape: updateQuotationShape,
   });
 }
+
 const updateHealthQuestionnaireShape = {
-  lip: lipRawSchema
-    .pick({json_survey_healthcare: true})
-    .transform(lipTransformer),
+  lip: lipWithoutRelationsSchema,
 };
 export async function updateHealthQuestionnaire(
   lipId: number,
@@ -572,23 +572,29 @@ export async function updateHealthQuestionnaire(
   });
 }
 
+const updateBeneficiariesShape = {
+  lip: lipWithoutRelationsSchema,
+};
 export async function updateBeneficiaries(
-  beneficiaries: BeneficiariesFormValues,
   lipId: number,
+  beneficiaries: BeneficiariesFormValues,
 ) {
   return patch(`/lips/${lipId}`, {
     data: {json_beneficiary: JSON.stringify(beneficiaries)},
-    revalidateTags: [Tags.getLip(lipId)],
+    payloadShape: updateBeneficiariesShape,
   });
 }
 
+const updatePaymentShape = {
+  lip: lipWithoutRelationsSchema,
+};
 export async function updatePaymentData(
-  payment: Lip["payment"],
   lipId: number,
+  payment: Lip["payment"],
 ) {
   return patch(`/lips/${lipId}`, {
     data: {json_payment: JSON.stringify(payment)},
-    revalidateTags: [Tags.getLip(lipId)],
+    payloadShape: updatePaymentShape,
   });
 }
 
