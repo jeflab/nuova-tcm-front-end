@@ -90,7 +90,7 @@
     "predev": "node ./scripts/checkNodeVersion.mjs && npm i",
     "prepare": "husky",
     "preturbo": "node ./scripts/checkNodeVersion.mjs && npm i",
-    "start": "next start",
+    "start": "next start -p 3001",
     "turbo": "next dev --turbo",
     "turbobuild": "next build --turbo",
     "u": "npm update && npm run validate",
