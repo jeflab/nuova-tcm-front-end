@@ -1,3 +1,4 @@
+import {JobPosition} from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
 import {getCoverageFactorByAge} from "@/app/(menu)/(authenticated)/quoter/getCoverageFactorByAge";
 import {QuoterFormValues} from "@/app/(menu)/(authenticated)/quoter/QuoterForm";
 import {calendarYearAge} from "@/helpers/ages";
@@ -13,18 +14,31 @@ import {getCoverageDuration} from "../lipsDrawers/quote/ComplementaryCoverages";
 
 interface CoveragesProps {
   income?: number;
+  jobPosition?: JobPosition;
 }
-export function Coverages({income}: CoveragesProps) {
+export function Coverages({income, jobPosition}: CoveragesProps) {
   const {watch, setValue} = useFormContext<QuoterFormValues>();
 
   const birthDateValue = watch("birthDate");
   const coverFactor = birthDateValue
     ? getCoverageFactorByAge(calendarYearAge(birthDateValue))
     : null;
+
+  const maxDeathBase = 1_000_000;
+  const maxDeathByIncome =
+    income && coverFactor ? income * coverFactor : 1_000_000;
+  const maxDeathByJob =
+    jobPosition && ["unemployed", "homemaker", "student"].includes(jobPosition)
+      ? 200_000
+      : 1_000_000;
+
   const maxDeath =
     income && coverFactor
-      ? Math.min(1_000_000, Math.max(20_000, income * coverFactor))
-      : 1_000_000;
+      ? Math.max(
+          20_000,
+          Math.min(maxDeathBase, maxDeathByIncome, maxDeathByJob),
+        )
+      : maxDeathBase;
 
   return (
     <>
