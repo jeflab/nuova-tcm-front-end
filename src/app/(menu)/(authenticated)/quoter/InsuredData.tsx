@@ -83,14 +83,14 @@ export function InsuredData({blockBirthDate}: InsuredDataProps) {
           />
         </FormGroup>
       </Col>
-      {calendarYearAge(birthDateValue) > 65 && (
+      {calendarYearAge(birthDateValue) > 65 ? (
         <Col className="w-100">
           <Alert variant="warning" className="mb-0">
             In virtù dell'età assicurativa dell'Assicurato maggiore di 65 anni,
             la proposta di Polizza sarà soggetta ad ulteriori approfondimenti.
           </Alert>
         </Col>
-      )}
+      ) : null}
     </>
   );
 }

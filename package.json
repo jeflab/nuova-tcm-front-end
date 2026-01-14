@@ -1,6 +1,6 @@
 {
   "name": "nuova-tcm-front-end",
-  "version": "2.6.1",
+  "version": "2.7.0",
   "author": "Fabio Lazzaroni <lazzaroni@jeflab.it> (http://jeflab.it/)",
   "contributors": [
     "Andrea Mangiavini <mangiavini@jeflab.it> (http://jeflab.it/)"
@@ -47,7 +47,7 @@
     "@next/bundle-analyzer": "^15.1.4",
     "@tanstack/eslint-plugin-query": "^5.72.2",
     "@types/js-cookie": "^3.0.6",
-    "@types/node": "^22",
+    "@types/node": "^24",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@typescript-eslint/eslint-plugin": "^8.20.0",
@@ -65,8 +65,8 @@
     "typescript": "^5"
   },
   "engines": {
-    "npm": "~10 | ~11",
-    "node": "~22"
+    "npm": "~10 || ~11",
+    "node": "~24"
   },
   "overrides": {
     "react": "^19.0.0",
@@ -90,7 +90,7 @@
     "predev": "node ./scripts/checkNodeVersion.mjs && npm i",
     "prepare": "husky",
     "preturbo": "node ./scripts/checkNodeVersion.mjs && npm i",
-    "start": "next start",
+    "start": "next start -p 3001",
     "turbo": "next dev --turbo",
     "turbobuild": "next build --turbo",
     "u": "npm update && npm run validate",

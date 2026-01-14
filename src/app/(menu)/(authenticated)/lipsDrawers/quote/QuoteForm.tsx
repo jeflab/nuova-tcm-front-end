@@ -25,7 +25,7 @@ import {
 } from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {useState} from "react";
-import {Alert, Button, ModalBody, ModalFooter, Row} from "react-bootstrap";
+import {Alert, Button, Col, ModalBody, ModalFooter, Row} from "react-bootstrap";
 import {useForm} from "react-hook-form";
 import invariant from "tiny-invariant";
 import {getCoverageDuration} from "./ComplementaryCoverages";
@@ -144,6 +144,7 @@ export function QuoteForm() {
   };
 
   const birthDate = formMethods.watch("birthDate");
+  const deathValue = formMethods.watch("death");
 
   return (
     <>
@@ -161,11 +162,20 @@ export function QuoteForm() {
         >
           <Row className="row-gap-3" xs={1} sm={2}>
             <InsuredData blockBirthDate />
-            <Coverages />
+            <Coverages income={Number(income)} />
             <Advantages
               premium={quotation?.premium ?? 0}
               duration={getCoverageDuration("death", birthDate)}
             />
+            {Number(deathValue) > 300_000 ? (
+              <Col className="w-100">
+                <Alert variant="warning" className="mb-0">
+                  In virtù dell'importo del capitale assicurato per il caso di
+                  morte superiore a € 300.000, la proposta di Polizza sarà
+                  soggetta ad ulteriori approfondimenti.
+                </Alert>
+              </Col>
+            ) : null}
             <ComplementaryCoverages lipType={lipType} />
           </Row>
           <FieldError
