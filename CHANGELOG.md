@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.7.0 (2026-01-14)
+
+#### Added:
+
+- Aumentato il premio massimo per TCM a 1 000 000 €
+- Aggiunto controllo premio massimo per TCM in base al lavoro, età e reddito
+
 ### v2.6.1 (2025-12-12)
 
 #### Fixed:
@@ -10,7 +17,7 @@
 
 #### Added:
 
-- Aggiunto il nuovo metodo di pagamento Mollie con creazione link e visualizzazione stato abbonamaento
+- Aggiunto il nuovo metodo di pagamento Mollie con creazione link e visualizzazione stato abbonamento
 
 ## v2.5.0 (2025-10-01)
 
