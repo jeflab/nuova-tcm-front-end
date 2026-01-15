@@ -4,6 +4,7 @@ import {computeDrawerStates} from "@/app/(menu)/(authenticated)/lipsDrawers/draw
 import {LipWithHealthQuestionnaire} from "@/app/(menu)/(authenticated)/lipsDrawers/healthQuestionnaire/healthQuestionnaireValidators";
 import {LipWithContractorIdentification} from "@/app/(menu)/(authenticated)/lipsDrawers/identification/identificationValidators";
 import {LipWithInsuredData} from "@/app/(menu)/(authenticated)/lipsDrawers/insuredData/insuredDataValidators";
+import {LipWithPayment} from "@/app/(menu)/(authenticated)/lipsDrawers/payment/paymentValidators";
 import {normalizeError} from "@/helpers/errors";
 import {Lip} from "@/models/entities/lip";
 import {PreliminaryData} from "@/models/preliminaryData";
@@ -15,6 +16,7 @@ import {
   createRecurringPayment,
   identificationContractor,
   identificationInsured,
+  saveCompanyPrivacyConsent,
   updateBeneficiaries,
   updateContractorContacts,
   updateDen,
@@ -43,6 +45,30 @@ export const useCreateRecurringPaymentMutation = () => {
     },
     onSuccess: (data, {lipId}) => {
       queryClient.setQueryData(["activeFirstPayment", lipId], data);
+
+      // Aggiungiamo il click sul link di pagamento mollie alla lip
+      queryClient.setQueryData(
+        ["lip", lipId],
+        (old: {
+          lip: LipWithBeneficiaries & {payment: NonNullable<Lip["payment"]>};
+          drawerStates: Partial<Record<DrawerName, DrawerState>>;
+        }) => {
+          const updatedLip = {
+            ...old.lip,
+            payment: {
+              ...old.lip.payment,
+              mollieLinkClicked: true,
+            },
+          };
+
+          const updatedDrawerStates = computeDrawerStates(updatedLip);
+
+          return {
+            lip: updatedLip,
+            drawerStates: updatedDrawerStates,
+          };
+        },
+      );
     },
   });
 };
@@ -60,16 +86,10 @@ export const useUpdateLipLocalDataMutation = () => {
     onSuccess: (newData, {lipId}) => {
       queryClient.setQueryData(
         ["lip", lipId],
-        (
-          old:
-            | {
-                lip: PreliminaryData;
-                drawerStates: Partial<Record<DrawerName, DrawerState>>;
-              }
-            | undefined,
-        ) => {
-          if (!old) return old;
-
+        (old: {
+          lip: PreliminaryData;
+          drawerStates: Partial<Record<DrawerName, DrawerState>>;
+        }) => {
           const updatedLip = {
             ...old.lip,
             ...newData,
@@ -616,6 +636,56 @@ export const useUpdatePaymentData = () => {
             ...old.lip,
             ...lip,
           };
+
+          const updatedDrawerStates = computeDrawerStates(updatedLip);
+
+          return {
+            lip: updatedLip,
+            drawerStates: updatedDrawerStates,
+          };
+        },
+      );
+    },
+  });
+};
+
+export const useSaveCompanyPrivacyConsent = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      lipId,
+      formData,
+    }: {
+      lipId: number;
+      formData: Parameters<typeof saveCompanyPrivacyConsent>[1];
+    }) => {
+      const response = await saveCompanyPrivacyConsent(lipId, formData);
+
+      if (!response) {
+        throw new Error(
+          "Impossibile salvare il consenso alla privacy di compagnia, riprova più tardi",
+        );
+      }
+      if (response.status !== "success") {
+        throw normalizeError(response);
+      }
+
+      return response;
+    },
+    onSuccess: ({lip}, {lipId}) => {
+      queryClient.setQueryData(
+        ["lip", lipId] as const,
+        (old: {
+          lip: LipWithPayment;
+          drawerStates: Partial<Record<DrawerName, DrawerState>>;
+        }) => {
+          const updatedLip = {
+            ...old.lip,
+            ...lip,
+          };
+
+          console.log({oldLip: old.lip, lip, updatedLip});
 
           const updatedDrawerStates = computeDrawerStates(updatedLip);
 

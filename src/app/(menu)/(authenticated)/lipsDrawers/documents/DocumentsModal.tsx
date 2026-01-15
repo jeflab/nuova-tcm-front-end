@@ -1,23 +1,27 @@
 "use client";
 
-import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {getLipQuery} from "@/app/(menu)/(authenticated)/lips/[id]/queries";
 import {CompanyPrivacy} from "@/app/(menu)/(authenticated)/lipsDrawers/CompanyPrivacy";
 import {DocumentsManagement} from "@/app/(menu)/(authenticated)/lipsDrawers/documents/DocumentsManagement";
+import {isPrivacyCompanyValid} from "@/app/(menu)/(authenticated)/lipsDrawers/documents/documentsValidators";
+import {isPaymentValid} from "@/app/(menu)/(authenticated)/lipsDrawers/payment/paymentValidators";
+import {validateLipIdOrNotFound} from "@/app/(menu)/(authenticated)/lipsDrawers/validateLipIdOrNotFound";
+import {useSuspenseQuery} from "@tanstack/react-query";
+import {useParams} from "next/navigation";
 
 export function DocumentsModal() {
-  const lip = useStore((state) => state.lip);
+  const lipId = validateLipIdOrNotFound(useParams<{id: string}>().id) as number;
+  const {
+    data: {lip},
+  } = useSuspenseQuery(getLipQuery(lipId));
 
-  if (!lip) return null;
+  if (!isPaymentValid(lip)) {
+    return null;
+  }
 
-  if (!lip.privacyCompany) {
-    return (
-      <CompanyPrivacy
-        lipId={lip.id}
-        agentId={lip.agent.id}
-        contractorId={lip.contractor.id}
-      />
-    );
+  if (!isPrivacyCompanyValid(lip)) {
+    return <CompanyPrivacy lip={lip} />;
   } else {
-    return <DocumentsManagement />;
+    return <DocumentsManagement lip={lip} />;
   }
 }

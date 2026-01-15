@@ -5,6 +5,7 @@ import {Lip} from "@/models/entities/lip";
 import {DrawerState} from "@/ui/drawer/types";
 import {createFEATransaction, signFEADoc} from "@/ui/eSign/actions";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
+import merge from "lodash/merge";
 
 export const useRequestOTPMutation = (data: {
   contractorId?: number;
@@ -48,23 +49,18 @@ export const useSignFEADocMutation = () => {
 
       return response;
     },
-    onSuccess: ({lip: updatedLip}, {lipId}) => {
+    onSuccess: ({lip}, {lipId}) => {
       queryClient.setQueryData(
         ["lip", lipId],
         (old: {
           lip: Lip;
           drawerStates: Partial<Record<DrawerName, DrawerState>>;
         }) => {
-          const newLip = {
-            ...old.lip,
-            ...updatedLip,
-          };
-          const newDrawerStates = computeDrawerStates(newLip);
-
-          console.log({old, updatedLip, newLip});
+          const updatedLip = merge({}, old.lip, lip);
+          const newDrawerStates = computeDrawerStates(updatedLip);
 
           return {
-            lip: newLip,
+            lip: updatedLip,
             drawerStates: newDrawerStates,
           };
         },

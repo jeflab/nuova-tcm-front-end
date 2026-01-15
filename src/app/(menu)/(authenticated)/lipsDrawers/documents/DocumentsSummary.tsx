@@ -1,18 +1,22 @@
 "use client";
 
-import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {getLipQuery} from "@/app/(menu)/(authenticated)/lips/[id]/queries";
 import {CompanyPrivacy} from "@/app/(menu)/(authenticated)/lipsDrawers/CompanyPrivacy";
-import {isDenValid} from "@/app/(menu)/(authenticated)/lipsDrawers/den/denValidators";
 import {
   createDocuments,
   ESign,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/documents/DocumentsManagement";
+import {isDocumentsBlocked} from "@/app/(menu)/(authenticated)/lipsDrawers/documents/documentsValidators";
+import {isPaymentValid} from "@/app/(menu)/(authenticated)/lipsDrawers/payment/paymentValidators";
+import {validateLipIdOrNotFound} from "@/app/(menu)/(authenticated)/lipsDrawers/validateLipIdOrNotFound";
 import {DownloadDocumentButton} from "@/ui/DownloadDocumentButton";
 import {
   faCheckCircle,
   faClipboardListCheck,
 } from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {useSuspenseQuery} from "@tanstack/react-query";
+import {useParams} from "next/navigation";
 import {useState} from "react";
 import {
   Badge,
@@ -48,10 +52,12 @@ const eSignsCount = (
 
 export function DocumentsSummary() {
   const [isConsentCheckOpen, setIsConsentCheckOpen] = useState(false);
-  const lip = useStore((state) => state.lip);
-  const denValid = useStore((state) => isDenValid(state.lip));
+  const lipId = validateLipIdOrNotFound(useParams<{id: string}>().id) as number;
+  const {
+    data: {lip},
+  } = useSuspenseQuery(getLipQuery(lipId));
 
-  if (!lip || !denValid) {
+  if (isDocumentsBlocked(lip) || !isPaymentValid(lip)) {
     return null;
   }
 
@@ -131,12 +137,7 @@ export function DocumentsSummary() {
         <ModalHeader closeButton>
           <Modal.Title>Privacy di compagnia</Modal.Title>
         </ModalHeader>
-        <CompanyPrivacy
-          onHide={() => setIsConsentCheckOpen(false)}
-          lipId={lip.id}
-          agentId={lip.agent.id}
-          contractorId={lip.contractor.id}
-        />
+        <CompanyPrivacy onHide={() => setIsConsentCheckOpen(false)} lip={lip} />
       </Modal>
 
       {documents.map((document) => {

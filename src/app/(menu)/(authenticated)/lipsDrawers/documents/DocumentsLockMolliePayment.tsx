@@ -9,8 +9,8 @@ import {
 import {mollieLinkClicked} from "@/app/(menu)/(authenticated)/lipsDrawers/documents/documentsValidators";
 import {isPaymentValid} from "@/app/(menu)/(authenticated)/lipsDrawers/payment/paymentValidators";
 import {validateLipIdOrNotFound} from "@/app/(menu)/(authenticated)/lipsDrawers/validateLipIdOrNotFound";
-import {cns} from "@/helpers/cns";
 import {dateTimeString} from "@/helpers/dates";
+import {Lip} from "@/models/entities/lip";
 import {MolliePayment} from "@/models/entities/mollie/payment";
 import {IconStack} from "@/ui/IconStack";
 import {WithChildren} from "@/ui/types";
@@ -26,9 +26,9 @@ import {
 import {faLink, faPlus} from "@fortawesome/pro-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import useTimeout from "@restart/hooks/useTimeout";
-import {useSuspenseQuery} from "@tanstack/react-query";
+import {useQuery, useSuspenseQuery} from "@tanstack/react-query";
 import {useParams} from "next/navigation";
-import {Suspense, useState} from "react";
+import {useState} from "react";
 import {Alert, Button} from "react-bootstrap";
 import {Variant} from "react-bootstrap/esm/types";
 
@@ -58,22 +58,17 @@ function FirstPaymentPending() {
 interface FirstPaymentErrorProps {
   firstPaymentError: Error;
   onRetry: () => void;
-  firstPaymentFetching: boolean;
 }
 function FirstPaymentError({
   firstPaymentError,
   onRetry,
-  firstPaymentFetching,
 }: FirstPaymentErrorProps) {
   return (
     <PaymentAlert variant="danger">
       <FontAwesomeIcon icon={faCircleExclamation} size="xl" />
       <p className="me-auto mb-0">{firstPaymentError.message}.</p>
       <Button onClick={() => onRetry()}>
-        <FontAwesomeIcon
-          icon={firstPaymentFetching ? faSpinner : faArrowRotateBack}
-          className={cns("me-2", firstPaymentFetching && "fa-spin")}
-        />
+        <FontAwesomeIcon icon={faArrowRotateBack} className="me-2" />
         Riprova
       </Button>
     </PaymentAlert>
@@ -214,31 +209,32 @@ function MolliePaymentClickedState() {
   );
 }
 
-function PaymentStatus() {
-  const lipId = validateLipIdOrNotFound(useParams<{id: string}>().id) as number;
-  const {
-    data: {lip},
-  } = useSuspenseQuery(getLipQuery(lipId));
-
+interface PaymentStatusProps {
+  lip: Lip;
+}
+function PaymentStatus({lip}: PaymentStatusProps) {
   const {
     data: firstPaymentData,
     error: firstPaymentError,
-    isFetching: firstPaymentFetching,
+    isFetching: firstPaymentIsFetching,
     isError: firstPaymentIsError,
     refetch: firstPaymentRefetch,
-  } = useSuspenseQuery(getActiveFirstPaymentQuery(lipId));
+  } = useQuery(getActiveFirstPaymentQuery(lip.id));
+
+  if (firstPaymentIsFetching && (!firstPaymentData || !!firstPaymentError)) {
+    return <FirstPaymentPending />;
+  }
 
   if (firstPaymentIsError) {
     return (
       <FirstPaymentError
         firstPaymentError={firstPaymentError}
         onRetry={firstPaymentRefetch}
-        firstPaymentFetching={firstPaymentFetching}
       />
     );
   }
 
-  if (firstPaymentData.first_payment !== null) {
+  if (!!firstPaymentData?.first_payment) {
     return <FirstPaymentLink firstPayment={firstPaymentData.first_payment} />;
   }
 
@@ -263,9 +259,5 @@ export function DocumentsLockMolliePayment() {
     return null;
   }
 
-  return (
-    <Suspense fallback={<FirstPaymentPending />}>
-      <PaymentStatus />
-    </Suspense>
-  );
+  return <PaymentStatus lip={lip} />;
 }

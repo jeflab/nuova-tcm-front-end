@@ -50,7 +50,7 @@ export function isDocumentsWaitingForConsent(
     return false;
   }
 
-  return lip.privacyCompany && lip.privacyCompany.length > 0;
+  return !lip.privacyCompany || lip.privacyCompany.length === 0;
 }
 
 export type LipWithDocuments = LipWithPayment & {
@@ -76,4 +76,17 @@ export function isDocumentsValid(
     Object.keys(lip?.eSigns?.polizza).length === requiredProposalESign &&
     lip.eSigns.identificazione
   );
+}
+
+export type LipWithPrivacyCompany = LipWithPayment & {
+  eSigns: NonNullable<Lip["eSigns"]>;
+};
+export function isPrivacyCompanyValid(
+  lip: Lip | PreliminaryData | null,
+): lip is LipWithDocuments {
+  if (!isPaymentValid(lip)) {
+    return false;
+  }
+
+  return !!(lip.privacyCompany && lip.privacyCompany.length > 0);
 }

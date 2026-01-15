@@ -268,7 +268,7 @@ function PaymentModality({paymentData, lip}: PaymentModalityProps) {
         <FontAwesomeIcon icon={faCreditCard} /> Modalità di pagamento
       </h4>
       {["legacy", "transfer-sdd"].includes(paymentData.paymentType) && (
-        <BankTransferPayment lipNumber={lip.lipNumber} />
+        <BankTransferPayment lipNumber={lip.lipNumber!} />
       )}
       {["credit-card", "mollie"].includes(paymentData.paymentType) && (
         <CrediCardPayment />

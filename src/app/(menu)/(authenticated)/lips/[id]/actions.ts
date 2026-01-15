@@ -598,13 +598,16 @@ export async function updatePaymentData(
   });
 }
 
+const saveCompanyPrivacyConsentShape = {
+  lip: lipWithoutRelationsSchema,
+};
 export async function saveCompanyPrivacyConsent(
-  consent: {flags: string[]; options: readonly Option[]},
   lipId: number,
+  consent: {flags: string[]; options: readonly Option[]},
 ) {
   return post(`/lips/${lipId}/privacy-company`, {
     data: consent,
-    revalidateTags: [Tags.getLip(lipId)],
+    payloadShape: saveCompanyPrivacyConsentShape,
   });
 }
 

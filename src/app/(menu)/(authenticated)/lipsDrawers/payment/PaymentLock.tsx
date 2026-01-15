@@ -5,7 +5,6 @@ import {isBeneficiariesValid} from "@/app/(menu)/(authenticated)/lipsDrawers/ben
 import {askForUnderwriting} from "@/app/(menu)/(authenticated)/lipsDrawers/payment/paymentValidators";
 import {validateLipIdOrNotFound} from "@/app/(menu)/(authenticated)/lipsDrawers/validateLipIdOrNotFound";
 import {PDFType} from "@/models/entities/esign";
-import {Tags} from "@/services/const";
 import {Currency} from "@/ui/Currency";
 import RequestOTPModal from "@/ui/eSign/RequestOTPModal";
 import {faSquareArrowUpRight} from "@fortawesome/pro-solid-svg-icons";
@@ -123,7 +122,6 @@ export function PaymentLock({
           show={isUnderwritingOpen}
           personalData={lip.contractor}
           whoESign="contractor"
-          tagToRevalidate={Tags.getLip(lip.id)}
         />
       </Alert>
     );

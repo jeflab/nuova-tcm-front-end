@@ -1,7 +1,8 @@
 "use client";
 
-import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {LipWithDen} from "@/app/(menu)/(authenticated)/lipsDrawers/den/denValidators";
 import {DocumentsChapterDetails} from "@/app/(menu)/(authenticated)/lipsDrawers/documents/DocumentsChapterDetails";
+import {isPaymentValid} from "@/app/(menu)/(authenticated)/lipsDrawers/payment/paymentValidators";
 import {
   DocumentManagementDownloadUris,
   DocumentManagementPreviewUris,
@@ -18,7 +19,7 @@ import {
   faXmark,
 } from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {startTransition, useState} from "react";
+import {useState} from "react";
 import {
   Button,
   Card,
@@ -184,14 +185,15 @@ const eSignsCount = (
   return [partial, total];
 };
 
-export function DocumentsManagement() {
+interface DocumentsManagementProps {
+  lip: LipWithDen;
+}
+export function DocumentsManagement({lip}: DocumentsManagementProps) {
   const [chapterModalOpen, setChapterModalOpen] =
     useState<`${"advisor" | "contractor" | "insured"}-${(typeof documents)[number]["fileName"]}`>();
-
-  const lip = useStore((state) => state.lip);
   const {closeModal} = useDrawerModal();
 
-  if (!lip) {
+  if (!isPaymentValid(lip)) {
     return null;
   }
 
@@ -338,9 +340,7 @@ export function DocumentsManagement() {
                           document={document}
                           lip={lip}
                           onHide={() => {
-                            startTransition(() => {
-                              setChapterModalOpen(undefined);
-                            });
+                            setChapterModalOpen(undefined);
                           }}
                         />
                       </>
@@ -408,9 +408,7 @@ export function DocumentsManagement() {
                               document={document}
                               lip={lip}
                               onHide={() => {
-                                startTransition(() => {
-                                  setChapterModalOpen(undefined);
-                                });
+                                setChapterModalOpen(undefined);
                               }}
                             />
                           </>
@@ -484,9 +482,7 @@ export function DocumentsManagement() {
                                   document={document}
                                   lip={lip}
                                   onHide={() => {
-                                    startTransition(() => {
-                                      setChapterModalOpen(undefined);
-                                    });
+                                    setChapterModalOpen(undefined);
                                   }}
                                 />
                               </>
