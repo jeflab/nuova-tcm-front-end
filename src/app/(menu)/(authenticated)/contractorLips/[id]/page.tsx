@@ -1,95 +1,26 @@
-import {cns} from "@/helpers/cns";
-import {normalizeError} from "@/helpers/errors";
+import {ContractorLipDetails} from "@/app/(menu)/(authenticated)/contractorLips/[id]/ContractorLipDetails";
+import {getLipQuery} from "@/app/(menu)/(authenticated)/lips/[id]/queries";
+import {validateLipIdOrNotFound} from "@/app/(menu)/(authenticated)/lipsDrawers/validateLipIdOrNotFound";
 import {AppContainer} from "@/ui/AppContainer";
-import {ButtonLink} from "@/ui/ButtonLink";
-import {Drawer} from "@/ui/drawer/Drawer";
-import {NavDrawer} from "@/ui/drawer/NavDrawer";
-import {LipStateBadge} from "@/ui/LipStateBadge";
-import {PageTitle} from "@/ui/PageTitle";
-import ScrollReveal from "@/ui/ScrollReveal/ScrollReveal";
-import {faArrowLeft} from "@fortawesome/pro-duotone-svg-icons";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {notFound} from "next/navigation";
-import {Fragment} from "react";
-import {Col, Nav, Row} from "react-bootstrap";
-import {getLip} from "./actions";
-import {drawers} from "./drawers";
-import {InitStoreWithServerData} from "./InitStoreWithServerData";
-import styles from "./page.module.scss";
-
-// TODO: abbassare il fetch dei dati, o in un sotto-componente client o addirittura nel drawer (fetch è cachata)
-//  Fatto ciò la pagina può tornare server component
+import {getQueryClient} from "@/ui/getQueryClient";
+import {dehydrate, HydrationBoundary} from "@tanstack/react-query";
 
 interface NewLipPageProps {
   params: Promise<{id: string}>;
 }
 
-const minWidthHack = {minWidth: "1px"};
-
 export default async function NewLipPage(props: NewLipPageProps) {
-  const params = await props.params;
-  const lipResponse = await getLip(parseInt(params.id, 10));
-  if (lipResponse?.status !== "success") {
-    if (lipResponse?.responseStatus === 404) {
-      notFound();
-    }
-    throw normalizeError(lipResponse);
-  }
-  const lip = lipResponse.lip;
+  const {id} = await props.params;
+  const lipId = validateLipIdOrNotFound(id);
+  const queryClient = getQueryClient();
+
+  void queryClient.prefetchQuery(getLipQuery(lipId));
 
   return (
-    <AppContainer className="vstack gap-3 align-items-start">
-      <InitStoreWithServerData lip={lip} />
-      <div>
-        <PageTitle>Polizza n° {lip.lipNumber}</PageTitle>
-        {lip.lipState && <LipStateBadge lipState={lip.lipState} />}
-      </div>
-      <ButtonLink href="/contractorLips">
-        <FontAwesomeIcon icon={faArrowLeft} /> Torna alle tue polizze
-      </ButtonLink>
-      <Row className="flex-row-reverse gy-3">
-        <Col md="auto">
-          <Nav className={cns("flex-column", styles.connectedList)}>
-            <ScrollReveal revealThreshold={70}>
-              <div className="mb-3 pb-2 border-bottom">
-                <PageTitle>
-                  Polizza n°
-                  <br />
-                  {lip.lipNumber}
-                </PageTitle>
-                <LipStateBadge lipState={lip.lipState} />
-              </div>
-            </ScrollReveal>
-            <div className={styles.navLinks}>
-              {drawers.map(({name, title, shortTitle, isVisible}) => {
-                if (isVisible && !isVisible(lip.type)) {
-                  return null;
-                }
-                return (
-                  <NavDrawer name={name} key={name}>
-                    {shortTitle ?? title}
-                  </NavDrawer>
-                );
-              })}
-            </div>
-          </Nav>
-        </Col>
-        <Col className="d-flex flex-column gap-3" style={minWidthHack}>
-          {drawers.map(({name, title, summaryContent, lock, isVisible}) => {
-            if (isVisible && lip && !isVisible(lip.type)) {
-              return null;
-            }
-            return (
-              <Fragment key={name}>
-                {lock}
-                <Drawer name={name} title={title} readonly>
-                  {summaryContent}
-                </Drawer>
-              </Fragment>
-            );
-          })}
-        </Col>
-      </Row>
-    </AppContainer>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <AppContainer className="vstack gap-3 align-items-start">
+        <ContractorLipDetails />
+      </AppContainer>
+    </HydrationBoundary>
   );
 }

@@ -188,7 +188,11 @@ function MolliePaymentPendingState() {
 
 function MolliePaymentClickedState() {
   const lipId = validateLipIdOrNotFound(useParams<{id: string}>().id) as number;
-  const {data} = useSuspenseQuery(getActiveSubscriptionQuery(lipId));
+  const {data, isSuccess} = useQuery(getActiveSubscriptionQuery(lipId));
+
+  if (!isSuccess) {
+    return null;
+  }
 
   return (
     <PaymentAlert variant="success">
