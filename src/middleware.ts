@@ -92,7 +92,11 @@ export default async function middleware(request: NextRequest) {
   }
 
   if (isLoginPage && isUserLoggedIn) {
-    const next = searchParams.get("next") ?? "/";
+    let next = searchParams.get("next") ?? "/";
+    if (!next.startsWith("/")) {
+      next = "/";
+    }
+
     searchParams.delete("next");
     const redirectUrl = new URL(next, request.url);
     redirectUrl.search = searchParams.toString();
