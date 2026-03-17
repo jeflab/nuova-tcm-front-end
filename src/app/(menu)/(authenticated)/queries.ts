@@ -1,5 +1,5 @@
 import {getAccount} from "@/app/(no-menu)/(auth)/actions";
-import {normalizeError} from "@/helpers/errors";
+import {ErrorCodes, normalizeError} from "@/helpers/errors";
 import {queryOptions} from "@tanstack/react-query";
 
 export const getAccountQuery = () =>
@@ -13,7 +13,17 @@ export const getAccountQuery = () =>
           "Impossibile recuperare l'account utente, riprova più tardi",
         );
       }
+
       if (response.status !== "success") {
+        if (response.code === ErrorCodes.UNAUTHORIZED) {
+          return {
+            user: null,
+            roles: null,
+            permissions: null,
+            broker: null,
+          };
+        }
+
         throw normalizeError(response);
       }
 

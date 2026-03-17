@@ -14,7 +14,7 @@ interface HelpLinkProps {
 export function HelpLink({className, fiscalCode, label}: HelpLinkProps) {
   const pathName = usePathname();
   const appVersion = getVersion();
-  const subject = `Richiesta d'assistenza da ${fiscalCode}`;
+  const subject = `Richiesta d'assistenza da ${fiscalCode ?? "utente non autenticato"}`;
   const mailBody = `Non modificare questa sezione:
   ---
   Versione applicazione: ${appVersion}

@@ -1,14 +1,14 @@
-import {getAccount} from "@/app/(no-menu)/(auth)/actions";
-import {normalizeError} from "@/helpers/errors";
+"use client";
+
+import {getAccountQuery} from "@/app/(menu)/(authenticated)/queries";
 import {AppContainer} from "@/ui/AppContainer";
 import {PageTitle} from "@/ui/PageTitle";
+import {useSuspenseQuery} from "@tanstack/react-query";
 
-export default async function OperatingManualPage() {
-  const account = await getAccount();
-
-  if (account?.status !== "success") {
-    throw normalizeError(account);
-  }
+export default function OperatingManualPage() {
+  const {
+    data: {broker},
+  } = useSuspenseQuery(getAccountQuery());
 
   return (
     <AppContainer className="vstack gap-3">
@@ -17,7 +17,7 @@ export default async function OperatingManualPage() {
       </PageTitle>
       <div
         dangerouslySetInnerHTML={{
-          __html: account.broker?.information.manualeOperativo ?? "",
+          __html: broker?.information.manualeOperativo ?? "",
         }}
       />
     </AppContainer>

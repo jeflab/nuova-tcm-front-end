@@ -1,11 +1,11 @@
 "use client";
 
 import styles from "@/app/(no-menu)/layout.module.scss";
-import {RetryOnErrorButton} from "@/ui/RetryOnErrorButton";
 import {ButtonLink} from "@/ui/ButtonLink";
 import CenterLogoContent from "@/ui/CenterLogoContent";
 import {Debug} from "@/ui/Debug";
 import {Providers} from "@/ui/Providers";
+import {RetryOnErrorButton} from "@/ui/RetryOnErrorButton";
 import {getThemeClientSide} from "@/ui/Theme/helpers";
 import {faHouseChimney} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";

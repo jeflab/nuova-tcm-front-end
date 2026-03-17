@@ -160,7 +160,7 @@ export function ContractorFiscalCodeForm() {
             invariant(lip.type, "lipType is required");
             invariant(lip.contractor, "lip.contractor is required");
 
-            if (loggedUser.fiscalCode === values.fiscalCode) {
+            if (loggedUser?.fiscalCode === values.fiscalCode) {
               throw {
                 root: {
                   type: "server",

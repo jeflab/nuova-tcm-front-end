@@ -168,10 +168,10 @@ export function ContractorContactsForm() {
                     validate: {
                       notAgent: (value) => {
                         if (
-                          !loggedUserRoles.some(
+                          !loggedUserRoles?.some(
                             (role) => role.name === "SuperAdmin",
                           ) &&
-                          value === loggedUser.phone
+                          value === loggedUser?.phone
                         ) {
                           return "Il numero di telefono inserito non può essere uguale a quello dell'Advisor";
                         }
@@ -204,10 +204,10 @@ export function ContractorContactsForm() {
                       },
                       notAgent: (value) => {
                         if (
-                          !loggedUserRoles.some(
+                          !loggedUserRoles?.some(
                             (role) => role.name === "SuperAdmin",
                           ) &&
-                          value === loggedUser.email
+                          value === loggedUser?.email
                         ) {
                           return "L'email inserita non può essere uguale a quella dell'Advisor";
                         }

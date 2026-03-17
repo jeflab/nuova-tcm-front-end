@@ -26,6 +26,26 @@ async function authorizationHeader() {
   return authCookie ? {Authorization: `Bearer ${authCookie}`} : undefined;
 }
 
+async function deleteAuthCookie() {
+  const cookiesStore = await cookies();
+  const authCookie = cookiesStore.get(AUTH_COOKIE_NAME);
+
+  if (!authCookie || !authCookie.value) {
+    console.log(
+      "Ricevuto 401, ma nessun cookie presente. Ritorno l'errore al chiamante.",
+    );
+    return;
+  }
+
+  console.warn(
+    chalk.yellow.inverse(
+      "Ricevuto 401 con cookie presente. Il cookie è invalido o scaduto. Eseguo redirect al logout.",
+    ),
+  );
+
+  redirect("/logout");
+}
+
 function parseLaravelErrorPage(text: string) {
   let ok = false;
   let noScript = "";
@@ -252,9 +272,7 @@ export async function apiCall<ResponsePayloadShape extends ZodRawShape>(
     });
 
     if (serverResponseJson.responseStatus === 401) {
-      console.info("Chiamata non autorizzata, logout");
-
-      redirect("/logout");
+      await deleteAuthCookie();
 
       return errors[ErrorCodes.UNAUTHORIZED] as z.infer<
         typeof serverErrorSchema
