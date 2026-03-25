@@ -19,19 +19,19 @@ export const defaultBonusConfig: BonusConfig = {
   bonuses: [
     {
       minDuration: 30,
-      percentage: 100,
+      percentage: 85,
       label: "Bonus a scadenza",
       amountLabel: "Importo",
     },
     {
       minDuration: 25,
-      percentage: 75,
+      percentage: 65,
       label: "Bonus dal 25° al 29° anno",
       amountLabel: "Importo minimo garantito",
     },
     {
       minDuration: 20,
-      percentage: 50,
+      percentage: 45,
       label: "Bonus dal 20° al 24° anno",
       amountLabel: "Importo minimo garantito",
     },
