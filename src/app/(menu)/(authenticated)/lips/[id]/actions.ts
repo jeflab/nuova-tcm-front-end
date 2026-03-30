@@ -1,5 +1,6 @@
 "use server";
 
+import {defaultBonusConfig} from "@/app/(menu)/(authenticated)/quoter/bonus";
 import {BeneficiariesFormValues} from "@/app/(menu)/(authenticated)/lipsDrawers/beneficiaries/BeneficiariesForm";
 import {HealthQuestionnaireFormValues} from "@/app/(menu)/(authenticated)/lipsDrawers/healthQuestionnaire/HealthQuestionnaireForm";
 import {
@@ -551,6 +552,7 @@ export async function updateQuotation(
   return patch(`/lips/${lipId}`, {
     data: {
       json_quotation: JSON.stringify(data),
+      json_bonus: JSON.stringify(defaultBonusConfig),
       ...(shouldResetHealthQuestionnaire && {
         json_survey_healthcare: null,
       }),
