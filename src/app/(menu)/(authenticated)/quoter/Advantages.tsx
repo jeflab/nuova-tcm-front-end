@@ -4,17 +4,20 @@ import {faAsterisk} from "@fortawesome/pro-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Card, Col, OverlayTrigger, Table, Tooltip} from "react-bootstrap";
 import styles from "./Advantages.module.scss";
+import {BonusConfig, defaultBonusConfig} from "./bonus";
 
 interface AdvantagesProps {
   duration: number;
   premium: number;
   showTitle?: boolean;
+  bonusConfig?: BonusConfig;
 }
 
 export function Advantages({
   duration,
   premium,
   showTitle = true,
+  bonusConfig = defaultBonusConfig,
 }: AdvantagesProps) {
   return (
     <Col>
@@ -22,47 +25,33 @@ export function Advantages({
         {showTitle && <h3 className="mb-0 p-2 border-bottom">I vantaggi</h3>}
         <Table size="small" className={cns(["mb-0", styles.table])}>
           <tbody>
-            <tr className={cns(duration < 30 && "d-none")}>
-              <td>Bonus a scadenza</td>
-              <td>100%</td>
-              <td>Importo</td>
-              <td>
-                {premium ? (
-                  <Currency>{30 * premium}</Currency>
-                ) : (
-                  <span className="text-nowrap">? €</span>
-                )}
-              </td>
-            </tr>
-            <tr className={cns(duration < 25 && "d-none")}>
-              <td>Bonus dal 25° al 29° anno</td>
-              <td>75%</td>
-              <td>Importo minimo garantito</td>
-              <td>
-                {premium ? (
-                  <Currency>{25 * premium * 0.75}</Currency>
-                ) : (
-                  <span className="text-nowrap">? €</span>
-                )}
-              </td>
-            </tr>
-            <tr className={cns(duration < 20 && "d-none")}>
-              <td>Bonus dal 20° al 24° anno</td>
-              <td>50%</td>
-              <td>Importo minimo garantito</td>
-              <td>
-                {premium ? (
-                  <Currency>{20 * premium * 0.5}</Currency>
-                ) : (
-                  <span className="text-nowrap">? €</span>
-                )}
-              </td>
-            </tr>
+            {bonusConfig.bonuses.map((bonus, index) => (
+              <tr
+                key={index}
+                className={cns(duration < bonus.minDuration && "d-none")}
+              >
+                <td>{bonus.label}</td>
+                <td>{bonus.percentage}%</td>
+                <td>{bonus.amountLabel}</td>
+                <td>
+                  {premium ? (
+                    <Currency>
+                      {bonus.minDuration * premium * (bonus.percentage / 100)}
+                    </Currency>
+                  ) : (
+                    <span className="text-nowrap">? €</span>
+                  )}
+                </td>
+              </tr>
+            ))}
             <tr style={{borderBottom: "transparent"}}>
               <td>
                 Rata mensile
                 <br />
-                <small>Detraibile fino al 19% a norma di legge</small>{" "}
+                <small>
+                  Detraibile fino al {bonusConfig.detraction.percentage}% a
+                  norma di legge
+                </small>{" "}
                 <OverlayTrigger
                   overlay={
                     <Tooltip id="advantages-info">
@@ -75,11 +64,16 @@ export function Advantages({
                   <FontAwesomeIcon icon={faAsterisk} className="text-primary" />
                 </OverlayTrigger>
               </td>
-              <td>19%</td>
+              <td>{bonusConfig.detraction.percentage}%</td>
               <td>Importo</td>
               <td>
                 {premium ? (
-                  <Currency>{Math.min(101, premium * 0.19)}</Currency>
+                  <Currency>
+                    {Math.min(
+                      bonusConfig.detraction.maxAmount,
+                      premium * (bonusConfig.detraction.percentage / 100),
+                    )}
+                  </Currency>
                 ) : (
                   <span className="text-nowrap">? €</span>
                 )}

@@ -492,6 +492,21 @@ const certificateSchema = z
     effectiveDate: effective_date,
   }));
 
+const bonusTierSchema = z.object({
+  minDuration: z.number(),
+  percentage: z.number(),
+  label: z.string(),
+  amountLabel: z.string(),
+});
+
+const bonusConfigSchema = z.object({
+  bonuses: z.array(bonusTierSchema),
+  detraction: z.object({
+    percentage: z.number(),
+    maxAmount: z.number(),
+  }),
+});
+
 export const lipSchema = z
   .object({
     id: z.number(),
@@ -504,6 +519,7 @@ export const lipSchema = z
     json_den: stringToJSON().pipe(denSchema).nullish(),
     json_documents: stringToJSON().pipe(lipDocumentsSchema).nullish(),
     json_quotation: stringToJSON().pipe(quotationSchema).nullish(),
+    json_bonus: stringToJSON().pipe(bonusConfigSchema).nullish(),
     json_survey_healthcare: stringToJSON()
       .pipe(healthcareQuestionnaireSchema)
       .nullish(),
@@ -533,6 +549,7 @@ export const lipSchema = z
       json_den,
       json_documents,
       json_quotation,
+      json_bonus,
       json_survey_healthcare,
       must_ask_underwriting,
       json_beneficiary,
@@ -563,6 +580,7 @@ export const lipSchema = z
         den: json_den,
         documents: json_documents,
         quotation: json_quotation,
+        bonus: json_bonus,
         healthcareQuestionnaire: json_survey_healthcare,
         mustAskUnderwriting: must_ask_underwriting,
         beneficiaries: json_beneficiary,
