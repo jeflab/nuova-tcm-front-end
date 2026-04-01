@@ -10,9 +10,6 @@ console.info(`Node version: ${process.version}`);
 process.env.SENTRY_RELEASE = getRelease();
 console.info(`Sentry release: ${process.env.SENTRY_RELEASE}`);
 
-const maintenanceMode = process.env.MAINTENANCE_MODE === "true";
-console.info(`Maintenance mode: ${maintenanceMode}`);
-
 const enableReactCompiler = process.env.ENABLE_TRACT_COMPILER === "true";
 console.info(`React compiler enabled: ${enableReactCompiler}`);
 
@@ -35,29 +32,6 @@ let nextConfig: NextConfig = {
         };
       }),
   },
-  ...(maintenanceMode
-    ? {
-        async redirects() {
-          return [
-            {
-              source: "/((?!maintenance).*)",
-              destination: "/maintenance",
-              permanent: false,
-            },
-          ];
-        },
-      }
-    : {
-        async redirects() {
-          return [
-            {
-              source: "/maintenance",
-              destination: "/",
-              permanent: false,
-            },
-          ];
-        },
-      }),
 };
 
 nextConfig = withSentryConfig(nextConfig, {
