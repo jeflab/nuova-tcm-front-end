@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.8.0 (2026-0-01)
+
+#### Added:
+
+- Aggiunto bonus parametrizzato per ogni lip con default a 100-75-50
+- Creato bonus di default
+
 ## 2.7.0 (2026-01-14)
 
 #### Added:
