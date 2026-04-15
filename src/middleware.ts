@@ -26,8 +26,18 @@ const publicRoutes = [
   "/public-quoter",
 ];
 
+const MAINTENANCE_BYPASS_COOKIE = "maintenance_bypass";
+
 export default async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
+
+  const maintenanceToken = process.env.MAINTENANCE_MODE;
+  const isMaintenanceActive =
+    !!maintenanceToken &&
+    maintenanceToken !== "false" &&
+    maintenanceToken !== "";
+  const isMaintenancePath = path === "/maintenance";
+  const isBypassSetupPath = path === "/bypass-maintenance";
   const isPublicRoute = publicRoutes.includes(path);
   const isRootPath = path === "/";
   const isLoginPage = path === "/login";
@@ -35,6 +45,50 @@ export default async function middleware(request: NextRequest) {
   const token = request.cookies.get(AUTH_COOKIE_NAME)?.value;
   const isUserLoggedIn = !!token;
   let userPermissions: string[] = [];
+
+  if (isMaintenanceActive) {
+    // Gestione della route di setup del bypass
+    if (isBypassSetupPath) {
+      const token = request.nextUrl.searchParams.get("token");
+      if (token && token === maintenanceToken) {
+        // Token corretto → imposta il cookie e vai alla home
+        const response = NextResponse.redirect(new URL("/", request.url));
+        response.cookies.set(MAINTENANCE_BYPASS_COOKIE, token, {
+          httpOnly: true,
+          sameSite: "lax",
+          path: "/",
+          maxAge: 60 * 60 * 24, // 24 ore
+        });
+        return response;
+      }
+      // Token assente o errato → mostra la pagina di manutenzione
+      return NextResponse.redirect(new URL("/maintenance", request.url));
+    }
+
+    // Controlla se l'utente ha il cookie di bypass valido
+    const bypassCookie = request.cookies.get(MAINTENANCE_BYPASS_COOKIE)?.value;
+    const hasBypass = bypassCookie === maintenanceToken;
+
+    if (!hasBypass) {
+      // Nessun bypass → mostra la pagina di manutenzione
+      if (!isMaintenancePath) {
+        return NextResponse.redirect(new URL("/maintenance", request.url));
+      }
+      return NextResponse.next();
+    }
+
+    // Bypass valido: se l'utente è già sulla pagina di manutenzione, mandalo alla home
+    if (isMaintenancePath) {
+      return NextResponse.redirect(new URL("/", request.url));
+    }
+
+    // Bypass valido: continua con la normale logica di autenticazione ↓
+  } else {
+    // Manutenzione spenta: /maintenance e /bypass-maintenance → home
+    if (isMaintenancePath || isBypassSetupPath) {
+      return NextResponse.redirect(new URL("/", request.url));
+    }
+  }
 
   if (token) {
     try {

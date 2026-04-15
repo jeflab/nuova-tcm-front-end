@@ -26,7 +26,6 @@ export async function GET(
         ...acceptJsonHeader,
         ...(await authorizationHeader()),
         "cache-control": "no-transform",
-        "accept-encoding": "gzip, br",
       },
       method: "GET",
       credentials: "include",
