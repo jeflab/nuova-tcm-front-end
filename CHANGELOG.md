@@ -1,6 +1,12 @@
 # Changelog
 
-## 2.8.0 (2026-0-01)
+### 2.8.1 (2026-04-15)
+
+#### Fixed:
+
+- Corretto bug che comprimeva due volte la risposta del server in test-api
+
+## 2.8.0 (2026-04-01)
 
 #### Added:
 
