@@ -1,38 +1,58 @@
 import {createIDImageUrl} from "@/helpers/createResourcesUrl";
-
-//TODO: pensare a come inviare il bearer token per le richieste di immagini
+import {
+  faMagnifyingGlassMinus,
+  faMagnifyingGlassPlus,
+} from "@fortawesome/pro-duotone-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import Image from "next/image";
+import Zoom from "react-medium-image-zoom";
+import "react-medium-image-zoom/dist/styles.css";
+import styles from "./idImage.module.scss";
 
 interface IdImageProps {
   agentId: number;
   personalDataId: number;
   filename: string;
-  size?: "thumbnail" | "full";
 }
-export function IdImage({
-  agentId,
-  personalDataId,
-  filename,
-  size = "thumbnail",
-}: IdImageProps) {
+export function IdImage({agentId, personalDataId, filename}: IdImageProps) {
   const imageUrl = createIDImageUrl({
     personalDataId,
     agentId,
     fileName: filename,
-    size,
+    size: "thumbnail",
+  });
+  const zoommedImageUrl = createIDImageUrl({
+    personalDataId,
+    agentId,
+    fileName: filename,
+    size: "full",
   });
 
+  if (!imageUrl) {
+    return null;
+  }
+
   return (
-    <div
-      className="bg-primary-subtle d-flex justify-content-center align-items-md-center"
-      style={{
-        backgroundImage: `url(${imageUrl})`,
-        borderRadius: "0.5rem",
-        padding: "1rem",
-        backgroundOrigin: "content-box",
-        backgroundPosition: "center center",
-        backgroundRepeat: "no-repeat",
-        backgroundSize: "contain",
-      }}
-    ></div>
+    <div className={styles.idImage + " bg-primary-subtle p-3 rounded"}>
+      <Zoom
+        zoomImg={{
+          alt: `Documento di identità - ${filename}`,
+          src: zoommedImageUrl,
+        }}
+        zoomMargin={16}
+        IconZoom={() => <FontAwesomeIcon icon={faMagnifyingGlassPlus} />}
+        IconUnzoom={() => <FontAwesomeIcon icon={faMagnifyingGlassMinus} />}
+        classDialog={styles.idImageZoomOverlay}
+      >
+        <Image
+          className={styles.idThumbnail}
+          src={imageUrl}
+          width={256}
+          height={256}
+          unoptimized
+          alt={`Documento di identità - ${filename}`}
+        />
+      </Zoom>
+    </div>
   );
 }
