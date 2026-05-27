@@ -46,7 +46,7 @@ export function Advantages({
             ))}
             <tr style={{borderBottom: "transparent"}}>
               <td>
-                Rata mensile
+                Premio
                 <br />
                 <small>
                   Detraibile fino al {bonusConfig.detraction.percentage}% a
