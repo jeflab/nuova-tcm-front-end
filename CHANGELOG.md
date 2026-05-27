@@ -1,5 +1,11 @@
 # Changelog
 
+### 2.9.1 (2026-05-27)
+
+#### Fixed:
+
+- Corretto bug che faceva scrollare la pagina alla chiusura dello zoom delle immagini dei documenti
+
 ## 2.9.0 (2026-05-27)
 
 #### Added:
