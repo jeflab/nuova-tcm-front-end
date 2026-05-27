@@ -1,5 +1,20 @@
 # Changelog
 
+## 2.9.0 (2026-05-27)
+
+#### Added:
+
+- Aggiunto zoom alle immagini dei documenti
+- Aggiunto SpeedInsights per monitorare le performance del sito
+
+#### Changed:
+
+- Modificato testo dei vantaggi detraibilità fiscale rata mensile
+
+#### Fixed:
+
+- Corretto bug che nascondeva il testo di aiuto per il campo "caso morte"
+
 ### 2.8.2 (2026-04-15)
 
 #### Fixed:

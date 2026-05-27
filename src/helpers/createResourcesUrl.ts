@@ -14,15 +14,13 @@ export function createIDImageUrl({
   personalDataId,
   agentId,
   fileName,
-  size,
+  size = "full",
 }: CreateDocumentImageUrlOptions) {
   if (!personalDataId || !agentId || !fileName || !size) {
     return undefined;
   }
 
-  return encodeURI(
-    `/doc-image?contractorId=${personalDataId}&filename=${fileName}&agentId=${agentId}&size=${size}`,
-  );
+  return `/doc-image/${personalDataId}/${agentId}/${size}/${fileName}`;
 }
 
 export function createDocumentUrl(params: DownloadDocumentsSearchParams) {

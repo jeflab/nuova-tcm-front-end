@@ -3,6 +3,7 @@ import {getTheme} from "@/ui/Theme/actions";
 import {config as fontAwesomeConfig} from "@fortawesome/fontawesome-svg-core";
 import type {Metadata} from "next";
 import {ReactNode} from "react";
+import {SpeedInsights} from "@vercel/speed-insights/next";
 import "./globals.scss";
 
 // Fix icone giganti: non importiamo qui ma importiamo manualmente i css in globals.scss
@@ -26,6 +27,7 @@ export default async function RootLayout({children}: RootLayoutProps) {
   return (
     <html lang="it" data-bs-theme={theme}>
       <body>
+        <SpeedInsights />
         <Providers>{children}</Providers>
       </body>
     </html>
