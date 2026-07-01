@@ -5,11 +5,7 @@ import {
 } from "@fortawesome/pro-duotone-svg-icons";
 
 export type DrawerVariant =
-  | "success"
-  | "danger"
-  | "waiting"
-  | "active"
-  | "loading";
+  "success" | "danger" | "waiting" | "active" | "loading";
 
 export type DrawerState = {
   variant: DrawerVariant;
