@@ -1,12 +1,13 @@
 import {AUTH_COOKIE_NAME} from "@/app/(no-menu)/(auth)/const";
 import {acceptJsonHeader, apiUrl, contentJsonHeader} from "@/services/const";
 import {cookies} from "next/headers";
-import {NextRequest} from "next/server";
+import {NextRequest, NextResponse} from "next/server";
 
 async function authorizationHeader() {
   const authCookie = (await cookies()).get(AUTH_COOKIE_NAME)?.value;
   return authCookie ? {Authorization: `Bearer ${authCookie}`} : undefined;
 }
+
 export async function GET(
   request: NextRequest,
   props: {params: Promise<{url: string[]}>},
@@ -26,7 +27,6 @@ export async function GET(
         ...acceptJsonHeader,
         ...(await authorizationHeader()),
         "cache-control": "no-transform",
-        "accept-encoding": "gzip, br",
       },
       method: "GET",
       credentials: "include",
@@ -35,5 +35,16 @@ export async function GET(
 
   console.timeEnd("test-api response time");
 
-  return response;
+  // Node.js fetch decomprime il body automaticamente ma lascia
+  // Content-Encoding nell'header → il browser tenta di decomprimere
+  // di nuovo e fallisce. Rimuoviamo gli header legati alla compressione.
+  const headers = new Headers(response.headers);
+  headers.delete("content-encoding");
+  headers.delete("content-length"); // non più valido dopo la decompressione
+
+  return new NextResponse(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers,
+  });
 }

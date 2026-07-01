@@ -143,8 +143,7 @@ const beneficiariesDefaultValues = (
     : beneficiariesData?.nomination === "heirs"
       ? undefined
       : ([beneficiaryDefaultValues()] as
-          | undefined
-          | ReturnType<typeof beneficiaryDefaultValues>[]),
+          undefined | ReturnType<typeof beneficiaryDefaultValues>[]),
   thirdPartyContactPerson: beneficiariesData?.thirdPartyContactPerson
     ? thirdPartDefaultValues(beneficiariesData.thirdPartyContactPerson)
     : undefined,

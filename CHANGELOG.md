@@ -1,6 +1,39 @@
 # Changelog
 
-## 2.8.0 (2026-0-01)
+### 2.9.1 (2026-05-27)
+
+#### Fixed:
+
+- Corretto bug che faceva scrollare la pagina alla chiusura dello zoom delle immagini dei documenti
+
+## 2.9.0 (2026-05-27)
+
+#### Added:
+
+- Aggiunto zoom alle immagini dei documenti
+- Aggiunto SpeedInsights per monitorare le performance del sito
+
+#### Changed:
+
+- Modificato testo dei vantaggi detraibilità fiscale rata mensile
+
+#### Fixed:
+
+- Corretto bug che nascondeva il testo di aiuto per il campo "caso morte"
+
+### 2.8.2 (2026-04-15)
+
+#### Fixed:
+
+- Corretto davvero il bug che comprimeva due volte la risposta del server in test-api che persisteva
+
+### 2.8.1 (2026-04-15)
+
+#### Fixed:
+
+- Corretto bug che comprimeva due volte la risposta del server in test-api
+
+## 2.8.0 (2026-04-01)
 
 #### Added:
 

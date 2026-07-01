@@ -20,8 +20,7 @@ interface MultipleValues<TValue> {
 }
 
 type CheckGroupProps<TFieldValues extends FieldValues, TValue> = (
-  | SingleValue<TValue>
-  | MultipleValues<TValue>
+  SingleValue<TValue> | MultipleValues<TValue>
 ) & {
   disabled?: boolean;
   inline?: boolean;

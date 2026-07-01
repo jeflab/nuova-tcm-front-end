@@ -46,7 +46,7 @@ export function Coverages({income, jobPosition}: CoveragesProps) {
         <h3>Coperture assicurative</h3>
         <FormGroup controlId="death" as={BorderFeedback}>
           <p className="mb-2 input-heading">Caso morte</p>
-          <HelpText hideOnError="min" id="death-help-text">
+          <HelpText id="death-help-text">
             Il capitale assicurato deve essere maggiore o uguale a{" "}
             <Currency>{20_000}</Currency> e minore o uguale a{" "}
             <Currency>{maxDeath}</Currency>

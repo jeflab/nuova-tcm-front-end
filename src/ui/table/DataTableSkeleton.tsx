@@ -11,7 +11,6 @@ import {
   sortingStringToObject,
 } from "@/ui/table/helpers";
 import {
-  faAngleDown,
   faBackward,
   faCaretLeft,
   faCaretRight,
@@ -27,14 +26,13 @@ import {
 } from "@tanstack/react-table";
 import {
   Button,
-  Card,
-  CardHeader,
   FormControl,
   FormLabel,
   FormSelect,
   Placeholder,
   Table,
 } from "react-bootstrap";
+import {CardCollapsable} from "../CardCollapsable";
 import responsiveStyles from "./ResponsiveTable.module.scss";
 
 interface DataTableSkeletonProps<Row> {
@@ -73,24 +71,27 @@ export function DataTableSkeleton<Row>({
 
   return (
     <>
-      <Card className={responsiveStyles.filterPanel}>
-        <CardHeader className="d-flex justify-content-between align-items-center">
-          <span>
-            Filtri {getActiveFilterCount() > 0 && `(${getActiveFilterCount()})`}{" "}
-            <FontAwesomeIcon icon={faAngleDown} />
-          </span>{" "}
-          <Placeholder as="span" animation="glow">
-            <Button
-              size="sm"
-              className="disabled placeholder"
-              hidden={getActiveFilterCount() === 0}
-            >
-              <FontAwesomeIcon icon={faFilterCircleXmark} />
-              Reset filtri
-            </Button>
-          </Placeholder>
-        </CardHeader>
-      </Card>
+      <CardCollapsable
+        className={responsiveStyles.filterPanel}
+        header={
+          <div className="d-flex justify-content-between align-items-center">
+            <span>
+              Filtri
+              {getActiveFilterCount() > 0 && ` (${getActiveFilterCount()})`}
+            </span>
+            <Placeholder as="span" animation="glow">
+              <Button
+                size="sm"
+                className="disabled placeholder"
+                hidden={getActiveFilterCount() === 0}
+              >
+                <FontAwesomeIcon icon={faFilterCircleXmark} />
+                Reset filtri
+              </Button>
+            </Placeholder>
+          </div>
+        }
+      />
       <Table
         hover
         striped
