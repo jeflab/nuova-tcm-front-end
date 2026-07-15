@@ -77,6 +77,7 @@ interface ApiCallOptions<ResponsePayloadShape extends ZodRawShape> {
   searchParams?: Record<string, string>;
   revalidateTags?: Tag[];
   provideTags?: Tag[];
+  headers?: Record<string, string>;
 }
 export async function apiCall<ResponsePayloadShape extends ZodRawShape>(
   method: "GET" | "POST" | "PUT" | "PATCH",
@@ -87,6 +88,7 @@ export async function apiCall<ResponsePayloadShape extends ZodRawShape>(
     searchParams,
     revalidateTags,
     provideTags,
+    headers: extraHeaders,
   }: ApiCallOptions<ResponsePayloadShape>,
 ): Promise<
   | z.infer<typeof serverSuccessSchema>
@@ -104,11 +106,13 @@ export async function apiCall<ResponsePayloadShape extends ZodRawShape>(
       ? {
           ...(await authorizationHeader()),
           ...acceptJsonHeader,
+          ...extraHeaders,
         }
       : {
           ...(await authorizationHeader()),
           ...acceptJsonHeader,
           ...contentJsonHeader,
+          ...extraHeaders,
         };
 
   let response: Response;
