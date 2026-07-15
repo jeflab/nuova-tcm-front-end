@@ -1,8 +1,7 @@
 import {AppContainer} from "@/ui/AppContainer";
 import {PageTitle} from "@/ui/PageTitle";
 import {Alert, Stack} from "react-bootstrap";
-import {QuoterForm} from "../(authenticated)/quoter/QuoterForm";
-import {getPublicQuote} from "./actions";
+import {PublicQuoterForm} from "./PublicQuoterForm";
 
 export default async function Quoter() {
   return (
@@ -16,7 +15,7 @@ export default async function Quoter() {
           riservatezza nelle informazioni è fondamentale.
         </Alert>
       </AppContainer>
-      <QuoterForm getQuoteAction={getPublicQuote} />
+      <PublicQuoterForm />
     </Stack>
   );
 }

@@ -9,7 +9,10 @@ import {getClientIp} from "@/helpers/getClientIp";
 import {getClientUserAgent} from "@/helpers/getClientUserAgent";
 import {post} from "@/services/api";
 
-export async function getPublicQuote(quoterData: GetQuoteParams) {
+export async function getPublicQuote(
+  quoterData: GetQuoteParams,
+  turnstileToken = "",
+) {
   const clientIp = await getClientIp();
   const clientUserAgent = await getClientUserAgent();
 
@@ -20,6 +23,7 @@ export async function getPublicQuote(quoterData: GetQuoteParams) {
       "X-Internal-Secret": process.env.INTERNAL_API_SECRET ?? "",
       ...(clientIp ? {"X-Forwarded-Client-Ip": clientIp} : {}),
       ...(clientUserAgent ? {"X-Forwarded-Client-Ua": clientUserAgent} : {}),
+      ...(turnstileToken ? {"X-Turnstile-Token": turnstileToken} : {}),
     },
   });
 }
