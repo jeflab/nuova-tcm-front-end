@@ -74,3 +74,8 @@
   position: relative;
   z-index: 2;
 }
+
+.tableFetching {
+  opacity: 0.6;
+  transition: opacity 150ms ease-in-out;
+}

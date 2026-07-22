@@ -53,6 +53,7 @@ interface DataTableProps<Row extends RowData> {
   pageCount: number;
   searchParams: DataTableParams;
   contextValue?: TableContext;
+  isFetching?: boolean;
 }
 
 export const sortIcon: Record<SortDirection | "unsorted", ReactNode> = {
@@ -67,6 +68,7 @@ export function DataTable<Row>({
   pageCount,
   searchParams,
   contextValue,
+  isFetching,
 }: DataTableProps<Row>) {
   const pathname = usePathname() as Route;
   const router = useRouter();
@@ -265,6 +267,7 @@ export function DataTable<Row>({
         className={cns(
           responsiveStyles.responsiveTableWrapper,
           "mb-0 align-middle",
+          isFetching && styles.tableFetching,
         )}
       >
         <thead>
