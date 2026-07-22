@@ -1,15 +1,11 @@
-import {DrawerName} from "@/app/(menu)/(authenticated)/lips/[id]/drawers";
 import {LipWithBeneficiaries} from "@/app/(menu)/(authenticated)/lipsDrawers/beneficiaries/beneficiariesValidators";
-import {computeDrawerStates} from "@/app/(menu)/(authenticated)/lipsDrawers/drawerState";
-import {LipWithHealthQuestionnaire} from "@/app/(menu)/(authenticated)/lipsDrawers/healthQuestionnaire/healthQuestionnaireValidators";
 import {LipWithContractorIdentification} from "@/app/(menu)/(authenticated)/lipsDrawers/identification/identificationValidators";
 import {LipWithInsuredData} from "@/app/(menu)/(authenticated)/lipsDrawers/insuredData/insuredDataValidators";
-import {LipWithPayment} from "@/app/(menu)/(authenticated)/lipsDrawers/payment/paymentValidators";
 import {normalizeError} from "@/helpers/errors";
 import {Lip} from "@/models/entities/lip";
 import {PreliminaryData} from "@/models/preliminaryData";
-import {DrawerState} from "@/ui/drawer/types";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
+import {updateLipCache} from "./lipCache";
 import {
   activateContractor,
   addInsuredData,
@@ -47,28 +43,15 @@ export const useCreateRecurringPaymentMutation = () => {
       queryClient.setQueryData(["activeFirstPayment", lipId], data);
 
       // Aggiungiamo il click sul link di pagamento mollie alla lip
-      queryClient.setQueryData(
-        ["lip", lipId],
-        (old: {
-          lip: LipWithBeneficiaries & {payment: NonNullable<Lip["payment"]>};
-          drawerStates: Partial<Record<DrawerName, DrawerState>>;
-        }) => {
-          const updatedLip = {
-            ...old.lip,
-            payment: {
-              ...old.lip.payment,
-              mollieLinkClicked: true,
-            },
-          };
-
-          const updatedDrawerStates = computeDrawerStates(updatedLip);
-
-          return {
-            lip: updatedLip,
-            drawerStates: updatedDrawerStates,
-          };
+      updateLipCache<
+        LipWithBeneficiaries & {payment: NonNullable<Lip["payment"]>}
+      >(queryClient, lipId, (lip) => ({
+        ...lip,
+        payment: {
+          ...lip.payment,
+          mollieLinkClicked: true,
         },
-      );
+      }));
     },
   });
 };
@@ -84,25 +67,10 @@ export const useUpdateLipLocalDataMutation = () => {
       return variables.data;
     },
     onSuccess: (newData, {lipId}) => {
-      queryClient.setQueryData(
-        ["lip", lipId],
-        (old: {
-          lip: PreliminaryData;
-          drawerStates: Partial<Record<DrawerName, DrawerState>>;
-        }) => {
-          const updatedLip = {
-            ...old.lip,
-            ...newData,
-          };
-
-          const updatedDrawerStates = computeDrawerStates(updatedLip);
-
-          return {
-            lip: updatedLip,
-            drawerStates: updatedDrawerStates,
-          };
-        },
-      );
+      updateLipCache<PreliminaryData>(queryClient, lipId, (lip) => ({
+        ...lip,
+        ...newData,
+      }));
     },
   });
 };
@@ -128,14 +96,7 @@ export const useActivateContractorMutation = () => {
       return response;
     },
     onSuccess: ({lip: createdLip}) => {
-      queryClient.setQueryData(["lip", createdLip.id], () => {
-        const updatedDrawerStates = computeDrawerStates(createdLip);
-
-        return {
-          lip: createdLip,
-          drawerStates: updatedDrawerStates,
-        };
-      });
+      updateLipCache<Lip>(queryClient, createdLip.id, () => createdLip);
     },
   });
 };
@@ -166,27 +127,13 @@ export const useUpdateContractorContactsMutation = () => {
       return response;
     },
     onSuccess: ({personalData: updatedContractor}, {lipId}) => {
-      queryClient.setQueryData(
-        ["lip", lipId] as const,
-        (old: {
-          lip: PreliminaryData;
-          drawerStates: Partial<Record<DrawerName, DrawerState>>;
-        }) => {
-          const updatedLip = {
-            ...old.lip,
-            contractor: {
-              ...old.lip.contractor,
-              ...updatedContractor,
-            },
-          };
-          const updatedDrawerStates = computeDrawerStates(updatedLip);
-
-          return {
-            lip: updatedLip,
-            drawerStates: updatedDrawerStates,
-          };
+      updateLipCache<PreliminaryData>(queryClient, lipId, (lip) => ({
+        ...lip,
+        contractor: {
+          ...lip.contractor,
+          ...updatedContractor,
         },
-      );
+      }));
     },
   });
 };
@@ -221,29 +168,13 @@ export const useUpdatePersonalDataMutation = () => {
       {personalData: updatedPersonalData},
       {lipId, personalDataType},
     ) => {
-      queryClient.setQueryData(
-        ["lip", lipId] as const,
-        (old: {
-          lip: PreliminaryData;
-          drawerStates: Partial<Record<DrawerName, DrawerState>>;
-        }) => {
-          const updatedLip = {
-            ...old.lip,
-            [personalDataType]: {
-              ...old.lip[personalDataType],
-              ...updatedPersonalData,
-            },
-          };
-          const updatedDrawerStates = computeDrawerStates(updatedLip);
-
-          console.log({oldLip: old.lip, updatedPersonalData, updatedLip});
-
-          return {
-            lip: updatedLip,
-            drawerStates: updatedDrawerStates,
-          };
+      updateLipCache<PreliminaryData>(queryClient, lipId, (lip) => ({
+        ...lip,
+        [personalDataType]: {
+          ...lip[personalDataType],
+          ...updatedPersonalData,
         },
-      );
+      }));
     },
   });
 };
@@ -277,27 +208,13 @@ export const useIdentificationContractor = () => {
       return response;
     },
     onSuccess: ({identityDocument}, {lipId}) => {
-      queryClient.setQueryData(
-        ["lip", lipId] as const,
-        (old: {
-          lip: Lip;
-          drawerStates: Partial<Record<DrawerName, DrawerState>>;
-        }) => {
-          const updatedLip = {
-            ...old.lip,
-            contractor: {
-              ...old.lip.contractor,
-              identityDocument: [identityDocument],
-            },
-          };
-          const updatedDrawerStates = computeDrawerStates(updatedLip);
-
-          return {
-            lip: updatedLip,
-            drawerStates: updatedDrawerStates,
-          };
+      updateLipCache<Lip>(queryClient, lipId, (lip) => ({
+        ...lip,
+        contractor: {
+          ...lip.contractor,
+          identityDocument: [identityDocument],
         },
-      );
+      }));
     },
   });
 };
@@ -327,23 +244,13 @@ export const useUpdateDen = () => {
       return response;
     },
     onSuccess: ({lip}, {lipId}) => {
-      queryClient.setQueryData(
-        ["lip", lipId] as const,
-        (old: {
-          lip: LipWithContractorIdentification;
-          drawerStates: Partial<Record<DrawerName, DrawerState>>;
-        }) => {
-          const updatedLip = {
-            ...old.lip,
-            den: lip.den,
-          };
-          const updatedDrawerStates = computeDrawerStates(updatedLip);
-
-          return {
-            lip: updatedLip,
-            drawerStates: updatedDrawerStates,
-          };
-        },
+      updateLipCache<LipWithContractorIdentification>(
+        queryClient,
+        lipId,
+        (oldLip) => ({
+          ...oldLip,
+          den: lip.den,
+        }),
       );
     },
   });
@@ -374,25 +281,10 @@ export const useAddInsuredDataMutation = () => {
       return response;
     },
     onSuccess: ({lip}, {lipId}) => {
-      queryClient.setQueryData(
-        ["lip", lipId] as const,
-        (old: {
-          lip: Lip;
-          drawerStates: Partial<Record<DrawerName, DrawerState>>;
-        }) => {
-          const updatedLip = {
-            ...old.lip,
-            insured: lip.insured,
-          };
-
-          const updatedDrawerStates = computeDrawerStates(updatedLip);
-
-          return {
-            lip: updatedLip,
-            drawerStates: updatedDrawerStates,
-          };
-        },
-      );
+      updateLipCache<Lip>(queryClient, lipId, (oldLip) => ({
+        ...oldLip,
+        insured: lip.insured,
+      }));
     },
   });
 };
@@ -423,28 +315,13 @@ export const useIdentificationInsured = () => {
       return response;
     },
     onSuccess: ({identityDocument}, {lipId}) => {
-      queryClient.setQueryData(
-        ["lip", lipId] as const,
-        (old: {
-          lip: LipWithInsuredData;
-          drawerStates: Partial<Record<DrawerName, DrawerState>>;
-        }) => {
-          const updatedLip = {
-            ...old.lip,
-            insured: {
-              ...old.lip.insured,
-              identityDocument: [identityDocument],
-            },
-          };
-
-          const updatedDrawerStates = computeDrawerStates(updatedLip);
-
-          return {
-            lip: updatedLip,
-            drawerStates: updatedDrawerStates,
-          };
+      updateLipCache<LipWithInsuredData>(queryClient, lipId, (lip) => ({
+        ...lip,
+        insured: {
+          ...lip.insured,
+          identityDocument: [identityDocument],
         },
-      );
+      }));
     },
   });
 };
@@ -480,25 +357,10 @@ export const useUpdateQuotationMutation = () => {
       return response;
     },
     onSuccess: ({lip}, {lipId}) => {
-      queryClient.setQueryData(
-        ["lip", lipId] as const,
-        (old: {
-          lip: Lip;
-          drawerStates: Partial<Record<DrawerName, DrawerState>>;
-        }) => {
-          const updatedLip = {
-            ...old.lip,
-            ...lip,
-          };
-
-          const updatedDrawerStates = computeDrawerStates(updatedLip);
-
-          return {
-            lip: updatedLip,
-            drawerStates: updatedDrawerStates,
-          };
-        },
-      );
+      updateLipCache<Lip>(queryClient, lipId, (oldLip) => ({
+        ...oldLip,
+        ...lip,
+      }));
     },
   });
 };
@@ -528,27 +390,10 @@ export const useUpdateHealthQuestionnaire = () => {
       return response;
     },
     onSuccess: ({lip}, {lipId}) => {
-      queryClient.setQueryData(
-        ["lip", lipId] as const,
-        (old: {
-          lip: LipWithHealthQuestionnaire;
-          drawerStates: Partial<Record<DrawerName, DrawerState>>;
-        }) => {
-          const updatedLip = {
-            ...old.lip,
-            ...lip,
-          };
-
-          const updatedDrawerStates = computeDrawerStates(updatedLip);
-
-          console.log({oldLip: old.lip, lip, updatedLip});
-
-          return {
-            lip: updatedLip,
-            drawerStates: updatedDrawerStates,
-          };
-        },
-      );
+      updateLipCache<Lip>(queryClient, lipId, (oldLip) => ({
+        ...oldLip,
+        ...lip,
+      }));
     },
   });
 };
@@ -565,6 +410,7 @@ export const useUpdateBeneficiaries = () => {
       formData: Parameters<typeof updateBeneficiaries>[1];
     }) => {
       const response = await updateBeneficiaries(lipId, formData);
+      console.log({response});
 
       if (!response) {
         throw new Error(
@@ -578,25 +424,13 @@ export const useUpdateBeneficiaries = () => {
       return response;
     },
     onSuccess: ({lip}, {lipId}) => {
-      queryClient.setQueryData(
-        ["lip", lipId] as const,
-        (old: {
-          lip: LipWithHealthQuestionnaire;
-          drawerStates: Partial<Record<DrawerName, DrawerState>>;
-        }) => {
-          const updatedLip = {
-            ...old.lip,
-            ...lip,
-          };
-
-          const updatedDrawerStates = computeDrawerStates(updatedLip);
-
-          return {
-            lip: updatedLip,
-            drawerStates: updatedDrawerStates,
-          };
-        },
-      );
+      updateLipCache<Lip>(queryClient, lipId, (oldLip) => {
+        console.log({oldLip, lip});
+        return {
+          ...oldLip,
+          ...lip,
+        };
+      });
     },
   });
 };
@@ -626,25 +460,10 @@ export const useUpdatePaymentData = () => {
       return response;
     },
     onSuccess: ({lip}, {lipId}) => {
-      queryClient.setQueryData(
-        ["lip", lipId] as const,
-        (old: {
-          lip: LipWithBeneficiaries;
-          drawerStates: Partial<Record<DrawerName, DrawerState>>;
-        }) => {
-          const updatedLip = {
-            ...old.lip,
-            ...lip,
-          };
-
-          const updatedDrawerStates = computeDrawerStates(updatedLip);
-
-          return {
-            lip: updatedLip,
-            drawerStates: updatedDrawerStates,
-          };
-        },
-      );
+      updateLipCache<Lip>(queryClient, lipId, (oldLip) => ({
+        ...oldLip,
+        ...lip,
+      }));
     },
   });
 };
@@ -674,27 +493,10 @@ export const useSaveCompanyPrivacyConsent = () => {
       return response;
     },
     onSuccess: ({lip}, {lipId}) => {
-      queryClient.setQueryData(
-        ["lip", lipId] as const,
-        (old: {
-          lip: LipWithPayment;
-          drawerStates: Partial<Record<DrawerName, DrawerState>>;
-        }) => {
-          const updatedLip = {
-            ...old.lip,
-            ...lip,
-          };
-
-          console.log({oldLip: old.lip, lip, updatedLip});
-
-          const updatedDrawerStates = computeDrawerStates(updatedLip);
-
-          return {
-            lip: updatedLip,
-            drawerStates: updatedDrawerStates,
-          };
-        },
-      );
+      updateLipCache<Lip>(queryClient, lipId, (oldLip) => ({
+        ...oldLip,
+        ...lip,
+      }));
     },
   });
 };

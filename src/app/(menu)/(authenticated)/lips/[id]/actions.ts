@@ -58,7 +58,6 @@ const getLipShape = {
   lip: lipSchema,
 };
 export async function getLip(id: number) {
-  console.log("Getting lip with id:", id);
   return get(`/lips/${id}`, {
     payloadShape: getLipShape,
     provideTags: [Tags.getLip(id)],

@@ -10,6 +10,7 @@ import {
   getLastPrivacy,
   getLip,
 } from "./actions";
+import {LipCache} from "./lipCache";
 
 function msUntilExpire(expireAt?: string): number | false {
   if (!expireAt) {
@@ -28,7 +29,7 @@ function msUntilExpire(expireAt?: string): number | false {
 export function getLipQuery(lipId: "new" | number) {
   return queryOptions({
     queryKey: ["lip", lipId],
-    queryFn: async () => {
+    queryFn: async (): Promise<LipCache<Lip | PreliminaryData>> => {
       if (lipId === "new") {
         return {
           lip: {} as PreliminaryData,
@@ -36,9 +37,7 @@ export function getLipQuery(lipId: "new" | number) {
         };
       }
 
-      console.log("Fetching lipquery with id:", lipId);
       const response = await getLip(Number(lipId));
-      console.log({response});
 
       if (!response) {
         throw new Error(

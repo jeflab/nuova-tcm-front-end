@@ -599,7 +599,6 @@ export const lipWithoutRelationsSchema = lipRawSchema
     agent: true,
     contractor: true,
     insured: true,
-    lipstates: true,
   })
   .transform(lipTransformer);
 
