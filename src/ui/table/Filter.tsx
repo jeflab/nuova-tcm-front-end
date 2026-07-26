@@ -1,3 +1,4 @@
+import {useSyncedState} from "@/helpers/useSyncedState";
 import {TableContext} from "@/ui/table/react-table";
 import {Column} from "@tanstack/table-core";
 import useDebouncedCallback from "@restart/hooks/useDebouncedCallback";
@@ -17,12 +18,17 @@ function DefaultFilterComponent({
   filterValue,
   setFilterValueDebounced,
 }: DefaultFilterComponentProps) {
+  const [value, setValue] = useSyncedState(filterValue);
+
   return (
     <FormControl
       type="text"
       size="sm"
-      defaultValue={filterValue}
-      onChange={(event) => setFilterValueDebounced(event.target.value)}
+      value={value}
+      onChange={(event) => {
+        setValue(event.target.value);
+        setFilterValueDebounced(event.target.value);
+      }}
       disabled={disabled}
       aria-label={ariaLabel}
     />
@@ -42,7 +48,7 @@ export function Filter<Row>({
   idPrefix,
   tableContext,
 }: FilterProps<Row>) {
-  const filterValue = column.getFilterValue() as string;
+  const filterValue = (column.getFilterValue() as string | undefined) ?? "";
 
   const setFilterValueDebounced = useDebouncedCallback((value: string) => {
     column.setFilterValue(value);

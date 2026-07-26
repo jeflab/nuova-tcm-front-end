@@ -25,7 +25,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import {usePathname, useRouter} from "next/navigation";
-import {Fragment, ReactNode} from "react";
+import {Fragment, ReactNode, useMemo} from "react";
 import {
   Button,
   FormControl,
@@ -140,6 +140,28 @@ export function DataTable<Row>({
       columnFilters: columnFiltersStringToObject(searchParams.columnFilters),
     },
   });
+
+  const rows = table.getRowModel().rows;
+  const tableRows = useMemo(
+    () =>
+      rows.map((row) => (
+        <tr key={row.id} className={styles.rowStopStretching}>
+          {row.getVisibleCells().map((cell) => (
+            <td
+              key={cell.id}
+              data-label={
+                typeof cell.column.columnDef.header === "string"
+                  ? `${cell.column.columnDef.header}:`
+                  : undefined
+              }
+            >
+              {flexRender(cell.column.columnDef.cell, cell.getContext())}
+            </td>
+          ))}
+        </tr>
+      )),
+    [rows],
+  );
 
   const createPageURL = (newParams: Partial<DataTableParams>) => {
     const updatedParams = {...searchParams, ...newParams};
@@ -267,7 +289,6 @@ export function DataTable<Row>({
         className={cns(
           responsiveStyles.responsiveTableWrapper,
           "mb-0 align-middle",
-          isFetching && styles.tableFetching,
         )}
       >
         <thead>
@@ -316,23 +337,8 @@ export function DataTable<Row>({
             </tr>
           ))}
         </thead>
-        <tbody>
-          {table.getRowModel().rows.map((row) => (
-            <tr key={row.id} className={styles.rowStopStretching}>
-              {row.getVisibleCells().map((cell) => (
-                <td
-                  key={cell.id}
-                  data-label={
-                    typeof cell.column.columnDef.header === "string"
-                      ? `${cell.column.columnDef.header}:`
-                      : undefined
-                  }
-                >
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </td>
-              ))}
-            </tr>
-          ))}
+        <tbody className={cns(isFetching && styles.tableFetching)}>
+          {tableRows}
         </tbody>
       </Table>
       <div className="hstack align-baseline gap-3 justify-content-center">

@@ -1,28 +1,35 @@
-import {getLipsList} from "@/app/(menu)/(authenticated)/lips/actions";
+"use client";
+
 import {columns} from "@/app/(menu)/(authenticated)/lips/columns";
-import {normalizeError} from "@/helpers/errors";
+import {getLipsListQuery} from "@/app/(menu)/(authenticated)/lips/queries";
 import {DataTable} from "@/ui/table/DataTable";
-import {DataTableParams, dataTableParamsSchema} from "@/ui/table/helpers";
+import {DataTableParams} from "@/ui/table/helpers";
+import {hashKey, useIsFetching, useSuspenseQuery} from "@tanstack/react-query";
 
 interface LipsTableProps {
-  searchParams: Partial<DataTableParams>;
+  searchParams: DataTableParams;
 }
 
-export async function LipsTable({searchParams}: LipsTableProps) {
-  const parsedSearchParams = dataTableParamsSchema.parse(searchParams);
-  const lips = await getLipsList(parsedSearchParams);
+export function LipsTable({searchParams}: LipsTableProps) {
+  const query = getLipsListQuery(searchParams);
+  const {data} = useSuspenseQuery(query);
 
-  if (lips?.status !== "success") {
-    throw normalizeError(lips);
-  }
+  const currentQueryHash = hashKey(query.queryKey);
+  const isFetchingOtherLipsQuery =
+    useIsFetching({
+      queryKey: ["lips"],
+      predicate: (fetchingQuery) =>
+        fetchingQuery.queryHash !== currentQueryHash,
+    }) > 0;
 
   return (
     <DataTable
       columns={columns}
-      data={lips.lips.data}
-      pageCount={lips.lips.lastPage}
-      searchParams={parsedSearchParams}
-      contextValue={lips.lipstates}
+      data={data.lips.data}
+      pageCount={data.lips.lastPage}
+      searchParams={searchParams}
+      contextValue={data.lipstates}
+      isFetching={isFetchingOtherLipsQuery}
     />
   );
 }
