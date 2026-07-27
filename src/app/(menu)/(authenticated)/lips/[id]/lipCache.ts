@@ -15,7 +15,7 @@ export function updateLipCache<T extends Lip | PreliminaryData>(
   lipId: number | "new",
   transform: (lip: T) => T,
 ) {
-  return queryClient.setQueryData(
+  const result = queryClient.setQueryData(
     ["lip", lipId],
     (old: LipCache<T>): LipCache<T> => {
       const updatedLip = transform(old.lip);
@@ -26,4 +26,10 @@ export function updateLipCache<T extends Lip | PreliminaryData>(
       };
     },
   );
+
+  if (lipId !== "new") {
+    void queryClient.invalidateQueries({queryKey: ["lips"]});
+  }
+
+  return result;
 }

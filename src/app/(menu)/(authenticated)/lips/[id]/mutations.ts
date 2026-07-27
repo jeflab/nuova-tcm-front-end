@@ -410,7 +410,6 @@ export const useUpdateBeneficiaries = () => {
       formData: Parameters<typeof updateBeneficiaries>[1];
     }) => {
       const response = await updateBeneficiaries(lipId, formData);
-      console.log({response});
 
       if (!response) {
         throw new Error(
@@ -424,13 +423,10 @@ export const useUpdateBeneficiaries = () => {
       return response;
     },
     onSuccess: ({lip}, {lipId}) => {
-      updateLipCache<Lip>(queryClient, lipId, (oldLip) => {
-        console.log({oldLip, lip});
-        return {
-          ...oldLip,
-          ...lip,
-        };
-      });
+      updateLipCache<Lip>(queryClient, lipId, (oldLip) => ({
+        ...oldLip,
+        ...lip,
+      }));
     },
   });
 };
