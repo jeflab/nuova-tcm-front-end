@@ -1,6 +1,7 @@
 "use client";
 
 import {cns} from "@/helpers/cns";
+import {useSyncedState} from "@/helpers/useSyncedState";
 import {ButtonLink} from "@/ui/ButtonLink";
 import {CardCollapsable} from "@/ui/CardCollapsable";
 import {Filter} from "@/ui/table/Filter";
@@ -140,6 +141,10 @@ export function DataTable<Row>({
       columnFilters: columnFiltersStringToObject(searchParams.columnFilters),
     },
   });
+
+  const [pageInputValue, setPageInputValue] = useSyncedState(
+    String(table.getState().pagination.pageIndex + 1),
+  );
 
   const rows = table.getRowModel().rows;
   const tableRows = useMemo(
@@ -367,11 +372,12 @@ export function DataTable<Row>({
             type="number"
             min={1}
             max={table.getPageCount()}
+            value={pageInputValue}
+            onChange={(e) => setPageInputValue(e.target.value)}
             onBlur={(e) => {
               const page = e.target.value ? Number(e.target.value) - 1 : 0;
               table.setPageIndex(page);
             }}
-            defaultValue={table.getState().pagination.pageIndex + 1}
             className={styles.paginationInput}
             aria-label="Vai alla pagina"
           />
