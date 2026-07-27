@@ -216,11 +216,6 @@ export function ContractorFiscalCodeForm() {
                 birthProvince: birthPlace.province,
               }))(values);
 
-              console.log({
-                values,
-                transformedValues,
-              });
-
               await updateLip({
                 lipId: "new",
                 data: {

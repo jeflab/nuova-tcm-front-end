@@ -23,6 +23,17 @@ import {ColumnDef, createColumnHelper} from "@tanstack/react-table";
 import {Button, FormControl, FormSelect, Placeholder} from "react-bootstrap";
 
 const columnHelper = createColumnHelper<Lip>();
+
+function skeletonWidth(
+  rowIndex: number,
+  seed: number,
+  min: number,
+  max: number,
+) {
+  const pseudoRandom = ((rowIndex + 1) * (seed + 1) * 9301 + 49297) % 233280;
+  return min + (pseudoRandom / 233280) * (max - min);
+}
+
 export const columns = [
   columnHelper.accessor("lipNumber", {
     header: "Numero proposta",
@@ -161,15 +172,15 @@ export const skeletonColumns = [
   columnHelper.accessor("agent", {
     header: "Agente",
     id: "agent",
-    cell: () => (
+    cell: ({row}) => (
       <Placeholder as="span" animation="glow">
         <Placeholder
           as="span"
-          style={{width: `${40 + Math.random() * 35}px`}}
+          style={{width: `${skeletonWidth(row.index, 0, 40, 75)}px`}}
         />{" "}
         <Placeholder
           as="span"
-          style={{width: `${40 + Math.random() * 35}px`}}
+          style={{width: `${skeletonWidth(row.index, 1, 40, 75)}px`}}
         />
       </Placeholder>
     ),
@@ -177,7 +188,7 @@ export const skeletonColumns = [
   columnHelper.accessor("contractor", {
     header: "Contraente",
     id: "contractor",
-    cell: () => (
+    cell: ({row}) => (
       <Placeholder as="span" animation="glow">
         <Placeholder
           as="span"
@@ -186,22 +197,22 @@ export const skeletonColumns = [
         />{" "}
         <Placeholder
           as="span"
-          style={{width: `${40 + Math.random() * 35}px`}}
+          style={{width: `${skeletonWidth(row.index, 2, 40, 75)}px`}}
         />{" "}
         <Placeholder
           as="span"
-          style={{width: `${40 + Math.random() * 35}px`}}
+          style={{width: `${skeletonWidth(row.index, 3, 40, 75)}px`}}
         />
       </Placeholder>
     ),
   }),
   columnHelper.accessor("createdAt", {
     header: "Data",
-    cell: () => (
+    cell: ({row}) => (
       <Placeholder as="span" animation="glow">
         <Placeholder
           as="span"
-          style={{width: `${100 + Math.random() * 30}px`}}
+          style={{width: `${skeletonWidth(row.index, 4, 100, 130)}px`}}
         />
       </Placeholder>
     ),
@@ -233,7 +244,9 @@ export const skeletonColumns = [
     id: "lipStates",
     header: "Stato",
     enableColumnFilter: true,
-    cell: () => <LipStateBadgeSkeleton />,
+    cell: ({row}) => (
+      <LipStateBadgeSkeleton width={skeletonWidth(row.index, 5, 45, 210)} />
+    ),
     meta: {
       filterComponent: ({disabled, filterValue}) => {
         return (

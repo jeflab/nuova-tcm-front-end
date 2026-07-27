@@ -287,8 +287,6 @@ export function PaymentSummary() {
     return null;
   }
 
-  console.count("Rendering Payment Summary");
-
   return (
     <Stack gap={4}>
       <InsuranceEffectiveDate />
