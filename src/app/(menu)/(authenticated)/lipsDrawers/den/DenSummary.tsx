@@ -41,7 +41,7 @@ export function DenSummary() {
     data: {lip},
   } = useSuspenseQuery(getLipQuery(lipId));
 
-  if (!isLip(lip)) {
+  if (!isLip(lip) || !lip.den) {
     return null;
   }
 

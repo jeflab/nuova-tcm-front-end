@@ -5,7 +5,7 @@ import {normalizeError} from "@/helpers/errors";
 import {Lip} from "@/models/entities/lip";
 import {PreliminaryData} from "@/models/preliminaryData";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {updateLipCache} from "./lipCache";
+import {setLipCache, updateLipCache} from "./lipCache";
 import {
   activateContractor,
   addInsuredData,
@@ -96,7 +96,7 @@ export const useActivateContractorMutation = () => {
       return response;
     },
     onSuccess: ({lip: createdLip}) => {
-      updateLipCache<Lip>(queryClient, createdLip.id, () => createdLip);
+      setLipCache<Lip>(queryClient, createdLip.id, createdLip);
     },
   });
 };

@@ -33,3 +33,20 @@ export function updateLipCache<T extends Lip | PreliminaryData>(
 
   return result;
 }
+
+export function setLipCache<T extends Lip | PreliminaryData>(
+  queryClient: QueryClient,
+  lipId: number | "new",
+  lip: T,
+) {
+  const result = queryClient.setQueryData(["lip", lipId], {
+    lip,
+    drawerStates: computeDrawerStates(lip),
+  } satisfies LipCache<T>);
+
+  if (lipId !== "new") {
+    void queryClient.invalidateQueries({queryKey: ["lips"]});
+  }
+
+  return result;
+}
