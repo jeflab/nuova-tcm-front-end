@@ -1,13 +1,15 @@
 "use client";
 
-import {updateHealthQuestionnaire} from "@/app/(menu)/(authenticated)/lips/[id]/actions";
-import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {useUpdateHealthQuestionnaire} from "@/app/(menu)/(authenticated)/lips/[id]/mutations";
+import {getLipQuery} from "@/app/(menu)/(authenticated)/lips/[id]/queries";
+import {isQuoteValid} from "@/app/(menu)/(authenticated)/lipsDrawers/quote/quoteValidators";
 import {
   SportRiskIndex,
   sportRiskIndexOptions,
   YesNoAnswer,
   yesNoOptions,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
+import {validateLipIdOrNotFound} from "@/app/(menu)/(authenticated)/lipsDrawers/validateLipIdOrNotFound";
 import {normalizeError} from "@/helpers/errors";
 import {imcInRange} from "@/helpers/imc";
 import {Nullish} from "@/helpers/TypesHelper";
@@ -18,8 +20,11 @@ import {FieldError} from "@/ui/form/FieldError";
 import {Form} from "@/ui/form/Form";
 import {HelpText} from "@/ui/form/HelpText";
 import {InputField} from "@/ui/form/InputField";
+import {useDrawerModal} from "@/ui/ModalContext";
 import {faSave, faSpinner, faXmark} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {useSuspenseQuery} from "@tanstack/react-query";
+import {useParams} from "next/navigation";
 import {
   Alert,
   Button,
@@ -34,7 +39,6 @@ import {
   Stack,
 } from "react-bootstrap";
 import {useForm} from "react-hook-form";
-import invariant from "tiny-invariant";
 import {HealthQuestionnaireInfoAlert} from "./HealthQuestionnaireInfoAlert";
 
 interface SportDefaultValues {
@@ -94,22 +98,29 @@ export type HealthQuestionnaireFormValues = ReturnType<
 >;
 
 export function HealthQuestionnaireForm() {
-  const healthQuestionnaireData = useStore(
-    (state) => state.lip?.healthcareQuestionnaire,
-  );
-  const lipId = useStore((state) => state.lip?.id);
-  const closeModal = useStore((state) => state.closeModal);
-  const hasCancerCoverage = useStore(
-    (state) => state.lip?.quotation?.cancer.enabled,
-  );
-  const hasTpiOrTpdCoverage = useStore(
-    (state) =>
-      state.lip?.quotation?.tpd.enabled || state.lip?.quotation?.tpi.enabled,
-  );
+  const lipId = validateLipIdOrNotFound(useParams<{id: string}>().id) as number;
+  const {
+    data: {lip},
+  } = useSuspenseQuery(getLipQuery(lipId));
+  const {closeModal} = useDrawerModal();
+  const {mutateAsync: updateHealthQuestionnaire} =
+    useUpdateHealthQuestionnaire();
+
+  if (!isQuoteValid(lip)) {
+    throw new Error(
+      "Lip non valida per la compilazione del questionario, verificare la quotazione.",
+    );
+  }
+
+  const hasCancerCoverage = lip.quotation.cancer.enabled;
+  const hasTpiOrTpdCoverage =
+    lip.quotation.tpd.enabled || lip.quotation.tpi.enabled;
 
   const formMethods = useForm({
     mode: "onChange",
-    defaultValues: healthQuestionnaireDefaultValues(healthQuestionnaireData),
+    defaultValues: healthQuestionnaireDefaultValues(
+      lip.healthcareQuestionnaire,
+    ),
   });
 
   const weightValue = formMethods.watch("weight");
@@ -155,26 +166,27 @@ export function HealthQuestionnaireForm() {
         <Form
           id="healt-questionnaire-form"
           onSubmit={async (values) => {
-            values.sportRisk.sport = values.sportRisk.sport.filter(
-              (sport) => !!sport.name && !!sport.riskIndex,
-            );
-            invariant(lipId, "lipId is required");
+            try {
+              values.sportRisk.sport = values.sportRisk.sport.filter(
+                (sport) => !!sport.name && !!sport.riskIndex,
+              );
+              await updateHealthQuestionnaire({
+                lipId: lip.id,
+                formData: values,
+              });
 
-            const updatedContractor = await updateHealthQuestionnaire(
-              values,
-              lipId,
-            );
-
-            if (updatedContractor?.status !== "success") {
+              closeModal();
+            } catch (error) {
               throw {
                 root: {
                   type: "server",
-                  message: normalizeError(updatedContractor).message,
+                  message: normalizeError(
+                    error,
+                    "Errore imprevisto nell'aggiornamento del questionario sanitario, riprova più tardi.",
+                  ).message,
                 },
               };
             }
-
-            closeModal();
           }}
           formMethods={formMethods}
         >

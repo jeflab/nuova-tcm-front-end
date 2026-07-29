@@ -37,11 +37,19 @@ import {
   getTypedFormDataFromObject,
   TypedFormData,
 } from "@/helpers/typedFormData";
-import {Lip, lipSchema} from "@/models/entities/lip";
+import {identityDocumentSchema} from "@/models/entities/identityDocument";
+import {
+  Lip,
+  lipRawSchema,
+  lipSchema,
+  lipTransformer,
+  lipWithoutRelationsSchema,
+} from "@/models/entities/lip";
 import {
   molliePaymentSchema,
   mollieSubscriptionSchema,
 } from "@/models/entities/mollie/payment";
+import {contractorSchema, insuredSchema} from "@/models/entities/personalData";
 import {privacySchema} from "@/models/entities/privacy";
 import {get, patch, post} from "@/services/api";
 import {Tags} from "@/services/const";
@@ -57,7 +65,7 @@ export async function getLip(id: number) {
 }
 
 const checkContractorShape = {
-  lip: lipSchema.optional(),
+  lip: lipSchema,
 };
 interface ActivateContractorParams {
   type: LipType;
@@ -75,10 +83,8 @@ interface ActivateContractorParams {
     response: YesNoAnswer;
   };
   birthDate: string;
-  birthPlace: {
-    city: string;
-    province: string;
-  };
+  birthPlace: string;
+  birthProvince: string;
   fiscalCode: string;
   gender: Gender;
   name: string;
@@ -86,6 +92,10 @@ interface ActivateContractorParams {
   email: string;
   phone: string;
 }
+
+/*
+ * Crea uno nuova lip, il contraente e li collega
+ */
 export async function activateContractor(
   contractorData: ActivateContractorParams,
 ) {
@@ -99,14 +109,14 @@ export async function activateContractor(
     fiscal_code: contractorData.fiscalCode,
     date_birth: contractorData.birthDate,
     place_birth:
-      contractorData.birthPlace.province !== "EE"
-        ? contractorData.birthPlace.city
+      contractorData.birthProvince !== "EE"
+        ? contractorData.birthPlace
         : "Estero",
-    region_birth: contractorData.birthPlace.province,
+    region_birth: contractorData.birthProvince,
     country_birth:
-      contractorData.birthPlace.province !== "EE"
+      contractorData.birthProvince !== "EE"
         ? "Italia"
-        : contractorData.birthPlace.city,
+        : contractorData.birthPlace,
     name: contractorData.name,
     surname: contractorData.surname,
     gender: contractorData.gender,
@@ -138,13 +148,15 @@ export async function checkIfFiscalCodeExists(
   });
 }
 
+const updateContractorContactsShape = {
+  personalData: contractorSchema,
+};
 interface updateContractorContactsParams {
   phone: string;
   email: string;
 }
 export async function updateContractorContacts(
   contractorId: number,
-  lipId: number,
   formData: updateContractorContactsParams,
 ) {
   return patch(`/personal-datas/${contractorId}`, {
@@ -152,7 +164,7 @@ export async function updateContractorContacts(
       phone: formData.phone,
       email: formData.email,
     },
-    revalidateTags: [Tags.getLip(lipId)],
+    payloadShape: updateContractorContactsShape,
   });
 }
 
@@ -163,12 +175,9 @@ export async function getLastPrivacy() {
   return get("/last-privacy", {payloadShape: lastPrivacyShape});
 }
 
-export async function updateUnderwriting(lipId: number) {
-  return patch(`/lips/${lipId}/underwriting`, {
-    revalidateTags: [Tags.getLip(lipId)],
-  });
-}
-
+const updatePersonalDataShape = {
+  personalData: contractorSchema.or(insuredSchema),
+};
 interface UpdatePersonalDataParams {
   insuredPersonalData?: {
     birthDate: string;
@@ -219,7 +228,6 @@ interface UpdatePersonalDataParams {
 }
 export async function updatePersonalData(
   personalDataId: number,
-  lipId: number,
   formData: UpdatePersonalDataParams,
 ) {
   const data = {
@@ -295,10 +303,13 @@ export async function updatePersonalData(
 
   return patch(`/personal-datas/${personalDataId}`, {
     data,
-    revalidateTags: [Tags.getLip(lipId)],
+    payloadShape: updatePersonalDataShape,
   });
 }
 
+const addInsuredDataShape = {
+  lip: lipRawSchema.pick({insured: true}).transform(lipTransformer),
+};
 interface AddInsuredDataParams {
   citizenship: string;
   secondCitizenship: string;
@@ -369,10 +380,13 @@ export async function addInsuredData(
 
   return post(`/lips/${lipId}/addInsured`, {
     data,
-    revalidateTags: [Tags.getLip(lipId)],
+    payloadShape: addInsuredDataShape,
   });
 }
 
+const identificationShape = {
+  identityDocument: identityDocumentSchema,
+};
 interface IdentificationParams {
   frontPicture: File;
   backPicture: File;
@@ -384,11 +398,9 @@ interface IdentificationParams {
   issuedDate: string;
   expiringDate: string;
 }
-
 export async function identification(
   documentFormData: TypedFormData<IdentificationParams>,
   fiscalCode: string,
-  lipId: number,
   endpoint: "/identification-contractor" | "/identification-insured",
 ) {
   const formData = getTypedFormDataFromObject({
@@ -405,19 +417,17 @@ export async function identification(
   });
   return post(endpoint, {
     data: formData,
-    revalidateTags: [Tags.getLip(lipId)],
+    payloadShape: identificationShape,
   });
 }
 
 export async function identificationContractor(
   documentFormData: TypedFormData<IdentificationParams>,
   fiscalCode: string,
-  lipId: number,
 ) {
   return identification(
     documentFormData,
     fiscalCode,
-    lipId,
     "/identification-contractor",
   );
 }
@@ -425,16 +435,17 @@ export async function identificationContractor(
 export async function identificationInsured(
   documentFormData: TypedFormData<IdentificationParams>,
   fiscalCode: string,
-  lipId: number,
 ) {
   return identification(
     documentFormData,
     fiscalCode,
-    lipId,
     "/identification-insured",
   );
 }
 
+const updateDenShape = {
+  lip: lipWithoutRelationsSchema,
+};
 interface UpdateDenParams {
   education: EducationOptions;
   educationOther: string;
@@ -452,7 +463,7 @@ interface UpdateDenParams {
   expectations: ExpectationsOptions[];
   duration: DurationOptions;
 }
-export async function updateDen(formData: UpdateDenParams, lipId: number) {
+export async function updateDen(lipId: number, formData: UpdateDenParams) {
   const data = {
     education: {options: educationOptions, response: formData.education},
     educationOther: formData.educationOther,
@@ -487,10 +498,13 @@ export async function updateDen(formData: UpdateDenParams, lipId: number) {
   };
   return patch(`/lips/${lipId}`, {
     data: {json_den: JSON.stringify(data)},
-    revalidateTags: [Tags.getLip(lipId)],
+    payloadShape: updateDenShape,
   });
 }
 
+const updateQuotationShape = {
+  lip: lipWithoutRelationsSchema,
+};
 interface UpdateQuotationParams {
   birthDate: string;
   smoker: YesNoAnswer;
@@ -542,46 +556,59 @@ export async function updateQuotation(
         json_survey_healthcare: null,
       }),
     },
-    revalidateTags: [Tags.getLip(lipId)],
+    payloadShape: updateQuotationShape,
   });
 }
+
+const updateHealthQuestionnaireShape = {
+  lip: lipWithoutRelationsSchema,
+};
 export async function updateHealthQuestionnaire(
-  formData: HealthQuestionnaireFormValues,
   lipId: number,
+  formData: HealthQuestionnaireFormValues,
 ) {
   return patch(`/lips/${lipId}`, {
     data: {json_survey_healthcare: JSON.stringify(formData)},
-    revalidateTags: [Tags.getLip(lipId)],
+    payloadShape: updateHealthQuestionnaireShape,
   });
 }
 
+const updateBeneficiariesShape = {
+  lip: lipWithoutRelationsSchema,
+};
 export async function updateBeneficiaries(
-  beneficiaries: BeneficiariesFormValues,
   lipId: number,
+  beneficiaries: BeneficiariesFormValues,
 ) {
   return patch(`/lips/${lipId}`, {
     data: {json_beneficiary: JSON.stringify(beneficiaries)},
-    revalidateTags: [Tags.getLip(lipId)],
+    payloadShape: updateBeneficiariesShape,
   });
 }
 
+const updatePaymentShape = {
+  lip: lipWithoutRelationsSchema,
+};
 export async function updatePaymentData(
-  payment: Lip["payment"],
   lipId: number,
+  payment: Lip["payment"],
 ) {
   return patch(`/lips/${lipId}`, {
     data: {json_payment: JSON.stringify(payment)},
-    revalidateTags: [Tags.getLip(lipId)],
+    payloadShape: updatePaymentShape,
   });
 }
 
+const saveCompanyPrivacyConsentShape = {
+  lip: lipWithoutRelationsSchema,
+};
 export async function saveCompanyPrivacyConsent(
-  consent: {flags: string[]; options: readonly Option[]},
   lipId: number,
+  consent: {flags: string[]; options: readonly Option[]},
 ) {
   return post(`/lips/${lipId}/privacy-company`, {
     data: consent,
-    revalidateTags: [Tags.getLip(lipId)],
+    payloadShape: saveCompanyPrivacyConsentShape,
   });
 }
 

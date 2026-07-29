@@ -1,17 +1,22 @@
 "use client";
 
-import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {useUpdateLipLocalDataMutation} from "@/app/(menu)/(authenticated)/lips/[id]/mutations";
+import {getLipQuery} from "@/app/(menu)/(authenticated)/lips/[id]/queries";
 import {
   YesNoAnswer,
   yesNoOptions,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
+import {validateLipIdOrNotFound} from "@/app/(menu)/(authenticated)/lipsDrawers/validateLipIdOrNotFound";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {CheckGroup} from "@/ui/form/CheckGroup";
 import {FieldError} from "@/ui/form/FieldError";
 import {Form} from "@/ui/form/Form";
 import {HelpText} from "@/ui/form/HelpText";
+import {useDrawerModal} from "@/ui/ModalContext";
 import {faSave, faSpinner, faXmark} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {useSuspenseQuery} from "@tanstack/react-query";
+import {useParams} from "next/navigation";
 import {
   Button,
   Col,
@@ -42,45 +47,57 @@ export const fatcaQuestions = {
 } as const;
 
 export function FatcaForm() {
-  const lipType = useStore((state) => state.preliminaryData?.type);
-  const fatcaData = useStore((state) => state.preliminaryData.fatca);
-  const italianResidencyData = useStore(
-    (state) => state.preliminaryData.italianResidency,
-  );
-  const insuredFatcaData = useStore(
-    (state) => state.preliminaryData.insuredFatca,
-  );
-  const insuredItalianResidencyData = useStore(
-    (state) => state.preliminaryData.insuredItalianResidency,
-  );
+  const lipId = validateLipIdOrNotFound(useParams<{id: string}>().id);
+  const {
+    data: {lip},
+  } = useSuspenseQuery(getLipQuery(lipId));
+  const {mutateAsync: updateLip} = useUpdateLipLocalDataMutation();
 
   const formMethods = useForm({
     mode: "onChange",
     defaultValues: {
-      fatcaCheck: (fatcaData ?? "") as YesNoAnswer,
-      residencyCheck: (italianResidencyData ?? "") as YesNoAnswer,
-      insuredFatcaCheck: (insuredFatcaData ?? "") as YesNoAnswer,
-      insuredResidencyCheck: (insuredItalianResidencyData ?? "") as YesNoAnswer,
+      fatcaCheck: (lip.contractor?.fatca?.fatcaCheck.response ??
+        "") as YesNoAnswer,
+      residencyCheck: (lip.contractor?.fatca?.residencyCheck.response ??
+        "") as YesNoAnswer,
+      insuredFatcaCheck: (lip.insured?.fatca?.fatcaCheck.response ??
+        "") as YesNoAnswer,
+      insuredResidencyCheck: (lip.insured?.fatca?.residencyCheck.response ??
+        "") as YesNoAnswer,
     },
   });
 
-  const closeModal = useStore((state) => state.closeModal);
-  const updatePreliminaryData = useStore(
-    (state) => state.updatePreliminaryData,
-  );
+  const {closeModal} = useDrawerModal();
 
   return (
     <>
       <ModalBody>
         <Form
           id="fatca-form"
-          onSubmit={(values) => {
-            updatePreliminaryData({
-              fatca: values.fatcaCheck,
-              italianResidency: values.residencyCheck,
-              insuredFatca: values.insuredFatcaCheck,
-              insuredItalianResidency: values.insuredResidencyCheck,
+          onSubmit={async (values) => {
+            await updateLip({
+              lipId: "new",
+              data: {
+                contractor: {
+                  fatca: {
+                    fatcaCheck: {response: values.fatcaCheck},
+                    residencyCheck: {response: values.residencyCheck},
+                  },
+                },
+                insured:
+                  lip.type === "third-party-insured"
+                    ? {
+                        fatca: {
+                          fatcaCheck: {response: values.insuredFatcaCheck},
+                          residencyCheck: {
+                            response: values.insuredResidencyCheck,
+                          },
+                        },
+                      }
+                    : undefined,
+              },
             });
+
             closeModal();
           }}
           formMethods={formMethods}
@@ -120,7 +137,7 @@ export function FatcaForm() {
                 />
               </FormGroup>
             </Col>
-            {lipType === "third-party-insured" && (
+            {lip?.type === "third-party-insured" && (
               <>
                 <h4>Assicurato</h4>
                 <Col className="d-flex" sm={6}>

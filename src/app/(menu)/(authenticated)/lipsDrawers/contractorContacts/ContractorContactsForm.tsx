@@ -1,16 +1,18 @@
 "use client";
 
 import {
-  activateContractor,
-  updateContractorContacts,
-} from "@/app/(menu)/(authenticated)/lips/[id]/actions";
+  useActivateContractorMutation,
+  useUpdateContractorContactsMutation,
+} from "@/app/(menu)/(authenticated)/lips/[id]/mutations";
+import {getLipQuery} from "@/app/(menu)/(authenticated)/lips/[id]/queries";
 import {fatcaQuestions} from "@/app/(menu)/(authenticated)/lipsDrawers/fatca/FatcaForm";
-import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {validateLipIdOrNotFound} from "@/app/(menu)/(authenticated)/lipsDrawers/validateLipIdOrNotFound";
+import {getAccountQuery} from "@/app/(menu)/(authenticated)/queries";
 import {cns} from "@/helpers/cns";
+import {dbDateString} from "@/helpers/dates";
 import {normalizeError} from "@/helpers/errors";
-import {Role} from "@/models/account";
+import {isLip} from "@/models/entities/lip";
 import {Contractor} from "@/models/entities/personalData";
-import {User} from "@/models/entities/user";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {CheckboxField} from "@/ui/form/CheckboxField";
 import {FieldError} from "@/ui/form/FieldError";
@@ -18,9 +20,11 @@ import {Form} from "@/ui/form/Form";
 import {InputField} from "@/ui/form/InputField";
 import {emailNormalizer, onlyNumbersNormalizer} from "@/ui/form/normalizers";
 import {emailValidator} from "@/ui/form/validators/email";
+import {useDrawerModal} from "@/ui/ModalContext";
 import {faSave, faSpinner, faXmark} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {useRouter} from "next/navigation";
+import {useSuspenseQuery} from "@tanstack/react-query";
+import {useParams, useRouter} from "next/navigation";
 import {
   Alert,
   Button,
@@ -43,25 +47,27 @@ const contractorPersonalAreaActivationDefaultValues = (
   repeatPhone: contractorData?.phone ?? "",
 });
 
-interface ContractorContactsFormProps {
-  loggedUser: User;
-  loggedUserRoles: Role[];
-}
-
-export function ContractorContactsForm({
-  loggedUser,
-  loggedUserRoles,
-}: ContractorContactsFormProps) {
+export function ContractorContactsForm() {
   const router = useRouter();
+  const lipId = validateLipIdOrNotFound(useParams<{id: string}>().id) as number;
+  const {
+    data: {lip},
+  } = useSuspenseQuery(getLipQuery(lipId));
+  const {
+    data: {user: loggedUser, roles: loggedUserRoles},
+  } = useSuspenseQuery(getAccountQuery());
 
-  const contractor = useStore((state) => state.lip?.contractor);
-  const lipId = useStore((state) => state.lip?.id);
-  const closeModal = useStore((state) => state.closeModal);
-  const preliminaryData = useStore((state) => state.preliminaryData);
+  const {mutateAsync: activateContractor} = useActivateContractorMutation();
+  const {mutateAsync: updateContractorContacts} =
+    useUpdateContractorContactsMutation();
+
+  const {closeModal} = useDrawerModal();
 
   const formMethods = useForm({
     mode: "onChange",
-    defaultValues: contractorPersonalAreaActivationDefaultValues(contractor),
+    defaultValues: contractorPersonalAreaActivationDefaultValues(
+      isLip(lip) ? lip.contractor : undefined,
+    ),
   });
 
   return (
@@ -69,80 +75,75 @@ export function ContractorContactsForm({
       <ModalBody>
         <Form
           onSubmit={async (values) => {
-            if (!contractor) {
+            if (!isLip(lip)) {
               let activateContractorResponse: Awaited<
                 ReturnType<typeof activateContractor>
               >;
               try {
-                invariant(preliminaryData.type, "Tipo di polizza mancante");
+                invariant(lip.type, "Tipo di polizza mancante");
+                invariant(lip.salesMode, "Modalità di vendita mancante");
                 invariant(
-                  preliminaryData.salesMode,
-                  "Modalità di vendita mancante",
+                  lip.contractor?.birthDate,
+                  "Data di nascita mancante",
                 );
                 invariant(
-                  preliminaryData.contractorPersonalData,
-                  "Dati del Contraente mancanti",
+                  lip.contractor?.fatca.fatcaCheck.response,
+                  "Dati FATCA mancanti",
                 );
-                invariant(preliminaryData.fatca, "Dati FATCA mancanti");
                 invariant(
-                  preliminaryData.italianResidency,
+                  lip.contractor?.fatca.residencyCheck.response,
                   "Dati residenza mancanti",
                 );
 
                 activateContractorResponse = await activateContractor({
                   ...values,
-                  type: preliminaryData.type,
-                  salesMode: preliminaryData.salesMode,
-                  ...preliminaryData.contractorPersonalData,
+                  type: lip.type,
+                  salesMode: lip.salesMode,
+                  ...(lip.contractor as Contractor),
+                  birthDate: dbDateString(lip.contractor.birthDate),
                   fatca: {
                     ...fatcaQuestions.fatcaCheck,
-                    response: preliminaryData.fatca,
+                    response: lip.contractor.fatca.fatcaCheck.response,
                   },
                   italianResidency: {
                     ...fatcaQuestions.residencyCheck,
-                    response: preliminaryData.italianResidency,
+                    response: lip.contractor.fatca.residencyCheck.response,
                   },
                 });
+
+                router.push(`/lips/${activateContractorResponse.lip.id}`, {
+                  scroll: false,
+                });
+                closeModal();
               } catch {
                 throw {
                   root: {
                     type: "server",
-                    message: "Errore imprevisto, riprova più tardi.",
+                    message:
+                      "Errore imprevisto nell'attivazione del contraente, riprova più tardi.",
                   },
                 };
               }
-
-              if (activateContractorResponse?.status !== "success") {
-                throw {
-                  root: {
-                    type: "server",
-                    message: normalizeError(activateContractorResponse).message,
-                  },
-                };
-              }
-
-              router.push(`/lips/${activateContractorResponse.lip?.id}`, {
-                scroll: false,
-              });
-              closeModal();
             } else {
-              invariant(lipId, "Id analisi mancante");
-              const updatedContractor = await updateContractorContacts(
-                contractor.id,
-                lipId,
-                values,
-              );
+              try {
+                await updateContractorContacts({
+                  lipId: lip.id,
+                  contractorId: lip.contractor.id,
+                  formData: values,
+                });
 
-              if (updatedContractor?.status !== "success") {
+                closeModal();
+              } catch (error) {
                 throw {
                   root: {
                     type: "server",
-                    message: normalizeError(updatedContractor).message,
+                    message: normalizeError(
+                      error,
+                      "Errore imprevisto nell'aggiornamento dei dati del contraente, riprova più tardi.",
+                    ).message,
                   },
                 };
               }
-
-              closeModal();
             }
           }}
           id="activate-contractor-form"
@@ -167,10 +168,10 @@ export function ContractorContactsForm({
                     validate: {
                       notAgent: (value) => {
                         if (
-                          !loggedUserRoles.some(
+                          !loggedUserRoles?.some(
                             (role) => role.name === "SuperAdmin",
                           ) &&
-                          value === loggedUser.phone
+                          value === loggedUser?.phone
                         ) {
                           return "Il numero di telefono inserito non può essere uguale a quello dell'Advisor";
                         }
@@ -203,10 +204,10 @@ export function ContractorContactsForm({
                       },
                       notAgent: (value) => {
                         if (
-                          !loggedUserRoles.some(
+                          !loggedUserRoles?.some(
                             (role) => role.name === "SuperAdmin",
                           ) &&
-                          value === loggedUser.email
+                          value === loggedUser?.email
                         ) {
                           return "L'email inserita non può essere uguale a quella dell'Advisor";
                         }

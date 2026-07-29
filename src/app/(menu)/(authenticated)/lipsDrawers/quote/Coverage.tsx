@@ -1,8 +1,8 @@
-import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
 import {
-  getCoverageDuration,
   type ComplementaryCoverage,
+  getCoverageDuration,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/quote/ComplementaryCoverages";
+import {LipWithQuotation} from "@/app/(menu)/(authenticated)/lipsDrawers/quote/quoteValidators";
 import {Currency} from "@/ui/Currency";
 import {faCheck, faXmark} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
@@ -11,10 +11,14 @@ import {Card} from "react-bootstrap";
 interface CoverageProps {
   complementaryCoverage: ComplementaryCoverage;
   enabled: boolean;
+  quoteData: LipWithQuotation["quotation"];
 }
 
-export function Coverage({complementaryCoverage, enabled}: CoverageProps) {
-  const quoteData = useStore((state) => state.lip?.quotation);
+export function Coverage({
+  complementaryCoverage,
+  enabled,
+  quoteData,
+}: CoverageProps) {
   const coverageData = quoteData?.[complementaryCoverage.key];
 
   if (!coverageData) {

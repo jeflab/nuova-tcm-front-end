@@ -1,5 +1,7 @@
 "use client";
 
+import {getLipQuery} from "@/app/(menu)/(authenticated)/lips/[id]/queries";
+import {isContractorDataValid} from "@/app/(menu)/(authenticated)/lipsDrawers/contractorData/contractorDataValidators";
 import {
   genderOptions,
   jobPositionOptions,
@@ -7,7 +9,7 @@ import {
   tAECodeOptions,
   yesNoOptions,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
-import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {validateLipIdOrNotFound} from "@/app/(menu)/(authenticated)/lipsDrawers/validateLipIdOrNotFound";
 import {dateString} from "@/helpers/dates";
 import {getOptionsLabel} from "@/helpers/getOptionsLabel";
 import {
@@ -17,12 +19,17 @@ import {
   faUser,
 } from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {useSuspenseQuery} from "@tanstack/react-query";
+import {useParams} from "next/navigation";
 import {Col, Row} from "react-bootstrap";
 
 export function ContractorDataSummary() {
-  const contractor = useStore((state) => state.lip?.contractor);
+  const lipId = validateLipIdOrNotFound(useParams<{id: string}>().id) as number;
+  const {
+    data: {lip},
+  } = useSuspenseQuery(getLipQuery(lipId));
 
-  if (!contractor?.pep) {
+  if (!isContractorDataValid(lip)) {
     return null;
   }
 
@@ -33,30 +40,31 @@ export function ContractorDataSummary() {
           <FontAwesomeIcon icon={faUser} /> Anagrafica
         </h4>
         <p className="mb-0">
-          {contractor.name} {contractor.surname}, nato il{" "}
-          {dateString(contractor.birthDate)} a {contractor.birthPlace} (
-          {contractor.birthProvince})
+          {lip.contractor.name} {lip.contractor.surname}, nato il{" "}
+          {dateString(lip.contractor.birthDate)} a {lip.contractor.birthPlace} (
+          {lip.contractor.birthProvince})
         </p>
         <p>
-          Residente in {contractor.address} {contractor.streetNumber},{" "}
-          {contractor.zipCode} {contractor.city} ({contractor.region})
+          Residente in {lip.contractor.address} {lip.contractor.streetNumber},{" "}
+          {lip.contractor.zipCode} {lip.contractor.city} (
+          {lip.contractor.region})
         </p>
         <p className="mb-0">
           <strong>Nazionalità:</strong>{" "}
-          <span>{contractor.citizenshipInstance?.citizenship}</span>
+          <span>{lip.contractor.citizenshipInstance?.citizenship}</span>
         </p>
-        {contractor.secondCitizenship && (
+        {lip.contractor.secondCitizenship && (
           <p className="mb-0">
             <strong>Seconda Nazionalità:</strong>{" "}
-            <span>{contractor.secondCitizenshipInstance?.citizenship}</span>
+            <span>{lip.contractor.secondCitizenshipInstance?.citizenship}</span>
           </p>
         )}
         <p className="mb-0">
           <strong>Genere:</strong>{" "}
-          {getOptionsLabel(genderOptions, contractor.gender)}
+          {getOptionsLabel(genderOptions, lip.contractor.gender)}
         </p>
         <p className="mb-0">
-          <strong>Codice Fiscale:</strong> {contractor.fiscalCode}
+          <strong>Codice Fiscale:</strong> {lip.contractor.fiscalCode}
         </p>
       </Col>
       <Col xs={12} sm={6} md={12} lg={6}>
@@ -65,11 +73,11 @@ export function ContractorDataSummary() {
         </h4>
         <p className="mb-0">
           <strong>Telefono:</strong>{" "}
-          <a href={`tel:${contractor.phone}`}>{contractor.phone}</a>
+          <a href={`tel:${lip.contractor.phone}`}>{lip.contractor.phone}</a>
         </p>
         <p className="mb-0">
           <strong>E-Mail:</strong>{" "}
-          <a href={`mailto:${contractor.email}`}>{contractor.email}</a>
+          <a href={`mailto:${lip.contractor.email}`}>{lip.contractor.email}</a>
         </p>
       </Col>
       <Col xs={12} xl={6}>
@@ -78,36 +86,36 @@ export function ContractorDataSummary() {
         </h4>
         <p className="mb-0">
           <strong>Attività esercitata:</strong>{" "}
-          {contractor.pep.job.position.response !== "other"
+          {lip.contractor.pep.job.position.response !== "other"
             ? getOptionsLabel(
                 jobPositionOptions,
-                contractor.pep.job.position.response,
+                lip.contractor.pep.job.position.response,
               )
-            : contractor.pep.job.positionOther}
+            : lip.contractor.pep.job.positionOther}
         </p>
-        {contractor.pep.job.tAECode?.response && (
+        {lip.contractor.pep.job.tAECode?.response && (
           <p className="mb-0">
             <strong>Codice TAE attività:</strong>{" "}
             {getOptionsLabel(
               tAECodeOptions,
-              contractor.pep.job.tAECode.response,
+              lip.contractor.pep.job.tAECode.response,
             )}{" "}
-            (codice: {contractor.pep.job.tAECode.response})
+            (codice: {lip.contractor.pep.job.tAECode.response})
           </p>
         )}
-        {contractor.pep.job.type && (
+        {lip.contractor.pep.job.type && (
           <p className="mb-0">
             <strong>Tipologia di lavoro svolto:</strong>{" "}
-            {contractor.pep.job.type}
+            {lip.contractor.pep.job.type}
           </p>
         )}
         <p className="mb-0">
           <strong>Provincia attività prevalente:</strong>{" "}
-          {contractor.pep.job.province || contractor.region}
+          {lip.contractor.pep.job.province || lip.contractor.region}
         </p>
         <p className="mb-0">
           <strong>Paese attività prevalente:</strong>{" "}
-          {contractor.pep.job.country || "Italia"}
+          {lip.contractor.pep.job.country || "Italia"}
         </p>
       </Col>
       <Col xs={12} xl={6}>
@@ -117,7 +125,7 @@ export function ContractorDataSummary() {
         </h4>
         <p className="mb-0">
           <strong>Il Contraente è una persona esposta politicamente:</strong>{" "}
-          {getOptionsLabel(yesNoOptions, contractor.pep.isPep.response)}
+          {getOptionsLabel(yesNoOptions, lip.contractor.pep.isPep.response)}
         </p>
         <p className="mb-0">
           <strong>
@@ -125,7 +133,7 @@ export function ContractorDataSummary() {
           </strong>{" "}
           {getOptionsLabel(
             publicOfficesOptions,
-            contractor.pep.publicOffice.response,
+            lip.contractor.pep.publicOffice.response,
           )}
         </p>
         <p className="mb-0">
@@ -134,7 +142,7 @@ export function ContractorDataSummary() {
             contrattuali stipulati con altri soggetti destinatari del Decreto
             231/2007 negli ultimi 2 anni:
           </strong>{" "}
-          {getOptionsLabel(yesNoOptions, contractor.pep.otherPep.response)}
+          {getOptionsLabel(yesNoOptions, lip.contractor.pep.otherPep.response)}
         </p>
       </Col>
     </Row>

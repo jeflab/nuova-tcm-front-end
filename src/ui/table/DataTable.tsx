@@ -1,6 +1,7 @@
 "use client";
 
 import {cns} from "@/helpers/cns";
+import {useSyncedState} from "@/helpers/useSyncedState";
 import {ButtonLink} from "@/ui/ButtonLink";
 import {CardCollapsable} from "@/ui/CardCollapsable";
 import {Filter} from "@/ui/table/Filter";
@@ -25,7 +26,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import {usePathname, useRouter} from "next/navigation";
-import {Fragment, ReactNode} from "react";
+import {Fragment, ReactNode, useMemo} from "react";
 import {
   Button,
   FormControl,
@@ -53,6 +54,7 @@ interface DataTableProps<Row extends RowData> {
   pageCount: number;
   searchParams: DataTableParams;
   contextValue?: TableContext;
+  isFetching?: boolean;
 }
 
 export const sortIcon: Record<SortDirection | "unsorted", ReactNode> = {
@@ -67,6 +69,7 @@ export function DataTable<Row>({
   pageCount,
   searchParams,
   contextValue,
+  isFetching,
 }: DataTableProps<Row>) {
   const pathname = usePathname() as Route;
   const router = useRouter();
@@ -138,6 +141,32 @@ export function DataTable<Row>({
       columnFilters: columnFiltersStringToObject(searchParams.columnFilters),
     },
   });
+
+  const [pageInputValue, setPageInputValue] = useSyncedState(
+    String(table.getState().pagination.pageIndex + 1),
+  );
+
+  const rows = table.getRowModel().rows;
+  const tableRows = useMemo(
+    () =>
+      rows.map((row) => (
+        <tr key={row.id} className={styles.rowStopStretching}>
+          {row.getVisibleCells().map((cell) => (
+            <td
+              key={cell.id}
+              data-label={
+                typeof cell.column.columnDef.header === "string"
+                  ? `${cell.column.columnDef.header}:`
+                  : undefined
+              }
+            >
+              {flexRender(cell.column.columnDef.cell, cell.getContext())}
+            </td>
+          ))}
+        </tr>
+      )),
+    [rows],
+  );
 
   const createPageURL = (newParams: Partial<DataTableParams>) => {
     const updatedParams = {...searchParams, ...newParams};
@@ -313,23 +342,8 @@ export function DataTable<Row>({
             </tr>
           ))}
         </thead>
-        <tbody>
-          {table.getRowModel().rows.map((row) => (
-            <tr key={row.id} className={styles.rowStopStretching}>
-              {row.getVisibleCells().map((cell) => (
-                <td
-                  key={cell.id}
-                  data-label={
-                    typeof cell.column.columnDef.header === "string"
-                      ? `${cell.column.columnDef.header}:`
-                      : undefined
-                  }
-                >
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </td>
-              ))}
-            </tr>
-          ))}
+        <tbody className={cns(isFetching && styles.tableFetching)}>
+          {tableRows}
         </tbody>
       </Table>
       <div className="hstack align-baseline gap-3 justify-content-center">
@@ -358,11 +372,12 @@ export function DataTable<Row>({
             type="number"
             min={1}
             max={table.getPageCount()}
+            value={pageInputValue}
+            onChange={(e) => setPageInputValue(e.target.value)}
             onBlur={(e) => {
               const page = e.target.value ? Number(e.target.value) - 1 : 0;
               table.setPageIndex(page);
             }}
-            defaultValue={table.getState().pagination.pageIndex + 1}
             className={styles.paginationInput}
             aria-label="Vai alla pagina"
           />

@@ -4,10 +4,13 @@ import {useCreateRecurringPaymentMutation} from "@/app/(menu)/(authenticated)/li
 import {
   getActiveFirstPaymentQuery,
   getActiveSubscriptionQuery,
+  getLipQuery,
 } from "@/app/(menu)/(authenticated)/lips/[id]/queries";
-import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
-import {cns} from "@/helpers/cns";
+import {mollieLinkClicked} from "@/app/(menu)/(authenticated)/lipsDrawers/documents/documentsValidators";
+import {isPaymentValid} from "@/app/(menu)/(authenticated)/lipsDrawers/payment/paymentValidators";
+import {validateLipIdOrNotFound} from "@/app/(menu)/(authenticated)/lipsDrawers/validateLipIdOrNotFound";
 import {dateTimeString} from "@/helpers/dates";
+import {Lip} from "@/models/entities/lip";
 import {MolliePayment} from "@/models/entities/mollie/payment";
 import {IconStack} from "@/ui/IconStack";
 import {WithChildren} from "@/ui/types";
@@ -23,9 +26,9 @@ import {
 import {faLink, faPlus} from "@fortawesome/pro-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import useTimeout from "@restart/hooks/useTimeout";
-import {useSuspenseQuery} from "@tanstack/react-query";
+import {useQuery, useSuspenseQuery} from "@tanstack/react-query";
 import {useParams} from "next/navigation";
-import {Suspense, useState} from "react";
+import {useState} from "react";
 import {Alert, Button} from "react-bootstrap";
 import {Variant} from "react-bootstrap/esm/types";
 
@@ -55,22 +58,17 @@ function FirstPaymentPending() {
 interface FirstPaymentErrorProps {
   firstPaymentError: Error;
   onRetry: () => void;
-  firstPaymentFetching: boolean;
 }
 function FirstPaymentError({
   firstPaymentError,
   onRetry,
-  firstPaymentFetching,
 }: FirstPaymentErrorProps) {
   return (
     <PaymentAlert variant="danger">
       <FontAwesomeIcon icon={faCircleExclamation} size="xl" />
       <p className="me-auto mb-0">{firstPaymentError.message}.</p>
       <Button onClick={() => onRetry()}>
-        <FontAwesomeIcon
-          icon={firstPaymentFetching ? faSpinner : faArrowRotateBack}
-          className={cns("me-2", firstPaymentFetching && "fa-spin")}
-        />
+        <FontAwesomeIcon icon={faArrowRotateBack} className="me-2" />
         Riprova
       </Button>
     </PaymentAlert>
@@ -126,12 +124,9 @@ function FirstPaymentLink({firstPayment}: FirstPaymentLinkProps) {
   );
 }
 
-interface CreateRecurringPaymentButtonProps {
-  lipId: number;
-}
-function CreateRecurringPaymentButton({
-  lipId,
-}: CreateRecurringPaymentButtonProps) {
+function CreateRecurringPaymentButton() {
+  const lipId = validateLipIdOrNotFound(useParams<{id: string}>().id) as number;
+
   const {
     isPending: createRecurringPaymentIsPending,
     isError: isCreateRecurringPaymentError,
@@ -174,10 +169,7 @@ function CreateRecurringPaymentButton({
   );
 }
 
-interface MolliePaymentPendingStateProps {
-  lipId: number;
-}
-function MolliePaymentPendingState({lipId}: MolliePaymentPendingStateProps) {
+function MolliePaymentPendingState() {
   return (
     <PaymentAlert variant="danger">
       <FontAwesomeIcon
@@ -189,16 +181,18 @@ function MolliePaymentPendingState({lipId}: MolliePaymentPendingStateProps) {
         Per proseguire con la proposta è necessario effettuare il pagamento
         tramite il portale di Mollie.
       </p>
-      <CreateRecurringPaymentButton lipId={lipId} />
+      <CreateRecurringPaymentButton />
     </PaymentAlert>
   );
 }
 
-interface MolliePaymentClickedStateProps {
-  lipId: number;
-}
-function MolliePaymentClickedState({lipId}: MolliePaymentClickedStateProps) {
-  const {data} = useSuspenseQuery(getActiveSubscriptionQuery(lipId));
+function MolliePaymentClickedState() {
+  const lipId = validateLipIdOrNotFound(useParams<{id: string}>().id) as number;
+  const {data, isSuccess} = useQuery(getActiveSubscriptionQuery(lipId));
+
+  if (!isSuccess) {
+    return null;
+  }
 
   return (
     <PaymentAlert variant="success">
@@ -214,59 +208,60 @@ function MolliePaymentClickedState({lipId}: MolliePaymentClickedStateProps) {
           ? "È attivo il pagamento automatico"
           : "Non è attivo un pagamento automatico"}
       </p>
-      <CreateRecurringPaymentButton lipId={lipId} />
+      <CreateRecurringPaymentButton />
     </PaymentAlert>
   );
 }
 
 interface PaymentStatusProps {
-  lipId: number;
+  lip: Lip;
 }
-function PaymentStatus({lipId}: PaymentStatusProps) {
-  const mollieLinkClicked = useStore(
-    (state) => state.lip?.payment?.mollieLinkClicked,
-  );
-
+function PaymentStatus({lip}: PaymentStatusProps) {
   const {
     data: firstPaymentData,
     error: firstPaymentError,
-    isFetching: firstPaymentFetching,
+    isFetching: firstPaymentIsFetching,
     isError: firstPaymentIsError,
     refetch: firstPaymentRefetch,
-  } = useSuspenseQuery(getActiveFirstPaymentQuery(lipId));
+  } = useQuery(getActiveFirstPaymentQuery(lip.id));
+
+  if (firstPaymentIsFetching && (!firstPaymentData || !!firstPaymentError)) {
+    return <FirstPaymentPending />;
+  }
 
   if (firstPaymentIsError) {
     return (
       <FirstPaymentError
         firstPaymentError={firstPaymentError}
         onRetry={firstPaymentRefetch}
-        firstPaymentFetching={firstPaymentFetching}
       />
     );
   }
 
-  if (firstPaymentData.first_payment !== null) {
+  if (!!firstPaymentData?.first_payment) {
     return <FirstPaymentLink firstPayment={firstPaymentData.first_payment} />;
   }
 
-  if (mollieLinkClicked) {
-    return <MolliePaymentClickedState lipId={lipId} />;
+  if (mollieLinkClicked(lip)) {
+    return <MolliePaymentClickedState />;
   }
 
-  return <MolliePaymentPendingState lipId={lipId} />;
+  return <MolliePaymentPendingState />;
 }
 
 export function DocumentsLockMolliePayment() {
-  const lipId = Number(useParams<{id: string}>().id);
-  const paymentType = useStore((state) => state.lip?.payment?.paymentType);
+  const lipId = validateLipIdOrNotFound(useParams<{id: string}>().id) as number;
+  const {
+    data: {lip},
+  } = useSuspenseQuery(getLipQuery(lipId));
 
-  if (paymentType !== "mollie" || !lipId) {
+  if (!isPaymentValid(lip)) {
     return null;
   }
 
-  return (
-    <Suspense fallback={<FirstPaymentPending />}>
-      <PaymentStatus lipId={lipId} />
-    </Suspense>
-  );
+  if (lip.payment.paymentType !== "mollie") {
+    return null;
+  }
+
+  return <PaymentStatus lip={lip} />;
 }

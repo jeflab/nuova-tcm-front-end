@@ -1,3 +1,4 @@
+import {useSyncedState} from "@/helpers/useSyncedState";
 import {TableContext} from "@/ui/table/react-table";
 import {FormSelect} from "react-bootstrap";
 
@@ -12,6 +13,8 @@ export function LipStatesSelectorFilter({
   setFilterValue,
   tableContext,
 }: LipStatesSelectorFilterProps) {
+  const [value, setValue] = useSyncedState(filterValue);
+
   if (!tableContext) {
     return (
       <FormSelect size="sm" key="loading">
@@ -22,8 +25,11 @@ export function LipStatesSelectorFilter({
 
   return (
     <FormSelect
-      defaultValue={filterValue}
-      onChange={(e) => setFilterValue(e.target.value)}
+      value={value}
+      onChange={(e) => {
+        setValue(e.target.value);
+        setFilterValue(e.target.value);
+      }}
       size="sm"
       aria-label="Filtra per stato"
     >

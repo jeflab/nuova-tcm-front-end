@@ -28,7 +28,7 @@ export async function createFEATransaction(data: CreateFEATransactionParams) {
 }
 
 const signFEADocSchema = {
-  lip: lipSchema.optional(),
+  lip: lipSchema,
 };
 interface SignFEADocParams<TPayload> {
   lipId: number;

@@ -1,10 +1,12 @@
 "use client";
 
-import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {getLipQuery} from "@/app/(menu)/(authenticated)/lips/[id]/queries";
+import {isInsuredDataValid} from "@/app/(menu)/(authenticated)/lipsDrawers/insuredData/insuredDataValidators";
 import {
   genderOptions,
   insuredRelationshipOptions,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
+import {validateLipIdOrNotFound} from "@/app/(menu)/(authenticated)/lipsDrawers/validateLipIdOrNotFound";
 import {dateString} from "@/helpers/dates";
 import {getOptionsLabel} from "@/helpers/getOptionsLabel";
 import {
@@ -14,13 +16,17 @@ import {
   faUserGroup,
 } from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {useSuspenseQuery} from "@tanstack/react-query";
+import {useParams} from "next/navigation";
 import {Col, Row} from "react-bootstrap";
 
 export function InsuredDataSummary() {
-  const lip = useStore((state) => state.lip);
-  const insured = lip?.insured;
+  const lipId = validateLipIdOrNotFound(useParams<{id: string}>().id) as number;
+  const {
+    data: {lip},
+  } = useSuspenseQuery(getLipQuery(lipId));
 
-  if (!insured || !lip) {
+  if (!isInsuredDataValid(lip)) {
     return null;
   }
 
@@ -31,30 +37,30 @@ export function InsuredDataSummary() {
           <FontAwesomeIcon icon={faUser} /> Anagrafica
         </h4>
         <p className="mb-0">
-          {insured.name} {insured.surname}, nato il{" "}
-          {dateString(insured.birthDate)} a {insured.birthPlace} (
-          {insured.birthProvince})
+          {lip.insured.name} {lip.insured.surname}, nato il{" "}
+          {dateString(lip.insured.birthDate)} a {lip.insured.birthPlace} (
+          {lip.insured.birthProvince})
         </p>
         <p>
-          Residente in {insured.address} {insured.streetNumber},{" "}
-          {insured.zipCode} {insured.city} ({insured.region})
+          Residente in {lip.insured.address} {lip.insured.streetNumber},{" "}
+          {lip.insured.zipCode} {lip.insured.city} ({lip.insured.region})
         </p>
         <p className="mb-0">
           <strong>Nazionalità:</strong>{" "}
-          <span>{insured.citizenshipInstance?.citizenship}</span>
+          <span>{lip.insured.citizenshipInstance?.citizenship}</span>
         </p>
-        {insured.secondCitizenship && (
+        {lip.insured.secondCitizenship && (
           <p className="mb-0">
             <strong>Seconda Nazionalità:</strong>{" "}
-            <span>{insured.secondCitizenshipInstance?.citizenship}</span>
+            <span>{lip.insured.secondCitizenshipInstance?.citizenship}</span>
           </p>
         )}
         <p className="mb-0">
           <strong>Genere:</strong>{" "}
-          {getOptionsLabel(genderOptions, insured.gender)}
+          {getOptionsLabel(genderOptions, lip.insured.gender)}
         </p>
         <p className="mb-0">
-          <strong>Codice Fiscale:</strong> {insured.fiscalCode}
+          <strong>Codice Fiscale:</strong> {lip.insured.fiscalCode}
         </p>
       </Col>
       <Col xs={12} sm={6} md={12} lg={6}>
@@ -63,11 +69,11 @@ export function InsuredDataSummary() {
         </h4>
         <p className="mb-0">
           <strong>Telefono:</strong>{" "}
-          <a href={`tel:${insured.phone}`}>{insured.phone}</a>
+          <a href={`tel:${lip.insured.phone}`}>{lip.insured.phone}</a>
         </p>
         <p className="mb-0">
           <strong>E-Mail:</strong>{" "}
-          <a href={`mailto:${insured.email}`}>{insured.email}</a>
+          <a href={`mailto:${lip.insured.email}`}>{lip.insured.email}</a>
         </p>
       </Col>
       <Col xs={12} sm={6} md={12} lg={6}>
@@ -89,7 +95,8 @@ export function InsuredDataSummary() {
           <FontAwesomeIcon icon={faBriefcase} /> Situazione professionale
         </h4>
         <p className="mb-0">
-          <strong>Attività esercitata:</strong> {insured.pep?.job.positionOther}
+          <strong>Attività esercitata:</strong>{" "}
+          {lip.insured.pep?.job.positionOther}
         </p>
       </Col>
     </Row>

@@ -1,43 +1,45 @@
 "use client";
 
-import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {
+  getLastPrivacyQuery,
+  getLipQuery,
+} from "@/app/(menu)/(authenticated)/lips/[id]/queries";
+import {validateLipIdOrNotFound} from "@/app/(menu)/(authenticated)/lipsDrawers/validateLipIdOrNotFound";
 import {cns} from "@/helpers/cns";
 import {PDFType} from "@/models/entities/esign";
-import {Privacy} from "@/models/entities/privacy";
-import {Tags} from "@/services/const";
+import {isLip} from "@/models/entities/lip";
 import RequestOTPModal from "@/ui/eSign/RequestOTPModal";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {CheckboxField} from "@/ui/form/CheckboxField";
 import {FieldError} from "@/ui/form/FieldError";
 import {Form} from "@/ui/form/Form";
 import {SubmitButton} from "@/ui/form/SubmitButton";
+import {useDrawerModal} from "@/ui/ModalContext";
 import {faFileSignature, faSpinner} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {startTransition, useState} from "react";
+import {useSuspenseQuery} from "@tanstack/react-query";
+import {useParams} from "next/navigation";
+import {useState} from "react";
 import {Alert, FormGroup} from "react-bootstrap";
 import {useForm} from "react-hook-form";
 import styles from "./ContractorPersonalAreaActivationLastPrivacyForm.module.scss";
 
-interface ContractorPersonalAreaActivationLastPrivacyFormProps {
-  lastPrivacy: Privacy;
-}
-
-export function ContractorPersonalAreaActivationLastPrivacyForm({
-  lastPrivacy,
-}: ContractorPersonalAreaActivationLastPrivacyFormProps) {
+export function ContractorPersonalAreaActivationLastPrivacyForm() {
+  const lipId = validateLipIdOrNotFound(useParams<{id: string}>().id) as number;
+  const {
+    data: {lip},
+  } = useSuspenseQuery(getLipQuery(lipId));
+  const {data: lastPrivacy} = useSuspenseQuery(getLastPrivacyQuery());
   const formMethods = useForm({
     mode: "onChange",
   });
-  const [esignModalOpen, setEsignModalOpen] = useState(false);
-  const lip = useStore((state) => state.lip);
-  const closeModal = useStore((state) => state.closeModal);
+  const [eSignModalOpen, setESignModalOpen] = useState(false);
+  const {closeModal} = useDrawerModal();
 
   return (
     <Form
       onSubmit={() => {
-        startTransition(() => {
-          setEsignModalOpen(true);
-        });
+        setESignModalOpen(true);
       }}
       formMethods={formMethods}
     >
@@ -85,23 +87,20 @@ export function ContractorPersonalAreaActivationLastPrivacyForm({
             </>
           )}
         </SubmitButton>
-        {lip && (
+        {isLip(lip) && (
           <RequestOTPModal
             onHide={() => {
-              startTransition(() => {
-                setEsignModalOpen(false);
-              });
+              setESignModalOpen(false);
             }}
-            onEsignComplete={async () => {
-              setEsignModalOpen(false);
+            onESignComplete={async () => {
+              setESignModalOpen(false);
               closeModal();
             }}
             personalData={lip.contractor}
             pdfType={PDFType.Privacy}
-            show={esignModalOpen}
+            show={eSignModalOpen}
             payload={{values: formMethods.watch()}}
             lipId={lip.id}
-            tagToRevalidate={Tags.getLip(lip.id)}
             whoESign="contractor"
           />
         )}

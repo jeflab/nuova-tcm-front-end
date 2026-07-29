@@ -1,10 +1,11 @@
 import {BeneficiariesForm} from "@/app/(menu)/(authenticated)/lipsDrawers/beneficiaries/BeneficiariesForm";
 import {BeneficiariesSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/beneficiaries/BeneficiariesSummary";
 import {CertificateSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/certificate/CertificateSummary";
-import {ContractorContactsFormWrapper} from "@/app/(menu)/(authenticated)/lipsDrawers/contractorContacts/ContractorContactsFormWrapper";
+import {ContractorContactsForm} from "@/app/(menu)/(authenticated)/lipsDrawers/contractorContacts/ContractorContactsForm";
+import {ContractorContactsSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/contractorContacts/ContractorContactsSummary";
 import {ContractorDataForm} from "@/app/(menu)/(authenticated)/lipsDrawers/contractorData/ContractorDataForm";
 import {ContractorDataSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/contractorData/ContractorDataSummary";
-import {ContractorFiscalCodeModal} from "@/app/(menu)/(authenticated)/lipsDrawers/contractorFiscalCode/ContractorFiscalCodeModal";
+import {ContractorFiscalCodeForm} from "@/app/(menu)/(authenticated)/lipsDrawers/contractorFiscalCode/ContractorFiscalCodeForm";
 import {ContractorFiscalCodeSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/contractorFiscalCode/ContractorFiscalCodeSummary";
 import {ContractorPersonalAreaActivationModalContent} from "@/app/(menu)/(authenticated)/lipsDrawers/contractorPersonalAreaActivation/ContractorPersonalAreaActivationModalContent";
 import {ContractorPersonalAreaActivationSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/contractorPersonalAreaActivation/ContractorPersonalAreaActivationSummary";
@@ -30,8 +31,6 @@ import {LipType} from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
 import {TypeForm} from "@/app/(menu)/(authenticated)/lipsDrawers/type/TypeForm";
 import {TypeSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/type/TypeSummary";
 import {ReactNode} from "react";
-import {ContractorContactsSummary} from "@/app/(menu)/(authenticated)/lipsDrawers/contractorContacts/ContractorContactsSummary";
-import {ContractorPersonalAreaActivationLastPrivacy} from "@/app/(menu)/(authenticated)/lipsDrawers/contractorPersonalAreaActivation/ContractorPersonalAreaActivationLastPrivacy";
 import {InsuredIdentificationForm} from "../../lipsDrawers/insuredIdentification/InsuredIdentificationForm";
 import {InsuredIdentificationSummary} from "../../lipsDrawers/insuredIdentification/InsuredIdentificationSummary";
 
@@ -78,23 +77,19 @@ export const drawers: DrawerConfig[] = [
   {
     name: "contractorFiscalCode",
     title: "Dati Contraente",
-    modalContent: <ContractorFiscalCodeModal />,
+    modalContent: <ContractorFiscalCodeForm />,
     summaryContent: <ContractorFiscalCodeSummary />,
   },
   {
     name: "contractorContacts",
     title: "Contatti Contraente",
-    modalContent: <ContractorContactsFormWrapper />,
+    modalContent: <ContractorContactsForm />,
     summaryContent: <ContractorContactsSummary />,
   },
   {
     name: "contractorPersonalAreaActivation",
     title: "Attivazione area Contraente",
-    modalContent: (
-      <ContractorPersonalAreaActivationModalContent
-        lastPrivacy={<ContractorPersonalAreaActivationLastPrivacy />}
-      />
-    ),
+    modalContent: <ContractorPersonalAreaActivationModalContent />,
     summaryContent: <ContractorPersonalAreaActivationSummary />,
   },
   {

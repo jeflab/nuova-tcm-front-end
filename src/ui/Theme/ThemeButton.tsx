@@ -1,4 +1,5 @@
 "use client";
+
 import {Theme} from "@/ui/Theme/consts";
 import {ThemeContext} from "@/ui/Theme/ThemeContext";
 import {faMoonStars, faSunBright} from "@fortawesome/pro-duotone-svg-icons";

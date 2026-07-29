@@ -168,7 +168,7 @@ export const insuredSchema = z
     region_birth: z.string(),
     fiscal_code: z.string(),
     gender: z.enum(["male", "female"]),
-    last_privacy_esign_id: z.number().nullable(),
+    last_privacy_esign_id: z.number().nullish(),
     json_fatca: stringToJSON().pipe(fatcaSchema),
     address: z.string().nullable(),
     street_number: z.string().nullable(),
@@ -220,3 +220,13 @@ export const insuredSchema = z
 export type Insured = Prettify<z.infer<typeof insuredSchema>>;
 
 export type PersonalData = Contractor | Insured;
+
+export function getValidIdentityDocument(personalData: PersonalData) {
+  const identityDocument = personalData.identityDocument?.at(-1);
+
+  if (!identityDocument) {
+    throw new Error("Nessun documento di identità trovato.");
+  }
+
+  return identityDocument;
+}

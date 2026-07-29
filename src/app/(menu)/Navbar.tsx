@@ -1,11 +1,12 @@
+"use client";
+
+import {getAccountQuery} from "@/app/(menu)/(authenticated)/queries";
 import {HelpLink} from "@/app/(menu)/HelpLink";
 import {LoginButton} from "@/app/(menu)/LoginButton";
-import {getAccount, isLoggedIn} from "@/app/(no-menu)/(auth)/actions";
 import {cns} from "@/helpers/cns";
-import {Broker} from "@/models/entities/broker";
 import {AppContainer} from "@/ui/AppContainer";
-import {getTheme} from "@/ui/Theme/actions";
 import {ThemeButton} from "@/ui/Theme/ThemeButton";
+import {useSuspenseQuery} from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -16,29 +17,17 @@ import {
   NavbarToggle,
   NavLink,
 } from "react-bootstrap";
-import styles from "./Navbar.module.scss";
 import {LogoutButton} from "./LogoutButton";
-import {Permission} from "@/models/account";
+import styles from "./Navbar.module.scss";
 
-export async function Navbar() {
-  const serverTheme = await getTheme();
-  const loggedIn = await isLoggedIn();
+interface NavbarProps {
+  serverTheme: "light" | "dark";
+}
 
-  // get page url in server components
-
-  let permissions = [] as Permission[];
-  let broker: Broker | undefined | null;
-  let fiscalCode: string | undefined;
-
-  if (loggedIn) {
-    const account = await getAccount();
-
-    if (account?.status === "success") {
-      permissions = account.permissions;
-      broker = account.broker;
-      fiscalCode = account.user.fiscalCode;
-    }
-  }
+export function Navbar({serverTheme}: NavbarProps) {
+  const {
+    data: {broker, permissions, user},
+  } = useSuspenseQuery(getAccountQuery());
 
   return (
     <BSNavbar
@@ -65,9 +54,9 @@ export async function Navbar() {
         <NavbarToggle aria-controls="basic-navbar-nav" />
         <NavbarCollapse id="basic-navbar-nav">
           <Nav className={cns("ms-auto", styles.navbarNav)}>
-            {loggedIn ? (
+            {permissions ? (
               <>
-                {permissions?.some(
+                {permissions.some(
                   (permission) => permission.name === "create-lip",
                 ) && (
                   <NavLink as={Link} href="/quoter">
@@ -93,7 +82,7 @@ export async function Navbar() {
                 ) && (
                   <HelpLink
                     className="nav-link"
-                    fiscalCode={fiscalCode}
+                    fiscalCode={user?.fiscalCode}
                     label="Assistenza"
                   />
                 )}
