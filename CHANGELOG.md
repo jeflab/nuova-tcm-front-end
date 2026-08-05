@@ -1,5 +1,27 @@
 # Changelog
 
+## 2.10.0 (2026-08-05)
+
+#### Added:
+
+- Aggiunto log delle richieste al preventivatore pubblico con IP e user agent
+
+#### Changed:
+
+- Elenco e dettaglio delle lip gestiti con React Query e prefetch lato server
+- Separate le route del quotatore interno e di quello pubblico
+- Aggiornate le dipendenze npm
+
+#### Fixed:
+
+- Corretto bug che faceva variare la lunghezza degli skeleton nella tabella delle lip
+
+#### Security:
+
+- Aggiunto captcha Cloudflare Turnstile al preventivatore pubblico
+- Aggiunto rate limiter per IP al preventivatore pubblico
+- Il redirect dopo la login accetta solo percorsi interni al sito (protezione da open redirect)
+
 ### 2.9.1 (2026-05-27)
 
 #### Fixed:
