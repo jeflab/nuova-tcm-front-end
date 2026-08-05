@@ -146,7 +146,20 @@ export default async function middleware(request: NextRequest) {
   }
 
   if (isLoginPage && isUserLoggedIn) {
-    const next = searchParams.get("next") ?? "/";
+    let next = "/";
+    try {
+      const requestedNext = new URL(
+        searchParams.get("next") ?? "/",
+        request.url,
+      );
+
+      if (requestedNext.origin === request.nextUrl.origin) {
+        next = requestedNext.pathname;
+      }
+    } catch {
+      // "next" non è un URL valido → si resta sulla home
+    }
+
     searchParams.delete("next");
     const redirectUrl = new URL(next, request.url);
     redirectUrl.search = searchParams.toString();

@@ -1,9 +1,12 @@
 "use client";
 
-import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {getLipQuery} from "@/app/(menu)/(authenticated)/lips/[id]/queries";
+import {isContractorIdentificationValid} from "@/app/(menu)/(authenticated)/lipsDrawers/identification/identificationValidators";
 import {idTypeOptions} from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
+import {validateLipIdOrNotFound} from "@/app/(menu)/(authenticated)/lipsDrawers/validateLipIdOrNotFound";
 import {dateString} from "@/helpers/dates";
 import {getOptionsLabel} from "@/helpers/getOptionsLabel";
+import {getValidIdentityDocument} from "@/models/entities/personalData";
 import {DownloadDocumentButton} from "@/ui/DownloadDocumentButton";
 import {IdImage} from "@/ui/IdImage";
 import {
@@ -13,25 +16,21 @@ import {
   faSquareCheck,
 } from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {useSuspenseQuery} from "@tanstack/react-query";
+import {useParams} from "next/navigation";
 import {Col, Row} from "react-bootstrap";
 
 export function IdentificationSummary() {
-  const lipId = useStore((state) => state.lip?.id);
-  const agentId = useStore((state) => state.lip?.agent.id);
-  const contractorId = useStore((state) => state.lip?.contractor.id);
-  const lipSalesMode = useStore((state) => state.lip?.salesMode);
-  const identification = useStore((state) =>
-    state.lip?.contractor.identityDocument?.at(-1),
-  );
-  const fileResidenceProofName = useStore(
-    (state) =>
-      state.lip?.contractor.identityDocument?.at(-1)?.identification
-        ?.fileResidenceProofName,
-  );
+  const lipId = validateLipIdOrNotFound(useParams<{id: string}>().id) as number;
+  const {
+    data: {lip},
+  } = useSuspenseQuery(getLipQuery(lipId));
 
-  if (!identification) {
+  if (!isContractorIdentificationValid(lip)) {
     return null;
   }
+
+  const identityDocument = getValidIdentityDocument(lip.contractor);
 
   return (
     <Row className="row-gap-3">
@@ -42,51 +41,47 @@ export function IdentificationSummary() {
         </h4>
         <p className="mb-0">
           <strong>Documento:</strong>{" "}
-          {getOptionsLabel(idTypeOptions, identification.idType)}
+          {getOptionsLabel(idTypeOptions, identityDocument.idType)}
         </p>
         <p className="mb-0">
-          <strong>Numero documento:</strong> {identification.number}
+          <strong>Numero documento:</strong> {identityDocument.number}
         </p>
         <p className="mb-0">
-          <strong>Rilasciato da:</strong> {identification.issuedByOrg}
+          <strong>Rilasciato da:</strong> {identityDocument.issuedByOrg}
         </p>
         <p className="mb-0">
-          <strong>Luogo di rilascio:</strong> {identification.issuedBy}
+          <strong>Luogo di rilascio:</strong> {identityDocument.issuedBy}
         </p>
         <p className="mb-0">
-          <strong>In data:</strong> {dateString(identification.issuedDate)}
+          <strong>In data:</strong> {dateString(identityDocument.issuedDate)}
         </p>
         <p className="mb-0">
-          <strong>Scadenza:</strong> {dateString(identification.expiringDate)}
+          <strong>Scadenza:</strong> {dateString(identityDocument.expiringDate)}
         </p>
       </Col>
       <Col xs={6} sm={3} md={6} lg={3}>
         <div className="ratio ratio-4x3 p-3">
-          {agentId &&
-            contractorId &&
-            identification.identification?.fileIdFrontName && (
-              <IdImage
-                agentId={agentId}
-                personalDataId={contractorId}
-                filename={identification.identification?.fileIdFrontName}
-              />
-            )}
+          {identityDocument.identification?.fileIdFrontName && (
+            <IdImage
+              agentId={lip.agent.id}
+              personalDataId={lip.contractor.id}
+              filename={identityDocument.identification?.fileIdFrontName}
+            />
+          )}
         </div>
       </Col>
       <Col xs={6} sm={3} md={6} lg={3}>
         <div className="ratio ratio-4x3 p-3">
-          {agentId &&
-            contractorId &&
-            identification.identification?.fileIdBackName && (
-              <IdImage
-                agentId={agentId}
-                personalDataId={contractorId}
-                filename={identification.identification?.fileIdBackName}
-              />
-            )}
+          {identityDocument.identification?.fileIdBackName && (
+            <IdImage
+              agentId={lip.agent.id}
+              personalDataId={lip.contractor.id}
+              filename={identityDocument.identification?.fileIdBackName}
+            />
+          )}
         </div>
       </Col>
-      {fileResidenceProofName && lipId && agentId && (
+      {identityDocument.identification?.fileResidenceProofName && (
         <Col xs={12}>
           <h4 className="text-primary">
             <FontAwesomeIcon icon={faHouseCircleCheck} className="me-2" />{" "}
@@ -96,27 +91,28 @@ export function IdentificationSummary() {
           <p className="mb-0">
             <DownloadDocumentButton
               uri="pdf-residence-proof"
-              lipId={lipId}
-              agentId={agentId}
+              lipId={lip.id}
+              agentId={lip.agent.id}
             >
               Scarica conferma residenza
             </DownloadDocumentButton>
           </p>
         </Col>
       )}
-      {lipSalesMode === "remote" && !fileResidenceProofName && (
-        <Col xs={12}>
-          <h4 className="text-primary">
-            <FontAwesomeIcon icon={faHouseCircleCheck} className="me-2" />{" "}
-            Conferma residenza
-          </h4>
-          <p className="mb-0">
-            <FontAwesomeIcon icon={faSquareCheck} className="me-2" />
-            L'Intermediario dichiara che l documento a conferma della residenza
-            verrà fornito successivamente
-          </p>
-        </Col>
-      )}
+      {lip.salesMode === "remote" &&
+        !identityDocument.identification?.fileResidenceProofName && (
+          <Col xs={12}>
+            <h4 className="text-primary">
+              <FontAwesomeIcon icon={faHouseCircleCheck} className="me-2" />{" "}
+              Conferma residenza
+            </h4>
+            <p className="mb-0">
+              <FontAwesomeIcon icon={faSquareCheck} className="me-2" />
+              L'Intermediario dichiara che l documento a conferma della
+              residenza verrà fornito successivamente
+            </p>
+          </Col>
+        )}
       <Col xs={12}>
         <h4 className="text-primary">
           <FontAwesomeIcon icon={faClipboardListCheck} className="me-2" />
@@ -124,7 +120,7 @@ export function IdentificationSummary() {
         </h4>
         <p className="mb-0">
           <FontAwesomeIcon icon={faSquareCheck} className="me-2" />
-          {lipSalesMode === "remote"
+          {lip.salesMode === "remote"
             ? "Di aver identificato il Contraente a distanza"
             : "Di aver incontrato il Contraente di persona"}
         </p>

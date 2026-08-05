@@ -1,16 +1,18 @@
 "use client";
 
 import {
-  addInsuredData,
-  updatePersonalData,
-} from "@/app/(menu)/(authenticated)/lips/[id]/actions";
-import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+  useAddInsuredDataMutation,
+  useUpdatePersonalDataMutation,
+} from "@/app/(menu)/(authenticated)/lips/[id]/mutations";
+import {getLipQuery} from "@/app/(menu)/(authenticated)/lips/[id]/queries";
+import {isDenValid} from "@/app/(menu)/(authenticated)/lipsDrawers/den/denValidators";
 import {
   Gender,
   genderOptions,
   InsuredRelationship,
   insuredRelationshipOptions,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
+import {validateLipIdOrNotFound} from "@/app/(menu)/(authenticated)/lipsDrawers/validateLipIdOrNotFound";
 import {cns} from "@/helpers/cns";
 import {dbDateString} from "@/helpers/dates";
 import {normalizeError} from "@/helpers/errors";
@@ -35,11 +37,17 @@ import {
   checkFiscalCodeDataConsistencyValidator,
   fiscalCodeValidator,
 } from "@/ui/form/validators/fiscalCode";
+import {useDrawerModal} from "@/ui/ModalContext";
 import {faSave, faSpinner, faXmark} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import * as Sentry from "@sentry/nextjs";
+import {useSuspenseQuery} from "@tanstack/react-query";
+import {getDate} from "date-fns/getDate";
+import {getMonth} from "date-fns/getMonth";
+import {getYear} from "date-fns/getYear";
 import {startOfYear} from "date-fns/startOfYear";
 import {subYears} from "date-fns/subYears";
+import {useParams} from "next/navigation";
 import {
   Alert,
   Button,
@@ -51,11 +59,7 @@ import {
   Row,
 } from "react-bootstrap";
 import {useForm} from "react-hook-form";
-import invariant from "tiny-invariant";
 import "core-js/actual/array/to-sorted";
-import {getDate} from "date-fns/getDate";
-import {getMonth} from "date-fns/getMonth";
-import {getYear} from "date-fns/getYear";
 
 // Polyfill per safari 15.
 let toSortedPolyfillNeeded = false;
@@ -108,39 +112,53 @@ function getDefaultValues(insured: Nullish<Insured>, lip: Nullable<Lip>) {
 }
 
 export function InsuredDataForm() {
-  const lipId = useStore((state) => state.lip?.id);
-  const lip = useStore((state) => state.lip);
-  const insured = lip?.insured;
+  const lipId = validateLipIdOrNotFound(useParams<{id: string}>().id) as number;
+  const {
+    data: {lip},
+  } = useSuspenseQuery(getLipQuery(lipId));
+  const {mutateAsync: updatePersonalData} = useUpdatePersonalDataMutation();
+  const {mutateAsync: addInsuredData} = useAddInsuredDataMutation();
+
+  if (!isDenValid(lip)) {
+    throw new Error("Lip non valido per inserimento dati Assicurato");
+  }
 
   const formMethods = useForm({
     mode: "onChange",
-    defaultValues: getDefaultValues(insured, lip),
+    defaultValues: getDefaultValues(lip.insured, lip),
   });
 
   const relationshipValue = formMethods.watch("relationship");
 
-  const closeModal = useStore((state) => state.closeModal);
+  const {closeModal} = useDrawerModal();
 
   return (
     <>
       <ModalBody>
         <Form
           onSubmit={async (values) => {
-            invariant(lipId, "Lip ID must be defined");
-            const upsertedInsured = await (insured
-              ? updatePersonalData(insured.id, lipId, values)
-              : addInsuredData(lipId, values));
+            try {
+              await (lip.insured
+                ? updatePersonalData({
+                    lipId: lip.id,
+                    personalDataId: lip.insured.id,
+                    personalDataType: "insured",
+                    formData: values,
+                  })
+                : addInsuredData({lipId, formData: values}));
 
-            if (upsertedInsured?.status !== "success") {
+              closeModal();
+            } catch (error) {
               throw {
                 root: {
                   type: "server",
-                  message: normalizeError(upsertedInsured).message,
+                  message: normalizeError(
+                    error,
+                    "Errore imprevisto durante il salvataggio dei dati dell'Assicurato. Riprova più tardi.",
+                  ).message,
                 },
               };
             }
-
-            closeModal();
           }}
           id="insured-data"
           formMethods={formMethods}

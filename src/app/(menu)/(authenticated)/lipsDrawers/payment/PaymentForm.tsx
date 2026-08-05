@@ -1,7 +1,8 @@
 "use client";
 
-import {updatePaymentData} from "@/app/(menu)/(authenticated)/lips/[id]/actions";
-import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {useUpdatePaymentData} from "@/app/(menu)/(authenticated)/lips/[id]/mutations";
+import {getLipQuery} from "@/app/(menu)/(authenticated)/lips/[id]/queries";
+import {isBeneficiariesValid} from "@/app/(menu)/(authenticated)/lipsDrawers/beneficiaries/beneficiariesValidators";
 import {bannedIbanCodes} from "@/app/(menu)/(authenticated)/lipsDrawers/payment/consts";
 import {
   PaymentMethods,
@@ -9,8 +10,11 @@ import {
   PaymentType,
   paymentTypesOptions,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
+import {validateLipIdOrNotFound} from "@/app/(menu)/(authenticated)/lipsDrawers/validateLipIdOrNotFound";
 import {normalizeError} from "@/helpers/errors";
+import {toCurrency} from "@/helpers/numbers";
 import {Lip} from "@/models/entities/lip";
+import {Currency} from "@/ui/Currency";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {CheckGroup} from "@/ui/form/CheckGroup";
 import {FieldError} from "@/ui/form/FieldError";
@@ -19,9 +23,12 @@ import {HelpText} from "@/ui/form/HelpText";
 import {InputField} from "@/ui/form/InputField";
 import {upperCaseNormalizer} from "@/ui/form/normalizers";
 import {validateIBAN} from "@/ui/form/validators/iban";
+import {useDrawerModal} from "@/ui/ModalContext";
 import {faSave, faSpinner, faXmark} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {useSuspenseQuery} from "@tanstack/react-query";
 import {addYears} from "date-fns/addYears";
+import {useParams} from "next/navigation";
 import {
   Alert,
   Button,
@@ -34,9 +41,6 @@ import {
   Row,
 } from "react-bootstrap";
 import {useForm} from "react-hook-form";
-import invariant from "tiny-invariant";
-import {Currency} from "@/ui/Currency";
-import {toCurrency} from "@/helpers/numbers";
 import {getCoverageDuration} from "../quote/ComplementaryCoverages";
 
 const paymentDefaultValues = (paymentData?: Lip["payment"]) => ({
@@ -51,35 +55,38 @@ const paymentDefaultValues = (paymentData?: Lip["payment"]) => ({
   bicSwift: paymentData?.bicSwift ?? "",
   iban: paymentData?.iban?.replace(/^IT/, "") ?? "",
 });
-export type PaymentFormValues = ReturnType<typeof paymentDefaultValues>;
 
 export function PaymentForm() {
-  const lipId = useStore((state) => state.lip?.id);
-  const birthDate = useStore((state) => state.lip?.insured?.birthDate)!;
-  const contractorName = useStore((state) => state.lip?.contractor.name);
-  const contractorSurname = useStore((state) => state.lip?.contractor.surname);
-  const paymentData = useStore((state) => state.lip?.payment);
+  const lipId = validateLipIdOrNotFound(useParams<{id: string}>().id) as number;
+  const {
+    data: {lip},
+  } = useSuspenseQuery(getLipQuery(lipId));
+  const {mutateAsync: updatePaymentData} = useUpdatePaymentData();
+
+  if (!isBeneficiariesValid(lip)) {
+    throw new Error(
+      "Lip non valida per la sezione pagamento: beneficiari non validi",
+    );
+  }
 
   const formMethods = useForm({
     mode: "onChange",
     defaultValues: {
-      ...paymentDefaultValues(paymentData),
-      contractorFullName: `${contractorName} ${contractorSurname}`,
-      duration: getCoverageDuration("death", birthDate).toString(),
+      ...paymentDefaultValues(lip.payment),
+      contractorFullName: `${lip.contractor.name} ${lip.contractor.surname}`,
+      duration: getCoverageDuration("death", lip.insured.birthDate).toString(),
       expirationDate: addYears(
         new Date(),
-        getCoverageDuration("death", birthDate),
+        getCoverageDuration("death", lip.insured.birthDate),
       )
         .getFullYear()
         .toString(),
     },
   });
 
-  const closeModal = useStore((state) => state.closeModal);
-  const premium = useStore((state) => state.lip?.quotation?.premium)!;
-  const extraPremium = useStore(
-    (state) => state.lip?.quotation?.underwriting?.extraPremium?.value,
-  );
+  const {closeModal} = useDrawerModal();
+  const premium = lip.quotation.premium;
+  const extraPremium = lip.quotation.underwriting?.extraPremium.value;
   const realPremium = extraPremium ?? premium;
 
   const paymentTypeValue = formMethods.watch("paymentType");
@@ -90,23 +97,24 @@ export function PaymentForm() {
         <Form
           id="payment-form"
           onSubmit={async (values) => {
-            invariant(lipId, "lipId is required");
+            try {
+              await updatePaymentData({
+                lipId: lip.id,
+                formData: {...values, iban: "IT" + values.iban},
+              });
 
-            const updatedContractor = await updatePaymentData(
-              {...values, iban: "IT" + values.iban},
-              lipId,
-            );
-
-            if (updatedContractor?.status !== "success") {
+              closeModal();
+            } catch (error) {
               throw {
                 root: {
                   type: "server",
-                  message: normalizeError(updatedContractor).message,
+                  message: normalizeError(
+                    error,
+                    "Errore imprevisto nell'aggiornamento dei dati di pagamento, riprova più tardi.",
+                  ).message,
                 },
               };
             }
-
-            closeModal();
           }}
           formMethods={formMethods}
           className="vstack gap-3"

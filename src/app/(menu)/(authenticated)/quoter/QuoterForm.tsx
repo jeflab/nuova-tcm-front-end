@@ -49,7 +49,11 @@ const quoterFormDefaultValues = {
 };
 export type QuoterFormValues = typeof quoterFormDefaultValues;
 
-export function QuoterForm() {
+export function QuoterForm({
+  getQuoteAction = getQuote,
+}: {
+  getQuoteAction?: typeof getQuote;
+} = {}) {
   const [premium, setPremium] = useState<number>();
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [firstTry, setFirstTry] = useState(true);
@@ -62,7 +66,7 @@ export function QuoterForm() {
   const handleSubmit = async (values: QuoterFormValues) => {
     let clientResponse: Awaited<ReturnType<typeof getQuote>>;
     try {
-      clientResponse = await getQuote(values);
+      clientResponse = await getQuoteAction(values);
     } catch (error) {
       console.error(error);
       throw {

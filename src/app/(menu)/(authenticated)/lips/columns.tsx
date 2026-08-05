@@ -1,5 +1,6 @@
 "use client";
 
+import {DateRangeFilter} from "@/app/(menu)/(authenticated)/lips/DateRangeFilter";
 import {LipStatesSelectorFilter} from "@/app/(menu)/(authenticated)/lips/LipStatesSelectorFilter";
 import {cns} from "@/helpers/cns";
 import {dateString, dbDateString} from "@/helpers/dates";
@@ -22,6 +23,17 @@ import {ColumnDef, createColumnHelper} from "@tanstack/react-table";
 import {Button, FormControl, FormSelect, Placeholder} from "react-bootstrap";
 
 const columnHelper = createColumnHelper<Lip>();
+
+function skeletonWidth(
+  rowIndex: number,
+  seed: number,
+  min: number,
+  max: number,
+) {
+  const pseudoRandom = ((rowIndex + 1) * (seed + 1) * 9301 + 49297) % 233280;
+  return min + (pseudoRandom / 233280) * (max - min);
+}
+
 export const columns = [
   columnHelper.accessor("lipNumber", {
     header: "Numero proposta",
@@ -95,45 +107,11 @@ export const columns = [
     header: "Data",
     cell: (props) => dateString(props.getValue()),
     meta: {
-      filterComponent: ({disabled, filterValue, idPrefix, setFilterValue}) => {
-        const [from, to] = filterValue?.split(">") ?? [undefined, undefined];
-        return (
-          <div className="hstack gap-2 date-filter">
-            <FormControl
-              type="date"
-              size="sm"
-              defaultValue={from && dbDateString(new Date(from))}
-              onBlur={(event) => {
-                setFilterValue(
-                  to
-                    ? [event.target.value, to].sort().join(">")
-                    : `${event.target.value}>`,
-                );
-              }}
-              disabled={disabled}
-              aria-label="Filtra per data di inizio"
-            />
-            <FormControl
-              type="date"
-              size="sm"
-              defaultValue={to && dbDateString(new Date(to))}
-              onBlur={(event) => {
-                setFilterValue(
-                  from
-                    ? [from, event.target.value].sort().join(">")
-                    : `>${event.target.value}`,
-                );
-              }}
-              disabled={disabled}
-              aria-label="Filtra per data di fine"
-              id={`${idPrefix ? `${idPrefix}-` : ""}filter-date-end`}
-            />
-          </div>
-        );
-      },
+      filterComponent: (props) => <DateRangeFilter {...props} />,
     },
   }),
-  columnHelper.accessor("lipStates", {
+  columnHelper.accessor((row) => row.lipState, {
+    id: "lipStates",
     header: "Stato",
     enableColumnFilter: true,
     cell: (props) => <LipStateBadge lipState={props.getValue()} />,
@@ -194,15 +172,15 @@ export const skeletonColumns = [
   columnHelper.accessor("agent", {
     header: "Agente",
     id: "agent",
-    cell: () => (
+    cell: ({row}) => (
       <Placeholder as="span" animation="glow">
         <Placeholder
           as="span"
-          style={{width: `${40 + Math.random() * 35}px`}}
+          style={{width: `${skeletonWidth(row.index, 0, 40, 75)}px`}}
         />{" "}
         <Placeholder
           as="span"
-          style={{width: `${40 + Math.random() * 35}px`}}
+          style={{width: `${skeletonWidth(row.index, 1, 40, 75)}px`}}
         />
       </Placeholder>
     ),
@@ -210,7 +188,7 @@ export const skeletonColumns = [
   columnHelper.accessor("contractor", {
     header: "Contraente",
     id: "contractor",
-    cell: () => (
+    cell: ({row}) => (
       <Placeholder as="span" animation="glow">
         <Placeholder
           as="span"
@@ -219,22 +197,22 @@ export const skeletonColumns = [
         />{" "}
         <Placeholder
           as="span"
-          style={{width: `${40 + Math.random() * 35}px`}}
+          style={{width: `${skeletonWidth(row.index, 2, 40, 75)}px`}}
         />{" "}
         <Placeholder
           as="span"
-          style={{width: `${40 + Math.random() * 35}px`}}
+          style={{width: `${skeletonWidth(row.index, 3, 40, 75)}px`}}
         />
       </Placeholder>
     ),
   }),
   columnHelper.accessor("createdAt", {
     header: "Data",
-    cell: () => (
+    cell: ({row}) => (
       <Placeholder as="span" animation="glow">
         <Placeholder
           as="span"
-          style={{width: `${100 + Math.random() * 30}px`}}
+          style={{width: `${skeletonWidth(row.index, 4, 100, 130)}px`}}
         />
       </Placeholder>
     ),
@@ -262,10 +240,13 @@ export const skeletonColumns = [
       },
     },
   }),
-  columnHelper.accessor("lipStates", {
+  columnHelper.accessor((row) => row.lipState, {
+    id: "lipStates",
     header: "Stato",
     enableColumnFilter: true,
-    cell: () => <LipStateBadgeSkeleton />,
+    cell: ({row}) => (
+      <LipStateBadgeSkeleton width={skeletonWidth(row.index, 5, 45, 210)} />
+    ),
     meta: {
       filterComponent: ({disabled, filterValue}) => {
         return (

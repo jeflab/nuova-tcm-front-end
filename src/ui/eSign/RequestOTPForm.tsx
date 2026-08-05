@@ -1,11 +1,11 @@
 import {ESign} from "@/app/(menu)/(authenticated)/lipsDrawers/documents/DocumentsManagement";
+import {cns} from "@/helpers/cns";
 import {normalizeError} from "@/helpers/errors";
 import {Profile} from "@/models/account";
 import {PDFType} from "@/models/entities/esign";
 import {PersonalData} from "@/models/entities/personalData";
-import {cns} from "@/helpers/cns";
 import {Tag} from "@/services/const";
-import {signFEADoc} from "@/ui/eSign/actions";
+import {useSignFEADocMutation} from "@/ui/eSign/mutations";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {FieldError} from "@/ui/form/FieldError";
 import {Form} from "@/ui/form/Form";
@@ -26,9 +26,11 @@ import {useForm} from "react-hook-form";
 interface RequestOTPFormProps<TPayload> {
   lipId: number;
   onCancel: () => void;
-  onEsignComplete?: (
+  onESignComplete?: (
     response: Extract<
-      Awaited<ReturnType<typeof signFEADoc>>,
+      Awaited<
+        ReturnType<ReturnType<typeof useSignFEADocMutation>["mutateAsync"]>
+      >,
       {status: "success"}
     >,
   ) => void;
@@ -52,7 +54,7 @@ const requestOTPFormDefaultValues = {
 export function RequestOTPForm<TPayload>({
   lipId,
   onCancel,
-  onEsignComplete,
+  onESignComplete,
   openEditNumberForm,
   payload,
   pdfType,
@@ -63,6 +65,7 @@ export function RequestOTPForm<TPayload>({
   tagToRevalidate,
   whoESign,
 }: RequestOTPFormProps<TPayload>) {
+  const {mutateAsync: signFEADoc} = useSignFEADocMutation();
   const formMethods = useForm({
     defaultValues: requestOTPFormDefaultValues,
   });
@@ -70,27 +73,27 @@ export function RequestOTPForm<TPayload>({
   return (
     <Form
       onSubmit={async (values) => {
-        const response = await signFEADoc({
-          personalDataId: personalData?.id,
-          lipId,
-          OTP: values.otp,
-          payload,
-          pdfType,
-          transactionId,
-          tagToRevalidate,
-          whoESign,
-        });
+        try {
+          const response = await signFEADoc({
+            personalDataId: personalData?.id,
+            lipId,
+            OTP: values.otp,
+            payload,
+            pdfType,
+            transactionId,
+            tagToRevalidate,
+            whoESign,
+          });
 
-        if (response?.status !== "success") {
+          onESignComplete?.(response);
+        } catch (error) {
           throw {
             root: {
               type: "server",
-              message: normalizeError(response).message,
+              message: normalizeError(error).message,
             },
           };
         }
-
-        onEsignComplete?.(response);
       }}
       formMethods={formMethods}
       className="vstack gap-3"

@@ -31,7 +31,7 @@ export function Policy({lip, insured, contractor}: PolicyProps) {
             </p>
             <p className="mb-0">
               <strong>Stato proposta:</strong>{" "}
-              <LipStateBadge lipState={lip.lipStates} />
+              <LipStateBadge lipState={lip.lipState} />
             </p>
             <p className="mb-0">
               <strong>Creata il:</strong> {dateString(lip.createdAt)}

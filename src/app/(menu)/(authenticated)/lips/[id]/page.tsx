@@ -1,145 +1,31 @@
+import {LipDetails} from "@/app/(menu)/(authenticated)/lips/[id]/LipDetails";
 import {
-  getActiveFirstPaymentQuery,
-  getActiveSubscriptionQuery,
+  getLastPrivacyQuery,
+  getLipQuery,
 } from "@/app/(menu)/(authenticated)/lips/[id]/queries";
-import {cns} from "@/helpers/cns";
-import {normalizeError} from "@/helpers/errors";
-import {Lip} from "@/models/entities/lip";
+import {validateLipIdOrNotFound} from "@/app/(menu)/(authenticated)/lipsDrawers/validateLipIdOrNotFound";
 import {AppContainer} from "@/ui/AppContainer";
-import {ButtonLink} from "@/ui/ButtonLink";
-import {Drawer} from "@/ui/drawer/Drawer";
-import {NavDrawer} from "@/ui/drawer/NavDrawer";
 import {getQueryClient} from "@/ui/getQueryClient";
-import {LipStateBadge} from "@/ui/LipStateBadge";
-import {PageTitle} from "@/ui/PageTitle";
-import ScrollReveal from "@/ui/ScrollReveal/ScrollReveal";
-import {faArrowLeft} from "@fortawesome/pro-duotone-svg-icons";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {notFound} from "next/navigation";
-import {Fragment} from "react";
-import {Col, Nav, Row} from "react-bootstrap";
-import {getLip} from "./actions";
-import {drawers} from "./drawers";
-import {InitStoreWithServerData} from "./InitStoreWithServerData";
-import styles from "./page.module.scss";
 import {dehydrate, HydrationBoundary} from "@tanstack/react-query";
-
-// TODO: abbassare il fetch dei dati, o in un sotto-componente client o addirittura nel drawer (fetch è cachata)
-//  Fatto ciò la pagina può tornare server component
 
 interface NewLipPageProps {
   params: Promise<{id: string}>;
 }
 
-const minWidthHack = {minWidth: "1px"};
-
 export default async function NewLipPage(props: NewLipPageProps) {
-  const params = await props.params;
-
+  const {id} = await props.params;
+  const lipId = validateLipIdOrNotFound(id);
   const queryClient = getQueryClient();
 
-  let lip: Lip | null = null;
-  if (params.id !== "new") {
-    const lipId = Number(params.id);
-
-    const lipResponsePromise = getLip(lipId);
-    queryClient.prefetchQuery(getActiveFirstPaymentQuery(lipId));
-    queryClient.prefetchQuery(getActiveSubscriptionQuery(lipId));
-
-    const lipResponse = await lipResponsePromise;
-
-    if (lipResponse?.status !== "success") {
-      if (lipResponse?.responseStatus === 404) {
-        notFound();
-      }
-      throw normalizeError(lipResponse);
-    }
-    lip = lipResponse.lip;
+  void queryClient.prefetchQuery(getLipQuery(lipId));
+  if (lipId !== "new") {
+    void queryClient.prefetchQuery(getLastPrivacyQuery());
   }
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <AppContainer className="vstack gap-3 align-items-start">
-        <InitStoreWithServerData lip={lip} />
-        <div>
-          <PageTitle>
-            {lip?.lipNumber
-              ? `Polizza n° ${lip?.lipNumber}`
-              : "Nuova proposta di polizza"}
-          </PageTitle>
-          {lip && lip?.lipStates && <LipStateBadge lipState={lip.lipStates} />}
-        </div>
-        <ButtonLink href="/lips">
-          <FontAwesomeIcon icon={faArrowLeft} /> Torna all'elenco
-        </ButtonLink>
-        <Row className="flex-row-reverse gy-3">
-          <Col md="auto">
-            <Nav className={cns("flex-column", styles.connectedList)}>
-              <ScrollReveal revealThreshold={70}>
-                <div className="mb-3 pb-2 border-bottom">
-                  <PageTitle>
-                    {lip?.lipNumber ? (
-                      <>
-                        Polizza n°
-                        <br />
-                        {lip?.lipNumber}
-                      </>
-                    ) : (
-                      <>
-                        Nuova proposta
-                        <br />
-                        di polizza
-                      </>
-                    )}
-                  </PageTitle>
-                  {lip && lip?.lipStates && (
-                    <LipStateBadge lipState={lip.lipStates} />
-                  )}
-                </div>
-              </ScrollReveal>
-              <div className={styles.navLinks}>
-                {drawers.map(({name, title, shortTitle, isVisible}) => {
-                  if (isVisible && lip && !isVisible(lip.type)) {
-                    return null;
-                  }
-                  return (
-                    <NavDrawer name={name} key={name}>
-                      {shortTitle ?? title}
-                    </NavDrawer>
-                  );
-                })}
-              </div>
-            </Nav>
-          </Col>
-          <Col className="d-flex flex-column gap-3" style={minWidthHack}>
-            {drawers.map(
-              ({
-                name,
-                title,
-                modalContent,
-                summaryContent,
-                lock,
-                isVisible,
-              }) => {
-                if (isVisible && lip && !isVisible(lip.type)) {
-                  return null;
-                }
-                return (
-                  <Fragment key={name}>
-                    {lock}
-                    <Drawer
-                      name={name}
-                      title={title}
-                      modalContent={modalContent}
-                    >
-                      {summaryContent}
-                    </Drawer>
-                  </Fragment>
-                );
-              },
-            )}
-          </Col>
-        </Row>
+        <LipDetails />
       </AppContainer>
     </HydrationBoundary>
   );

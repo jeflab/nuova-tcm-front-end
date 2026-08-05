@@ -1,14 +1,18 @@
 "use client";
 
 import {DrawerName} from "@/app/(menu)/(authenticated)/lips/[id]/drawers";
-import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {getLipQuery} from "@/app/(menu)/(authenticated)/lips/[id]/queries";
+import {validateLipIdOrNotFound} from "@/app/(menu)/(authenticated)/lipsDrawers/validateLipIdOrNotFound";
 import {cns} from "@/helpers/cns";
 import {DrawerIcon} from "@/ui/drawer/DrawerIcon";
 import {buttonMap} from "@/ui/drawer/types";
 import {upperCaseFirstNormalizer} from "@/ui/form/normalizers";
+import {useDrawerModal} from "@/ui/ModalContext";
 import {useAutoAnimate} from "@formkit/auto-animate/react";
 import {faPenToSquare} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {useSuspenseQuery} from "@tanstack/react-query";
+import {useParams} from "next/navigation";
 import {ReactNode} from "react";
 import {
   Button,
@@ -35,12 +39,15 @@ export function Drawer({
   readonly,
   title,
 }: DrawerProps) {
+  const lipId = validateLipIdOrNotFound(useParams<{id: string}>().id);
+  const {
+    data: {drawerStates},
+  } = useSuspenseQuery(getLipQuery(lipId));
+
   const [animateContainer] = useAutoAnimate();
-  const modalOpen = useStore((state) => state.modalOpen);
-  const openModal = useStore((state) => state.openModal);
-  const closeModal = useStore((state) => state.closeModal);
-  const {variant, buttonLabel, buttonIcon, isLocked} =
-    useStore((state) => state.drawerStates[name]) ?? {};
+  const {modalOpen, openModal, closeModal} = useDrawerModal();
+
+  const {variant, buttonLabel, buttonIcon, isLocked} = drawerStates[name] ?? {};
 
   return (
     <>
@@ -102,7 +109,7 @@ export function DrawerSkeleton({title}: DrawerSkeletonProps) {
     <>
       <Card className={styles.drawer}>
         <CardHeader className="d-flex align-items-center justify-content-between py-3">
-          <h4 className="mb-0">
+          <h4 className="mb-0 d-flex align-items-center">
             <DrawerIcon variant="loading" className="me-3" />
             {title}
           </h4>

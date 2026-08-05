@@ -1,11 +1,14 @@
 import {skeletonColumns} from "@/app/(menu)/(authenticated)/lips/columns";
+import {getLipsListQuery} from "@/app/(menu)/(authenticated)/lips/queries";
 import {AppContainer} from "@/ui/AppContainer";
 import {ButtonLink} from "@/ui/ButtonLink";
+import {getQueryClient} from "@/ui/getQueryClient";
 import {PageTitle} from "@/ui/PageTitle";
 import {DataTableSkeleton} from "@/ui/table/DataTableSkeleton";
-import {DataTableParams} from "@/ui/table/helpers";
+import {DataTableParams, dataTableParamsSchema} from "@/ui/table/helpers";
 import {faPlus} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {dehydrate, HydrationBoundary} from "@tanstack/react-query";
 import {Suspense} from "react";
 import {LipsTable} from "./LipsTable";
 
@@ -14,7 +17,11 @@ interface LipsPageProps {
 }
 
 export default async function LipsPage(props: LipsPageProps) {
-  const searchParams = await props.searchParams;
+  const searchParams = dataTableParamsSchema.parse(await props.searchParams);
+  const queryClient = getQueryClient();
+
+  void queryClient.prefetchQuery(getLipsListQuery(searchParams));
+
   return (
     <AppContainer className="vstack gap-3">
       <PageTitle>
@@ -23,17 +30,18 @@ export default async function LipsPage(props: LipsPageProps) {
           <FontAwesomeIcon icon={faPlus} /> Nuova proposta di polizza
         </ButtonLink>
       </PageTitle>
-      <Suspense
-        key={JSON.stringify(searchParams)}
-        fallback={
-          <DataTableSkeleton
-            columns={skeletonColumns}
-            searchParams={searchParams}
-          />
-        }
-      >
-        <LipsTable searchParams={searchParams} />
-      </Suspense>
+      <HydrationBoundary state={dehydrate(queryClient)}>
+        <Suspense
+          fallback={
+            <DataTableSkeleton
+              columns={skeletonColumns}
+              searchParams={searchParams}
+            />
+          }
+        >
+          <LipsTable searchParams={searchParams} />
+        </Suspense>
+      </HydrationBoundary>
     </AppContainer>
   );
 }

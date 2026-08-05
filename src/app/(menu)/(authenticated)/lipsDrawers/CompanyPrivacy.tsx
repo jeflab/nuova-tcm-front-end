@@ -1,5 +1,5 @@
-import {saveCompanyPrivacyConsent} from "@/app/(menu)/(authenticated)/lips/[id]/actions";
-import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {useSaveCompanyPrivacyConsent} from "@/app/(menu)/(authenticated)/lips/[id]/mutations";
+import {LipWithDen} from "@/app/(menu)/(authenticated)/lipsDrawers/den/denValidators";
 import {
   consentOptions,
   ConsentOptions,
@@ -10,6 +10,7 @@ import {normalizeError} from "@/helpers/errors";
 import {CheckGroup} from "@/ui/form/CheckGroup";
 import {FieldError} from "@/ui/form/FieldError";
 import {Form} from "@/ui/form/Form";
+import {useDrawerModal} from "@/ui/ModalContext";
 import {
   faClipboardCheck,
   faClipboardListCheck,
@@ -28,21 +29,15 @@ import {useForm} from "react-hook-form";
 import invariant from "tiny-invariant";
 
 interface CompanyPrivacyProps {
-  lipId: number;
-  agentId: number;
-  contractorId: number;
+  lip: LipWithDen;
   onHide?: () => void;
 }
 
-export function CompanyPrivacy({
-  onHide,
-  lipId,
-  agentId,
-  contractorId,
-}: CompanyPrivacyProps) {
-  const privacyCompany = useStore((state) => state.lip?.privacyCompany?.at(-1));
-  const lip = useStore((state) => state.lip);
-  const closeModalFromStore = useStore((state) => state.closeModal);
+export function CompanyPrivacy({lip, onHide}: CompanyPrivacyProps) {
+  const privacyCompany = lip.privacyCompany?.at(-1);
+  const {mutateAsync: saveCompanyPrivacyConsent} =
+    useSaveCompanyPrivacyConsent();
+  const {closeModal: closeModalFromContext} = useDrawerModal();
 
   const formMethods = useForm({
     defaultValues: {flags: privacyCompany?.flags ?? ([] as ConsentOptions[])},
@@ -54,13 +49,13 @@ export function CompanyPrivacy({
       Object.keys(lip?.eSigns?.polizza).some(
         (key) => key !== "esign_contraente_underwriting",
       ));
-  const closeModal = onHide ?? closeModalFromStore;
+  const closeModal = onHide ?? closeModalFromContext;
 
   const extendedPrivacyUrl = createDocumentUrl({
     uri: "pdf-proposta-preview",
-    lipId,
-    agentId,
-    contractorId,
+    lipId: lip.id,
+    agentId: lip.agent.id,
+    contractorId: lip.contractor.id,
   });
 
   return (
@@ -563,10 +558,10 @@ export function CompanyPrivacy({
           id="company-privacy-form"
           onSubmit={async (values) => {
             invariant(lip?.id, "lipId is required");
-            const updatedContractor = await saveCompanyPrivacyConsent(
-              {...values, options: consentOptions},
-              lip.id,
-            );
+            const updatedContractor = await saveCompanyPrivacyConsent({
+              lipId: lip.id,
+              formData: {...values, options: consentOptions},
+            });
 
             if (updatedContractor?.status !== "success") {
               throw {

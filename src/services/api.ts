@@ -26,6 +26,26 @@ async function authorizationHeader() {
   return authCookie ? {Authorization: `Bearer ${authCookie}`} : undefined;
 }
 
+async function deleteAuthCookie() {
+  const cookiesStore = await cookies();
+  const authCookie = cookiesStore.get(AUTH_COOKIE_NAME);
+
+  if (!authCookie || !authCookie.value) {
+    console.log(
+      "Ricevuto 401, ma nessun cookie presente. Ritorno l'errore al chiamante.",
+    );
+    return;
+  }
+
+  console.warn(
+    chalk.yellow.inverse(
+      "Ricevuto 401 con cookie presente. Il cookie è invalido o scaduto. Eseguo redirect al logout.",
+    ),
+  );
+
+  redirect("/logout");
+}
+
 function parseLaravelErrorPage(text: string) {
   let ok = false;
   let noScript = "";
@@ -57,6 +77,7 @@ interface ApiCallOptions<ResponsePayloadShape extends ZodRawShape> {
   searchParams?: Record<string, string>;
   revalidateTags?: Tag[];
   provideTags?: Tag[];
+  headers?: Record<string, string>;
 }
 export async function apiCall<ResponsePayloadShape extends ZodRawShape>(
   method: "GET" | "POST" | "PUT" | "PATCH",
@@ -67,6 +88,7 @@ export async function apiCall<ResponsePayloadShape extends ZodRawShape>(
     searchParams,
     revalidateTags,
     provideTags,
+    headers: extraHeaders,
   }: ApiCallOptions<ResponsePayloadShape>,
 ): Promise<
   | z.infer<typeof serverSuccessSchema>
@@ -84,11 +106,13 @@ export async function apiCall<ResponsePayloadShape extends ZodRawShape>(
       ? {
           ...(await authorizationHeader()),
           ...acceptJsonHeader,
+          ...extraHeaders,
         }
       : {
           ...(await authorizationHeader()),
           ...acceptJsonHeader,
           ...contentJsonHeader,
+          ...extraHeaders,
         };
 
   let response: Response;
@@ -252,9 +276,7 @@ export async function apiCall<ResponsePayloadShape extends ZodRawShape>(
     });
 
     if (serverResponseJson.responseStatus === 401) {
-      console.info("Chiamata non autorizzata, logout");
-
-      redirect("/logout");
+      await deleteAuthCookie();
 
       return errors[ErrorCodes.UNAUTHORIZED] as z.infer<
         typeof serverErrorSchema

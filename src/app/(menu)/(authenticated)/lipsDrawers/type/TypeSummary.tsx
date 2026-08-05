@@ -1,10 +1,11 @@
 "use client";
 
-import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {getLipQuery} from "@/app/(menu)/(authenticated)/lips/[id]/queries";
 import {
   LipSalesMode,
   LipType,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
+import {validateLipIdOrNotFound} from "@/app/(menu)/(authenticated)/lipsDrawers/validateLipIdOrNotFound";
 import {
   faBuilding,
   faHandshake,
@@ -13,6 +14,8 @@ import {
   faUserGroupSimple,
 } from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {useSuspenseQuery} from "@tanstack/react-query";
+import {useParams} from "next/navigation";
 
 interface LipTypeSummaryProps {
   lipType: LipType;
@@ -22,21 +25,15 @@ interface LipSalesModeSummaryProps {
 }
 
 export function TypeSummary() {
-  const typePreliminary = useStore((state) => state.preliminaryData.type);
-  const salesModePreliminary = useStore(
-    (state) => state.preliminaryData.salesMode,
-  );
+  const lipId = validateLipIdOrNotFound(useParams<{id: string}>().id);
+  const {
+    data: {lip},
+  } = useSuspenseQuery(getLipQuery(lipId));
 
-  const type = useStore((state) => state.lip?.type);
-  const salesMode = useStore((state) => state.lip?.salesMode);
-
-  const lipType = type ?? typePreliminary;
-  const lipSalesMode = salesMode ?? salesModePreliminary;
-
-  return lipType && lipSalesMode ? (
+  return lip.type && lip.salesMode ? (
     <>
-      <LipTypeSummary lipType={lipType} />
-      <LipSalesModeSummary lipSalesMode={lipSalesMode} />
+      <LipTypeSummary lipType={lip.type} />
+      <LipSalesModeSummary lipSalesMode={lip.salesMode} />
     </>
   ) : null;
 }

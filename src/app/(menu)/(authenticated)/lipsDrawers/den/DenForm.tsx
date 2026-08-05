@@ -1,6 +1,8 @@
 "use client";
 
-import {updateDen} from "@/app/(menu)/(authenticated)/lips/[id]/actions";
+import {useUpdateDen} from "@/app/(menu)/(authenticated)/lips/[id]/mutations";
+import {getLipQuery} from "@/app/(menu)/(authenticated)/lips/[id]/queries";
+import {isContractorIdentificationValid} from "@/app/(menu)/(authenticated)/lipsDrawers/identification/identificationValidators";
 import {
   dependentFamilyMembersOptions,
   DependentFamilyMembersOptions,
@@ -23,7 +25,7 @@ import {
   YesNoAnswer,
   yesNoOptions,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
-import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {validateLipIdOrNotFound} from "@/app/(menu)/(authenticated)/lipsDrawers/validateLipIdOrNotFound";
 import {normalizeError} from "@/helpers/errors";
 import {getOptionsLabel} from "@/helpers/getOptionsLabel";
 import {Nullish, Optional} from "@/helpers/TypesHelper";
@@ -35,9 +37,13 @@ import {Form} from "@/ui/form/Form";
 import {HelpText} from "@/ui/form/HelpText";
 import {InputField} from "@/ui/form/InputField";
 import {SelectField} from "@/ui/form/SelectField";
+import {useDrawerModal} from "@/ui/ModalContext";
 import {faSave, faSpinner, faXmark} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {useSuspenseQuery} from "@tanstack/react-query";
+import {useParams} from "next/navigation";
 import {
+  Alert,
   Button,
   Col,
   FormControl,
@@ -50,7 +56,6 @@ import {
   Stack,
 } from "react-bootstrap";
 import {useForm} from "react-hook-form";
-import invariant from "tiny-invariant";
 
 const denDefaultValues = (job: Optional<JobPosition>, den: Nullish<Den>) => ({
   education: (den?.education.response ?? "") as EducationOptions,
@@ -75,21 +80,27 @@ const denDefaultValues = (job: Optional<JobPosition>, den: Nullish<Den>) => ({
 });
 
 export function DenForm() {
-  const job = useStore(
-    (state) => state.lip?.contractor.pep?.job.position.response,
-  );
-  const den = useStore((state) => state.lip?.den);
-  const jobOther = useStore(
-    (state) => state.lip?.contractor.pep?.job.positionOther,
-  );
+  const lipId = validateLipIdOrNotFound(useParams<{id: string}>().id) as number;
+  const {
+    data: {lip},
+  } = useSuspenseQuery(getLipQuery(lipId));
+  const {mutateAsync: updateDen} = useUpdateDen();
+
+  const {closeModal} = useDrawerModal();
+
+  if (!isContractorIdentificationValid(lip)) {
+    throw new Error("Lip non valida per compilare il DEN");
+  }
+
+  const jobPosition = lip.contractor.pep?.job?.position.response;
+  const jobOther = lip.contractor.pep?.job?.positionOther;
 
   const formMethods = useForm({
     mode: "onChange",
-    defaultValues: {...denDefaultValues(job, den)},
+    defaultValues: {
+      ...denDefaultValues(jobPosition, lip.den),
+    },
   });
-
-  const lipId = useStore((state) => state.lip?.id);
-  const closeModal = useStore((state) => state.closeModal);
 
   const dependentFamilyMembersValue = formMethods.watch(
     "dependentFamilyMembers",
@@ -107,19 +118,24 @@ export function DenForm() {
         <Form
           id="den-form"
           onSubmit={async (values) => {
-            invariant(lipId, "lipId is required");
-            const updateDenResponse = await updateDen(values, lipId);
+            try {
+              await updateDen({
+                lipId: lip.id,
+                formData: values,
+              });
 
-            if (updateDenResponse?.status !== "success") {
+              closeModal();
+            } catch (error) {
               throw {
                 root: {
                   type: "server",
-                  message: normalizeError(updateDenResponse).message,
+                  message: normalizeError(
+                    error,
+                    "Errore imprevisto durante il salvataggio del questionario di coerenza, riprova più tardi",
+                  ).message,
                 },
               };
             }
-
-            closeModal();
           }}
           formMethods={formMethods}
           className="vstack gap-3"
@@ -171,8 +187,8 @@ export function DenForm() {
                   plaintext
                   name="jobValue"
                   value={
-                    job && job !== "other"
-                      ? getOptionsLabel(jobPositionOptions, job)
+                    jobPosition && jobPosition !== "other"
+                      ? getOptionsLabel(jobPositionOptions, jobPosition)
                       : jobOther
                   }
                 />
@@ -467,6 +483,12 @@ export function DenForm() {
               </FormGroup>
             </Col>
           </Row>
+          <FieldError
+            name="root"
+            as={Alert}
+            variant="danger"
+            className="mb-0 w-100 px-3"
+          />
         </Form>
       </ModalBody>
       <ModalFooter>

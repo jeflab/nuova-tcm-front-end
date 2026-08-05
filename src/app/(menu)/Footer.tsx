@@ -1,27 +1,19 @@
+"use client";
+
+import {getAccountQuery} from "@/app/(menu)/(authenticated)/queries";
 import {HelpLink} from "@/app/(menu)/HelpLink";
-import {getAccount, isLoggedIn} from "@/app/(no-menu)/(auth)/actions";
 import {getVersion} from "@/helpers/release";
-import {Broker} from "@/models/entities/broker";
 import {AppContainer} from "@/ui/AppContainer";
 import {faCopyright} from "@fortawesome/pro-duotone-svg-icons/faCopyright";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {useSuspenseQuery} from "@tanstack/react-query";
 import styles from "./Footer.module.scss";
 
-export async function Footer() {
+export function Footer() {
   const currentYear = new Date().getFullYear();
-  const loggedIn = await isLoggedIn();
-
-  let broker: Broker | undefined | null;
-  let fiscalCode: string | undefined;
-
-  if (loggedIn) {
-    const account = await getAccount();
-
-    if (account?.status === "success") {
-      broker = account.broker;
-      fiscalCode = account.user.fiscalCode;
-    }
-  }
+  const {
+    data: {broker, user},
+  } = useSuspenseQuery(getAccountQuery());
 
   return (
     <AppContainer>
@@ -43,7 +35,7 @@ export async function Footer() {
             </>
           ) : null}
           <span className={styles.divider}> | </span>
-          <HelpLink className="footer-link" fiscalCode={fiscalCode} />
+          <HelpLink className="footer-link" fiscalCode={user?.fiscalCode} />
         </div>
         <small className="ms-auto text-muted">Versione {getVersion()}</small>
       </div>

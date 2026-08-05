@@ -34,8 +34,7 @@ interface FormWithFormMethods<
 }
 
 type FormProps<TFieldValues extends FieldValues> =
-  | FormWithDefaultValues<TFieldValues>
-  | FormWithFormMethods<TFieldValues>;
+  FormWithDefaultValues<TFieldValues> | FormWithFormMethods<TFieldValues>;
 
 export function Form<TFieldValues extends FieldValues>({
   children,

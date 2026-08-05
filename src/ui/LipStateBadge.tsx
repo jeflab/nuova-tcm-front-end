@@ -4,7 +4,7 @@ import {Lip} from "@/models/entities/lip";
 import {Placeholder} from "react-bootstrap";
 
 interface LipStateBadgeProps {
-  lipState: Lip["lipStates"];
+  lipState: Lip["lipState"];
 }
 
 export function LipStateBadge({lipState}: LipStateBadgeProps) {
@@ -15,7 +15,13 @@ export function LipStateBadge({lipState}: LipStateBadgeProps) {
   );
 }
 
-export function LipStateBadgeSkeleton() {
+interface LipStateBadgeSkeletonProps {
+  width?: number;
+}
+
+export function LipStateBadgeSkeleton({
+  width = 120,
+}: LipStateBadgeSkeletonProps) {
   return (
     <Placeholder as="span" animation="glow">
       <Placeholder
@@ -23,7 +29,7 @@ export function LipStateBadgeSkeleton() {
         className="rounded-circle"
         style={{width: "1em"}}
       />{" "}
-      <Placeholder as="span" style={{width: `${45 + Math.random() * 165}px`}} />
+      <Placeholder as="span" style={{width: `${width}px`}} />
     </Placeholder>
   );
 }

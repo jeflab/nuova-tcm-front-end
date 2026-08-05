@@ -1,7 +1,8 @@
 "use client";
 
-import {updateBeneficiaries} from "@/app/(menu)/(authenticated)/lips/[id]/actions";
-import {useStore} from "@/app/(menu)/(authenticated)/lips/[id]/store";
+import {useUpdateBeneficiaries} from "@/app/(menu)/(authenticated)/lips/[id]/mutations";
+import {getLipQuery} from "@/app/(menu)/(authenticated)/lips/[id]/queries";
+import {isHealthcareQuestionnaireValid} from "@/app/(menu)/(authenticated)/lipsDrawers/healthQuestionnaire/healthQuestionnaireValidators";
 import {
   getIdentityDocumentDefaultValues,
   IdentityDocumentForm,
@@ -16,6 +17,7 @@ import {
   YesNoAnswer,
   yesNoOptions,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
+import {validateLipIdOrNotFound} from "@/app/(menu)/(authenticated)/lipsDrawers/validateLipIdOrNotFound";
 import {dbDateString} from "@/helpers/dates";
 import {normalizeError} from "@/helpers/errors";
 import {Beneficiary, Lip, ThirdParty} from "@/models/entities/lip";
@@ -37,6 +39,7 @@ import {
   fiscalCodeMatchDataValidator,
   fiscalCodeValidator,
 } from "@/ui/form/validators/fiscalCode";
+import {useDrawerModal} from "@/ui/ModalContext";
 import {useAutoAnimate} from "@formkit/auto-animate/react";
 import {
   faSave,
@@ -46,9 +49,11 @@ import {
   faXmark,
 } from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {useSuspenseQuery} from "@tanstack/react-query";
 import {getDate} from "date-fns/getDate";
 import {getMonth} from "date-fns/getMonth";
 import {getYear} from "date-fns/getYear";
+import {useParams} from "next/navigation";
 import {Fragment} from "react";
 import {
   Alert,
@@ -138,8 +143,7 @@ const beneficiariesDefaultValues = (
     : beneficiariesData?.nomination === "heirs"
       ? undefined
       : ([beneficiaryDefaultValues()] as
-          | undefined
-          | ReturnType<typeof beneficiaryDefaultValues>[]),
+          undefined | ReturnType<typeof beneficiaryDefaultValues>[]),
   thirdPartyContactPerson: beneficiariesData?.thirdPartyContactPerson
     ? thirdPartDefaultValues(beneficiariesData.thirdPartyContactPerson)
     : undefined,
@@ -149,15 +153,24 @@ export type BeneficiariesFormValues = ReturnType<
 >;
 
 export function BeneficiariesForm() {
+  const lipId = validateLipIdOrNotFound(useParams<{id: string}>().id) as number;
+  const {
+    data: {lip},
+  } = useSuspenseQuery(getLipQuery(lipId));
+  const {mutateAsync: updateBeneficiaries} = useUpdateBeneficiaries();
+  const {closeModal} = useDrawerModal();
+
   const [animateContainer] = useAutoAnimate();
 
-  const beneficiariesData = useStore((state) => state.lip?.beneficiaries);
-  const lipId = useStore((state) => state.lip?.id);
-  const closeModal = useStore((state) => state.closeModal);
+  if (!isHealthcareQuestionnaireValid(lip)) {
+    throw new Error(
+      "Lip non valida per la gestione dei beneficiari: questionario sanitario non valido",
+    );
+  }
 
   const formMethods = useForm({
     mode: "onChange",
-    defaultValues: beneficiariesDefaultValues(beneficiariesData),
+    defaultValues: beneficiariesDefaultValues(lip.beneficiaries),
   });
   const {fields, append, remove} = useFieldArray({
     control: formMethods.control,
@@ -262,18 +275,24 @@ export function BeneficiariesForm() {
               }
             }
 
-            const updatedContractor = await updateBeneficiaries(values, lipId);
+            try {
+              await updateBeneficiaries({
+                lipId: lip.id,
+                formData: values,
+              });
 
-            if (updatedContractor?.status !== "success") {
+              closeModal();
+            } catch (error) {
               throw {
                 root: {
                   type: "server",
-                  message: normalizeError(updatedContractor).message,
+                  message: normalizeError(
+                    error,
+                    "Errore imprevisto nell'aggiornamento del questionario sanitario, riprova più tardi.",
+                  ).message,
                 },
               };
             }
-
-            closeModal();
           }}
           formMethods={formMethods}
         >
@@ -289,8 +308,8 @@ export function BeneficiariesForm() {
                       if (value === "beneficiaries") {
                         formMethods.setValue(
                           "beneficiaries",
-                          beneficiariesData?.beneficiaries
-                            ? beneficiariesData?.beneficiaries.map(
+                          lip.beneficiaries?.beneficiaries
+                            ? lip.beneficiaries?.beneficiaries.map(
                                 beneficiaryDefaultValues,
                               )
                             : [beneficiaryDefaultValues()],

@@ -21,3 +21,5 @@ export const Tags = {
 export type Tag = ReturnType<(typeof Tags)[keyof typeof Tags]>;
 
 export const helpEmail = "assistenza@smartbroker.space";
+
+export const NEXT_404_ERROR_MESSAGE = "NEXT_HTTP_ERROR_FALLBACK;404";
