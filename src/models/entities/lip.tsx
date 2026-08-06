@@ -537,6 +537,31 @@ export const lipRawSchema = z.object({
   termination_date: z.string().nullish(),
 });
 
+const splitContractorInsuredRelationship = (
+  contractorInsuredRelationship: string | null | undefined,
+) => ({
+  contractorInsuredRelationship: contractorInsuredRelationship?.startsWith(
+    "other:",
+  )
+    ? contractorInsuredRelationship.slice(0, 5)
+    : contractorInsuredRelationship,
+  contractorInsuredRelationshipOther: contractorInsuredRelationship?.startsWith(
+    "other:",
+  )
+    ? contractorInsuredRelationship.slice(6)
+    : undefined,
+});
+
+/**
+ * Frammento di lip restituito dalle mutation che toccano solo la relazione
+ * contraente/assicurato: va spalmato sulla lip in cache così com'è.
+ */
+export const lipRelationshipSchema = lipRawSchema
+  .pick({contractor_insured_relationship: true})
+  .transform(({contractor_insured_relationship}) =>
+    splitContractorInsuredRelationship(contractor_insured_relationship),
+  );
+
 export const lipTransformer = <
   T extends Partial<z.infer<typeof lipRawSchema>>,
 >({
@@ -560,20 +585,11 @@ export const lipTransformer = <
   termination_date,
   ...data
 }: T) => {
-  const contractorInsuredRelationship =
-    contractor_insured_relationship?.startsWith("other:")
-      ? contractor_insured_relationship.slice(0, 5)
-      : contractor_insured_relationship;
-  const contractorInsuredRelationshipOther =
-    contractor_insured_relationship?.startsWith("other:")
-      ? contractor_insured_relationship.slice(6)
-      : undefined;
   return {
     ...data,
     createdAt: created_at,
     lipNumber: lip_number,
-    contractorInsuredRelationship,
-    contractorInsuredRelationshipOther,
+    ...splitContractorInsuredRelationship(contractor_insured_relationship),
     den: json_den,
     documents: json_documents,
     quotation: json_quotation,

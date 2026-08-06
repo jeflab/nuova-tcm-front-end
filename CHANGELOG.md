@@ -1,5 +1,11 @@
 # Changelog
 
+### 2.10.2 (2026-08-06)
+
+#### Fixed:
+
+- Corretto bug che mostrava ancora la vecchia relazione tra contraente e assicurato dopo averla modificata
+
 ## 2.10.0 (2026-08-05)
 
 #### Added:

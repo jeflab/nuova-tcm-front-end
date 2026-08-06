@@ -165,11 +165,12 @@ export const useUpdatePersonalDataMutation = () => {
       return response;
     },
     onSuccess: (
-      {personalData: updatedPersonalData},
+      {personalData: updatedPersonalData, lip: updatedRelationship},
       {lipId, personalDataType},
     ) => {
       updateLipCache<PreliminaryData>(queryClient, lipId, (lip) => ({
         ...lip,
+        ...updatedRelationship,
         [personalDataType]: {
           ...lip[personalDataType],
           ...updatedPersonalData,
@@ -284,6 +285,9 @@ export const useAddInsuredDataMutation = () => {
       updateLipCache<Lip>(queryClient, lipId, (oldLip) => ({
         ...oldLip,
         insured: lip.insured,
+        contractorInsuredRelationship: lip.contractorInsuredRelationship,
+        contractorInsuredRelationshipOther:
+          lip.contractorInsuredRelationshipOther,
       }));
     },
   });

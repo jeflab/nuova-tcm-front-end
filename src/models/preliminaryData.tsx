@@ -7,6 +7,8 @@ import {Lip} from "@/models/entities/lip";
 export interface PreliminaryData {
   type?: Lip["type"];
   salesMode?: Lip["salesMode"];
+  contractorInsuredRelationship?: Lip["contractorInsuredRelationship"];
+  contractorInsuredRelationshipOther?: Lip["contractorInsuredRelationshipOther"];
   contractor?: {
     fatca: {
       fatcaCheck: {response: YesNoAnswer};

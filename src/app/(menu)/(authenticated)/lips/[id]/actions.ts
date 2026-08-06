@@ -41,6 +41,7 @@ import {identityDocumentSchema} from "@/models/entities/identityDocument";
 import {
   Lip,
   lipRawSchema,
+  lipRelationshipSchema,
   lipSchema,
   lipTransformer,
   lipWithoutRelationsSchema,
@@ -177,6 +178,7 @@ export async function getLastPrivacy() {
 
 const updatePersonalDataShape = {
   personalData: contractorSchema.or(insuredSchema),
+  lip: lipRelationshipSchema.optional(),
 };
 interface UpdatePersonalDataParams {
   insuredPersonalData?: {
@@ -308,7 +310,9 @@ export async function updatePersonalData(
 }
 
 const addInsuredDataShape = {
-  lip: lipRawSchema.pick({insured: true}).transform(lipTransformer),
+  lip: lipRawSchema
+    .pick({insured: true, contractor_insured_relationship: true})
+    .transform(lipTransformer),
 };
 interface AddInsuredDataParams {
   citizenship: string;
