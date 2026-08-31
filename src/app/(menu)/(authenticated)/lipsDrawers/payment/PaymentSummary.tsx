@@ -270,9 +270,9 @@ function PaymentModality({paymentData, lip}: PaymentModalityProps) {
       {["legacy", "transfer-sdd"].includes(paymentData.paymentType) && (
         <BankTransferPayment lipNumber={lip.lipNumber!} />
       )}
-      {["credit-card", "mollie"].includes(paymentData.paymentType) && (
-        <CrediCardPayment />
-      )}
+      {["credit-card", "mollie", "mollie-then-sdd"].includes(
+        paymentData.paymentType,
+      ) && <CrediCardPayment />}
     </div>
   );
 }
@@ -305,7 +305,7 @@ export function PaymentSummary() {
       )}
       <BankDetails paymentData={lip.payment} />
       <PaymentModality paymentData={lip.payment} lip={lip} />
-      {lip?.payment?.paymentType === "mollie" && (
+      {["mollie", "mollie-then-sdd"].includes(lip?.payment?.paymentType) && (
         <Suspense>
           <MollieSubscriptionStatus lip={lip} />
         </Suspense>

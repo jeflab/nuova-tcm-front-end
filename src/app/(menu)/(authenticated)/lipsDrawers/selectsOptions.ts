@@ -406,13 +406,18 @@ export const deprecatedPaymentTypesOptions = [
     label: "Vecchio sistema di pagamento",
     value: "legacy",
   },
+  {
+    // Sottoscrizione ricorrente a carta: comportamento storico, non più proposto per nuove Lip
+    label: "carta di credito / debito (visa - mastercard - american express)",
+    value: "mollie",
+  },
 ] as const;
 export type DeprecatedPaymentType =
   (typeof deprecatedPaymentTypesOptions)[number]["value"];
 export const paymentTypesOptions = [
   {
     label: "carta di credito / debito (visa - mastercard - american express)",
-    value: "mollie",
+    value: "mollie-then-sdd",
   },
   {
     label: "Bonifico Bancario",
@@ -424,6 +429,17 @@ export type PaymentType = (typeof paymentTypesOptions)[number]["value"];
 export function paymentMethodsOptions(premium: number = 0) {
   return [
     {
+      label: `Pagamento annuale di ${toCurrency(premium)} (prima rata addebito su carta, a seguire addebito diretto)`,
+      value: "mollie-annual-then-sdd",
+      type: "mollie-then-sdd",
+    },
+    {
+      label: `Pagamento mensile di ${toCurrency(premium / 12)} (prima rata addebito su carta, a seguire addebito diretto)`,
+      value: "mollie-monthly-then-sdd",
+      type: "mollie-then-sdd",
+    },
+    {
+      // Storico: type "mollie" (paymentType deprecato), non più proposto ma letto dalle Lip esistenti
       label: `Pagamento annuale di ${toCurrency(premium)}`,
       value: "mollie-annual",
       type: "mollie",

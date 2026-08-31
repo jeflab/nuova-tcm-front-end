@@ -259,7 +259,7 @@ export function DocumentsLockMolliePayment() {
     return null;
   }
 
-  if (lip.payment.paymentType !== "mollie") {
+  if (!["mollie", "mollie-then-sdd"].includes(lip.payment.paymentType)) {
     return null;
   }
 

@@ -402,7 +402,12 @@ const paymentSchema = z.object({
   duration: z.string(),
   expirationDate: z.string(),
   paymentType: z
-    .enum([...getOptionsValues(paymentTypesOptions), "legacy", "credit-card"])
+    .enum([
+      ...getOptionsValues(paymentTypesOptions),
+      "legacy",
+      "credit-card",
+      "mollie",
+    ])
     .default("legacy"),
   paymentMethod: z.enum(getOptionsValues(paymentMethodsOptions())),
   contractorFullName: z.string(),

@@ -23,7 +23,10 @@ export function externalPaymentClicked(lip: LipWithPayment) {
   );
 }
 function molliePaymentBlocked(lip: LipWithPayment) {
-  return lip.payment.paymentType === "mollie" && !lip.payment.mollieLinkClicked;
+  return (
+    ["mollie", "mollie-then-sdd"].includes(lip.payment.paymentType) &&
+    !lip.payment.mollieLinkClicked
+  );
 }
 export function mollieLinkClicked(lip: Lip | PreliminaryData | null) {
   if (!isPaymentValid(lip)) {

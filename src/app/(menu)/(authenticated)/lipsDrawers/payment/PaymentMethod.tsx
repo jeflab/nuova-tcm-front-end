@@ -22,7 +22,7 @@ export function PaymentMethod({
         <p className="mb-0">
           <strong>Pagamento tramite Bonifico - Addebito diretto SDD</strong>
         </p>
-      ) : ["credit-card", "mollie"].includes(paymentType) ? (
+      ) : ["credit-card", "mollie", "mollie-then-sdd"].includes(paymentType) ? (
         <p className="mb-0">
           <strong>
             Pagamento elettronico tramite Carta di Credito o Debito
