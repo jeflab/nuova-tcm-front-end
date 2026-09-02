@@ -257,6 +257,45 @@ function CrediCardPayment() {
   );
 }
 
+interface CardThenSddPaymentProps {
+  lipNumber: string;
+}
+function CardThenSddPayment({lipNumber}: CardThenSddPaymentProps) {
+  return (
+    <dl className="mb-0">
+      <dt>Sistema di pagamento elettronico - Addebito diretto SDD:</dt>
+      <dd>
+        il Contraente può effettuare il pagamento del premio a favore di Bright
+        Life s.r.l. (Master Broker per LifeStar Insurance sul mercato italiano)
+        tramite Carta di Credito o Carta di Debito collegata ad un c/c italiano,
+        di cui il medesimo dichiara di essere il titolare.
+      </dd>
+      <ul>
+        <li>
+          Nella causale di pagamento deve sempre essere indicato il numero della
+          presente Proposta.
+        </li>
+        <li>
+          Non è possibile pagare il premio di polizza tramite Carte di Credito o
+          Debito emesse da banche estere o Carte c.d. Ricaricabili / Prepagate.
+        </li>
+      </ul>
+      <dt>
+        Pagamenti successivi tramite mandato per addebito diretto SEPA - S.D.D.
+      </dt>
+      <dd>
+        Il riferimento di Mandato coincide con il numero della presente proposta
+        di polizza: ({lipNumber})
+      </dd>
+      <dt>Creditore:</dt>
+      <dd className="mb-0">
+        Bright Life Srl, Via Felice Casati, 32 - 20124 – Milano (MI) Codice
+        identificativo del creditore: IT11ZZZ0000013276280966
+      </dd>
+    </dl>
+  );
+}
+
 interface PaymentModalityProps {
   paymentData: Payment;
   lip: Lip;
@@ -270,9 +309,12 @@ function PaymentModality({paymentData, lip}: PaymentModalityProps) {
       {["legacy", "transfer-sdd"].includes(paymentData.paymentType) && (
         <BankTransferPayment lipNumber={lip.lipNumber!} />
       )}
-      {["credit-card", "mollie", "mollie-then-sdd"].includes(
-        paymentData.paymentType,
-      ) && <CrediCardPayment />}
+      {["credit-card", "mollie"].includes(paymentData.paymentType) && (
+        <CrediCardPayment />
+      )}
+      {paymentData.paymentType === "mollie-then-sdd" && (
+        <CardThenSddPayment lipNumber={lip.lipNumber!} />
+      )}
     </div>
   );
 }

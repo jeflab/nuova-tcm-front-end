@@ -7,10 +7,13 @@ import {
   getLipQuery,
 } from "@/app/(menu)/(authenticated)/lips/[id]/queries";
 import {mollieLinkClicked} from "@/app/(menu)/(authenticated)/lipsDrawers/documents/documentsValidators";
-import {isPaymentValid} from "@/app/(menu)/(authenticated)/lipsDrawers/payment/paymentValidators";
+import {
+  isPaymentValid,
+  LipWithPayment,
+} from "@/app/(menu)/(authenticated)/lipsDrawers/payment/paymentValidators";
 import {validateLipIdOrNotFound} from "@/app/(menu)/(authenticated)/lipsDrawers/validateLipIdOrNotFound";
 import {dateTimeString} from "@/helpers/dates";
-import {Lip} from "@/models/entities/lip";
+import {Payment} from "@/models/entities/lip";
 import {MolliePayment} from "@/models/entities/mollie/payment";
 import {IconStack} from "@/ui/IconStack";
 import {WithChildren} from "@/ui/types";
@@ -186,7 +189,7 @@ function MolliePaymentPendingState() {
   );
 }
 
-function MolliePaymentClickedState() {
+function MollieSubscriptionClickedState() {
   const lipId = validateLipIdOrNotFound(useParams<{id: string}>().id) as number;
   const {data, isSuccess} = useQuery(getActiveSubscriptionQuery(lipId));
 
@@ -213,8 +216,36 @@ function MolliePaymentClickedState() {
   );
 }
 
+function MollieFirstPaymentSuccess() {
+  return (
+    <PaymentAlert variant="success">
+      <FontAwesomeIcon
+        icon={faCheckCircle}
+        className="text-success"
+        size="xl"
+      />
+      <p className="mb-0 me-auto">
+        Il primo pagamento è stato completato con successo.
+      </p>
+    </PaymentAlert>
+  );
+}
+
+interface MolliePaymentClickedStateProps {
+  paymentType: Payment["paymentType"];
+}
+function MolliePaymentClickedState({
+  paymentType,
+}: MolliePaymentClickedStateProps) {
+  if (paymentType === "mollie-then-sdd") {
+    return <MollieFirstPaymentSuccess />;
+  }
+
+  return <MollieSubscriptionClickedState />;
+}
+
 interface PaymentStatusProps {
-  lip: Lip;
+  lip: LipWithPayment;
 }
 function PaymentStatus({lip}: PaymentStatusProps) {
   const {
@@ -243,7 +274,7 @@ function PaymentStatus({lip}: PaymentStatusProps) {
   }
 
   if (mollieLinkClicked(lip)) {
-    return <MolliePaymentClickedState />;
+    return <MolliePaymentClickedState paymentType={lip.payment.paymentType} />;
   }
 
   return <MolliePaymentPendingState />;
