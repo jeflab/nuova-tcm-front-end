@@ -1,0 +1,8 @@
+npm run test
+
+while read -r local_ref local_sha remote_ref remote_sha; do
+  if [ "$remote_ref" = "refs/heads/main" ]; then
+    npm run build
+    break
+  fi
+done
