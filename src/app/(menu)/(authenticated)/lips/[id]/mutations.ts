@@ -180,6 +180,32 @@ export const useUpdatePersonalDataMutation = () => {
   });
 };
 
+export function applyContractorIdentification(
+  lip: Lip,
+  identityDocument: NonNullable<Lip["contractor"]["identityDocument"]>[number],
+): Lip {
+  const contractor = {
+    ...lip.contractor,
+    identityDocument: [identityDocument],
+  };
+
+  if (lip.type !== "self-insured" || !lip.insured) {
+    return {...lip, contractor};
+  }
+
+  // la applico anche all'assicurato se contraente === assicurato
+  const insured = {
+    ...lip.insured,
+    identityDocument: [identityDocument],
+  };
+
+  return {
+    ...lip,
+    contractor,
+    insured,
+  };
+}
+
 export const useIdentificationContractor = () => {
   const queryClient = useQueryClient();
 
@@ -209,13 +235,9 @@ export const useIdentificationContractor = () => {
       return response;
     },
     onSuccess: ({identityDocument}, {lipId}) => {
-      updateLipCache<Lip>(queryClient, lipId, (lip) => ({
-        ...lip,
-        contractor: {
-          ...lip.contractor,
-          identityDocument: [identityDocument],
-        },
-      }));
+      updateLipCache<Lip>(queryClient, lipId, (lip) =>
+        applyContractorIdentification(lip, identityDocument),
+      );
     },
   });
 };
