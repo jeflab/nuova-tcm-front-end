@@ -1,16 +1,14 @@
 import {computeDrawerStates} from "@/app/(menu)/(authenticated)/lipsDrawers/drawerState";
 import {normalizeError} from "@/helpers/errors";
-import {Lip} from "@/models/entities/lip";
 import {PreliminaryData} from "@/models/preliminaryData";
 import {queryOptions} from "@tanstack/react-query";
-import {notFound} from "next/navigation";
 import {
   getActiveFirstPayment,
   getActiveSubscription,
   getLastPrivacy,
   getLip,
 } from "./actions";
-import {LipCache} from "./lipCache";
+import {LipQueryData, lipQueryDataFrom} from "./lipCache";
 
 function msUntilExpire(expireAt?: string): number | false {
   if (!expireAt) {
@@ -29,7 +27,7 @@ function msUntilExpire(expireAt?: string): number | false {
 export function getLipQuery(lipId: "new" | number) {
   return queryOptions({
     queryKey: ["lip", lipId],
-    queryFn: async (): Promise<LipCache<Lip | PreliminaryData>> => {
+    queryFn: async (): Promise<LipQueryData> => {
       if (lipId === "new") {
         return {
           lip: {} as PreliminaryData,
@@ -37,26 +35,7 @@ export function getLipQuery(lipId: "new" | number) {
         };
       }
 
-      const response = await getLip(Number(lipId));
-
-      if (!response) {
-        throw new Error(
-          "Impossibile recuperare la proposta di polizza, riprova più tardi",
-        );
-      }
-
-      if (response.status !== "success") {
-        if (response?.responseStatus === 404) {
-          notFound();
-        }
-
-        throw normalizeError(response);
-      }
-
-      return {
-        lip: response.lip as Lip,
-        drawerStates: computeDrawerStates(response.lip),
-      };
+      return lipQueryDataFrom(await getLip(Number(lipId)));
     },
     enabled: lipId === "new" || !!Number(lipId),
     staleTime: lipId === "new" ? Infinity : 60_000,
