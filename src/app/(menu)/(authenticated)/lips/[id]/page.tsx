@@ -1,8 +1,6 @@
 import {LipDetails} from "@/app/(menu)/(authenticated)/lips/[id]/LipDetails";
-import {
-  getLastPrivacyQuery,
-  getLipQuery,
-} from "@/app/(menu)/(authenticated)/lips/[id]/queries";
+import {getLastPrivacyQuery} from "@/app/(menu)/(authenticated)/lips/[id]/queries";
+import {lipQueryFor} from "@/app/(menu)/(authenticated)/lipsDrawers/lipQuery";
 import {validateLipIdOrNotFound} from "@/app/(menu)/(authenticated)/lipsDrawers/validateLipIdOrNotFound";
 import {AppContainer} from "@/ui/AppContainer";
 import {getQueryClient} from "@/ui/getQueryClient";
@@ -17,7 +15,7 @@ export default async function NewLipPage(props: NewLipPageProps) {
   const lipId = validateLipIdOrNotFound(id);
   const queryClient = getQueryClient();
 
-  void queryClient.prefetchQuery(getLipQuery(lipId));
+  void queryClient.prefetchQuery(lipQueryFor("agent", lipId));
   if (lipId !== "new") {
     void queryClient.prefetchQuery(getLastPrivacyQuery());
   }

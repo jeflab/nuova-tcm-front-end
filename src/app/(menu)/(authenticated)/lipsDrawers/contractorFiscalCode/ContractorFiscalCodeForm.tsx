@@ -2,13 +2,12 @@
 
 import {checkIfFiscalCodeExists} from "@/app/(menu)/(authenticated)/lips/[id]/actions";
 import {useUpdateLipLocalDataMutation} from "@/app/(menu)/(authenticated)/lips/[id]/mutations";
-import {getLipQuery} from "@/app/(menu)/(authenticated)/lips/[id]/queries";
 import {
   Gender,
   genderOptions,
   LipType,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
-import {validateLipIdOrNotFound} from "@/app/(menu)/(authenticated)/lipsDrawers/validateLipIdOrNotFound";
+import {useSuspenseLip} from "@/app/(menu)/(authenticated)/lipsDrawers/useSuspenseLip";
 import {getAccountQuery} from "@/app/(menu)/(authenticated)/queries";
 import {cns} from "@/helpers/cns";
 import {dbDateString} from "@/helpers/dates";
@@ -39,7 +38,7 @@ import {getMonth} from "date-fns/getMonth";
 import {getYear} from "date-fns/getYear";
 import {startOfYear} from "date-fns/startOfYear";
 import {subYears} from "date-fns/subYears";
-import {useParams, useRouter} from "next/navigation";
+import {useRouter} from "next/navigation";
 import {
   Alert,
   Button,
@@ -133,10 +132,9 @@ const contractorFiscalCodeDefaultValues = {
 
 export function ContractorFiscalCodeForm() {
   const router = useRouter();
-  const lipId = validateLipIdOrNotFound(useParams<{id: string}>().id);
   const {
     data: {lip},
-  } = useSuspenseQuery(getLipQuery(lipId));
+  } = useSuspenseLip();
   const {
     data: {user: loggedUser},
   } = useSuspenseQuery(getAccountQuery());

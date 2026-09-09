@@ -1,11 +1,10 @@
 "use client";
 
-import {getLipQuery} from "@/app/(menu)/(authenticated)/lips/[id]/queries";
 import {
   LipSalesMode,
   LipType,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
-import {validateLipIdOrNotFound} from "@/app/(menu)/(authenticated)/lipsDrawers/validateLipIdOrNotFound";
+import {useSuspenseLip} from "@/app/(menu)/(authenticated)/lipsDrawers/useSuspenseLip";
 import {
   faBuilding,
   faHandshake,
@@ -14,8 +13,6 @@ import {
   faUserGroupSimple,
 } from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {useSuspenseQuery} from "@tanstack/react-query";
-import {useParams} from "next/navigation";
 
 interface LipTypeSummaryProps {
   lipType: LipType;
@@ -25,10 +22,9 @@ interface LipSalesModeSummaryProps {
 }
 
 export function TypeSummary() {
-  const lipId = validateLipIdOrNotFound(useParams<{id: string}>().id);
   const {
     data: {lip},
-  } = useSuspenseQuery(getLipQuery(lipId));
+  } = useSuspenseLip();
 
   return lip.type && lip.salesMode ? (
     <>

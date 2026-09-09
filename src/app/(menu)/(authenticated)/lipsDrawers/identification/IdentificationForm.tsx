@@ -1,13 +1,12 @@
 "use client";
 
 import {useIdentificationContractor} from "@/app/(menu)/(authenticated)/lips/[id]/mutations";
-import {getLipQuery} from "@/app/(menu)/(authenticated)/lips/[id]/queries";
 import {isContractorDataValid} from "@/app/(menu)/(authenticated)/lipsDrawers/contractorData/contractorDataValidators";
 import {
   getIdentityDocumentDefaultValues,
   IdentityDocumentForm,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/IdentityDocumentForm";
-import {validateLipIdOrNotFound} from "@/app/(menu)/(authenticated)/lipsDrawers/validateLipIdOrNotFound";
+import {useSuspenseLip} from "@/app/(menu)/(authenticated)/lipsDrawers/useSuspenseLip";
 import {createIDImageUrl} from "@/helpers/createResourcesUrl";
 import {normalizeError} from "@/helpers/errors";
 import {getTypedFormDataFromObject} from "@/helpers/typedFormData";
@@ -27,9 +26,7 @@ import {
   faXmark,
 } from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {useSuspenseQuery} from "@tanstack/react-query";
 import omit from "lodash/omit";
-import {useParams} from "next/navigation";
 import {
   Alert,
   Button,
@@ -43,10 +40,9 @@ import {
 import {useForm} from "react-hook-form";
 
 export function IdentificationForm() {
-  const lipId = validateLipIdOrNotFound(useParams<{id: string}>().id) as number;
   const {
     data: {lip},
-  } = useSuspenseQuery(getLipQuery(lipId));
+  } = useSuspenseLip();
   const {closeModal} = useDrawerModal();
   const {mutateAsync: identificationContractor} = useIdentificationContractor();
 

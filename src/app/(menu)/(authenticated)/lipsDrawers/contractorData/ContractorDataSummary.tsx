@@ -1,6 +1,5 @@
 "use client";
 
-import {getLipQuery} from "@/app/(menu)/(authenticated)/lips/[id]/queries";
 import {isContractorDataValid} from "@/app/(menu)/(authenticated)/lipsDrawers/contractorData/contractorDataValidators";
 import {
   genderOptions,
@@ -9,7 +8,7 @@ import {
   tAECodeOptions,
   yesNoOptions,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
-import {validateLipIdOrNotFound} from "@/app/(menu)/(authenticated)/lipsDrawers/validateLipIdOrNotFound";
+import {useSuspenseLip} from "@/app/(menu)/(authenticated)/lipsDrawers/useSuspenseLip";
 import {dateString} from "@/helpers/dates";
 import {getOptionsLabel} from "@/helpers/getOptionsLabel";
 import {
@@ -19,15 +18,12 @@ import {
   faUser,
 } from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {useSuspenseQuery} from "@tanstack/react-query";
-import {useParams} from "next/navigation";
 import {Col, Row} from "react-bootstrap";
 
 export function ContractorDataSummary() {
-  const lipId = validateLipIdOrNotFound(useParams<{id: string}>().id) as number;
   const {
     data: {lip},
-  } = useSuspenseQuery(getLipQuery(lipId));
+  } = useSuspenseLip();
 
   if (!isContractorDataValid(lip)) {
     return null;

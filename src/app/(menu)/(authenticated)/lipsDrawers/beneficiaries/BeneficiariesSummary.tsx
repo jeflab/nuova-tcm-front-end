@@ -1,9 +1,8 @@
 "use client";
 
-import {getLipQuery} from "@/app/(menu)/(authenticated)/lips/[id]/queries";
 import {isBeneficiariesValid} from "@/app/(menu)/(authenticated)/lipsDrawers/beneficiaries/beneficiariesValidators";
 import {nominationOptions} from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
-import {validateLipIdOrNotFound} from "@/app/(menu)/(authenticated)/lipsDrawers/validateLipIdOrNotFound";
+import {useSuspenseLip} from "@/app/(menu)/(authenticated)/lipsDrawers/useSuspenseLip";
 import {dateString} from "@/helpers/dates";
 import {getOptionsLabel} from "@/helpers/getOptionsLabel";
 import {IconStack} from "@/ui/IconStack";
@@ -14,16 +13,13 @@ import {
 } from "@fortawesome/pro-duotone-svg-icons";
 import {faMessage, faUser} from "@fortawesome/pro-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {useSuspenseQuery} from "@tanstack/react-query";
-import {useParams} from "next/navigation";
 import {Fragment} from "react";
 import {Col, Row, Stack} from "react-bootstrap";
 
 export function BeneficiariesSummary() {
-  const lipId = validateLipIdOrNotFound(useParams<{id: string}>().id) as number;
   const {
     data: {lip},
-  } = useSuspenseQuery(getLipQuery(lipId));
+  } = useSuspenseLip();
 
   if (!isBeneficiariesValid(lip)) {
     return null;

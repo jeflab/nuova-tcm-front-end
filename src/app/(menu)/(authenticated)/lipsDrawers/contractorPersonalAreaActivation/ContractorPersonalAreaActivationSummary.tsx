@@ -1,14 +1,13 @@
 "use client";
 
-import {getLipQuery} from "@/app/(menu)/(authenticated)/lips/[id]/queries";
 import {isContractorPersonalAreaActivationValid} from "@/app/(menu)/(authenticated)/lipsDrawers/contractorPersonalAreaActivation/contractorPersonalAreaActivationValidators";
+import {useSuspenseLip} from "@/app/(menu)/(authenticated)/lipsDrawers/useSuspenseLip";
 import {validateLipIdOrNotFound} from "@/app/(menu)/(authenticated)/lipsDrawers/validateLipIdOrNotFound";
 import {isLip} from "@/models/entities/lip";
 import {DownloadDocumentButton} from "@/ui/DownloadDocumentButton";
 import {faDownload} from "@fortawesome/pro-duotone-svg-icons";
 import {faCheck} from "@fortawesome/pro-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {useSuspenseQuery} from "@tanstack/react-query";
 import {useParams} from "next/navigation";
 import {Stack} from "react-bootstrap";
 
@@ -18,7 +17,7 @@ export function ContractorPersonalAreaActivationSummary() {
   const lipId = validateLipIdOrNotFound(useParams<{id: string}>().id) as number;
   const {
     data: {lip},
-  } = useSuspenseQuery(getLipQuery(lipId));
+  } = useSuspenseLip();
 
   if (!isLip(lip)) {
     return null;

@@ -1,12 +1,11 @@
 "use client";
 
 import {useUpdateLipLocalDataMutation} from "@/app/(menu)/(authenticated)/lips/[id]/mutations";
-import {getLipQuery} from "@/app/(menu)/(authenticated)/lips/[id]/queries";
 import {
   YesNoAnswer,
   yesNoOptions,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
-import {validateLipIdOrNotFound} from "@/app/(menu)/(authenticated)/lipsDrawers/validateLipIdOrNotFound";
+import {useSuspenseLip} from "@/app/(menu)/(authenticated)/lipsDrawers/useSuspenseLip";
 import {BorderFeedback} from "@/ui/form/BorderFeedback";
 import {CheckGroup} from "@/ui/form/CheckGroup";
 import {FieldError} from "@/ui/form/FieldError";
@@ -15,8 +14,6 @@ import {HelpText} from "@/ui/form/HelpText";
 import {useDrawerModal} from "@/ui/ModalContext";
 import {faSave, faSpinner, faXmark} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {useSuspenseQuery} from "@tanstack/react-query";
-import {useParams} from "next/navigation";
 import {
   Button,
   Col,
@@ -47,10 +44,9 @@ export const fatcaQuestions = {
 } as const;
 
 export function FatcaForm() {
-  const lipId = validateLipIdOrNotFound(useParams<{id: string}>().id);
   const {
     data: {lip},
-  } = useSuspenseQuery(getLipQuery(lipId));
+  } = useSuspenseLip();
   const {mutateAsync: updateLip} = useUpdateLipLocalDataMutation();
 
   const formMethods = useForm({

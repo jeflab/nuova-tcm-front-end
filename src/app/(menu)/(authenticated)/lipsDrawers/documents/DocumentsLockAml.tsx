@@ -1,17 +1,13 @@
 "use client";
 
-import {getLipQuery} from "@/app/(menu)/(authenticated)/lips/[id]/queries";
 import {amlBlocked} from "@/app/(menu)/(authenticated)/lipsDrawers/documents/documentsValidators";
-import {validateLipIdOrNotFound} from "@/app/(menu)/(authenticated)/lipsDrawers/validateLipIdOrNotFound";
-import {useSuspenseQuery} from "@tanstack/react-query";
-import {useParams} from "next/navigation";
+import {useSuspenseLip} from "@/app/(menu)/(authenticated)/lipsDrawers/useSuspenseLip";
 import {Alert} from "react-bootstrap";
 
 export function DocumentsLockAml() {
-  const lipId = validateLipIdOrNotFound(useParams<{id: string}>().id) as number;
   const {
     data: {lip},
-  } = useSuspenseQuery(getLipQuery(lipId));
+  } = useSuspenseLip();
 
   if (!amlBlocked(lip)) {
     return null;

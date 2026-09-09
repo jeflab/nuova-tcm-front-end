@@ -2,7 +2,6 @@
 
 import "@/helpers/logToSortedPolyfill";
 import {useUpdatePersonalDataMutation} from "@/app/(menu)/(authenticated)/lips/[id]/mutations";
-import {getLipQuery} from "@/app/(menu)/(authenticated)/lips/[id]/queries";
 import {
   genderOptions,
   JobPosition,
@@ -13,7 +12,7 @@ import {
   tAECodeOptions,
   YesNoAnswer,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
-import {validateLipIdOrNotFound} from "@/app/(menu)/(authenticated)/lipsDrawers/validateLipIdOrNotFound";
+import {useSuspenseLip} from "@/app/(menu)/(authenticated)/lipsDrawers/useSuspenseLip";
 import {cns} from "@/helpers/cns";
 import {dbDateString} from "@/helpers/dates";
 import {normalizeError} from "@/helpers/errors";
@@ -32,8 +31,6 @@ import {emailValidator} from "@/ui/form/validators/email";
 import {useDrawerModal} from "@/ui/ModalContext";
 import {faSave, faSpinner, faXmark} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {useSuspenseQuery} from "@tanstack/react-query";
-import {useParams} from "next/navigation";
 import {
   Alert,
   Button,
@@ -48,10 +45,9 @@ import {useForm} from "react-hook-form";
 import "core-js/actual/array/to-sorted";
 
 export function ContractorDataForm() {
-  const lipId = validateLipIdOrNotFound(useParams<{id: string}>().id) as number;
   const {
     data: {lip},
-  } = useSuspenseQuery(getLipQuery(lipId));
+  } = useSuspenseLip();
   const {mutateAsync: updatePersonalData} = useUpdatePersonalDataMutation();
 
   if (!isLip(lip)) {

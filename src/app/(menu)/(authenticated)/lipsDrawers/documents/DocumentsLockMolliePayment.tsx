@@ -4,13 +4,13 @@ import {useCreateRecurringPaymentMutation} from "@/app/(menu)/(authenticated)/li
 import {
   getActiveFirstPaymentQuery,
   getActiveSubscriptionQuery,
-  getLipQuery,
 } from "@/app/(menu)/(authenticated)/lips/[id]/queries";
 import {mollieLinkClicked} from "@/app/(menu)/(authenticated)/lipsDrawers/documents/documentsValidators";
 import {
   isPaymentValid,
   LipWithPayment,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/payment/paymentValidators";
+import {useSuspenseLip} from "@/app/(menu)/(authenticated)/lipsDrawers/useSuspenseLip";
 import {validateLipIdOrNotFound} from "@/app/(menu)/(authenticated)/lipsDrawers/validateLipIdOrNotFound";
 import {dateTimeString} from "@/helpers/dates";
 import {Payment} from "@/models/entities/lip";
@@ -29,7 +29,7 @@ import {
 import {faLink, faPlus} from "@fortawesome/pro-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import useTimeout from "@restart/hooks/useTimeout";
-import {useQuery, useSuspenseQuery} from "@tanstack/react-query";
+import {useQuery} from "@tanstack/react-query";
 import {useParams} from "next/navigation";
 import {useState} from "react";
 import {Alert, Button} from "react-bootstrap";
@@ -281,10 +281,9 @@ function PaymentStatus({lip}: PaymentStatusProps) {
 }
 
 export function DocumentsLockMolliePayment() {
-  const lipId = validateLipIdOrNotFound(useParams<{id: string}>().id) as number;
   const {
     data: {lip},
-  } = useSuspenseQuery(getLipQuery(lipId));
+  } = useSuspenseLip();
 
   if (!isPaymentValid(lip)) {
     return null;

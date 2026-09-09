@@ -1,6 +1,5 @@
 "use client";
 
-import {getLipQuery} from "@/app/(menu)/(authenticated)/lips/[id]/queries";
 import {
   ExclusionList,
   getExcludedCoverages,
@@ -8,7 +7,7 @@ import {
 import {MollieSubscriptionStatus} from "@/app/(menu)/(authenticated)/lipsDrawers/payment/MollieSubscriptionStatus";
 import {PaymentMethod} from "@/app/(menu)/(authenticated)/lipsDrawers/payment/PaymentMethod";
 import {isPaymentValid} from "@/app/(menu)/(authenticated)/lipsDrawers/payment/paymentValidators";
-import {validateLipIdOrNotFound} from "@/app/(menu)/(authenticated)/lipsDrawers/validateLipIdOrNotFound";
+import {useSuspenseLip} from "@/app/(menu)/(authenticated)/lipsDrawers/useSuspenseLip";
 import {Lip, Payment, Quotation} from "@/models/entities/lip";
 import {DownloadDocumentButton} from "@/ui/DownloadDocumentButton";
 import {IconStack} from "@/ui/IconStack";
@@ -21,8 +20,6 @@ import {
 } from "@fortawesome/pro-duotone-svg-icons";
 import {faDollarSign} from "@fortawesome/pro-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {useSuspenseQuery} from "@tanstack/react-query";
-import {useParams} from "next/navigation";
 import {Suspense} from "react";
 import {Alert, Stack} from "react-bootstrap";
 
@@ -320,10 +317,9 @@ function PaymentModality({paymentData, lip}: PaymentModalityProps) {
 }
 
 export function PaymentSummary() {
-  const lipId = validateLipIdOrNotFound(useParams<{id: string}>().id) as number;
   const {
     data: {lip},
-  } = useSuspenseQuery(getLipQuery(lipId));
+  } = useSuspenseLip();
 
   if (!isPaymentValid(lip)) {
     return null;

@@ -1,7 +1,6 @@
 "use client";
 
-import {getLipQuery} from "@/app/(menu)/(authenticated)/lips/[id]/queries";
-import {validateLipIdOrNotFound} from "@/app/(menu)/(authenticated)/lipsDrawers/validateLipIdOrNotFound";
+import {useSuspenseLip} from "@/app/(menu)/(authenticated)/lipsDrawers/useSuspenseLip";
 import {cns} from "@/helpers/cns";
 import {ButtonLink} from "@/ui/ButtonLink";
 import {Drawer} from "@/ui/drawer/Drawer";
@@ -11,8 +10,6 @@ import {PageTitle} from "@/ui/PageTitle";
 import ScrollReveal from "@/ui/ScrollReveal/ScrollReveal";
 import {faArrowLeft} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {useSuspenseQuery} from "@tanstack/react-query";
-import {useParams} from "next/navigation";
 import {Fragment} from "react";
 import {Col, Nav, Row} from "react-bootstrap";
 import {drawers} from "./drawers";
@@ -21,10 +18,9 @@ import styles from "./page.module.scss";
 const minWidthHack = {minWidth: "1px"};
 
 export function LipDetails() {
-  const lipId = validateLipIdOrNotFound(useParams<{id: string}>().id);
   const {
     data: {lip},
-  } = useSuspenseQuery(getLipQuery(lipId));
+  } = useSuspenseLip();
 
   return (
     <>

@@ -4,7 +4,6 @@ import {
   useAddInsuredDataMutation,
   useUpdatePersonalDataMutation,
 } from "@/app/(menu)/(authenticated)/lips/[id]/mutations";
-import {getLipQuery} from "@/app/(menu)/(authenticated)/lips/[id]/queries";
 import {isDenValid} from "@/app/(menu)/(authenticated)/lipsDrawers/den/denValidators";
 import {
   Gender,
@@ -12,6 +11,7 @@ import {
   InsuredRelationship,
   insuredRelationshipOptions,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
+import {useSuspenseLip} from "@/app/(menu)/(authenticated)/lipsDrawers/useSuspenseLip";
 import {validateLipIdOrNotFound} from "@/app/(menu)/(authenticated)/lipsDrawers/validateLipIdOrNotFound";
 import {cns} from "@/helpers/cns";
 import {dbDateString} from "@/helpers/dates";
@@ -41,7 +41,6 @@ import {useDrawerModal} from "@/ui/ModalContext";
 import {faSave, faSpinner, faXmark} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import * as Sentry from "@sentry/nextjs";
-import {useSuspenseQuery} from "@tanstack/react-query";
 import {getDate} from "date-fns/getDate";
 import {getMonth} from "date-fns/getMonth";
 import {getYear} from "date-fns/getYear";
@@ -115,7 +114,7 @@ export function InsuredDataForm() {
   const lipId = validateLipIdOrNotFound(useParams<{id: string}>().id) as number;
   const {
     data: {lip},
-  } = useSuspenseQuery(getLipQuery(lipId));
+  } = useSuspenseLip();
   const {mutateAsync: updatePersonalData} = useUpdatePersonalDataMutation();
   const {mutateAsync: addInsuredData} = useAddInsuredDataMutation();
 

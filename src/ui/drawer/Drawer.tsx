@@ -1,8 +1,7 @@
 "use client";
 
 import {DrawerName} from "@/app/(menu)/(authenticated)/lips/[id]/drawers";
-import {getLipQuery} from "@/app/(menu)/(authenticated)/lips/[id]/queries";
-import {validateLipIdOrNotFound} from "@/app/(menu)/(authenticated)/lipsDrawers/validateLipIdOrNotFound";
+import {useSuspenseLip} from "@/app/(menu)/(authenticated)/lipsDrawers/useSuspenseLip";
 import {cns} from "@/helpers/cns";
 import {DrawerIcon} from "@/ui/drawer/DrawerIcon";
 import {buttonMap} from "@/ui/drawer/types";
@@ -11,8 +10,6 @@ import {useDrawerModal} from "@/ui/ModalContext";
 import {useAutoAnimate} from "@formkit/auto-animate/react";
 import {faPenToSquare} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {useSuspenseQuery} from "@tanstack/react-query";
-import {useParams} from "next/navigation";
 import {ReactNode} from "react";
 import {
   Button,
@@ -39,10 +36,9 @@ export function Drawer({
   readonly,
   title,
 }: DrawerProps) {
-  const lipId = validateLipIdOrNotFound(useParams<{id: string}>().id);
   const {
     data: {drawerStates},
-  } = useSuspenseQuery(getLipQuery(lipId));
+  } = useSuspenseLip();
 
   const [animateContainer] = useAutoAnimate();
   const {modalOpen, openModal, closeModal} = useDrawerModal();

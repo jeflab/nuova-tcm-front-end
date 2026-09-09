@@ -1,7 +1,6 @@
 "use client";
 
 import {useUpdateHealthQuestionnaire} from "@/app/(menu)/(authenticated)/lips/[id]/mutations";
-import {getLipQuery} from "@/app/(menu)/(authenticated)/lips/[id]/queries";
 import {isQuoteValid} from "@/app/(menu)/(authenticated)/lipsDrawers/quote/quoteValidators";
 import {
   SportRiskIndex,
@@ -9,7 +8,7 @@ import {
   YesNoAnswer,
   yesNoOptions,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
-import {validateLipIdOrNotFound} from "@/app/(menu)/(authenticated)/lipsDrawers/validateLipIdOrNotFound";
+import {useSuspenseLip} from "@/app/(menu)/(authenticated)/lipsDrawers/useSuspenseLip";
 import {normalizeError} from "@/helpers/errors";
 import {imcInRange} from "@/helpers/imc";
 import {Nullish} from "@/helpers/TypesHelper";
@@ -23,8 +22,6 @@ import {InputField} from "@/ui/form/InputField";
 import {useDrawerModal} from "@/ui/ModalContext";
 import {faSave, faSpinner, faXmark} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {useSuspenseQuery} from "@tanstack/react-query";
-import {useParams} from "next/navigation";
 import {
   Alert,
   Button,
@@ -98,10 +95,9 @@ export type HealthQuestionnaireFormValues = ReturnType<
 >;
 
 export function HealthQuestionnaireForm() {
-  const lipId = validateLipIdOrNotFound(useParams<{id: string}>().id) as number;
   const {
     data: {lip},
-  } = useSuspenseQuery(getLipQuery(lipId));
+  } = useSuspenseLip();
   const {closeModal} = useDrawerModal();
   const {mutateAsync: updateHealthQuestionnaire} =
     useUpdateHealthQuestionnaire();

@@ -1,11 +1,8 @@
-import {getLipQuery} from "@/app/(menu)/(authenticated)/lips/[id]/queries";
 import {complementaryCoverages} from "@/app/(menu)/(authenticated)/lipsDrawers/quote/ComplementaryCoverages";
 import {Coverage} from "@/app/(menu)/(authenticated)/lipsDrawers/quote/Coverage";
 import {isQuoteValid} from "@/app/(menu)/(authenticated)/lipsDrawers/quote/quoteValidators";
-import {validateLipIdOrNotFound} from "@/app/(menu)/(authenticated)/lipsDrawers/validateLipIdOrNotFound";
+import {useSuspenseLip} from "@/app/(menu)/(authenticated)/lipsDrawers/useSuspenseLip";
 import {Lip, Underwriting} from "@/models/entities/lip";
-import {useSuspenseQuery} from "@tanstack/react-query";
-import {useParams} from "next/navigation";
 import {Col, Row} from "react-bootstrap";
 
 interface ExclusionListProps {
@@ -32,10 +29,9 @@ export function getExcludedCoverages(
 }
 
 export function ExclusionList({exclusions}: ExclusionListProps) {
-  const lipId = validateLipIdOrNotFound(useParams<{id: string}>().id) as number;
   const {
     data: {lip},
-  } = useSuspenseQuery(getLipQuery(lipId));
+  } = useSuspenseLip();
 
   if (!isQuoteValid(lip)) {
     return null;

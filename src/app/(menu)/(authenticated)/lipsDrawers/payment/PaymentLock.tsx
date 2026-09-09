@@ -1,16 +1,13 @@
 "use client";
 
-import {getLipQuery} from "@/app/(menu)/(authenticated)/lips/[id]/queries";
 import {isBeneficiariesValid} from "@/app/(menu)/(authenticated)/lipsDrawers/beneficiaries/beneficiariesValidators";
 import {askForUnderwriting} from "@/app/(menu)/(authenticated)/lipsDrawers/payment/paymentValidators";
-import {validateLipIdOrNotFound} from "@/app/(menu)/(authenticated)/lipsDrawers/validateLipIdOrNotFound";
+import {useSuspenseLip} from "@/app/(menu)/(authenticated)/lipsDrawers/useSuspenseLip";
 import {PDFType} from "@/models/entities/esign";
 import {Currency} from "@/ui/Currency";
 import RequestOTPModal from "@/ui/eSign/RequestOTPModal";
 import {faSquareArrowUpRight} from "@fortawesome/pro-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {useSuspenseQuery} from "@tanstack/react-query";
-import {useParams} from "next/navigation";
 import {useState} from "react";
 import {Alert, Button} from "react-bootstrap";
 
@@ -21,10 +18,9 @@ interface PaymentLockProps {
 export function PaymentLock({
   hideUnderwritingAction = false,
 }: PaymentLockProps) {
-  const lipId = validateLipIdOrNotFound(useParams<{id: string}>().id) as number;
   const {
     data: {lip, drawerStates},
-  } = useSuspenseQuery(getLipQuery(lipId));
+  } = useSuspenseLip();
 
   const [isUnderwritingOpen, setIsUnderwritingOpen] = useState(false);
 

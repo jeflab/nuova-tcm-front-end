@@ -1,28 +1,24 @@
 "use client";
 
 import {useUpdatePaymentData} from "@/app/(menu)/(authenticated)/lips/[id]/mutations";
-import {getLipQuery} from "@/app/(menu)/(authenticated)/lips/[id]/queries";
 import {
   externalPaymentBlocked,
   externalPaymentClicked,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/documents/documentsValidators";
 import {isPaymentValid} from "@/app/(menu)/(authenticated)/lipsDrawers/payment/paymentValidators";
-import {validateLipIdOrNotFound} from "@/app/(menu)/(authenticated)/lipsDrawers/validateLipIdOrNotFound";
+import {useSuspenseLip} from "@/app/(menu)/(authenticated)/lipsDrawers/useSuspenseLip";
 import {
   faArrowUpRightFromSquare,
   faCheckCircle,
   faCircleExclamation,
 } from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {useSuspenseQuery} from "@tanstack/react-query";
-import {useParams} from "next/navigation";
 import {Alert, Button} from "react-bootstrap";
 
 export function DocumentsLockExternalPayment() {
-  const lipId = validateLipIdOrNotFound(useParams<{id: string}>().id) as number;
   const {
     data: {lip},
-  } = useSuspenseQuery(getLipQuery(lipId));
+  } = useSuspenseLip();
   const {mutateAsync: updatePaymentData} = useUpdatePaymentData();
 
   if (!isPaymentValid(lip)) {

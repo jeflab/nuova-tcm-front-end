@@ -1,7 +1,6 @@
 "use client";
 
 import {useUpdatePaymentData} from "@/app/(menu)/(authenticated)/lips/[id]/mutations";
-import {getLipQuery} from "@/app/(menu)/(authenticated)/lips/[id]/queries";
 import {isBeneficiariesValid} from "@/app/(menu)/(authenticated)/lipsDrawers/beneficiaries/beneficiariesValidators";
 import {bannedIbanCodes} from "@/app/(menu)/(authenticated)/lipsDrawers/payment/consts";
 import {
@@ -10,7 +9,7 @@ import {
   PaymentType,
   paymentTypesOptions,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/selectsOptions";
-import {validateLipIdOrNotFound} from "@/app/(menu)/(authenticated)/lipsDrawers/validateLipIdOrNotFound";
+import {useSuspenseLip} from "@/app/(menu)/(authenticated)/lipsDrawers/useSuspenseLip";
 import {normalizeError} from "@/helpers/errors";
 import {toCurrency} from "@/helpers/numbers";
 import {Lip} from "@/models/entities/lip";
@@ -26,9 +25,7 @@ import {validateIBAN} from "@/ui/form/validators/iban";
 import {useDrawerModal} from "@/ui/ModalContext";
 import {faSave, faSpinner, faXmark} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {useSuspenseQuery} from "@tanstack/react-query";
 import {addYears} from "date-fns/addYears";
-import {useParams} from "next/navigation";
 import {
   Alert,
   Button,
@@ -57,10 +54,9 @@ const paymentDefaultValues = (paymentData?: Lip["payment"]) => ({
 });
 
 export function PaymentForm() {
-  const lipId = validateLipIdOrNotFound(useParams<{id: string}>().id) as number;
   const {
     data: {lip},
-  } = useSuspenseQuery(getLipQuery(lipId));
+  } = useSuspenseLip();
   const {mutateAsync: updatePaymentData} = useUpdatePaymentData();
 
   if (!isBeneficiariesValid(lip)) {

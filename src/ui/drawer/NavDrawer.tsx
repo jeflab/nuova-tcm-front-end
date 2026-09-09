@@ -1,12 +1,9 @@
 "use client";
 
 import {DrawerName} from "@/app/(menu)/(authenticated)/lips/[id]/drawers";
-import {getLipQuery} from "@/app/(menu)/(authenticated)/lips/[id]/queries";
-import {validateLipIdOrNotFound} from "@/app/(menu)/(authenticated)/lipsDrawers/validateLipIdOrNotFound";
+import {useSuspenseLip} from "@/app/(menu)/(authenticated)/lipsDrawers/useSuspenseLip";
 import {cns} from "@/helpers/cns";
 import {DrawerIcon} from "@/ui/drawer/DrawerIcon";
-import {useSuspenseQuery} from "@tanstack/react-query";
-import {useParams} from "next/navigation";
 import React, {ReactNode} from "react";
 import {NavLink} from "react-bootstrap";
 
@@ -17,10 +14,9 @@ interface DrawerProps {
 }
 
 export function NavDrawer({active, children, name}: DrawerProps) {
-  const lipId = validateLipIdOrNotFound(useParams<{id: string}>().id);
   const {
     data: {drawerStates},
-  } = useSuspenseQuery(getLipQuery(lipId));
+  } = useSuspenseLip();
   const drawerState = drawerStates[name];
 
   return (

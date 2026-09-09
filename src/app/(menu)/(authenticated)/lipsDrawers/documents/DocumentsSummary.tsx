@@ -1,6 +1,5 @@
 "use client";
 
-import {getLipQuery} from "@/app/(menu)/(authenticated)/lips/[id]/queries";
 import {CompanyPrivacy} from "@/app/(menu)/(authenticated)/lipsDrawers/CompanyPrivacy";
 import {
   createDocuments,
@@ -8,15 +7,13 @@ import {
 } from "@/app/(menu)/(authenticated)/lipsDrawers/documents/DocumentsManagement";
 import {isDocumentsBlocked} from "@/app/(menu)/(authenticated)/lipsDrawers/documents/documentsValidators";
 import {isPaymentValid} from "@/app/(menu)/(authenticated)/lipsDrawers/payment/paymentValidators";
-import {validateLipIdOrNotFound} from "@/app/(menu)/(authenticated)/lipsDrawers/validateLipIdOrNotFound";
+import {useSuspenseLip} from "@/app/(menu)/(authenticated)/lipsDrawers/useSuspenseLip";
 import {DownloadDocumentButton} from "@/ui/DownloadDocumentButton";
 import {
   faCheckCircle,
   faClipboardListCheck,
 } from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {useSuspenseQuery} from "@tanstack/react-query";
-import {useParams} from "next/navigation";
 import {useState} from "react";
 import {
   Badge,
@@ -52,10 +49,9 @@ const eSignsCount = (
 
 export function DocumentsSummary() {
   const [isConsentCheckOpen, setIsConsentCheckOpen] = useState(false);
-  const lipId = validateLipIdOrNotFound(useParams<{id: string}>().id) as number;
   const {
     data: {lip},
-  } = useSuspenseQuery(getLipQuery(lipId));
+  } = useSuspenseLip();
 
   if (isDocumentsBlocked(lip) || !isPaymentValid(lip)) {
     return null;

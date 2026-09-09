@@ -1,21 +1,20 @@
 "use client";
 
-import {getLipQuery} from "@/app/(menu)/(authenticated)/lips/[id]/queries";
 import {isCertificateValid} from "@/app/(menu)/(authenticated)/lipsDrawers/certificate/certificateValidators";
 import {isDocumentsValid} from "@/app/(menu)/(authenticated)/lipsDrawers/documents/documentsValidators";
+import {useSuspenseLip} from "@/app/(menu)/(authenticated)/lipsDrawers/useSuspenseLip";
 import {validateLipIdOrNotFound} from "@/app/(menu)/(authenticated)/lipsDrawers/validateLipIdOrNotFound";
 import {dateString} from "@/helpers/dates";
 import {DownloadDocumentButton} from "@/ui/DownloadDocumentButton";
 import {faFileCertificate} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {useSuspenseQuery} from "@tanstack/react-query";
 import {useParams} from "next/navigation";
 
 export function CertificateSummary() {
   const lipId = validateLipIdOrNotFound(useParams<{id: string}>().id) as number;
   const {
     data: {lip},
-  } = useSuspenseQuery(getLipQuery(lipId));
+  } = useSuspenseLip();
 
   if (!isDocumentsValid(lip)) {
     return null;

@@ -1,10 +1,7 @@
 "use client";
 
-import {
-  getLastPrivacyQuery,
-  getLipQuery,
-} from "@/app/(menu)/(authenticated)/lips/[id]/queries";
-import {validateLipIdOrNotFound} from "@/app/(menu)/(authenticated)/lipsDrawers/validateLipIdOrNotFound";
+import {getLastPrivacyQuery} from "@/app/(menu)/(authenticated)/lips/[id]/queries";
+import {useSuspenseLip} from "@/app/(menu)/(authenticated)/lipsDrawers/useSuspenseLip";
 import {cns} from "@/helpers/cns";
 import {PDFType} from "@/models/entities/esign";
 import {isLip} from "@/models/entities/lip";
@@ -18,17 +15,15 @@ import {useDrawerModal} from "@/ui/ModalContext";
 import {faFileSignature, faSpinner} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {useSuspenseQuery} from "@tanstack/react-query";
-import {useParams} from "next/navigation";
 import {useState} from "react";
 import {Alert, FormGroup} from "react-bootstrap";
 import {useForm} from "react-hook-form";
 import styles from "./ContractorPersonalAreaActivationLastPrivacyForm.module.scss";
 
 export function ContractorPersonalAreaActivationLastPrivacyForm() {
-  const lipId = validateLipIdOrNotFound(useParams<{id: string}>().id) as number;
   const {
     data: {lip},
-  } = useSuspenseQuery(getLipQuery(lipId));
+  } = useSuspenseLip();
   const {data: lastPrivacy} = useSuspenseQuery(getLastPrivacyQuery());
   const formMethods = useForm({
     mode: "onChange",

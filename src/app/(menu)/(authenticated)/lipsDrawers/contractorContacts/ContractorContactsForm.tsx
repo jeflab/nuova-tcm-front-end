@@ -4,9 +4,8 @@ import {
   useActivateContractorMutation,
   useUpdateContractorContactsMutation,
 } from "@/app/(menu)/(authenticated)/lips/[id]/mutations";
-import {getLipQuery} from "@/app/(menu)/(authenticated)/lips/[id]/queries";
 import {fatcaQuestions} from "@/app/(menu)/(authenticated)/lipsDrawers/fatca/FatcaForm";
-import {validateLipIdOrNotFound} from "@/app/(menu)/(authenticated)/lipsDrawers/validateLipIdOrNotFound";
+import {useSuspenseLip} from "@/app/(menu)/(authenticated)/lipsDrawers/useSuspenseLip";
 import {getAccountQuery} from "@/app/(menu)/(authenticated)/queries";
 import {cns} from "@/helpers/cns";
 import {dbDateString} from "@/helpers/dates";
@@ -24,7 +23,7 @@ import {useDrawerModal} from "@/ui/ModalContext";
 import {faSave, faSpinner, faXmark} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {useSuspenseQuery} from "@tanstack/react-query";
-import {useParams, useRouter} from "next/navigation";
+import {useRouter} from "next/navigation";
 import {
   Alert,
   Button,
@@ -49,10 +48,9 @@ const contractorPersonalAreaActivationDefaultValues = (
 
 export function ContractorContactsForm() {
   const router = useRouter();
-  const lipId = validateLipIdOrNotFound(useParams<{id: string}>().id) as number;
   const {
     data: {lip},
-  } = useSuspenseQuery(getLipQuery(lipId));
+  } = useSuspenseLip();
   const {
     data: {user: loggedUser, roles: loggedUserRoles},
   } = useSuspenseQuery(getAccountQuery());

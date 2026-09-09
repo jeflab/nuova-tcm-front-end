@@ -2,8 +2,7 @@
 
 import {drawers} from "@/app/(menu)/(authenticated)/contractorLips/[id]/drawers";
 import styles from "@/app/(menu)/(authenticated)/contractorLips/[id]/page.module.scss";
-import {getLipQuery} from "@/app/(menu)/(authenticated)/lips/[id]/queries";
-import {validateLipIdOrNotFound} from "@/app/(menu)/(authenticated)/lipsDrawers/validateLipIdOrNotFound";
+import {useSuspenseLip} from "@/app/(menu)/(authenticated)/lipsDrawers/useSuspenseLip";
 import {cns} from "@/helpers/cns";
 import {isLip} from "@/models/entities/lip";
 import {ButtonLink} from "@/ui/ButtonLink";
@@ -14,18 +13,15 @@ import {PageTitle} from "@/ui/PageTitle";
 import ScrollReveal from "@/ui/ScrollReveal/ScrollReveal";
 import {faArrowLeft} from "@fortawesome/pro-duotone-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {useSuspenseQuery} from "@tanstack/react-query";
-import {useParams} from "next/navigation";
 import {Fragment} from "react";
 import {Col, Nav, Row} from "react-bootstrap";
 
 const minWidthHack = {minWidth: "1px"};
 
 export function ContractorLipDetails() {
-  const lipId = validateLipIdOrNotFound(useParams<{id: string}>().id);
   const {
     data: {lip},
-  } = useSuspenseQuery(getLipQuery(lipId));
+  } = useSuspenseLip();
 
   if (!isLip(lip)) {
     throw new Error("Errore nel caricamento della polizza");

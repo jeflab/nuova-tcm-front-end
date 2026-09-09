@@ -1,13 +1,12 @@
 "use client";
 
-import {getLipQuery} from "@/app/(menu)/(authenticated)/lips/[id]/queries";
 import {
   complementaryCoverages,
   getCoverageDuration,
 } from "@/app/(menu)/(authenticated)/lipsDrawers/quote/ComplementaryCoverages";
 import {Coverage} from "@/app/(menu)/(authenticated)/lipsDrawers/quote/Coverage";
 import {isQuoteValid} from "@/app/(menu)/(authenticated)/lipsDrawers/quote/quoteValidators";
-import {validateLipIdOrNotFound} from "@/app/(menu)/(authenticated)/lipsDrawers/validateLipIdOrNotFound";
+import {useSuspenseLip} from "@/app/(menu)/(authenticated)/lipsDrawers/useSuspenseLip";
 import {calendarYearAge} from "@/helpers/ages";
 import {dateString} from "@/helpers/dates";
 import {Currency} from "@/ui/Currency";
@@ -21,15 +20,12 @@ import {
 } from "@fortawesome/pro-duotone-svg-icons";
 import {faDollar} from "@fortawesome/pro-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {useSuspenseQuery} from "@tanstack/react-query";
-import {useParams} from "next/navigation";
 import {Alert, Col, Row} from "react-bootstrap";
 
 export function QuoteSummary() {
-  const lipId = validateLipIdOrNotFound(useParams<{id: string}>().id) as number;
   const {
     data: {lip},
-  } = useSuspenseQuery(getLipQuery(lipId));
+  } = useSuspenseLip();
 
   if (!isQuoteValid(lip)) {
     return null;
