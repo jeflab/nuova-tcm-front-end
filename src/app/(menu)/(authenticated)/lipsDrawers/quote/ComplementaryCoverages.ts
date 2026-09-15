@@ -46,7 +46,7 @@ export const complementaryCoverages = {
     label: "Cancro",
     valueLabel: "Capitale assicurato",
     maxDuration: 10,
-    maxAge: 65,
+    maxAge: 75,
     minCoverage: mainCoverage.minCoverage,
     maxCoverage: Math.min(100_000, mainCoverage.maxCoverage),
   },
