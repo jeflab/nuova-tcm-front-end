@@ -1,5 +1,11 @@
 # Changelog
 
+### 2.10.3 (2026-09-15)
+
+#### Fixed:
+
+- Corretto bug che mostrava una durata errata della copertura Cancro nel riepilogo del preventivo
+
 ### 2.10.2 (2026-08-06)
 
 #### Fixed:
